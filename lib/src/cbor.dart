@@ -5,11 +5,8 @@
  * Copyright :  S.Hamblett
  */
 
-library cbor;
+part of cbor;
 
-import 'dart:io';
-import 'dart:convert';
-import 'dart:typed_data';
+class Cbor {
 
-part 'src/cbor.dart';
-part 'src/data.dart';
+}
