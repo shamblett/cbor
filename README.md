@@ -1,2 +1,4 @@
 # cbor
-A CBOR implementation for Dart
+
+A CBOR library for Dart developers.
+
