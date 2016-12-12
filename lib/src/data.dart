@@ -43,10 +43,25 @@ enum cbor_float_width {
 enum cbor_dst_metadata { cborMetaDataDefinate, cborMetaDataIndefinate }
 
 /// Semantic mapping for CTRL simple values
-enum cbor_ctrl {
-  cborCtrlNone0,
-  cborCtrlFalse20,
-  cborCtrlTrue21,
-  cborCtrlNull22,
-  cborCtrlUndef23
+enum _cbor_ctrl {
+  cborCtrlNone,
+  cborCtrlFalse,
+  cborCtrlTrue,
+  cborCtrlNull,
+  cborCtrlUndef
 }
+
+const Map<List<int>,List<_cbor_ctrl>> cbor_ctrl = {
+  0: _cbor_ctrl.cborCtrlNone.index,
+  20: _cbor_ctrl.cborCtrlFalse.index,
+  21: _cbor_ctrl.cborCtrlTrue.index,
+  22: _cbor_ctrl.cborCtrlNull.index,
+  23: _cbor_ctrl.cborCtrlUndef.index
+};
+
+/// Integers specific metadata
+class cbor_int_metadata {
+  cbor_int_width width;
+}
+
+
