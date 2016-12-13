@@ -85,3 +85,46 @@ bool cborIsaTag(CborItem item) {
 bool cborIsaFloatCtrl(CborItem item) {
   return item.type == CborType.cborTypeFloatCtrl;
 }
+
+/* Practical types with respect to their semantics (but not tag values) */
+
+/// Is the item an integer, either positive or negative?
+/// @param item the item
+/// @return  Is the item an integer, either positive or negative?
+bool cborIsInt(CborItem item) {
+  return cborIsaUint(item) || cborIsaNegint(item);
+}
+
+
+/// Is the item an a floating point number?
+/// @param item the item
+/// @return  Is the item a floating point number?
+//bool cborIsFloat(CborItem item) {
+// TODO
+  //return cborIsaFloatCtrl(item) && !cbor_float_ctrl_is_ctrl(item);
+//}
+
+/// Is the item an a boolean?
+/// @param item[borrow] the item
+/// @return  Is the item a boolean?
+//bool cborIsBool(CborItem item) {
+// TODO
+  //return cborIsaFloatCtrl(item) &&
+  //(cborCtrlValue(item) == CBOR_CTRL_FALSE || cbor_ctrl_value(item) == CBOR_CTRL_TRUE)
+//}
+
+/// Does this item represent `null`
+/// @param item[borrow] the item
+/// @return  Is the item (CBOR logical) null?
+//bool cborIsNull(CborItem item) {
+// TODO
+  //return cbor_isa_float_ctrl(item) && cbor_ctrl_value(item) == CBOR_CTRL_NULL;
+//}
+
+/// Does this item represent `undefined`
+/// @param item[borrow] the item
+/// @return Is the item (CBOR logical) undefined?
+//bool cborIsUndef(CborItem_t item) {
+  // TODO
+  // return cbor_isa_float_ctrl(item) && cbor_ctrl_value(item) == CBOR_CTRL_UNDEF;
+//}
