@@ -8,8 +8,7 @@
 library cbor;
 
 import 'dart:io';
-import 'dart:convert';
 import 'dart:typed_data';
 
 part 'src/cbor.dart';
-part 'src/data.dart';
+part 'src/cbor_data.dart';
