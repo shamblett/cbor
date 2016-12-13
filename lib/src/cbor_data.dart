@@ -118,15 +118,12 @@ class CborItemMetadata {
 class CborItem {
   /// Discriminated by type
   CborItemMetadata metadata;
-
   /// Reference count - initialize to 0
   int refcount;
-
   /// Major type discriminator
   CborType type;
-
   /// Raw data block - interpretation depends on metadata */
-  Uint8List data;
+  List<CborItem> data;
 }
 
 /// Defines cbor_item#data structure for indefinite strings and bytestrings

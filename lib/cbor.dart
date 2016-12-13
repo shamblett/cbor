@@ -14,3 +14,5 @@ part 'src/cbor.dart';
 part 'src/cbor_data.dart';
 part 'src/cbor_configuration.dart';
 part 'src/cbor_common.dart';
+
+part 'src/cbor_arrays.dart';
