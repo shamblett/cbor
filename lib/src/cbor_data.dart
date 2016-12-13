@@ -122,8 +122,15 @@ class CborItem {
   int refcount;
   /// Major type discriminator
   CborType type;
-  /// Raw data block - interpretation depends on metadata */
+
+  /// Data block - interpretation depends on metadata */
   List<CborItem> data;
+
+  /// uint8 data block
+  Uint8List uintData;
+
+  /// String data block
+  String stringData;
 }
 
 /// Defines cbor_item#data structure for indefinite strings and bytestrings
