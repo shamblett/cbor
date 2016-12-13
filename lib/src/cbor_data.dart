@@ -51,12 +51,12 @@ enum _CborCtrl {
   cborCtrlNull
 }
 
-const Map<List<int>, List<_CborCtrl>> cborCtrl = {
+final Map<int, int> cborCtrl = {
   0: _CborCtrl.cborCtrlNone.index,
   20: _CborCtrl.cborCtrlFalse.index,
   21: _CborCtrl.cborCtrlTrue.index,
-  22: _CborCtrl.cborCtrlNull.index,
-  23: _CborCtrl.cborCtrlUndef.index
+  23: _CborCtrl.cborCtrlUndef.index,
+  22: _CborCtrl.cborCtrlNull.index
 };
 
 /// Integers specific metadata
@@ -116,19 +116,17 @@ class CborItemMetadata {
 
 /// The item handle
 class CborItem {
-/** Discriminated by type */
+/// Discriminated by type
   CborItemMetadata metadata;
-/** Reference count - initialize to 0 */
+/// Reference count - initialize to 0
   int refcount;
-/** Major type discriminator */
+/// Major type discriminator
   CborType type;
-/** Raw data block - interpretation depends on metadata */
+/// Raw data block - interpretation depends on metadata */
   Uint8List data;
 }
 
-/** Defines cbor_item#data structure for indefinite strings and bytestrings
- *
- */
+/// Defines cbor_item#data structure for indefinite strings and bytestrings
 class CborIndefiniteStringData {
   int chunkCount;
   int chunkCapacity;
@@ -137,9 +135,9 @@ class CborIndefiniteStringData {
 
 /// High-level decoding error
 class CborError {
-/** Aproximate position */
+/// Aproximate position
   int position;
-/** Description */
+/// Description
   CborErrorCode code;
 }
 
@@ -150,9 +148,9 @@ class CborPair {
 
 /// High-level decoding result
 class CborLoadResult {
-/** Error indicator */
+/// Error indicator
   CborError error;
-/** Number of bytes read*/
+/// Number of bytes read
   int read;
 }
 
@@ -166,8 +164,8 @@ enum CborDecoderStatus {
 
 /// Streaming decoder result
 class CborDecoderResult {
-/** Bytes read */
+/// Bytes read
   int read;
-/** The result */
+/// The result
   CborDecoderStatus status;
 }
