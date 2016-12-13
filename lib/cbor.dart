@@ -13,3 +13,4 @@ import 'dart:typed_data';
 part 'src/cbor.dart';
 part 'src/cbor_data.dart';
 part 'src/cbor_configuration.dart';
+part 'src/cbor_common.dart';

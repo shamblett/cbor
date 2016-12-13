@@ -3,7 +3,7 @@
 
 import 'package:cbor/cbor.dart';
 
-main() {
-  var awesome = new Awesome();
-  print('awesome: ${awesome.isAwesome}');
+int main() {
+
+  return 0;
 }

@@ -7,9 +7,9 @@
 
 part of cbor;
 
-const int CBOR_MAJOR_VERSION = 0;
-const int CBOR_MINOR_VERSION = 0;
-const int CBOR_PATCH_VERSION = 1;
+const int cborMajorVersion = 0;
+const int cborMinorVersion = 0;
+const int cborPatchVersion = 1;
 
-const int CBOR_BUFFER_GROWTH = 2;
-const int CBOR_PRETTY_PRINTER = 1;
+const int cborBufferGrowth = 2;
+const int cborPrettyPrinter = 1;

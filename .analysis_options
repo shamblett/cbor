@@ -53,7 +53,6 @@
      - super_goes_last
      - type_annotate_public_apis
      - type_init_formals
-     - unawaited_future
      - unnecessary_brace_in_string_interp
      - unnecessary_getters_setters
      - package_names
