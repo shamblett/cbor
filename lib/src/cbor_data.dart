@@ -123,13 +123,9 @@ class CborItem {
   /// Major type discriminator
   CborType type;
 
-  /// Data block - interpretation depends on metadata */
+  /// Data blocks - interpretation depends on metadata */
   List<CborItem> data;
-
-  /// uint8 data block
   Uint8List uintData;
-
-  /// String data block
   String stringData;
 }
 
