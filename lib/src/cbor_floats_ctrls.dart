@@ -103,3 +103,69 @@ CborItem cborNewCtrl() {
   item.metadata.floatCtrlMetadata.ctrl = cborCtrlToInt[ECborCtrl.cborCtrlNone];
   return item;
 }
+
+/// Constructs a new float item
+///
+/// The width cannot be changed once the item is created
+///
+/// @return **new** 2B float
+CborItem cborNewFloat2() {
+  CborItem item = new CborItem();
+  item.type = CborType.cborTypeFloatCtrl;
+  item.floatData = double.NAN;
+  item.refcount = 1;
+  item.metadata.floatCtrlMetadata = new CborFloatCtrlMetadata();
+  item.metadata.floatCtrlMetadata.width = CborFloatWidth.cborFloat16;
+  return item;
+}
+
+/// Constructs a new float item
+///
+/// The width cannot be changed once the item is created
+///
+/// @return **new** 4B float
+CborItem cborNewFloat4() {
+  CborItem item = new CborItem();
+  item.type = CborType.cborTypeFloatCtrl;
+  item.floatData = double.NAN;
+  item.refcount = 1;
+  item.metadata.floatCtrlMetadata = new CborFloatCtrlMetadata();
+  item.metadata.floatCtrlMetadata.width = CborFloatWidth.cborFloat32;
+  return item;
+}
+
+/// Constructs a new float item
+///
+/// The width cannot be changed once the item is created
+///
+/// @return **new** 8B float
+CborItem cborNewFloat8() {
+  CborItem item = new CborItem();
+  item.type = CborType.cborTypeFloatCtrl;
+  item.floatData = double.NAN;
+  item.refcount = 1;
+  item.metadata.floatCtrlMetadata = new CborFloatCtrlMetadata();
+  item.metadata.floatCtrlMetadata.width = CborFloatWidth.cborFloat32;
+  return item;
+}
+
+/// Assign a control value
+///
+/// .. warning:: It is possible to produce an invalid CBOR value by assigning a invalid value using this mechanism. Please consult the standard before use.
+///
+/// @param item A ctrl item
+/// @param value The simple value to assign. Please consult the standard for allowed values
+void cborSetCtrl(CborItem item, int value) {
+  assert(cborIsaFloatCtrl(item));
+  assert(cborFloatGetWidth(item) == CborFloatWidth.cborFloat0);
+  item.metadata.floatCtrlMetadata.ctrl = value;
+}
+
+/// Constructs new null ctrl item
+///
+/// @return **new** null ctrl item
+CborItem cborNewNull() {
+  CborItem item = cborNewCtrl();
+  cborSetCtrl(item, cborCtrlToInt[cborCtrlNull]);
+  return item;
+}
