@@ -138,6 +138,7 @@ class CborItem {
   Uint8List uintData;
   String stringData;
   double floatData;
+  int intData;
 }
 
 /// Defines cbor_item#data structure for indefinite strings and bytestrings
