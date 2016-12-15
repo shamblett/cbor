@@ -179,6 +179,16 @@ CborItem cborNewUndef() {
   return item;
 }
 
+/// Constructs a ctrl item
+///
+/// @param value the value to use
+/// @return **new** ctrl item
+CborItem cborBuildCtrl(int value) {
+  CborItem item = cborNewCtrl();
+  cborSetCtrl(item, value);
+  return item;
+}
+
 /// Constructs new boolean ctrl item
 ///
 /// @param value The value to use
@@ -226,7 +236,7 @@ void cborSetFloat8(CborItem item, double value) {
 int cborCtrlValue(CborItem item) {
   assert(cborIsaFloatCtrl(item));
   assert(cborFloatGetWidth(item) == CborFloatWidth.cborFloat0);
-  return item.CborFloatCtrlMetadata.ctrl;
+  return item.metadata.floatCtrlMetadata.ctrl;
 }
 
 /// Is this ctrl item a boolean?
@@ -235,7 +245,8 @@ int cborCtrlValue(CborItem item) {
 /// @return Is this ctrl item a boolean?
 bool cborCtrlIsBool(CborItem item) {
   assert(cborIsBool(item));
-  return item.floatCtrlMetadata.ctrl == cborCtrlToInt[ECborCtrl.cborCtrlTrue];
+  return item.metadata.floatCtrlMetadata.ctrl ==
+      cborCtrlToInt[ECborCtrl.cborCtrlTrue];
 }
 
 /// Constructs a new float

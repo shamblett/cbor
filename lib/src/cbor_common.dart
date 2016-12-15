@@ -95,7 +95,6 @@ bool cborIsInt(CborItem item) {
   return cborIsaUint(item) || cborIsaNegint(item);
 }
 
-
 /// Is the item an a floating point number?
 /// @param item the item
 /// @return  Is the item a floating point number?
@@ -104,26 +103,26 @@ bool cborIsFloat(CborItem item) {
 }
 
 /// Is the item an a boolean?
-/// @param item[borrow] the item
+/// @param item the item
 /// @return  Is the item a boolean?
-//bool cborIsBool(CborItem item) {
-// TODO
-  //return cborIsaFloatCtrl(item) &&
-  //(cborCtrlValue(item) == CBOR_CTRL_FALSE || cbor_ctrl_value(item) == CBOR_CTRL_TRUE)
-//}
+bool cborIsBool(CborItem item) {
+  return cborIsaFloatCtrl(item) &&
+      (cborCtrlValue(item) == cborCtrlToInt[ECborCtrl.cborCtrlFalse] ||
+          cborCtrlValue(item) == cborCtrlToInt[ECborCtrl.cborCtrlTrue]);
+}
 
 /// Does this item represent `null`
-/// @param item[borrow] the item
+/// @param item the item
 /// @return  Is the item (CBOR logical) null?
-//bool cborIsNull(CborItem item) {
-// TODO
-  //return cbor_isa_float_ctrl(item) && cbor_ctrl_value(item) == CBOR_CTRL_NULL;
-//}
+bool cborIsNull(CborItem item) {
+  return cborIsaFloatCtrl(item) &&
+      cborCtrlValue(item) == cborCtrlToInt[ECborCtrl.cborCtrlNull];
+}
 
 /// Does this item represent `undefined`
 /// @param item[borrow] the item
 /// @return Is the item (CBOR logical) undefined?
-//bool cborIsUndef(CborItem_t item) {
-  // TODO
-  // return cbor_isa_float_ctrl(item) && cbor_ctrl_value(item) == CBOR_CTRL_UNDEF;
-//}
+bool cborIsUndef(CborItem item) {
+  return cborIsaFloatCtrl(item) &&
+      cborCtrlValue(item) == cborCtrlToInt[ECborCtrl.cborCtrlUndef];
+}

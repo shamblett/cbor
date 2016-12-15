@@ -51,7 +51,7 @@ enum ECborCtrl {
   cborCtrlNull
 }
 
-final Map<int, ECborCtrl> intTocborCtrl = {
+final Map<int, ECborCtrl> intToCborCtrl = {
   0: ECborCtrl.cborCtrlNone,
   20: ECborCtrl.cborCtrlFalse,
   21: ECborCtrl.cborCtrlTrue,
