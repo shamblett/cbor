@@ -99,10 +99,9 @@ bool cborIsInt(CborItem item) {
 /// Is the item an a floating point number?
 /// @param item the item
 /// @return  Is the item a floating point number?
-//bool cborIsFloat(CborItem item) {
-// TODO
-  //return cborIsaFloatCtrl(item) && !cbor_float_ctrl_is_ctrl(item);
-//}
+bool cborIsFloat(CborItem item) {
+  return cborIsaFloatCtrl(item) && !cborFloatCtrlIsCtrl(item);
+}
 
 /// Is the item an a boolean?
 /// @param item[borrow] the item

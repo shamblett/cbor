@@ -51,12 +51,20 @@ enum ECborCtrl {
   cborCtrlNull
 }
 
-final Map<int, ECborCtrl> cborCtrl = {
+final Map<int, ECborCtrl> intTocborCtrl = {
   0: ECborCtrl.cborCtrlNone,
   20: ECborCtrl.cborCtrlFalse,
   21: ECborCtrl.cborCtrlTrue,
   23: ECborCtrl.cborCtrlUndef,
   22: ECborCtrl.cborCtrlNull
+};
+
+final Map<ECborCtrl, int> cborCtrlToInt = {
+  ECborCtrl.cborCtrlNone: 0,
+  ECborCtrl.cborCtrlFalse: 20,
+  ECborCtrl.cborCtrlTrue: 21,
+  ECborCtrl.cborCtrlUndef: 23,
+  ECborCtrl.cborCtrlNull: 22
 };
 
 /// Integers specific metadata
@@ -118,8 +126,10 @@ class CborItemMetadata {
 class CborItem {
   /// Discriminated by type
   CborItemMetadata metadata;
+
   /// Reference count - initialize to 0
   int refcount;
+
   /// Major type discriminator
   CborType type;
 
@@ -127,6 +137,7 @@ class CborItem {
   List<CborItem> data;
   Uint8List uintData;
   String stringData;
+  double floatData;
 }
 
 /// Defines cbor_item#data structure for indefinite strings and bytestrings
