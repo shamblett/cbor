@@ -166,6 +166,104 @@ void cborSetCtrl(CborItem item, int value) {
 /// @return **new** null ctrl item
 CborItem cborNewNull() {
   CborItem item = cborNewCtrl();
-  cborSetCtrl(item, cborCtrlToInt[cborCtrlNull]);
+  cborSetCtrl(item, cborCtrlToInt[ECborCtrl.cborCtrlNull]);
+  return item;
+}
+
+/// Constructs new undef ctrl item
+///
+/// @return **new** undef ctrl item
+CborItem cborNewUndef() {
+  CborItem item = cborNewCtrl();
+  cborSetCtrl(item, cborCtrlToInt[ECborCtrl.cborCtrlUndef]);
+  return item;
+}
+
+/// Constructs new boolean ctrl item
+///
+/// @param value The value to use
+/// @return **new** boolean ctrl item
+CborItem cborBuildBool(bool value) {
+  return cborBuildCtrl(value
+      ? cborCtrlToInt[ECborCtrl.cborCtrlTrue]
+      : cborCtrlToInt[ECborCtrl.cborCtrlFalse]);
+}
+
+/// Assigns a float value
+///
+/// @param item A half precision float
+/// @param value The value to assign
+void cborSetFloat2(CborItem item, double value) {
+  assert(cborIsFloat(item));
+  assert(cborFloatGetWidth(item) == CborFloatWidth.cborFloat16);
+  item.floatData = value;
+}
+
+/// Assigns a float value
+///
+/// @param item A single precision float
+/// @param value The value to assign
+void cborSetFloat4(CborItem item, double value) {
+  assert(cborIsFloat(item));
+  assert(cborFloatGetWidth(item) == CborFloatWidth.cborFloat32);
+  item.floatData = value;
+}
+
+/// Assigns a float value
+///
+/// @param item A double precision float
+/// @param value The value to assign
+void cborSetFloat8(CborItem item, double value) {
+  assert(cborIsFloat(item));
+  assert(cborFloatGetWidth(item) == CborFloatWidth.cborFloat64);
+  item.floatData = value;
+}
+
+/// Reads the control value
+///
+/// @param item A ctrl item
+/// @return the simple value
+int cborCtrlValue(CborItem item) {
+  assert(cborIsaFloatCtrl(item));
+  assert(cborFloatGetWidth(item) == CborFloatWidth.cborFloat0);
+  return item.CborFloatCtrlMetadata.ctrl;
+}
+
+/// Is this ctrl item a boolean?
+///
+/// @param item A ctrl item
+/// @return Is this ctrl item a boolean?
+bool cborCtrlIsBool(CborItem item) {
+  assert(cborIsBool(item));
+  return item.floatCtrlMetadata.ctrl == cborCtrlToInt[ECborCtrl.cborCtrlTrue];
+}
+
+/// Constructs a new float
+///
+/// @param value the value to use
+/// @return **new** float
+CborItem cborBuildFloat2(double value) {
+  CborItem item = cborNewFloat2();
+  cborSetFloat2(item, value);
+  return item;
+}
+
+/// Constructs a new float
+///
+/// @param value the value to use
+/// @return **new** float
+CborItem cborBuildFloat4(double value) {
+  CborItem item = cborNewFloat4();
+  cborSetFloat4(item, value);
+  return item;
+}
+
+/// Constructs a new float
+///
+/// @param value the value to use
+/// @return **new** float
+CborItem cborBuildFloat8(double value) {
+  CborItem item = cborNewFloat8();
+  cborSetFloat8(item, value);
   return item;
 }
