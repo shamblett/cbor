@@ -91,6 +91,7 @@ bool cborStringAddChunk(CborItem item, CborItem chunk) {
   assert(cborStringIsDefinite(chunk));
   item.stringData += chunk.stringData;
   item.metadata.stringMetadata.length = item.stringData.length;
+  return true;
 }
 
 /// Creates a new definite string
