@@ -18,5 +18,6 @@ part 'src/cbor_arrays.dart';
 part 'src/cbor_floats_ctrls.dart';
 part 'src/cbor_bytestrings.dart';
 
+part 'src/cbor_strings.dart';
 part 'src/cbor_maps.dart';
 part 'src/cbor_ints.dart';
