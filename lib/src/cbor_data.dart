@@ -122,6 +122,11 @@ class CborItemMetadata {
   CborFloatCtrlMetadata floatCtrlMetadata;
 }
 
+/// Simple pair of items for use in maps
+class CborPair {
+  CborItem key, value;
+}
+
 /// The item handle
 class CborItem {
   /// Discriminated by type
@@ -139,6 +144,7 @@ class CborItem {
   String stringData;
   double floatData;
   int intData;
+  List<CborPair>mapData;
 }
 
 /// Defines cbor_item#data structure for indefinite strings and bytestrings
@@ -155,11 +161,6 @@ class CborError {
 
   /// Description
   CborErrorCode code;
-}
-
-/// Simple pair of items for use in maps
-class CborPair {
-  CborItem key, value;
 }
 
 /// High-level decoding result
