@@ -149,6 +149,7 @@ void cborMarkNegint(CborItem item) {
 CborItem cborNewInt8() {
   CborItem item = new CborItem();
   item.refcount = 1;
+  item.metadata.intMetadata = new CborIntMetadata();
   item.metadata.intMetadata.width = CborIntWidth.cborInt8;
   item.type = CborType.cborTypeUint;
   return item;
@@ -162,6 +163,7 @@ CborItem cborNewInt8() {
 CborItem cborNewInt16() {
   CborItem item = new CborItem();
   item.refcount = 1;
+  item.metadata.intMetadata = new CborIntMetadata();
   item.metadata.intMetadata.width = CborIntWidth.cborInt16;
   item.type = CborType.cborTypeUint;
   return item;
@@ -175,6 +177,7 @@ CborItem cborNewInt16() {
 CborItem cborNewInt32() {
   CborItem item = new CborItem();
   item.refcount = 1;
+  item.metadata.intMetadata = new CborIntMetadata();
   item.metadata.intMetadata.width = CborIntWidth.cborInt32;
   item.type = CborType.cborTypeUint;
   return item;
@@ -188,6 +191,7 @@ CborItem cborNewInt32() {
 CborItem cborNewInt64() {
   CborItem item = new CborItem();
   item.refcount = 1;
+  item.metadata.intMetadata = new CborIntMetadata();
   item.metadata.intMetadata.width = CborIntWidth.cborInt64;
   item.type = CborType.cborTypeUint;
   return item;
