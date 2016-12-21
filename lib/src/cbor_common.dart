@@ -120,7 +120,7 @@ bool cborIsNull(CborItem item) {
 }
 
 /// Does this item represent `undefined`
-/// @param item[borrow] the item
+/// @param item the item
 /// @return Is the item (CBOR logical) undefined?
 bool cborIsUndef(CborItem item) {
   return cborIsaFloatCtrl(item) &&
