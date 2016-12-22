@@ -177,7 +177,8 @@ int cborEncodeHalf(double value, ByteData buffer, int bufferSize) {
   int res;
   int exp =
       (val & 0x7F800000) >> 23; /* 0b0111_1111_1000_0000_0000_0000_0000_0000 */
-  final int mant = val & 0x7FFFFF; /* 0b0000_0000_0111_1111_1111_1111_1111_1111 */
+  final int mant =
+  val & 0x7FFFFF; /* 0b0000_0000_0111_1111_1111_1111_1111_1111 */
   if (exp == 0xFF) {
     /* Infinity or NaNs */
     if (value != value)
@@ -196,4 +197,20 @@ int cborEncodeHalf(double value, ByteData buffer, int bufferSize) {
       res = (val & 0x80000000) >> 16 | ((exp + 15) << 10) | (mant >> 13);
   }
   return cborEncodeUint16(res, buffer, bufferSize, 0xE0);
+}
+
+int cborEncodeSingle(double value, ByteData buffer, int bufferSize) {
+  return cborEncodeUint32(value.toInt(), buffer, bufferSize, 0xE0);
+}
+
+int cborEncodeDouble(double value, ByteData buffer, int bufferSize) {
+  return cborEncodeUint64(value.toInt(), buffer, bufferSize, 0xE0);
+}
+
+int cborEncodeBreak(ByteData buffer, int bufferSize) {
+  return _cborEncodeByte(0xFF, buffer, bufferSize);
+}
+
+int cborEncodeCtrl(int value, ByteData buffer, int bufferSize) {
+  return cborEncodeUint8(value, buffer, bufferSize, 0xE0);
 }
