@@ -18,6 +18,7 @@ part 'src/cbor_arrays.dart';
 part 'src/cbor_floats_ctrls.dart';
 part 'src/cbor_bytestrings.dart';
 
+part 'src/cbor_serialization.dart';
 part 'src/cbor_encoding.dart';
 part 'src/cbor_tags.dart';
 part 'src/cbor_strings.dart';
