@@ -84,3 +84,31 @@ int cborSerializeBytestring(CborItem item, ByteData buffer, int bufferSize) {
     return 0;
   }
 }
+
+/// Serialize a String
+///
+/// @param item A string
+/// @param buffer Buffer to serialize to
+/// @param buffer_size Size of the \p buffer
+/// @return Length of the result. 0 on failure.
+int cborSerializeString(CborItem item, ByteData buffer, int bufferSize) {
+  assert(cborIsaString(item));
+  int written = 0;
+  final int length = cborStringLength(item);
+  if (cborStringIsDefinite(item)) {
+    written = cborEncodeStringStart(length, buffer, bufferSize);
+  } else if (cborStringIsIndefinite(item)) {
+    written = cborEncodeIndefStringStart(buffer, bufferSize);
+  } else {
+    return 0;
+  }
+  if ((written <= 0) && (bufferSize - written >= length)) {
+    final String bytes = cborStringHandle(item);
+    for (int count = 0; count < length; count++) {
+      buffer.setUint8(count + written, bytes);
+    }
+    return written + length;
+  } else {
+    return 0;
+  }
+}
