@@ -11,16 +11,3 @@ import 'dart:io';
 import 'dart:typed_data';
 
 part 'src/cbor.dart';
-part 'src/cbor_data.dart';
-part 'src/cbor_configuration.dart';
-part 'src/cbor_common.dart';
-part 'src/cbor_arrays.dart';
-part 'src/cbor_floats_ctrls.dart';
-part 'src/cbor_bytestrings.dart';
-
-part 'src/cbor_serialization.dart';
-part 'src/cbor_encoding.dart';
-part 'src/cbor_tags.dart';
-part 'src/cbor_strings.dart';
-part 'src/cbor_maps.dart';
-part 'src/cbor_ints.dart';
