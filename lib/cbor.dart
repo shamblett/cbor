@@ -8,6 +8,6 @@
 library cbor;
 
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:typed_data/typed_data.dart' as typed;
 
 part 'src/cbor.dart';
