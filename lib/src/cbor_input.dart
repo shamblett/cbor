@@ -9,17 +9,15 @@ part of cbor;
 
 class input {
   typed.Uint8Buffer _data;
-  int _size;
   int _offset;
 
   input(typed.Uint8Buffer data, int size) {
     this._data = data;
-    this._size = size;
     this._offset = 0;
   }
 
   bool hasBytes(int count) {
-    return _size - _offset >= count;
+    return _data.lengthInBytes - _offset >= count;
   }
 
   int getByte() {
