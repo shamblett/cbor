@@ -18,11 +18,11 @@ class OutputStatic extends Output {
     this._offset = 0;
   }
 
-  typed.Uint8Buffer getData() {
+  typed.Uint8Buffer data() {
     return _buffer;
   }
 
-  int getSize() {
+  int size() {
     return _offset;
   }
 
@@ -37,7 +37,7 @@ class OutputStatic extends Output {
 
   void putBytes(typed.Uint8Buffer data, int size) {
     if (_offset + size - 1 < _capacity) {
-      _buffer.add(data);
+      _buffer.addAll(data);
       _offset += size;
     } else {
       print(
