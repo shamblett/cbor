@@ -7,7 +7,7 @@
 
 part of cbor;
 
-abstract class output {
+abstract class Output {
   typed.Uint8Buffer data();
 
   int size();
