@@ -15,4 +15,5 @@ part 'src/cbor.dart';
 part 'src/cbor_output.dart';
 part 'src/cbor_input.dart';
 
+part 'src/cbor_output_dynamic.dart';
 part 'src/cbor_output_static.dart';

@@ -7,12 +7,13 @@
 
 part of cbor;
 
-class OutputStatic extends Output {
+class OutputDynamic extends Output {
   typed.Uint8Buffer _buffer;
   int _capacity;
   int _offset;
 
-  OutputStatic(int capacity) {
+
+  OutputDynamic([int capacity]) {
     if (capacity == null) capacity = 256;
     this._capacity = capacity;
     this._buffer = new typed.Uint8Buffer(capacity);
@@ -32,7 +33,7 @@ class OutputStatic extends Output {
       _buffer[_offset++] = value;
     } else {
       print(
-          "OutputStatic::putByte buffer overflow error offset is ${_offset}, capacity is ${_capacity}");
+          "OutputDynamic::putByte buffer overflow error offset is ${_offset}, capacity is ${_capacity}");
     }
   }
 
@@ -42,7 +43,7 @@ class OutputStatic extends Output {
       _offset += size;
     } else {
       print(
-          "OutputStatic::puBytes buffer overflow error offset is ${_offset}, capacity is ${_capacity} size is ${size}");
+          "OutputDynamic::puBytes buffer overflow error offset is ${_offset}, capacity is ${_capacity} size is ${size}");
     }
   }
 }
