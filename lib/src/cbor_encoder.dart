@@ -64,7 +64,7 @@ class Encoder {
     _out.putBytes(buff, buff.length);
   }
 
-  void writeString(typed.Uint8Buffer data, int size) {
+  void writeBuff(typed.Uint8Buffer data, int size) {
     _writeTypeValue(3, size);
     _out.putBytes(data, size);
   }
