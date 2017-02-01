@@ -15,6 +15,7 @@ part 'src/cbor.dart';
 part 'src/cbor_output.dart';
 part 'src/cbor_input.dart';
 
+part 'src/cbor_encoder.dart';
 part 'src/cbor_listener_debug.dart';
 part 'src/cbor_listener.dart';
 part 'src/cbor_output_dynamic.dart';
