@@ -7,7 +7,7 @@
 
 part of cbor;
 
-class input {
+class Input {
   typed.Uint8Buffer _data;
   int _offset;
 
