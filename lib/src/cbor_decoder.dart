@@ -28,11 +28,20 @@ class Decoder {
   DecoderState _state;
   int _currentLength;
 
-  Decoder(Input input) {}
+  Decoder(Input input) {
+    _input = input;
+    _state = DecoderState.STATE_TYPE;
+  }
 
-  Decoder.withListener(Input input, Listener listener) {}
+  Decoder.withListener(Input input, Listener listener) {
+    _input = input;
+    _state = DecoderState.STATE_TYPE;
+    _listener = listener;
+  }
 
   void run() {}
 
-  void setListener(Listener listenerInstance) {}
+  void setListener(Listener listenerInstance) {
+    _listener = listenerInstance;
+  }
 }
