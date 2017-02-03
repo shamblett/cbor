@@ -1,5 +1,9 @@
-// Copyright (c) 2016, steve. All rights reserved. Use of this source code
-// is governed by a BSD-style license that can be found in the LICENSE file.
+/*
+ * Package : Cbor
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 12/12/2016
+ * Copyright :  S.Hamblett
+ */
 
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
@@ -12,7 +16,7 @@ void main() {
       encoder.writeArray(9);
       {
         encoder.writeInt(123);
-        encoder.writeString("bar");
+        encoder.writeString("barrr");
         encoder.writeInt(321);
         encoder.writeInt(321);
         encoder.writeString("foo");
