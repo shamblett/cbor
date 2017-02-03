@@ -19,7 +19,7 @@ class OutputStatic extends Output {
     this._offset = 0;
   }
 
-  typed.Uint8Buffer data() {
+  typed.Uint8Buffer getData() {
     return _buffer;
   }
 

@@ -57,7 +57,7 @@ class Encoder {
 
   void writeString(String str) {
     _writeTypeValue(3, str.length);
-    typed.Uint8Buffer buff;
+    typed.Uint8Buffer buff = new typed.Uint8Buffer(str.length);
     str.codeUnits.forEach((unit) {
       buff.add(unit);
     });

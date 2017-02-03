@@ -11,7 +11,7 @@ class Input {
   typed.Uint8Buffer _data;
   int _offset;
 
-  input(typed.Uint8Buffer data, int size) {
+  Input(typed.Uint8Buffer data, int size) {
     this._data = data;
     this._offset = 0;
   }

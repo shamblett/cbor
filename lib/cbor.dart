@@ -7,14 +7,12 @@
 
 library cbor;
 
-import 'dart:io';
 import 'package:typed_data/typed_data.dart' as typed;
 
 part 'src/cbor.dart';
 
 part 'src/cbor_output.dart';
 part 'src/cbor_input.dart';
-
 part 'src/cbor_decoder.dart';
 part 'src/cbor_encoder.dart';
 part 'src/cbor_listener_debug.dart';

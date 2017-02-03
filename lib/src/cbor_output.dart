@@ -8,7 +8,7 @@
 part of cbor;
 
 abstract class Output {
-  typed.Uint8Buffer data();
+  typed.Uint8Buffer data;
 
   int size();
 
