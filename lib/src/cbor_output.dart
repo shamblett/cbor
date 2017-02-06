@@ -14,5 +14,5 @@ abstract class Output {
 
   void putByte(int value);
 
-  putBytes(typed.Uint8Buffer data, int size);
+  putBytes(typed.Uint8Buffer data);
 }

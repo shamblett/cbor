@@ -52,21 +52,21 @@ class Encoder {
 
   void writeBytes(typed.Uint8Buffer data, int size) {
     _writeTypeValue(2, size);
-    _out.putBytes(data, size);
+    _out.putBytes(data);
   }
 
   void writeString(String str) {
     _writeTypeValue(3, str.length);
-    typed.Uint8Buffer buff = new typed.Uint8Buffer(str.length);
+    typed.Uint8Buffer buff = new typed.Uint8Buffer();
     str.codeUnits.forEach((unit) {
       buff.add(unit);
     });
-    _out.putBytes(buff, buff.length);
+    _out.putBytes(buff);
   }
 
   void writeBuff(typed.Uint8Buffer data, int size) {
     _writeTypeValue(3, size);
-    _out.putBytes(data, size);
+    _out.putBytes(data);
   }
 
   void writeArray(int size) {

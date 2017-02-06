@@ -14,17 +14,15 @@ void main() {
       cbor.OutputDynamic output = new cbor.OutputDynamic();
       cbor.Encoder encoder = new cbor.Encoder(output);
       encoder.writeArray(9);
-      {
-        encoder.writeInt(123);
-        encoder.writeString("barrr");
-        encoder.writeInt(321);
-        encoder.writeInt(321);
-        encoder.writeString("foo");
-        encoder.writeBool(true);
-        encoder.writeBool(false);
-        encoder.writeNull();
-        encoder.writeUndefined();
-      }
+      encoder.writeInt(123);
+      encoder.writeString("barrr");
+      encoder.writeInt(321);
+      encoder.writeInt(322);
+      encoder.writeString("foo");
+      encoder.writeBool(true);
+      encoder.writeBool(false);
+      encoder.writeNull();
+      encoder.writeUndefined();
 
       // decoding
       cbor.Input input = new cbor.Input(output.getData(), output.size());

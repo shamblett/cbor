@@ -9,15 +9,9 @@ part of cbor;
 
 class OutputDynamic extends Output {
   typed.Uint8Buffer _buffer;
-  int _capacity;
-  int _offset;
 
-
-  OutputDynamic([int capacity]) {
-    if (capacity == null) capacity = 256;
-    this._capacity = capacity;
-    this._buffer = new typed.Uint8Buffer(capacity);
-    this._offset = 0;
+  OutputDynamic() {
+    this._buffer = new typed.Uint8Buffer();
   }
 
   typed.Uint8Buffer getData() {
@@ -25,25 +19,14 @@ class OutputDynamic extends Output {
   }
 
   int size() {
-    return _offset;
+    return _buffer.length;
   }
 
   void putByte(int value) {
-    if (_offset < _capacity) {
-      _buffer[_offset++] = value;
-    } else {
-      print(
-          "OutputDynamic::putByte buffer overflow error offset is ${_offset}, capacity is ${_capacity}");
-    }
+    _buffer.add(value);
   }
 
-  void putBytes(typed.Uint8Buffer data, int size) {
-    if (_offset + size - 1 < _capacity) {
-      _buffer.addAll(data);
-      _offset += size;
-    } else {
-      print(
-          "OutputDynamic::puBytes buffer overflow error offset is ${_offset}, capacity is ${_capacity} size is ${size}");
-    }
+  void putBytes(typed.Uint8Buffer data) {
+    _buffer.addAll(data);
   }
 }
