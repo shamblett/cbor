@@ -12,7 +12,7 @@ abstract class Listener {
 
   void onBytes(typed.Uint8Buffer data, int size);
 
-  void onString(String str);
+  void onString(typed.Uint8Buffer str);
 
   void onArray(int size);
 

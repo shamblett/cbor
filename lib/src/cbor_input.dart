@@ -52,8 +52,11 @@ class Input {
     return value;
   }
 
-  void getBytes(typed.Uint8Buffer to, int count) {
+  typed.Uint8Buffer getBytes(int count) {
+    List<int> tmp = _data.sublist(_offset, _offset + count);
+    typed.Uint8Buffer buff = new typed.Uint8Buffer();
+    buff.addAll(tmp);
     _offset += count;
-    to = _data;
+    return buff;
   }
 }

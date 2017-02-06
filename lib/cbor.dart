@@ -7,7 +7,9 @@
 
 library cbor;
 
+import 'dart:convert' as convertor;
 import 'package:typed_data/typed_data.dart' as typed;
+
 
 part 'src/cbor.dart';
 

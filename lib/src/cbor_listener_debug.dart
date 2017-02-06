@@ -16,8 +16,10 @@ class ListenerDebug extends Listener {
     print("Bytes with size: ${size}");
   }
 
-  void onString(String str) {
-    print("String ${str}");
+  void onString(typed.Uint8Buffer str) {
+    convertor.AsciiDecoder decoder = new convertor.AsciiDecoder();
+    String tmp = decoder.convert(str);
+    print("String ${tmp}");
   }
 
   void onArray(int size) {

@@ -328,7 +328,7 @@ class Decoder {
       } else if (_state == DecoderState.STATE_BYTES_DATA) {
         if (_input.hasBytes(_currentLength)) {
           typed.Uint8Buffer data;
-          _input.getBytes(data, _currentLength);
+          data = _input.getBytes(_currentLength);
           _state = DecoderState.STATE_TYPE;
           _listener.onBytes(data, _currentLength);
         } else
@@ -358,9 +358,9 @@ class Decoder {
       } else if (_state == DecoderState.STATE_STRING_DATA) {
         if (_input.hasBytes(_currentLength)) {
           typed.Uint8Buffer data;
-          _input.getBytes(data, _currentLength);
+          data = _input.getBytes(_currentLength);
           _state = DecoderState.STATE_TYPE;
-          _listener.onString(data.toString());
+          _listener.onString(data);
         } else
           break;
       } else if (_state == DecoderState.STATE_ARRAY) {
