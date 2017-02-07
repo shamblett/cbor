@@ -15,6 +15,7 @@ void main() {
       final cbor.Encoder encoder = new cbor.Encoder(output);
       encoder.writeArray(9);
       encoder.writeInt(123);
+      encoder.writeInt(-457);
       encoder.writeString("barrr");
       encoder.writeInt(321);
       encoder.writeInt(322);

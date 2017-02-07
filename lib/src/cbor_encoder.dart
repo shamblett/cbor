@@ -45,7 +45,7 @@ class Encoder {
 
   void writeInt(int value) {
     if (value < 0) {
-      _writeTypeValue(1, -(value + 1));
+      _writeTypeValue(1, -(value));
     } else {
       _writeTypeValue(0, value);
     }
