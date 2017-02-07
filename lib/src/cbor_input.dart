@@ -25,13 +25,13 @@ class Input {
   }
 
   int getShort() {
-    int value = (_data[_offset] << 8 | _data[_offset + 1]);
+    final int value = (_data[_offset] << 8 | _data[_offset + 1]);
     _offset += 2;
     return value;
   }
 
   int getInt() {
-    int value = (_data[_offset] << 24) |
+    final int value = (_data[_offset] << 24) |
     (_data[_offset + 1] << 16) |
     (_data[_offset + 2] << 8) |
     (_data[_offset + 3]);
@@ -40,7 +40,7 @@ class Input {
   }
 
   int getLong() {
-    int value = (_data[_offset] << 56) |
+    final int value = (_data[_offset] << 56) |
     (_data[_offset + 1] << 48) |
     (_data[_offset + 2] << 40) |
     (_data[_offset + 3] << 32) |
@@ -53,8 +53,8 @@ class Input {
   }
 
   typed.Uint8Buffer getBytes(int count) {
-    List<int> tmp = _data.sublist(_offset, _offset + count);
-    typed.Uint8Buffer buff = new typed.Uint8Buffer();
+    final List<int> tmp = _data.sublist(_offset, _offset + count);
+    final typed.Uint8Buffer buff = new typed.Uint8Buffer();
     buff.addAll(tmp);
     _offset += count;
     return buff;

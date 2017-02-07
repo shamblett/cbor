@@ -11,8 +11,8 @@ import 'package:test/test.dart';
 void main() {
   group('Original tests', () {
     test('Encode/Decode', () {
-      cbor.OutputDynamic output = new cbor.OutputDynamic();
-      cbor.Encoder encoder = new cbor.Encoder(output);
+      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      final cbor.Encoder encoder = new cbor.Encoder(output);
       encoder.writeArray(9);
       encoder.writeInt(123);
       encoder.writeString("barrr");
@@ -25,9 +25,10 @@ void main() {
       encoder.writeUndefined();
 
       // decoding
-      cbor.Input input = new cbor.Input(output.getData(), output.size());
-      cbor.ListenerDebug listener = new cbor.ListenerDebug();
-      cbor.Decoder decoder = new cbor.Decoder.withListener(input, listener);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.ListenerDebug listener = new cbor.ListenerDebug();
+      final cbor.Decoder decoder = new cbor.Decoder.withListener(
+          input, listener);
       decoder.run();
     });
   });

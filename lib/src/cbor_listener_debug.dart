@@ -9,37 +9,37 @@ part of cbor;
 
 class ListenerDebug extends Listener {
   void onInteger(int value) {
-    print("Integer ${value}");
+    print("Integer $value");
   }
 
   void onBytes(typed.Uint8Buffer data, int size) {
-    print("Bytes with size: ${size}");
+    print("Bytes with size: $size");
   }
 
   void onString(typed.Uint8Buffer str) {
-    convertor.AsciiDecoder decoder = new convertor.AsciiDecoder();
-    String tmp = decoder.convert(str);
-    print("String ${tmp}");
+    final convertor.AsciiDecoder decoder = new convertor.AsciiDecoder();
+    final String tmp = decoder.convert(str);
+    print("String $tmp");
   }
 
   void onArray(int size) {
-    print("Array size ${size}");
+    print("Array size $size");
   }
 
   void onMap(int size) {
-    print("Map size ${size}");
+    print("Map size $size");
   }
 
   void onTag(int tag) {
-    print("Tag ${tag})");
+    print("Tag $tag)");
   }
 
   void onSpecial(int code) {
-    print("Code ${code}");
+    print("Code $code");
   }
 
   void onBool(bool state) {
-    print("State ${state}");
+    print("State $state");
   }
 
   void onNull() {
@@ -51,18 +51,18 @@ class ListenerDebug extends Listener {
   }
 
   void onError(String error) {
-    print("Error ${error}");
+    print("Error $error");
   }
 
   void onExtraInteger(int value, int sign) {
-    print("Extra Integer value ${value}, Sign ${sign}");
+    print("Extra Integer value $value, Sign $sign");
   }
 
   void onExtraTag(int tag) {
-    print("Extra Tag ${tag}");
+    print("Extra Tag $tag");
   }
 
   void onExtraSpecial(int tag) {
-    print("Extra Special ${tag}");
+    print("Extra Special $tag");
   }
 }

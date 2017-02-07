@@ -15,18 +15,19 @@ class Encoder {
   }
 
   void _writeTypeValue(int majorType, int value) {
-    majorType <<= 5;
+    int type = majorType;
+    type <<= 5;
     if (value < 24) {
-      _out.putByte((majorType | value));
+      _out.putByte((type | value));
     } else if (value < 256) {
-      _out.putByte((majorType | 24));
+      _out.putByte((type | 24));
       _out.putByte(value);
     } else if (value < 65536) {
-      _out.putByte((majorType | 25));
+      _out.putByte((type | 25));
       _out.putByte((value >> 8));
       _out.putByte(value);
     } else {
-      _out.putByte((majorType | 26));
+      _out.putByte((type | 26));
       _out.putByte((value >> 24));
       _out.putByte((value >> 16));
       _out.putByte((value >> 8));
@@ -57,8 +58,8 @@ class Encoder {
 
   void writeString(String str) {
     _writeTypeValue(3, str.length);
-    typed.Uint8Buffer buff = new typed.Uint8Buffer();
-    str.codeUnits.forEach((unit) {
+    final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+    str.codeUnits.forEach((int unit) {
       buff.add(unit);
     });
     _out.putBytes(buff);
