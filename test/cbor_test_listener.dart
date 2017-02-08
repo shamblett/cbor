@@ -67,17 +67,21 @@ class ListenerTest extends cbor.Listener {
 
   void onError(String error) {
     print("Error $error");
+    lastValue = error;
   }
 
   void onExtraInteger(int value, int sign) {
     print("Extra Integer value $value, Sign $sign");
+    lastValue = value;
   }
 
   void onExtraTag(int tag) {
     print("Extra Tag $tag");
+    lastValue = tag;
   }
 
   void onExtraSpecial(int tag) {
     print("Extra Special $tag");
+    lastValue = tag;
   }
 }
