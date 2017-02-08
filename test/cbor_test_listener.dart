@@ -12,6 +12,8 @@ import 'package:typed_data/typed_data.dart' as typed;
 class ListenerTest extends cbor.Listener {
 
   var lastValue;
+  int lastTag;
+  int lastByteCount;
 
   void onInteger(int value) {
     print("Integer $value");
@@ -21,6 +23,7 @@ class ListenerTest extends cbor.Listener {
   void onBytes(typed.Uint8Buffer data, int size) {
     print("Bytes with size: $size");
     lastValue = data;
+    lastByteCount = size;
   }
 
   void onString(typed.Uint8Buffer str) {
@@ -43,6 +46,7 @@ class ListenerTest extends cbor.Listener {
   void onTag(int tag) {
     print("Tag $tag");
     lastValue = tag;
+    lastTag = tag;
   }
 
   void onSpecial(int code) {
@@ -82,6 +86,7 @@ class ListenerTest extends cbor.Listener {
   void onExtraTag(int tag) {
     print("Extra Tag $tag");
     lastValue = tag;
+    lastTag = tag;
   }
 
   void onExtraSpecial(int tag) {
