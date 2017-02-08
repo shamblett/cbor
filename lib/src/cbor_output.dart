@@ -10,6 +10,8 @@ part of cbor;
 abstract class Output {
   typed.Uint8Buffer data;
 
+  void clear();
+
   int size();
 
   void putByte(int value);

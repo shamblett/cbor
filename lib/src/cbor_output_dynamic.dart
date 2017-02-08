@@ -14,6 +14,10 @@ class OutputDynamic extends Output {
     this._buffer = new typed.Uint8Buffer();
   }
 
+  void clear() {
+    _buffer.clear();
+  }
+
   typed.Uint8Buffer getData() {
     return _buffer;
   }

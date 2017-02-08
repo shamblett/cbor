@@ -14,6 +14,10 @@ class Encoder {
     this._out = out;
   }
 
+  void clear() {
+    _out.clear();
+  }
+
   void _writeTypeValue(int majorType, int value) {
     int type = majorType;
     type <<= 5;
