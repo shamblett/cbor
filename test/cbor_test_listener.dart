@@ -41,7 +41,7 @@ class ListenerTest extends cbor.Listener {
   }
 
   void onTag(int tag) {
-    print("Tag $tag)");
+    print("Tag $tag");
     lastValue = tag;
   }
 
