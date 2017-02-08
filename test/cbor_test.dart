@@ -11,7 +11,7 @@ import 'cbor_test_listener.dart';
 
 void main() {
   group('Original C++ tests', () {
-    test('Encode/Decode confidence', () {
+    test('Encode/Decode confidence -> ', () {
       // Encoding
       final cbor.OutputDynamic output = new cbor.OutputDynamic();
       final cbor.Encoder encoder = new cbor.Encoder(output);
@@ -36,7 +36,7 @@ void main() {
     });
   });
 
-  group('RFC Diagnostics decoder tests', () {
+  group('RFC Diagnostics decoder tests -> ', () {
     test('0', () {
       final cbor.OutputDynamic output = new cbor.OutputDynamic();
       final List<int> values = [0x0];
@@ -237,7 +237,7 @@ void main() {
       expect(listener.lastValue.toString(), "[1, 0, 0, 0, 0, 0, 0, 0, 0]");
     });
 
-    test('minus 18446744073709551616', () {
+    test('-18446744073709551616', () {
       final cbor.OutputDynamic output = new cbor.OutputDynamic();
       final List<int> values = [
         0x3b,
