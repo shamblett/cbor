@@ -164,5 +164,51 @@ void main() {
     });
 
 
+    test('1000000000000', () {
+      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      final List<int> values = [
+        0x1b, 0x00, 0x00, 0x00, 0xe8, 0xd4, 0xa5, 0x10, 0x00];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final ListenerTest listener = new ListenerTest();
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, 1000000000000);
+    });
+
+    test('18446744073709551615', () {
+      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      final List<int> values = [0x1b, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final ListenerTest listener = new ListenerTest();
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, 18446744073709551615);
+    });
+
+    test('18446744073709551616', () {
+      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      final List<int> values = [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final ListenerTest listener = new ListenerTest();
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, 18446744073709551616);
+    });
   });
 }
