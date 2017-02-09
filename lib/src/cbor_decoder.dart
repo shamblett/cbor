@@ -280,11 +280,11 @@ class Decoder {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
-              _listener.onInteger(-_input.getByte());
+              _listener.onInteger(-1 - _input.getByte());
               _state = DecoderState.stateType;
               break;
             case 2:
-              _listener.onInteger(-_input.getShort());
+              _listener.onInteger(-1 - _input.getShort());
               _state = DecoderState.stateType;
               break;
             case 4:
@@ -294,7 +294,7 @@ class Decoder {
               } else if (temp >= 2 ^ 31) {
                 _listener.onInteger(-2 ^ 31);
               } else {
-                _listener.onExtraInteger(temp, -1);
+                _listener.onExtraInteger((-1 - temp), -1);
               }
               _state = DecoderState.stateType;
               break;

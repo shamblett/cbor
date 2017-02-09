@@ -25,7 +25,10 @@ class Input {
   }
 
   int getShort() {
-    final int value = (_data[_offset] << 8 | _data[_offset + 1]);
+    int value = (_data[_offset] << 8 | _data[_offset + 1]);
+    if (value >= 32768 - 1) {
+      value = -(value - 32768);
+    }
     _offset += 2;
     return value;
   }
