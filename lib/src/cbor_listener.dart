@@ -22,6 +22,8 @@ abstract class Listener {
 
   void onSpecial(int code);
 
+  void onSpecialFloat(double value);
+
   void onBool(bool state);
 
   void onNull();

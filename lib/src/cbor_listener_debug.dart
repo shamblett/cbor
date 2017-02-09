@@ -38,6 +38,10 @@ class ListenerDebug extends Listener {
     print("Code $code");
   }
 
+  void onSpecialFloat(double value) {
+    print("Float Value $value");
+  }
+
   void onBool(bool state) {
     print("State $state");
   }

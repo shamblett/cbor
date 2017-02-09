@@ -54,6 +54,11 @@ class ListenerTest extends cbor.Listener {
     lastValue = code;
   }
 
+  void onSpecialFloat(double value) {
+    print("Float Value $value");
+    lastValue = value;
+  }
+
   void onBool(bool state) {
     print("State $state");
     lastValue = state;

@@ -26,9 +26,6 @@ class Input {
 
   int getShort() {
     int value = (_data[_offset] << 8 | _data[_offset + 1]);
-    if (value >= 32768 - 1) {
-      value = -(value - 32768);
-    }
     _offset += 2;
     return value;
   }
@@ -61,5 +58,22 @@ class Input {
     buff.addAll(tmp);
     _offset += count;
     return buff;
+  }
+
+  double getHalfFloat(typed.Uint8Buffer buff) {
+    buff.add(0);
+    buff.add(0);
+    final ByteData bdata = new ByteData.view(buff.buffer);
+    return bdata.getFloat32(0) * 128;
+  }
+
+  double getSingleFloat(typed.Uint8Buffer buff) {
+    final ByteData bdata = new ByteData.view(buff.buffer);
+    return bdata.getFloat32(0);
+  }
+
+  double getDoubleFloat(typed.Uint8Buffer buff) {
+    final ByteData bdata = new ByteData.view(buff.buffer);
+    return bdata.getFloat64(0);
   }
 }

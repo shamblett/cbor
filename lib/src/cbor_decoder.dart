@@ -438,15 +438,21 @@ class Decoder {
               _state = DecoderState.stateType;
               break;
             case 2:
-              _listener.onSpecial(_input.getShort());
+              typed.Uint8Buffer buff = _input.getBytes(_currentLength);
+              double fval = _input.getHalfFloat(buff);
+              _listener.onSpecialFloat(fval);
               _state = DecoderState.stateType;
               break;
             case 4:
-              _listener.onSpecial(_input.getInt());
+              typed.Uint8Buffer buff = _input.getBytes(_currentLength);
+              double fval = _input.getSingleFloat(buff);
+              _listener.onSpecialFloat(fval);
               _state = DecoderState.stateType;
               break;
             case 8:
-              _listener.onExtraSpecial(_input.getLong());
+              typed.Uint8Buffer buff = _input.getBytes(_currentLength);
+              double fval = _input.getDoubleFloat(buff);
+              _listener.onSpecialFloat(fval);
               _state = DecoderState.stateType;
               break;
           }
