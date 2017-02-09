@@ -438,8 +438,8 @@ class Decoder {
               _state = DecoderState.stateType;
               break;
             case 2:
-              typed.Uint8Buffer buff = _input.getBytes(_currentLength);
-              double fval = _input.getHalfFloat(buff);
+              int val = _input.getShort();
+              double fval = _input.getHalfFloat(val);
               _listener.onSpecialFloat(fval);
               _state = DecoderState.stateType;
               break;

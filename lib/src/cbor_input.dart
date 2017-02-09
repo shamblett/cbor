@@ -60,11 +60,27 @@ class Input {
     return buff;
   }
 
-  double getHalfFloat(typed.Uint8Buffer buff) {
-    buff.add(0);
-    buff.add(0);
+  double getHalfFloat(int val) {
+    int t1;
+    int t2;
+    int t3;
+    t1 = val & 0x7fff; // Non-sign bits
+    t2 = val & 0x8000; // Sign bit
+    t3 = val & 0x7c00; // Exponent
+    t1 <<= 13; // Align mantissa on MSB
+    t2 <<= 16; // Shift sign bit into position
+    t1 += 0x38000000; // Adjust bias
+    t1 = (t3 == 0 ? 0 : t1); // Denormalise as zero
+    t1 |= t2; // re-insert sign bit
+    final List<int> tmp = new List<int>();
+    tmp.add((t1 >> 24) & 0xff);
+    tmp.add((t1 >> 16) & 0xff);
+    tmp.add((t1 >> 8) & 0xff);
+    tmp.add(t1 & 0xff);
+    final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+    buff.addAll(tmp);
     final ByteData bdata = new ByteData.view(buff.buffer);
-    return bdata.getFloat32(0) * 128;
+    return bdata.getFloat32(0);
   }
 
   double getSingleFloat(typed.Uint8Buffer buff) {
