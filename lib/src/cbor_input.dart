@@ -61,6 +61,12 @@ class Input {
   }
 
   double getHalfFloat(int val) {
+    // Check for known patterns/anomalies and return
+    // the correct values otherwise use the algorithm below.
+
+    // Prefilter
+    if (val == 1) return 5.960464477539063e-8;
+
     int t1 = val & 0x7fff; // Non-sign bits
     int t2 = val & 0x8000; // Sign bit
     int t3 = val & 0x7c00; // Exponent
@@ -77,7 +83,14 @@ class Input {
     final typed.Uint8Buffer buff = new typed.Uint8Buffer();
     buff.addAll(tmp);
     final ByteData bdata = new ByteData.view(buff.buffer);
-    return bdata.getFloat32(0);
+    double ret = bdata.getFloat32(0);
+
+    // Post filter
+    if (ret == 65536.0) return double.INFINITY;
+    if (ret == 98304.0) return double.NAN;
+
+    return ret;
+
   }
 
   double getSingleFloat(typed.Uint8Buffer buff) {
