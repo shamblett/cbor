@@ -61,12 +61,9 @@ class Input {
   }
 
   double getHalfFloat(int val) {
-    int t1;
-    int t2;
-    int t3;
-    t1 = val & 0x7fff; // Non-sign bits
-    t2 = val & 0x8000; // Sign bit
-    t3 = val & 0x7c00; // Exponent
+    int t1 = val & 0x7fff; // Non-sign bits
+    int t2 = val & 0x8000; // Sign bit
+    int t3 = val & 0x7c00; // Exponent
     t1 <<= 13; // Align mantissa on MSB
     t2 <<= 16; // Shift sign bit into position
     t1 += 0x38000000; // Adjust bias
