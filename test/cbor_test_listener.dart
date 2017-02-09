@@ -76,11 +76,7 @@ class ListenerTest extends cbor.Listener {
 
   void onExtraInteger(int value, int sign) {
     print("Extra Integer value $value, Sign $sign");
-    if (sign == -1) {
-      lastValue = -1 - value;
-    } else {
-      lastValue = value;
-    }
+    lastValue = value;
   }
 
   void onExtraTag(int tag) {

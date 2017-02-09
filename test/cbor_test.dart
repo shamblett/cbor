@@ -37,14 +37,17 @@ void main() {
   });
 
   group('RFC Diagnostics decoder tests -> ', () {
+    // Common initialisation
+    final cbor.OutputDynamic output = new cbor.OutputDynamic();
+    final ListenerTest listener = new ListenerTest();
+
     test('0', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [0x0];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -52,13 +55,12 @@ void main() {
     });
 
     test('1', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [0x1];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -66,7 +68,7 @@ void main() {
     });
 
     test('10', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [0x0a];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -80,7 +82,7 @@ void main() {
     });
 
     test('23', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [0x17];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -94,7 +96,7 @@ void main() {
     });
 
     test('24', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [0x18, 0x18];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -108,7 +110,7 @@ void main() {
     });
 
     test('25', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [0x18, 0x19];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -122,7 +124,7 @@ void main() {
     });
 
     test('100', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [0x18, 0x64];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -136,7 +138,7 @@ void main() {
     });
 
     test('1000', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [0x19, 0x03, 0xe8];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -150,7 +152,7 @@ void main() {
     });
 
     test('1000000', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [0x1a, 0x00, 0x0f, 0x42, 0x40];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -164,7 +166,7 @@ void main() {
     });
 
     test('1000000000000', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [
         0x1b,
         0x00,
@@ -188,7 +190,7 @@ void main() {
     });
 
     test('18446744073709551615', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [
         0x1b,
         0xff,
@@ -212,7 +214,7 @@ void main() {
     });
 
     test('18446744073709551616', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [
         0xc2,
         0x49,
@@ -240,7 +242,7 @@ void main() {
     });
 
     test('-18446744073709551616', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [
         0x3b,
         0xff,
@@ -264,7 +266,7 @@ void main() {
     });
 
     test('18446744073709551617', () {
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      output.clear();
       final List<int> values = [
         0xc3,
         0x49,

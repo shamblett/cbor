@@ -299,7 +299,7 @@ class Decoder {
               _state = DecoderState.stateType;
               break;
             case 8:
-              _listener.onExtraInteger(_input.getLong(), -1);
+              _listener.onExtraInteger((-1 - _input.getLong()), -1);
               break;
           }
         } else
