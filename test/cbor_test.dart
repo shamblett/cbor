@@ -546,11 +546,7 @@ void main() {
 
     test('Infinity half', () {
       output.clear();
-      final List<int> values = [
-        0xf9,
-        0x7c,
-        0x00
-      ];
+      final List<int> values = [0xf9, 0x7c, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
@@ -563,11 +559,7 @@ void main() {
 
     test('NaN half', () {
       output.clear();
-      final List<int> values = [
-        0xf9,
-        0x7e,
-        0x00
-      ];
+      final List<int> values = [0xf9, 0x7e, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
@@ -580,11 +572,7 @@ void main() {
 
     test('-Infinity half', () {
       output.clear();
-      final List<int> values = [
-        0xf9,
-        0xfc,
-        0x00
-      ];
+      final List<int> values = [0xf9, 0xfc, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
@@ -597,13 +585,7 @@ void main() {
 
     test('Infinity single', () {
       output.clear();
-      final List<int> values = [
-        0xfa,
-        0x7f,
-        0x80,
-        0x00,
-        0x00
-      ];
+      final List<int> values = [0xfa, 0x7f, 0x80, 0x00, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
@@ -616,13 +598,7 @@ void main() {
 
     test('NaN single', () {
       output.clear();
-      final List<int> values = [
-        0xfa,
-        0x7f,
-        0xc0,
-        0x00,
-        0x00
-      ];
+      final List<int> values = [0xfa, 0x7f, 0xc0, 0x00, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
@@ -812,5 +788,68 @@ void main() {
       expect(listener.lastValue, 255);
     });
 
+    test('Tag (0)', () {
+      output.clear();
+      final List<int> values = [
+        0xc0,
+        0x74,
+        0x32,
+        0x30,
+        0x31,
+        0x33,
+        0x2d,
+        0x30,
+        0x33,
+        0x2d,
+        0x32,
+        0x31,
+        0x54,
+        0x32,
+        0x30,
+        0x3a,
+        0x30,
+        0x34,
+        0x3a,
+        0x30,
+        0x30,
+        0x5a
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, "2013-03-21T20:04:00Z");
+    });
+
+    test('Tag (1) Int', () {
+      output.clear();
+      final List<int> values = [0xc1, 0x1a, 0x51, 0x4b, 0x67, 0xb0];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, 1363896240);
+    });
+
+    test('Tag (1) Float', () {
+      output.clear();
+      final List<int> values = [0xc1, 0xfb, 0x41, 0xd4, 0x52, 0xd9,
+      0xec, 0x20, 0x00, 0x00
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, 1363896240.5);
+    });
   });
 }
