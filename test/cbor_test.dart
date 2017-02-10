@@ -5,6 +5,7 @@
  * Copyright :  S.Hamblett
  */
 import 'package:typed_data/typed_data.dart' as typed;
+import 'dart:convert' as convertor;
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'cbor_test_listener.dart';
@@ -36,7 +37,7 @@ void main() {
     });
   });
 
-  group('RFC Diagnostics decoder tests -> ', () {
+  group('RFC Appendix A Diagnostics decoder tests -> ', () {
     // Common initialisation
     final cbor.OutputDynamic output = new cbor.OutputDynamic();
     final ListenerTest listener = new ListenerTest();
@@ -788,7 +789,7 @@ void main() {
       expect(listener.lastValue, 255);
     });
 
-    test('Tag (0)', () {
+    test('Tag (0) Date Time', () {
       output.clear();
       final List<int> values = [
         0xc0,
@@ -822,6 +823,7 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, "2013-03-21T20:04:00Z");
+      expect(listener.lastTag, 0);
     });
 
     test('Tag (1) Int', () {
@@ -835,12 +837,22 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, 1363896240);
+      expect(listener.lastTag, 1);
     });
 
     test('Tag (1) Float', () {
       output.clear();
-      final List<int> values = [0xc1, 0xfb, 0x41, 0xd4, 0x52, 0xd9,
-      0xec, 0x20, 0x00, 0x00
+      final List<int> values = [
+        0xc1,
+        0xfb,
+        0x41,
+        0xd4,
+        0x52,
+        0xd9,
+        0xec,
+        0x20,
+        0x00,
+        0x00
       ];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -850,6 +862,195 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, 1363896240.5);
+      expect(listener.lastTag, 1);
+    });
+
+    test('Tag (23) multiple', () {
+      output.clear();
+      final List<int> values = [0xd7, 0x44, 0x01, 0x02, 0x03, 0x04];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, [1, 2, 3, 4]);
+      expect(listener.lastTag, 23);
+      expect(listener.lastByteCount, 4);
+    });
+
+    test('Tag (24) multiple', () {
+      output.clear();
+      final List<int> values = [0xd8, 0x18, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, [100, 73, 69, 84, 70]);
+      expect(listener.lastByteCount, 5);
+      expect(listener.lastTag, 24);
+    });
+
+    test('Tag (32) URI', () {
+      output.clear();
+      final List<int> values = [
+        0xd8,
+        0x20,
+        0x76,
+        0x68,
+        0x74,
+        0x74,
+        0x70,
+        0x3a,
+        0x2f,
+        0x2f,
+        0x77,
+        0x77,
+        0x77,
+        0x2e,
+        0x65,
+        0x78,
+        0x61,
+        0x6d,
+        0x70,
+        0x6c,
+        0x65,
+        0x2e,
+        0x63,
+        0x6f,
+        0x6d
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, "http://www.example.com");
+      expect(listener.lastTag, 32);
+    });
+
+    test('Empty single quotes', () {
+      output.clear();
+      final List<int> values = [0x40];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, []);
+    });
+
+    test('4 bytes', () {
+      output.clear();
+      final List<int> values = [0x44, 0x01, 0x02, 0x03, 0x04];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, [01, 02, 03, 04]);
+      expect(listener.lastByteCount, 4);
+    });
+
+    test('Empty double quotes', () {
+      output.clear();
+      final List<int> values = [0x60];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, "");
+    });
+
+    test('a', () {
+      output.clear();
+      final List<int> values = [0x61, 0x61];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, "a");
+    });
+
+    test('IETF', () {
+      output.clear();
+      final List<int> values = [0x64, 0x49, 0x45, 0x54, 0x46];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, "IETF");
+    });
+
+    test('Quoted backslash', () {
+      output.clear();
+      final List<int> values = [0x62, 0x22, 0x5c];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, "\"\\");
+    });
+
+    test('Unicode ü', () {
+      output.clear();
+      final List<int> values = [0x62, 0xc3, 0xbc];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, 'ü');
+    });
+
+    test('Unicode 水', () {
+      output.clear();
+      final List<int> values = [0x63, 0xe6, 0xb0, 0xb4];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, '水');
+    });
+
+    test('Unicode 𐅑', () {
+      output.clear();
+      final List<int> values = [0x64, 0xf0, 0x90, 0x85, 0x91];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, '𐅑');
     });
   });
 }
