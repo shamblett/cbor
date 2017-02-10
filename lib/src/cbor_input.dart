@@ -87,6 +87,7 @@ class Input {
 
     // Post filter
     if (ret == 65536.0) return double.INFINITY;
+    if (ret == -65536.0) return -(double.INFINITY);
     if (ret == 98304.0) return double.NAN;
 
     return ret;

@@ -544,7 +544,7 @@ void main() {
       expect(listener.lastValue, -4.1);
     });
 
-    test('Infinity', () {
+    test('Infinity half', () {
       output.clear();
       final List<int> values = [
         0xf9,
@@ -561,7 +561,7 @@ void main() {
       expect(listener.lastValue, double.INFINITY);
     });
 
-    test('NaN', () {
+    test('NaN half', () {
       output.clear();
       final List<int> values = [
         0xf9,
@@ -575,7 +575,150 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, double.NAN);
+      expect(listener.lastValue, isNaN);
+    });
+
+    test('-Infinity half', () {
+      output.clear();
+      final List<int> values = [
+        0xf9,
+        0xfc,
+        0x00
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, -(double.INFINITY));
+    });
+
+    test('Infinity single', () {
+      output.clear();
+      final List<int> values = [
+        0xfa,
+        0x7f,
+        0x80,
+        0x00,
+        0x00
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, double.INFINITY);
+    });
+
+    test('NaN single', () {
+      output.clear();
+      final List<int> values = [
+        0xfa,
+        0x7f,
+        0xc0,
+        0x00,
+        0x00
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, isNaN);
+    });
+
+    test('-Infinity single', () {
+      output.clear();
+      final List<int> values = [
+        0xfa,
+        0xff,
+        0x80,
+        0x00,
+        0x00,
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, -(double.INFINITY));
+    });
+
+    test('Infinity double', () {
+      output.clear();
+      final List<int> values = [
+        0xfb,
+        0x7f,
+        0xf0,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, double.INFINITY);
+    });
+
+    test('NaN double', () {
+      output.clear();
+      final List<int> values = [
+        0xfb,
+        0x7f,
+        0xf8,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, isNaN);
+    });
+
+    test('-Infinity double', () {
+      output.clear();
+      final List<int> values = [
+        0xfb,
+        0xff,
+        0xf0,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, -(double.INFINITY));
     });
 
   });
