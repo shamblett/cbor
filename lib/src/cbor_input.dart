@@ -25,7 +25,7 @@ class Input {
   }
 
   int getShort() {
-    int value = (_data[_offset] << 8 | _data[_offset + 1]);
+    final int value = (_data[_offset] << 8 | _data[_offset + 1]);
     _offset += 2;
     return value;
   }
@@ -69,7 +69,7 @@ class Input {
 
     int t1 = val & 0x7fff; // Non-sign bits
     int t2 = val & 0x8000; // Sign bit
-    int t3 = val & 0x7c00; // Exponent
+    final int t3 = val & 0x7c00; // Exponent
     t1 <<= 13; // Align mantissa on MSB
     t2 <<= 16; // Shift sign bit into position
     t1 += 0x38000000; // Adjust bias
@@ -83,7 +83,7 @@ class Input {
     final typed.Uint8Buffer buff = new typed.Uint8Buffer();
     buff.addAll(tmp);
     final ByteData bdata = new ByteData.view(buff.buffer);
-    double ret = bdata.getFloat32(0);
+    final double ret = bdata.getFloat32(0);
 
     // Post filter
     if (ret == 65536.0) return double.INFINITY;

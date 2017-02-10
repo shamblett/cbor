@@ -5,7 +5,6 @@
  * Copyright :  S.Hamblett
  */
 import 'package:typed_data/typed_data.dart' as typed;
-import 'dart:convert' as convertor;
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'cbor_test_listener.dart';
@@ -1051,6 +1050,99 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, '𐅑');
+    });
+
+    test('Array empty', () {
+      output.clear();
+      final List<int> values = [0x80];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, []);
+    });
+
+    test('Array 1,2,3', () {
+      output.clear();
+      final List<int> values = [0x83, 0x01, 0x02, 0x03];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, [1, 2, 3]);
+    });
+
+    test('Array 1,2,3...25', () {
+      output.clear();
+      final List<int> values = [
+        0x98,
+        0x19,
+        0x01,
+        0x02,
+        0x03,
+        0x04,
+        0x05,
+        0x06,
+        0x07,
+        0x08,
+        0x09,
+        0x0a,
+        0x0b,
+        0x0c,
+        0x0d,
+        0x0e,
+        0x0f,
+        0x10,
+        0x11,
+        0x12,
+        0x13,
+        0x14,
+        0x15,
+        0x16,
+        0x17,
+        0x18,
+        0x19
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ]);
     });
   });
 }

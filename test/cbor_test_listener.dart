@@ -17,7 +17,11 @@ class ListenerTest extends cbor.Listener {
 
   void onInteger(int value) {
     print("Integer $value");
-    lastValue = value;
+    if (lastValue is List) {
+      lastValue.add(value);
+    } else {
+      lastValue = value;
+    }
   }
 
   void onBytes(typed.Uint8Buffer data, int size) {
@@ -35,7 +39,12 @@ class ListenerTest extends cbor.Listener {
 
   void onArray(int size) {
     print("Array size $size");
-    lastValue = size;
+    lastValue = new List<int>();
+  }
+
+  void onArrayElement(int value) {
+    print("Array element $value");
+    lastValue.add(value);
   }
 
   void onMap(int size) {

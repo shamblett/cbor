@@ -25,8 +25,8 @@ enum DecoderState {
 class Decoder {
   Listener _listener;
   Input _input;
-  DecoderState _state;
-  int _currentLength;
+  DecoderState _state = DecoderState.stateError;
+  int _currentLength = 0;
 
   Decoder(Input input) {
     _input = input;
@@ -149,6 +149,7 @@ class Decoder {
             case 4: // array
               if (minorType < 24) {
                 _listener.onArray(minorType);
+                _state = DecoderState.stateArray;
               } else if (minorType == 24) {
                 _state = DecoderState.stateArray;
                 _currentLength = 1;
@@ -367,16 +368,19 @@ class Decoder {
       } else if (_state == DecoderState.stateArray) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
+            case 0:
+              _state = DecoderState.stateType;
+              break;
             case 1:
-              _listener.onArray(_input.getByte());
+              _listener.onArrayElement(_input.getByte());
               _state = DecoderState.stateType;
               break;
             case 2:
-              _listener.onArray(_currentLength = _input.getShort());
+              _listener.onArrayElement(_input.getShort());
               _state = DecoderState.stateType;
               break;
             case 4:
-              _listener.onArray(_input.getInt());
+              _listener.onArrayElement(_input.getInt());
               _state = DecoderState.stateType;
               break;
             case 8:
@@ -438,20 +442,20 @@ class Decoder {
               _state = DecoderState.stateType;
               break;
             case 2:
-              int val = _input.getShort();
-              double fval = _input.getHalfFloat(val);
+              final int val = _input.getShort();
+              final double fval = _input.getHalfFloat(val);
               _listener.onSpecialFloat(fval);
               _state = DecoderState.stateType;
               break;
             case 4:
-              typed.Uint8Buffer buff = _input.getBytes(_currentLength);
-              double fval = _input.getSingleFloat(buff);
+              final typed.Uint8Buffer buff = _input.getBytes(_currentLength);
+              final double fval = _input.getSingleFloat(buff);
               _listener.onSpecialFloat(fval);
               _state = DecoderState.stateType;
               break;
             case 8:
-              typed.Uint8Buffer buff = _input.getBytes(_currentLength);
-              double fval = _input.getDoubleFloat(buff);
+              final typed.Uint8Buffer buff = _input.getBytes(_currentLength);
+              final double fval = _input.getDoubleFloat(buff);
               _listener.onSpecialFloat(fval);
               _state = DecoderState.stateType;
               break;
