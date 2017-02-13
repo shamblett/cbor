@@ -29,11 +29,9 @@ class ListenerTest extends cbor.Listener {
     lastByteCount = size;
   }
 
-  void onString(typed.Uint8Buffer str) {
-    final convertor.Utf8Decoder decoder = new convertor.Utf8Decoder();
-    final String tmp = decoder.convert(str);
-    print("String $tmp");
-    lastValue = tmp;
+  void onString(String str) {
+    print("String $str");
+    lastValue = str;
   }
 
   void onArray(int size) {

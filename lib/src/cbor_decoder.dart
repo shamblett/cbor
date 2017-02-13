@@ -361,8 +361,10 @@ class Decoder {
         if (_input.hasBytes(_currentLength)) {
           typed.Uint8Buffer data;
           data = _input.getBytes(_currentLength);
+          final convertor.Utf8Decoder decoder = new convertor.Utf8Decoder();
+          final String tmp = decoder.convert(data);
+          _listener.onString(tmp);
           _state = DecoderState.stateType;
-          _listener.onString(data);
         } else
           break;
       } else if (_state == DecoderState.stateArray) {
