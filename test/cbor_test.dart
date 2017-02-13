@@ -1062,7 +1062,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, []);
+      expect(listener.lastSize, 0);
     });
 
     test('Array 1,2,3', () {
@@ -1075,7 +1075,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [1, 2, 3]);
+      expect(listener.lastSize, 3);
     });
 
     test('Array 1,2,3...25', () {
@@ -1116,33 +1116,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25
-      ]);
+      expect(listener.lastSize, 3);
     });
   });
 }

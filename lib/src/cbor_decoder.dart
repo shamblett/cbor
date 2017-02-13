@@ -25,8 +25,8 @@ enum DecoderState {
 class Decoder {
   Listener _listener;
   Input _input;
-  DecoderState _state = DecoderState.stateError;
-  int _currentLength = 0;
+  DecoderState _state;
+  int _currentLength;
 
   Decoder(Input input) {
     _input = input;
@@ -149,22 +149,22 @@ class Decoder {
             case 4: // array
               if (minorType < 24) {
                 _listener.onArray(minorType);
-                _state = DecoderState.stateArray;
+                _state = DecoderState.stateType;
               } else if (minorType == 24) {
-                _state = DecoderState.stateArray;
+                _state = DecoderState.stateType;
                 _currentLength = 1;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.stateArray;
+                _state = DecoderState.stateType;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.stateArray;
+                _state = DecoderState.stateType;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.stateArray;
+                _state = DecoderState.stateType;
               } else {
                 _state = DecoderState.stateError;
                 _listener.onError("invalid array type");
@@ -368,19 +368,16 @@ class Decoder {
       } else if (_state == DecoderState.stateArray) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
-            case 0:
-              _state = DecoderState.stateType;
-              break;
             case 1:
-              _listener.onArrayElement(_input.getByte());
+              _listener.onArray(_input.getByte());
               _state = DecoderState.stateType;
               break;
             case 2:
-              _listener.onArrayElement(_input.getShort());
+              _listener.onArray(_input.getShort());
               _state = DecoderState.stateType;
               break;
             case 4:
-              _listener.onArrayElement(_input.getInt());
+              _listener.onArray(_input.getInt());
               _state = DecoderState.stateType;
               break;
             case 8:

@@ -12,16 +12,15 @@ import 'package:typed_data/typed_data.dart' as typed;
 class ListenerTest extends cbor.Listener {
 
   var lastValue;
-  int lastTag;
-  int lastByteCount;
+  int lastTag = 0;
+  int lastByteCount = 0;
+  int lastSize = 0;
+  int arrSize = 0;
+  bool inArray = false;
 
   void onInteger(int value) {
     print("Integer $value");
-    if (lastValue is List) {
-      lastValue.add(value);
-    } else {
       lastValue = value;
-    }
   }
 
   void onBytes(typed.Uint8Buffer data, int size) {
@@ -39,7 +38,7 @@ class ListenerTest extends cbor.Listener {
 
   void onArray(int size) {
     print("Array size $size");
-    lastValue = new List<int>();
+    lastSize = size;
   }
 
   void onArrayElement(int value) {
