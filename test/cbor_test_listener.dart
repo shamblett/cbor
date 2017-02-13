@@ -10,7 +10,7 @@ import 'package:typed_data/typed_data.dart' as typed;
 
 class ListenerTest extends cbor.Listener {
 
-  List<dynamic> lastValue;
+  List<dynamic> lastValue = new List<dynamic>();
   int lastTag = 0;
   int lastByteCount = 0;
   int lastSize = 0;
