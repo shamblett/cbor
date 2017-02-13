@@ -51,7 +51,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 0);
+      expect(listener.lastValue, [0]);
     });
 
     test('1', () {
@@ -64,7 +64,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1);
+      expect(listener.lastValue, [1]);
     });
 
     test('10', () {
@@ -78,7 +78,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 10);
+      expect(listener.lastValue, [10]);
     });
 
     test('23', () {
@@ -92,7 +92,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 23);
+      expect(listener.lastValue, [23]);
     });
 
     test('24', () {
@@ -106,7 +106,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 24);
+      expect(listener.lastValue, [24]);
     });
 
     test('25', () {
@@ -120,7 +120,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 25);
+      expect(listener.lastValue, [25]);
     });
 
     test('100', () {
@@ -134,7 +134,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 100);
+      expect(listener.lastValue, [100]);
     });
 
     test('1000', () {
@@ -148,7 +148,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1000);
+      expect(listener.lastValue, [1000]);
     });
 
     test('1000000', () {
@@ -162,7 +162,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1000000);
+      expect(listener.lastValue, [1000000]);
     });
 
     test('1000000000000', () {
@@ -186,7 +186,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1000000000000);
+      expect(listener.lastValue, [1000000000000]);
     });
 
     test('18446744073709551615', () {
@@ -210,7 +210,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 18446744073709551615);
+      expect(listener.lastValue, [18446744073709551615]);
     });
 
     test('18446744073709551616', () {
@@ -236,7 +236,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue.toString(), "[1, 0, 0, 0, 0, 0, 0, 0, 0]");
+      expect(listener.lastValue.toString(), ["[1, 0, 0, 0, 0, 0, 0, 0, 0]"]);
       expect(listener.lastTag, 2);
       expect(listener.lastByteCount, 9);
     });
@@ -262,7 +262,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -18446744073709551616);
+      expect(listener.lastValue, [-18446744073709551616]);
     });
 
     test('18446744073709551617', () {
@@ -288,13 +288,14 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue.toString(), "[1, 0, 0, 0, 0, 0, 0, 0, 0]");
+      expect(listener.lastValue.toString(), ["[1, 0, 0, 0, 0, 0, 0, 0, 0]"]);
       expect(listener.lastTag, 3);
       expect(listener.lastByteCount, 9);
     });
 
     test('-1', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x20];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -303,7 +304,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -1);
+      expect(listener.lastValue, [-1]);
     });
 
     test('-10', () {
@@ -316,7 +317,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -10);
+      expect(listener.lastValue, [-10]);
     });
 
     test('-100', () {
@@ -329,7 +330,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -100);
+      expect(listener.lastValue, [-100]);
     });
 
     test('-1000', () {
@@ -342,7 +343,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -1000);
+      expect(listener.lastValue, [-1000]);
     });
 
     test('0.0', () {
@@ -355,7 +356,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 0.0);
+      expect(listener.lastValue, [0.0]);
     });
 
     test('-0.0', () {
@@ -368,7 +369,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -0.0);
+      expect(listener.lastValue, [-0.0]);
     });
 
     test('1.0', () {
@@ -381,7 +382,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1.0);
+      expect(listener.lastValue, [1.0]);
     });
 
     test('1.1', () {
@@ -404,7 +405,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1.1);
+      expect(listener.lastValue, [1.1]);
     });
 
     test('1.5', () {
@@ -417,7 +418,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1.5);
+      expect(listener.lastValue, [1.5]);
     });
 
     test('65504.0', () {
@@ -430,7 +431,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 65504.0);
+      expect(listener.lastValue, [65504.0]);
     });
 
     test('100000.0', () {
@@ -443,7 +444,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 100000.0);
+      expect(listener.lastValue, [100000.0]);
     });
 
     test('3.4028234663852886e+38', () {
@@ -456,7 +457,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 3.4028234663852886e+38);
+      expect(listener.lastValue, [3.4028234663852886e+38]);
     });
 
     test('1.0e+300', () {
@@ -479,7 +480,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1.0e+300);
+      expect(listener.lastValue, [1.0e+300]);
     });
 
     test('5.960464477539063e-8', () {
@@ -492,7 +493,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 5.960464477539063e-8);
+      expect(listener.lastValue, [5.960464477539063e-8]);
     });
 
     test('0.00006103515625', () {
@@ -505,7 +506,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 0.00006103515625);
+      expect(listener.lastValue, [0.00006103515625]);
     });
 
     test('-4.0', () {
@@ -518,7 +519,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -4.0);
+      expect(listener.lastValue, [-4.0]);
     });
 
     test('-4.1', () {
@@ -541,7 +542,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -4.1);
+      expect(listener.lastValue, [-4.1]);
     });
 
     test('Infinity half', () {
@@ -554,7 +555,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, double.INFINITY);
+      expect(listener.lastValue, [double.INFINITY]);
     });
 
     test('NaN half', () {
@@ -567,7 +568,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, isNaN);
+      expect(listener.lastValue[0], isNaN);
     });
 
     test('-Infinity half', () {
@@ -580,7 +581,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -(double.INFINITY));
+      expect(listener.lastValue, [-(double.INFINITY)]);
     });
 
     test('Infinity single', () {
@@ -593,7 +594,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, double.INFINITY);
+      expect(listener.lastValue, [double.INFINITY]);
     });
 
     test('NaN single', () {
@@ -606,7 +607,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, isNaN);
+      expect(listener.lastValue[0], isNaN);
     });
 
     test('-Infinity single', () {
@@ -625,7 +626,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -(double.INFINITY));
+      expect(listener.lastValue, [-(double.INFINITY)]);
     });
 
     test('Infinity double', () {
@@ -648,7 +649,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, double.INFINITY);
+      expect(listener.lastValue, [double.INFINITY]);
     });
 
     test('NaN double', () {
@@ -671,7 +672,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, isNaN);
+      expect(listener.lastValue[0], isNaN);
     });
 
     test('-Infinity double', () {
@@ -694,7 +695,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, -(double.INFINITY));
+      expect(listener.lastValue, [-(double.INFINITY)]);
     });
 
     test('false', () {
@@ -707,7 +708,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, false);
+      expect(listener.lastValue, [false]);
     });
 
     test('true', () {
@@ -720,7 +721,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, true);
+      expect(listener.lastValue, [true]);
     });
 
     test('null', () {
@@ -733,7 +734,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, isNull);
+      expect(listener.lastValue[0], isNull);
     });
 
     test('undefined', () {
@@ -746,7 +747,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, "Undefined");
+      expect(listener.lastValue, ["Undefined"]);
     });
 
     test('Simple(16)', () {
@@ -759,7 +760,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 16);
+      expect(listener.lastValue, [16]);
     });
 
     test('Simple(24)', () {
@@ -777,6 +778,7 @@ void main() {
 
     test('Simple(255)', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf8, 0xff];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -785,7 +787,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 255);
+      expect(listener.lastValue, [255]);
     });
 
     test('Tag (0) Date Time', () {
@@ -821,7 +823,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, "2013-03-21T20:04:00Z");
+      expect(listener.lastValue, ["2013-03-21T20:04:00Z"]);
       expect(listener.lastTag, 0);
     });
 
@@ -835,7 +837,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1363896240);
+      expect(listener.lastValue, [1363896240]);
       expect(listener.lastTag, 1);
     });
 
@@ -860,7 +862,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 1363896240.5);
+      expect(listener.lastValue, [1363896240.5]);
       expect(listener.lastTag, 1);
     });
 
@@ -930,7 +932,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, "http://www.example.com");
+      expect(listener.lastValue, ["http://www.example.com"]);
       expect(listener.lastTag, 32);
     });
 
@@ -971,7 +973,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, "");
+      expect(listener.lastValue, [""]);
     });
 
     test('a', () {
@@ -984,7 +986,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, "a");
+      expect(listener.lastValue, ["a"]);
     });
 
     test('IETF', () {
@@ -997,7 +999,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, "IETF");
+      expect(listener.lastValue, ["IETF"]);
     });
 
     test('Quoted backslash', () {
@@ -1010,7 +1012,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, "\"\\");
+      expect(listener.lastValue, ["\"\\"]);
     });
 
     test('Unicode ü', () {
@@ -1023,7 +1025,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 'ü');
+      expect(listener.lastValue, ['ü']);
     });
 
     test('Unicode 水', () {
@@ -1036,7 +1038,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, '水');
+      expect(listener.lastValue, ['水']);
     });
 
     test('Unicode 𐅑', () {
@@ -1049,7 +1051,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, '𐅑');
+      expect(listener.lastValue, ['𐅑']);
     });
 
     test('Array empty', () {
@@ -1075,6 +1077,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
+      expect(listener.lastValue, [1, 2, 3]);
       expect(listener.lastSize, 3);
     });
 
@@ -1116,6 +1119,33 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
+      expect(listener.lastValue, [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ]);
       expect(listener.lastSize, 3);
     });
   });
