@@ -43,6 +43,7 @@ void main() {
 
     test('0', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x0];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -56,6 +57,7 @@ void main() {
 
     test('1', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x1];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -69,12 +71,12 @@ void main() {
 
     test('10', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x0a];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -83,12 +85,12 @@ void main() {
 
     test('23', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x17];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -97,12 +99,12 @@ void main() {
 
     test('24', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x18, 0x18];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -111,12 +113,12 @@ void main() {
 
     test('25', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x18, 0x19];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -125,12 +127,12 @@ void main() {
 
     test('100', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x18, 0x64];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -139,12 +141,12 @@ void main() {
 
     test('1000', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x19, 0x03, 0xe8];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -153,12 +155,12 @@ void main() {
 
     test('1000000', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x1a, 0x00, 0x0f, 0x42, 0x40];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -167,6 +169,7 @@ void main() {
 
     test('1000000000000', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0x1b,
         0x00,
@@ -182,7 +185,6 @@ void main() {
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -191,6 +193,7 @@ void main() {
 
     test('18446744073709551615', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0x1b,
         0xff,
@@ -206,7 +209,6 @@ void main() {
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -215,6 +217,7 @@ void main() {
 
     test('18446744073709551616', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xc2,
         0x49,
@@ -232,17 +235,17 @@ void main() {
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue.toString(), ["[1, 0, 0, 0, 0, 0, 0, 0, 0]"]);
+      expect(listener.lastValue, [2, [1, 0, 0, 0, 0, 0, 0, 0, 0]]);
       expect(listener.lastTag, 2);
       expect(listener.lastByteCount, 9);
     });
 
     test('-18446744073709551616', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0x3b,
         0xff,
@@ -258,7 +261,6 @@ void main() {
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -267,6 +269,7 @@ void main() {
 
     test('18446744073709551617', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xc3,
         0x49,
@@ -284,11 +287,10 @@ void main() {
       buffer.addAll(values);
       output.putBytes(buffer);
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final ListenerTest listener = new ListenerTest();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue.toString(), ["[1, 0, 0, 0, 0, 0, 0, 0, 0]"]);
+      expect(listener.lastValue, [3, [1, 0, 0, 0, 0, 0, 0, 0, 0]]);
       expect(listener.lastTag, 3);
       expect(listener.lastByteCount, 9);
     });
@@ -309,6 +311,7 @@ void main() {
 
     test('-10', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x29];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -322,6 +325,7 @@ void main() {
 
     test('-100', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x38, 0x63];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -335,6 +339,7 @@ void main() {
 
     test('-1000', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x39, 0x3, 0xe7];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -348,6 +353,7 @@ void main() {
 
     test('0.0', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0x00, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -361,6 +367,7 @@ void main() {
 
     test('-0.0', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0x80, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -374,6 +381,7 @@ void main() {
 
     test('1.0', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0x3c, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -387,6 +395,7 @@ void main() {
 
     test('1.1', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xfb,
         0x3f,
@@ -410,6 +419,7 @@ void main() {
 
     test('1.5', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0x3e, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -423,6 +433,7 @@ void main() {
 
     test('65504.0', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0x7b, 0xff];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -436,6 +447,7 @@ void main() {
 
     test('100000.0', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xfa, 0x47, 0xc3, 0x50, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -449,6 +461,7 @@ void main() {
 
     test('3.4028234663852886e+38', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xfa, 0x7f, 0x7f, 0xff, 0xff];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -462,6 +475,7 @@ void main() {
 
     test('1.0e+300', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xfb,
         0x7e,
@@ -485,6 +499,7 @@ void main() {
 
     test('5.960464477539063e-8', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0x00, 0x01];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -498,6 +513,7 @@ void main() {
 
     test('0.00006103515625', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0x04, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -511,6 +527,7 @@ void main() {
 
     test('-4.0', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0xc4, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -524,6 +541,7 @@ void main() {
 
     test('-4.1', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xfb,
         0xc0,
@@ -547,6 +565,7 @@ void main() {
 
     test('Infinity half', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0x7c, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -560,6 +579,7 @@ void main() {
 
     test('NaN half', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0x7e, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -573,6 +593,7 @@ void main() {
 
     test('-Infinity half', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf9, 0xfc, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -586,6 +607,7 @@ void main() {
 
     test('Infinity single', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xfa, 0x7f, 0x80, 0x00, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -599,6 +621,7 @@ void main() {
 
     test('NaN single', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xfa, 0x7f, 0xc0, 0x00, 0x00];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -612,6 +635,7 @@ void main() {
 
     test('-Infinity single', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xfa,
         0xff,
@@ -631,6 +655,7 @@ void main() {
 
     test('Infinity double', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xfb,
         0x7f,
@@ -654,6 +679,7 @@ void main() {
 
     test('NaN double', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xfb,
         0x7f,
@@ -677,6 +703,7 @@ void main() {
 
     test('-Infinity double', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xfb,
         0xff,
@@ -700,6 +727,7 @@ void main() {
 
     test('false', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf4];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -713,6 +741,7 @@ void main() {
 
     test('true', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf5];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -726,6 +755,7 @@ void main() {
 
     test('null', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf6];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -739,6 +769,7 @@ void main() {
 
     test('undefined', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf7];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -752,6 +783,7 @@ void main() {
 
     test('Simple(16)', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf0];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -765,6 +797,7 @@ void main() {
 
     test('Simple(24)', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xf8, 0x18];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -773,7 +806,7 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, 24);
+      expect(listener.lastValue, [24]);
     });
 
     test('Simple(255)', () {
@@ -792,6 +825,7 @@ void main() {
 
     test('Tag (0) Date Time', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xc0,
         0x74,
@@ -823,12 +857,13 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, ["2013-03-21T20:04:00Z"]);
+      expect(listener.lastValue, [0, "2013-03-21T20:04:00Z"]);
       expect(listener.lastTag, 0);
     });
 
     test('Tag (1) Int', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xc1, 0x1a, 0x51, 0x4b, 0x67, 0xb0];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -837,12 +872,13 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [1363896240]);
+      expect(listener.lastValue, [1, 1363896240]);
       expect(listener.lastTag, 1);
     });
 
     test('Tag (1) Float', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xc1,
         0xfb,
@@ -862,12 +898,13 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [1363896240.5]);
+      expect(listener.lastValue, [1, 1363896240.5]);
       expect(listener.lastTag, 1);
     });
 
     test('Tag (23) multiple', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xd7, 0x44, 0x01, 0x02, 0x03, 0x04];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -876,13 +913,14 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [1, 2, 3, 4]);
+      expect(listener.lastValue, [23, [1, 2, 3, 4]]);
       expect(listener.lastTag, 23);
       expect(listener.lastByteCount, 4);
     });
 
     test('Tag (24) multiple', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0xd8, 0x18, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -891,13 +929,14 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [100, 73, 69, 84, 70]);
+      expect(listener.lastValue, [24, [100, 73, 69, 84, 70]]);
       expect(listener.lastByteCount, 5);
       expect(listener.lastTag, 24);
     });
 
     test('Tag (32) URI', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0xd8,
         0x20,
@@ -932,12 +971,13 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, ["http://www.example.com"]);
+      expect(listener.lastValue, [32, "http://www.example.com"]);
       expect(listener.lastTag, 32);
     });
 
     test('Empty single quotes', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x40];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -946,11 +986,12 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, []);
+      expect(listener.lastValue, [[]]);
     });
 
     test('4 bytes', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x44, 0x01, 0x02, 0x03, 0x04];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -959,12 +1000,13 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [01, 02, 03, 04]);
+      expect(listener.lastValue, [[01, 02, 03, 04]]);
       expect(listener.lastByteCount, 4);
     });
 
     test('Empty double quotes', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x60];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -978,6 +1020,7 @@ void main() {
 
     test('a', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x61, 0x61];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -991,6 +1034,7 @@ void main() {
 
     test('IETF', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x64, 0x49, 0x45, 0x54, 0x46];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -1004,6 +1048,7 @@ void main() {
 
     test('Quoted backslash', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x62, 0x22, 0x5c];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -1017,6 +1062,7 @@ void main() {
 
     test('Unicode ü', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x62, 0xc3, 0xbc];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -1030,6 +1076,7 @@ void main() {
 
     test('Unicode 水', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x63, 0xe6, 0xb0, 0xb4];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -1043,6 +1090,7 @@ void main() {
 
     test('Unicode 𐅑', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x64, 0xf0, 0x90, 0x85, 0x91];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -1056,6 +1104,7 @@ void main() {
 
     test('Array empty', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x80];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -1069,6 +1118,7 @@ void main() {
 
     test('Array 1,2,3', () {
       output.clear();
+      listener.clear();
       final List<int> values = [0x83, 0x01, 0x02, 0x03];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -1083,6 +1133,7 @@ void main() {
 
     test('Array 1,2,3...25', () {
       output.clear();
+      listener.clear();
       final List<int> values = [
         0x98,
         0x19,
@@ -1109,6 +1160,8 @@ void main() {
         0x15,
         0x16,
         0x17,
+        0x18,
+        0x18,
         0x18,
         0x19
       ];
@@ -1146,7 +1199,7 @@ void main() {
         24,
         25
       ]);
-      expect(listener.lastSize, 3);
+      expect(listener.lastSize, 25);
     });
   });
 }

@@ -24,6 +24,10 @@ class ListenerDebug extends Listener {
     print("Array size $size");
   }
 
+  void onArrayElement(int value) {
+    print("Array Element $value");
+  }
+
   void onMap(int size) {
     print("Map size $size");
   }

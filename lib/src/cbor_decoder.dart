@@ -149,22 +149,21 @@ class Decoder {
             case 4: // array
               if (minorType < 24) {
                 _listener.onArray(minorType);
-                _state = DecoderState.stateType;
               } else if (minorType == 24) {
-                _state = DecoderState.stateType;
+                _state = DecoderState.stateArray;
                 _currentLength = 1;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.stateType;
+                _state = DecoderState.stateArray;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.stateType;
+                _state = DecoderState.stateArray;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.stateType;
+                _state = DecoderState.stateArray;
               } else {
                 _state = DecoderState.stateError;
                 _listener.onError("invalid array type");
@@ -371,15 +370,15 @@ class Decoder {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
-              _listener.onArray(_input.getByte());
+              _listener.onArrayElement(_input.getByte());
               _state = DecoderState.stateType;
               break;
             case 2:
-              _listener.onArray(_input.getShort());
+              _listener.onArrayElement(_input.getShort());
               _state = DecoderState.stateType;
               break;
             case 4:
-              _listener.onArray(_input.getInt());
+              _listener.onArrayElement(_input.getInt());
               _state = DecoderState.stateType;
               break;
             case 8:

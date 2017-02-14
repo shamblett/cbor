@@ -16,6 +16,8 @@ abstract class Listener {
 
   void onArray(int size);
 
+  void onArrayElement(int value);
+
   void onMap(int size);
 
   void onTag(int tag);

@@ -9,7 +9,6 @@ import 'package:cbor/cbor.dart' as cbor;
 import 'package:typed_data/typed_data.dart' as typed;
 
 class ListenerTest extends cbor.Listener {
-
   List<dynamic> lastValue = new List<dynamic>();
   int lastTag = 0;
   int lastByteCount = 0;
@@ -40,6 +39,11 @@ class ListenerTest extends cbor.Listener {
   void onArray(int size) {
     print("Array size $size");
     lastSize = size;
+  }
+
+  void onArrayElement(int value) {
+    print("No. Array elements $value");
+    lastSize = value;
   }
 
   void onMap(int size) {
