@@ -238,7 +238,10 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [2, [1, 0, 0, 0, 0, 0, 0, 0, 0]]);
+      expect(listener.lastValue, [
+        2,
+        [1, 0, 0, 0, 0, 0, 0, 0, 0]
+      ]);
       expect(listener.lastTag, 2);
       expect(listener.lastByteCount, 9);
     });
@@ -290,7 +293,10 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [3, [1, 0, 0, 0, 0, 0, 0, 0, 0]]);
+      expect(listener.lastValue, [
+        3,
+        [1, 0, 0, 0, 0, 0, 0, 0, 0]
+      ]);
       expect(listener.lastTag, 3);
       expect(listener.lastByteCount, 9);
     });
@@ -913,7 +919,10 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [23, [1, 2, 3, 4]]);
+      expect(listener.lastValue, [
+        23,
+        [1, 2, 3, 4]
+      ]);
       expect(listener.lastTag, 23);
       expect(listener.lastByteCount, 4);
     });
@@ -929,7 +938,10 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [24, [100, 73, 69, 84, 70]]);
+      expect(listener.lastValue, [
+        24,
+        [100, 73, 69, 84, 70]
+      ]);
       expect(listener.lastByteCount, 5);
       expect(listener.lastTag, 24);
     });
@@ -1000,7 +1012,9 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [[01, 02, 03, 04]]);
+      expect(listener.lastValue, [
+        [01, 02, 03, 04]
+      ]);
       expect(listener.lastByteCount, 4);
     });
 
@@ -1200,6 +1214,51 @@ void main() {
         25
       ]);
       expect(listener.lastSize, 25);
+    });
+
+    test('Nested array', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [0x83, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, [1, 2, 3, 4, 5]);
+      expect(listener.lastSize, 2);
+    });
+
+    test('Empty Map', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [0xa0];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, []);
+      expect(listener.lastSize, 0);
+    });
+
+    test('{1: 2, 3: 4}', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [0xa2, 0x01, 0x02, 0x03, 0x04];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, [1, 2, 3, 4]);
+      expect(listener.lastSize, 2);
     });
   });
 }
