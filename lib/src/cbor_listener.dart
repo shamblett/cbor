@@ -38,5 +38,7 @@ abstract class Listener {
 
   void onExtraTag(int tag);
 
-  void onExtraSpecial(int tag) {}
+  void onExtraSpecial(int tag);
+
+  void onIndefinate(String text);
 }

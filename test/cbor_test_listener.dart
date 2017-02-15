@@ -14,10 +14,15 @@ class ListenerTest extends cbor.Listener {
   int lastByteCount = 0;
   int lastSize = 0;
   int arrSize = 0;
-  bool inArray = false;
+  bool indefinateStart = false;
 
   void clear() {
     lastValue.clear();
+    lastTag = 0;
+    lastByteCount = 0;
+    lastSize = 0;
+    arrSize = 0;
+    indefinateStart = false;
   }
 
   void onInteger(int value) {
@@ -101,5 +106,10 @@ class ListenerTest extends cbor.Listener {
   void onExtraSpecial(int tag) {
     print("Extra Special $tag");
     lastValue.add(tag);
+  }
+
+  void onIndefinate(String text) {
+    print("Indefinate $text");
+    indefinateStart = true;
   }
 }

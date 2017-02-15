@@ -1334,6 +1334,25 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [[1, 2], [3, 4, 5]]);
+      expect(listener.indefinateStart, isTrue);
+    });
+
+    test('(_ "strea", "ming")', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [0x7f, 0x65, 0x73, 0x74, 0x72, 0x65, 0x61, 0x64,
+      0x6d, 0x69, 0x6e, 0x67, 0xff
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, ["strea", "ming"]);
+      expect(listener.lastSize, 2);
+      expect(listener.indefinateStart, isTrue);
     });
   });
 }
