@@ -117,6 +117,8 @@ class Decoder {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.stateBytesSize;
+              } else if (minorType == 31) {
+                _state = DecoderState.stateType;
               } else {
                 _state = DecoderState.stateError;
                 _listener.onError("invalid bytes type");
@@ -241,6 +243,8 @@ class Decoder {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.stateSpecial;
+              } else if (minorType == 31) {
+                _state = DecoderState.stateType;
               } else {
                 _state = DecoderState.stateError;
                 _listener.onError("invalid special type");

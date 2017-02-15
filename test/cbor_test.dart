@@ -1319,5 +1319,21 @@ void main() {
           ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E"]);
       expect(listener.lastSize, 5);
     });
+
+    test("(_ h'0102', h'030405')", () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [0x5f, 0x42, 0x01, 0x02, 0x43, 0x03, 0x04, 0x05,
+      0xff
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, [[1, 2], [3, 4, 5]]);
+    });
   });
 }
