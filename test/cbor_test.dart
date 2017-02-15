@@ -1260,5 +1260,40 @@ void main() {
       expect(listener.lastValue, [1, 2, 3, 4]);
       expect(listener.lastSize, 2);
     });
+
+    test('{"a": 1, "b": [2, 3]}', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [0xa2, 0x61, 0x61, 0x01, 0x61,
+      0x62, 0x82, 0x02, 0x03
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, ["a", 1, "b", 2, 3]);
+      expect(listener.lastSize, 2);
+    });
+
+    test('{"a", {"b": "c"}', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [0xa2, 0x61, 0x61, 0xa1, 0x61,
+      0x62, 0x61, 0x63
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, ["a", "b", "c"]);
+      expect(listener.lastSize, 1);
+    });
+
   });
 }
