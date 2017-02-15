@@ -1264,8 +1264,16 @@ void main() {
     test('{"a": 1, "b": [2, 3]}', () {
       output.clear();
       listener.clear();
-      final List<int> values = [0xa2, 0x61, 0x61, 0x01, 0x61,
-      0x62, 0x82, 0x02, 0x03
+      final List<int> values = [
+        0xa2,
+        0x61,
+        0x61,
+        0x01,
+        0x61,
+        0x62,
+        0x82,
+        0x02,
+        0x03
       ];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
@@ -1281,9 +1289,7 @@ void main() {
     test('{"a", {"b": "c"}', () {
       output.clear();
       listener.clear();
-      final List<int> values = [0xa2, 0x61, 0x61, 0xa1, 0x61,
-      0x62, 0x61, 0x63
-      ];
+      final List<int> values = [0xa2, 0x61, 0x61, 0xa1, 0x61, 0x62, 0x61, 0x63];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
@@ -1295,5 +1301,23 @@ void main() {
       expect(listener.lastSize, 1);
     });
 
+    test('{"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"}', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [0xa5, 0x61, 0x61, 0x61, 0x41, 0x61, 0x62, 0x61,
+      0x42, 0x61, 0x63, 0x61, 0x43, 0x61, 0x64, 0x61, 0x44, 0x61, 0x65, 0x61,
+      0x45
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue,
+          ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E"]);
+      expect(listener.lastSize, 5);
+    });
   });
 }
