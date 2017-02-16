@@ -27,7 +27,7 @@
      - unrelated_type_equality_checks
      - valid_regexps
      - always_declare_return_types
-     - always_specify_types
+#     - always_specify_types
      - avoid_return_types_on_setters
      - await_only_futures
      - camel_case_types
