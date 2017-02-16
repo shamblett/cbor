@@ -196,6 +196,9 @@ class Decoder {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.stateMap;
+              } else if (minorType == 31) {
+                _state = DecoderState.stateType;
+                _listener.onIndefinate("start");
               } else {
                 _state = DecoderState.stateError;
                 _listener.onError("invalid array type");

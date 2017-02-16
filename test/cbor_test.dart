@@ -1611,5 +1611,86 @@ void main() {
       ]);
       expect(listener.indefinateStart, isTrue);
     });
+
+    test('{_ "a":1, "b": [_ 2,3]}', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [
+        0xbf,
+        0x61,
+        0x61,
+        0x01,
+        0x61,
+        0x62,
+        0x9f,
+        0x02,
+        0x03,
+        0xff,
+        0xff
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, ["a", 1, "b", 2, 3]);
+      expect(listener.indefinateStart, isTrue);
+    });
+
+    test('["a", {_ "b": "c"}] }', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [
+        0x82,
+        0x61,
+        0x61,
+        0xbf,
+        0x61,
+        0x62,
+        0x61,
+        0x63,
+        0xff
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, ["a", "b", "c"]);
+      expect(listener.indefinateStart, isTrue);
+    });
+
+    test('{_ "Fun": true, "Amt": -2}', () {
+      output.clear();
+      listener.clear();
+      final List<int> values = [
+        0xbf,
+        0x63,
+        0x46,
+        0x75,
+        0x6e,
+        0x5f,
+        0x63,
+        0x41,
+        0x6d,
+        0x74,
+        0x21,
+        0xff
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+      expect(listener.lastValue, ["Fun", true, "Amt", -2]);
+      expect(listener.indefinateStart, isTrue);
+    });
+
   });
 }
