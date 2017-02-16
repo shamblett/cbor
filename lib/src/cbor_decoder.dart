@@ -144,6 +144,9 @@ class Decoder {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.stateStringSize;
+              } else if (minorType == 31) {
+                _state = DecoderState.stateType;
+                _listener.onIndefinate("start");
               } else {
                 _state = DecoderState.stateError;
                 _listener.onError("invalid string type");
@@ -167,6 +170,9 @@ class Decoder {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.stateArray;
+              } else if (minorType == 31) {
+                _state = DecoderState.stateType;
+                _listener.onIndefinate("start");
               } else {
                 _state = DecoderState.stateError;
                 _listener.onError("invalid array type");
@@ -246,7 +252,7 @@ class Decoder {
                 _state = DecoderState.stateSpecial;
               } else if (minorType == 31) {
                 _state = DecoderState.stateType;
-                _listener.onIndefinate("Start");
+                _listener.onIndefinate("stop");
               } else {
                 _state = DecoderState.stateError;
                 _listener.onError("invalid special type");
