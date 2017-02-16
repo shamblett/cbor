@@ -7,20 +7,45 @@
 
 part of cbor;
 
+/// The decoder class implements the CBOR decoder functionality as defined in
+/// RFC7049.
+
+/// Decoder states
 enum DecoderState {
-  stateType,
-  statePint,
-  stateNint,
-  stateBytesSize,
-  stateBytesData,
-  stateStringSize,
-  stateStringData,
-  stateArray,
-  stateMap,
-  stateTag,
-  stateSpecial,
-  stateError
+  type,
+  pint,
+  nint,
+  bytesSize,
+  bytesData,
+  stringSize,
+  stringData,
+  array,
+  map,
+  tag,
+  special,
+  error
 }
+
+/// CBOR decoding constants
+const int majorTypeShift = 5;
+const int minorTypeMask = 31;
+
+/// Major type constants
+const int majorTypePint = 0;
+const int majorTypeNint = 1;
+const int majorTypeBytes = 2;
+const int majorTypeString = 3;
+const int majorTypeArray = 4;
+const int majorTypeMap = 5;
+const int majorTypeTag = 6;
+const int majorTypeSpecial = 7;
+
+/// Additional information constants
+const int ai24 = 24;
+const int ai25 = 25;
+const int ai26 = 26;
+const int ai27 = 27;
+const int ai31 = 31;
 
 class Decoder {
   Listener _listener;
@@ -30,12 +55,12 @@ class Decoder {
 
   Decoder(Input input) {
     _input = input;
-    _state = DecoderState.stateType;
+    _state = DecoderState.type;
   }
 
   Decoder.withListener(Input input, Listener listener) {
     _input = input;
-    _state = DecoderState.stateType;
+    _state = DecoderState.type;
     _listener = listener;
   }
 
@@ -43,191 +68,191 @@ class Decoder {
     int temp;
     final bool run = true;
     while (run) {
-      if (_state == DecoderState.stateType) {
+      if (_state == DecoderState.type) {
         if (_input.hasBytes(1)) {
           final int type = _input.getByte();
-          final int majorType = type >> 5;
-          final int minorType = type & 31;
+          final int majorType = type >> majorTypeShift;
+          final int minorType = type & minorTypeMask;
 
           switch (majorType) {
-            case 0: // positive integer
+            case majorTypePint: // positive integer
               if (minorType < 24) {
                 _listener.onInteger(minorType);
               } else if (minorType == 24) {
                 // 1 byte
                 _currentLength = 1;
-                _state = DecoderState.statePint;
+                _state = DecoderState.pint;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.statePint;
+                _state = DecoderState.pint;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.statePint;
+                _state = DecoderState.pint;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.statePint;
+                _state = DecoderState.pint;
               } else {
-                _state = DecoderState.stateError;
+                _state = DecoderState.error;
                 _listener.onError("invalid integer type");
               }
               break;
-            case 1: // negative integer
+            case majorTypeNint: // negative integer
               if (minorType < 24) {
                 _listener.onInteger(-1 - minorType);
               } else if (minorType == 24) {
                 // 1 byte
                 _currentLength = 1;
-                _state = DecoderState.stateNint;
+                _state = DecoderState.nint;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.stateNint;
+                _state = DecoderState.nint;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.stateNint;
+                _state = DecoderState.nint;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.stateNint;
+                _state = DecoderState.nint;
               } else {
-                _state = DecoderState.stateError;
+                _state = DecoderState.error;
                 _listener.onError("invalid integer type");
               }
               break;
-            case 2: // bytes
+            case majorTypeBytes: // bytes
               if (minorType < 24) {
-                _state = DecoderState.stateBytesData;
+                _state = DecoderState.bytesData;
                 _currentLength = minorType;
               } else if (minorType == 24) {
-                _state = DecoderState.stateBytesSize;
+                _state = DecoderState.bytesSize;
                 _currentLength = 1;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.stateBytesSize;
+                _state = DecoderState.bytesSize;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.stateBytesSize;
+                _state = DecoderState.bytesSize;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.stateBytesSize;
+                _state = DecoderState.bytesSize;
               } else if (minorType == 31) {
-                _state = DecoderState.stateType;
+                _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
-                _state = DecoderState.stateError;
+                _state = DecoderState.error;
                 _listener.onError("invalid bytes type");
               }
               break;
-            case 3: // string
+            case majorTypeString: // string
               if (minorType < 24) {
-                _state = DecoderState.stateStringData;
+                _state = DecoderState.stringData;
                 _currentLength = minorType;
               } else if (minorType == 24) {
-                _state = DecoderState.stateStringSize;
+                _state = DecoderState.stringSize;
                 _currentLength = 1;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.stateStringSize;
+                _state = DecoderState.stringSize;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.stateStringSize;
+                _state = DecoderState.stringSize;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.stateStringSize;
+                _state = DecoderState.stringSize;
               } else if (minorType == 31) {
-                _state = DecoderState.stateType;
+                _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
-                _state = DecoderState.stateError;
+                _state = DecoderState.error;
                 _listener.onError("invalid string type");
               }
               break;
-            case 4: // array
+            case majorTypeArray: // array
               if (minorType < 24) {
                 _listener.onArray(minorType);
               } else if (minorType == 24) {
-                _state = DecoderState.stateArray;
+                _state = DecoderState.array;
                 _currentLength = 1;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.stateArray;
+                _state = DecoderState.array;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.stateArray;
+                _state = DecoderState.array;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.stateArray;
+                _state = DecoderState.array;
               } else if (minorType == 31) {
-                _state = DecoderState.stateType;
+                _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
-                _state = DecoderState.stateError;
+                _state = DecoderState.error;
                 _listener.onError("invalid array type");
               }
               break;
-            case 5: // map
+            case majorTypeMap: // map
               if (minorType < 24) {
                 _listener.onMap(minorType);
               } else if (minorType == 24) {
-                _state = DecoderState.stateMap;
+                _state = DecoderState.map;
                 _currentLength = 1;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.stateMap;
+                _state = DecoderState.map;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.stateMap;
+                _state = DecoderState.map;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.stateMap;
+                _state = DecoderState.map;
               } else if (minorType == 31) {
-                _state = DecoderState.stateType;
+                _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
-                _state = DecoderState.stateError;
+                _state = DecoderState.error;
                 _listener.onError("invalid array type");
               }
               break;
-            case 6: // tag
+            case majorTypeTag: // tag
               if (minorType < 24) {
                 _listener.onTag(minorType);
               } else if (minorType == 24) {
-                _state = DecoderState.stateTag;
+                _state = DecoderState.tag;
                 _currentLength = 1;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.stateTag;
+                _state = DecoderState.tag;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.stateTag;
+                _state = DecoderState.tag;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.stateTag;
+                _state = DecoderState.tag;
               } else {
-                _state = DecoderState.stateError;
+                _state = DecoderState.error;
                 _listener.onError("invalid tag type");
               }
               break;
-            case 7: // special
+            case majorTypeSpecial: // special
               if (minorType < 20) {
                 _listener.onSpecial(minorType);
               } else if (minorType == 20) {
@@ -239,41 +264,41 @@ class Decoder {
               } else if (minorType == 23) {
                 _listener.onUndefined();
               } else if (minorType == 24) {
-                _state = DecoderState.stateSpecial;
+                _state = DecoderState.special;
                 _currentLength = 1;
               } else if (minorType == 25) {
                 // 2 byte
                 _currentLength = 2;
-                _state = DecoderState.stateSpecial;
+                _state = DecoderState.special;
               } else if (minorType == 26) {
                 // 4 byte
                 _currentLength = 4;
-                _state = DecoderState.stateSpecial;
+                _state = DecoderState.special;
               } else if (minorType == 27) {
                 // 8 byte
                 _currentLength = 8;
-                _state = DecoderState.stateSpecial;
+                _state = DecoderState.special;
               } else if (minorType == 31) {
-                _state = DecoderState.stateType;
+                _state = DecoderState.type;
                 _listener.onIndefinate("stop");
               } else {
-                _state = DecoderState.stateError;
+                _state = DecoderState.error;
                 _listener.onError("invalid special type");
               }
               break;
           }
         } else
           break;
-      } else if (_state == DecoderState.statePint) {
+      } else if (_state == DecoderState.pint) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
               _listener.onInteger(_input.getByte());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 2:
               _listener.onInteger(_input.getShort());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 4:
               temp = _input.getInt();
@@ -282,25 +307,25 @@ class Decoder {
               } else {
                 _listener.onExtraInteger(temp, 1);
               }
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 8:
               _listener.onExtraInteger(_input.getLong(), 1);
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
           }
         } else
           break;
-      } else if (_state == DecoderState.stateNint) {
+      } else if (_state == DecoderState.nint) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
               _listener.onInteger(-1 - _input.getByte());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 2:
               _listener.onInteger(-1 - _input.getShort());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 4:
               temp = _input.getInt();
@@ -311,7 +336,7 @@ class Decoder {
               } else {
                 _listener.onExtraInteger((-1 - temp), -1);
               }
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 8:
               _listener.onExtraInteger((-1 - _input.getLong()), -1);
@@ -319,163 +344,163 @@ class Decoder {
           }
         } else
           break;
-      } else if (_state == DecoderState.stateBytesSize) {
+      } else if (_state == DecoderState.bytesSize) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
               _currentLength = _input.getByte();
-              _state = DecoderState.stateBytesData;
+              _state = DecoderState.bytesData;
               break;
             case 2:
               _currentLength = _input.getShort();
-              _state = DecoderState.stateBytesData;
+              _state = DecoderState.bytesData;
               break;
             case 4:
               _currentLength = _input.getInt();
-              _state = DecoderState.stateBytesData;
+              _state = DecoderState.bytesData;
               break;
             case 8:
-              _state = DecoderState.stateError;
+              _state = DecoderState.error;
               _listener.onError("extra long bytes");
               break;
           }
         } else
           break;
-      } else if (_state == DecoderState.stateBytesData) {
+      } else if (_state == DecoderState.bytesData) {
         if (_input.hasBytes(_currentLength)) {
           typed.Uint8Buffer data;
           data = _input.getBytes(_currentLength);
-          _state = DecoderState.stateType;
+          _state = DecoderState.type;
           _listener.onBytes(data, _currentLength);
         } else
           break;
-      } else if (_state == DecoderState.stateStringSize) {
+      } else if (_state == DecoderState.stringSize) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
               _currentLength = _input.getByte();
-              _state = DecoderState.stateStringData;
+              _state = DecoderState.stringData;
               break;
             case 2:
               _currentLength = _input.getShort();
-              _state = DecoderState.stateStringData;
+              _state = DecoderState.stringData;
               break;
             case 4:
               _currentLength = _input.getInt();
-              _state = DecoderState.stateStringData;
+              _state = DecoderState.stringData;
               break;
             case 8:
-              _state = DecoderState.stateError;
+              _state = DecoderState.error;
               _listener.onError("extra long array");
               break;
           }
         } else
           break;
-      } else if (_state == DecoderState.stateStringData) {
+      } else if (_state == DecoderState.stringData) {
         if (_input.hasBytes(_currentLength)) {
           typed.Uint8Buffer data;
           data = _input.getBytes(_currentLength);
           final convertor.Utf8Decoder decoder = new convertor.Utf8Decoder();
           final String tmp = decoder.convert(data);
           _listener.onString(tmp);
-          _state = DecoderState.stateType;
+          _state = DecoderState.type;
         } else
           break;
-      } else if (_state == DecoderState.stateArray) {
+      } else if (_state == DecoderState.array) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
               _listener.onArrayElement(_input.getByte());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 2:
               _listener.onArrayElement(_input.getShort());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 4:
               _listener.onArrayElement(_input.getInt());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 8:
-              _state = DecoderState.stateError;
+              _state = DecoderState.error;
               _listener.onError("extra long array");
               break;
           }
         } else
           break;
-      } else if (_state == DecoderState.stateMap) {
+      } else if (_state == DecoderState.map) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
               _listener.onMap(_input.getByte());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 2:
               _listener.onMap(_currentLength = _input.getShort());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 4:
               _listener.onMap(_input.getInt());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 8:
-              _state = DecoderState.stateError;
+              _state = DecoderState.error;
               _listener.onError("extra long map");
               break;
           }
         } else
           break;
-      } else if (_state == DecoderState.stateTag) {
+      } else if (_state == DecoderState.tag) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
               _listener.onTag(_input.getByte());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 2:
               _listener.onTag(_input.getShort());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 4:
               _listener.onTag(_input.getInt());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 8:
               _listener.onExtraTag(_input.getLong());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
           }
         } else
           break;
-      } else if (_state == DecoderState.stateSpecial) {
+      } else if (_state == DecoderState.special) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
               _listener.onSpecial(_input.getByte());
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 2:
               final int val = _input.getShort();
               final double fval = _input.getHalfFloat(val);
               _listener.onSpecialFloat(fval);
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 4:
               final typed.Uint8Buffer buff = _input.getBytes(_currentLength);
               final double fval = _input.getSingleFloat(buff);
               _listener.onSpecialFloat(fval);
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
             case 8:
               final typed.Uint8Buffer buff = _input.getBytes(_currentLength);
               final double fval = _input.getDoubleFloat(buff);
               _listener.onSpecialFloat(fval);
-              _state = DecoderState.stateType;
+              _state = DecoderState.type;
               break;
           }
         } else
           break;
-      } else if (_state == DecoderState.stateError) {
+      } else if (_state == DecoderState.error) {
         break;
       } else {
         print("Decoder::run - UNKNOWN STATE");
