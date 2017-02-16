@@ -45,7 +45,24 @@ const int ai24 = 24;
 const int ai25 = 25;
 const int ai26 = 26;
 const int ai27 = 27;
-const int ai31 = 31;
+const int aiBreak = 31;
+
+/// Tag additional information constants
+const int aiTag23 = 23;
+const int aiTag24 = 24;
+const int aiTag25 = 25;
+const int aiTag26 = 26;
+const int aiTag27 = 27;
+
+/// Length constants
+const int oneByte = 1;
+const int twoByte = 2;
+const int fourByte = 4;
+const int eightByte = 8;
+
+/// Numerical constants
+const int two31 = 2 ^ 31;
+const int minusTwo31 = -(2 ^ 31);
 
 class Decoder {
   Listener _listener;
@@ -76,21 +93,21 @@ class Decoder {
 
           switch (majorType) {
             case majorTypePint: // positive integer
-              if (minorType < 24) {
+              if (minorType < ai24) {
                 _listener.onInteger(minorType);
-              } else if (minorType == 24) {
+              } else if (minorType == ai24) {
                 // 1 byte
                 _currentLength = 1;
                 _state = DecoderState.pint;
-              } else if (minorType == 25) {
+              } else if (minorType == ai25) {
                 // 2 byte
                 _currentLength = 2;
                 _state = DecoderState.pint;
-              } else if (minorType == 26) {
+              } else if (minorType == ai26) {
                 // 4 byte
                 _currentLength = 4;
                 _state = DecoderState.pint;
-              } else if (minorType == 27) {
+              } else if (minorType == ai27) {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.pint;
@@ -100,21 +117,21 @@ class Decoder {
               }
               break;
             case majorTypeNint: // negative integer
-              if (minorType < 24) {
+              if (minorType < ai24) {
                 _listener.onInteger(-1 - minorType);
-              } else if (minorType == 24) {
+              } else if (minorType == ai24) {
                 // 1 byte
                 _currentLength = 1;
                 _state = DecoderState.nint;
-              } else if (minorType == 25) {
+              } else if (minorType == ai25) {
                 // 2 byte
                 _currentLength = 2;
                 _state = DecoderState.nint;
-              } else if (minorType == 26) {
+              } else if (minorType == ai26) {
                 // 4 byte
                 _currentLength = 4;
                 _state = DecoderState.nint;
-              } else if (minorType == 27) {
+              } else if (minorType == ai27) {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.nint;
@@ -124,25 +141,25 @@ class Decoder {
               }
               break;
             case majorTypeBytes: // bytes
-              if (minorType < 24) {
+              if (minorType < ai24) {
                 _state = DecoderState.bytesData;
                 _currentLength = minorType;
-              } else if (minorType == 24) {
+              } else if (minorType == ai24) {
                 _state = DecoderState.bytesSize;
                 _currentLength = 1;
-              } else if (minorType == 25) {
+              } else if (minorType == ai25) {
                 // 2 byte
                 _currentLength = 2;
                 _state = DecoderState.bytesSize;
-              } else if (minorType == 26) {
+              } else if (minorType == ai26) {
                 // 4 byte
                 _currentLength = 4;
                 _state = DecoderState.bytesSize;
-              } else if (minorType == 27) {
+              } else if (minorType == ai27) {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.bytesSize;
-              } else if (minorType == 31) {
+              } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
@@ -151,25 +168,25 @@ class Decoder {
               }
               break;
             case majorTypeString: // string
-              if (minorType < 24) {
+              if (minorType < ai24) {
                 _state = DecoderState.stringData;
                 _currentLength = minorType;
-              } else if (minorType == 24) {
+              } else if (minorType == ai24) {
                 _state = DecoderState.stringSize;
                 _currentLength = 1;
-              } else if (minorType == 25) {
+              } else if (minorType == ai25) {
                 // 2 byte
                 _currentLength = 2;
                 _state = DecoderState.stringSize;
-              } else if (minorType == 26) {
+              } else if (minorType == ai26) {
                 // 4 byte
                 _currentLength = 4;
                 _state = DecoderState.stringSize;
-              } else if (minorType == 27) {
+              } else if (minorType == ai27) {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.stringSize;
-              } else if (minorType == 31) {
+              } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
@@ -178,24 +195,24 @@ class Decoder {
               }
               break;
             case majorTypeArray: // array
-              if (minorType < 24) {
+              if (minorType < ai24) {
                 _listener.onArray(minorType);
-              } else if (minorType == 24) {
+              } else if (minorType == ai24) {
                 _state = DecoderState.array;
                 _currentLength = 1;
-              } else if (minorType == 25) {
+              } else if (minorType == ai25) {
                 // 2 byte
                 _currentLength = 2;
                 _state = DecoderState.array;
-              } else if (minorType == 26) {
+              } else if (minorType == ai26) {
                 // 4 byte
                 _currentLength = 4;
                 _state = DecoderState.array;
-              } else if (minorType == 27) {
+              } else if (minorType == ai27) {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.array;
-              } else if (minorType == 31) {
+              } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
@@ -204,24 +221,24 @@ class Decoder {
               }
               break;
             case majorTypeMap: // map
-              if (minorType < 24) {
+              if (minorType < ai24) {
                 _listener.onMap(minorType);
-              } else if (minorType == 24) {
+              } else if (minorType == ai24) {
                 _state = DecoderState.map;
                 _currentLength = 1;
-              } else if (minorType == 25) {
+              } else if (minorType == ai25) {
                 // 2 byte
                 _currentLength = 2;
                 _state = DecoderState.map;
-              } else if (minorType == 26) {
+              } else if (minorType == ai26) {
                 // 4 byte
                 _currentLength = 4;
                 _state = DecoderState.map;
-              } else if (minorType == 27) {
+              } else if (minorType == ai27) {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.map;
-              } else if (minorType == 31) {
+              } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
@@ -230,20 +247,20 @@ class Decoder {
               }
               break;
             case majorTypeTag: // tag
-              if (minorType < 24) {
+              if (minorType < ai24) {
                 _listener.onTag(minorType);
-              } else if (minorType == 24) {
+              } else if (minorType == ai24) {
                 _state = DecoderState.tag;
                 _currentLength = 1;
-              } else if (minorType == 25) {
+              } else if (minorType == ai25) {
                 // 2 byte
                 _currentLength = 2;
                 _state = DecoderState.tag;
-              } else if (minorType == 26) {
+              } else if (minorType == ai26) {
                 // 4 byte
                 _currentLength = 4;
                 _state = DecoderState.tag;
-              } else if (minorType == 27) {
+              } else if (minorType == ai27) {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.tag;
@@ -261,24 +278,24 @@ class Decoder {
                 _listener.onBool(true);
               } else if (minorType == 22) {
                 _listener.onNull();
-              } else if (minorType == 23) {
+              } else if (minorType == aiTag23) {
                 _listener.onUndefined();
-              } else if (minorType == 24) {
+              } else if (minorType == aiTag24) {
                 _state = DecoderState.special;
                 _currentLength = 1;
-              } else if (minorType == 25) {
+              } else if (minorType == aiTag25) {
                 // 2 byte
                 _currentLength = 2;
                 _state = DecoderState.special;
-              } else if (minorType == 26) {
+              } else if (minorType == aiTag26) {
                 // 4 byte
                 _currentLength = 4;
                 _state = DecoderState.special;
-              } else if (minorType == 27) {
+              } else if (minorType == aiTag27) {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.special;
-              } else if (minorType == 31) {
+              } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("stop");
               } else {
@@ -302,7 +319,7 @@ class Decoder {
               break;
             case 4:
               temp = _input.getInt();
-              if (temp <= 2 ^ 31) {
+              if (temp <= two31) {
                 _listener.onInteger(temp);
               } else {
                 _listener.onExtraInteger(temp, 1);
@@ -329,10 +346,10 @@ class Decoder {
               break;
             case 4:
               temp = _input.getInt();
-              if (temp <= 2 ^ 31) {
+              if (temp <= two31) {
                 _listener.onInteger(-temp);
-              } else if (temp >= 2 ^ 31) {
-                _listener.onInteger(-2 ^ 31);
+              } else if (temp >= two31) {
+                _listener.onInteger(minusTwo31);
               } else {
                 _listener.onExtraInteger((-1 - temp), -1);
               }
