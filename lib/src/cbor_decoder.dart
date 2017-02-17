@@ -41,18 +41,15 @@ const int majorTypeTag = 6;
 const int majorTypeSpecial = 7;
 
 /// Additional information constants
+const int ai20 = 20;
+const int ai21 = 21;
+const int ai22 = 22;
+const int ai23 = 23;
 const int ai24 = 24;
 const int ai25 = 25;
 const int ai26 = 26;
 const int ai27 = 27;
 const int aiBreak = 31;
-
-/// Tag additional information constants
-const int aiTag23 = 23;
-const int aiTag24 = 24;
-const int aiTag25 = 25;
-const int aiTag26 = 26;
-const int aiTag27 = 27;
 
 /// Length constants
 const int oneByte = 1;
@@ -270,28 +267,28 @@ class Decoder {
               }
               break;
             case majorTypeSpecial: // special
-              if (minorType < 20) {
+              if (minorType < ai20) {
                 _listener.onSpecial(minorType);
-              } else if (minorType == 20) {
+              } else if (minorType == ai20) {
                 _listener.onBool(false);
-              } else if (minorType == 21) {
+              } else if (minorType == ai21) {
                 _listener.onBool(true);
-              } else if (minorType == 22) {
+              } else if (minorType == ai22) {
                 _listener.onNull();
-              } else if (minorType == aiTag23) {
+              } else if (minorType == ai23) {
                 _listener.onUndefined();
-              } else if (minorType == aiTag24) {
+              } else if (minorType == ai24) {
                 _state = DecoderState.special;
                 _currentLength = 1;
-              } else if (minorType == aiTag25) {
+              } else if (minorType == ai25) {
                 // 2 byte
                 _currentLength = 2;
                 _state = DecoderState.special;
-              } else if (minorType == aiTag26) {
+              } else if (minorType == ai26) {
                 // 4 byte
                 _currentLength = 4;
                 _state = DecoderState.special;
-              } else if (minorType == aiTag27) {
+              } else if (minorType == ai27) {
                 // 8 byte
                 _currentLength = 8;
                 _state = DecoderState.special;
