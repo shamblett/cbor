@@ -78,6 +78,7 @@ class Decoder {
     _listener = listener;
   }
 
+  /// Decoder entry point
   void run() {
     int temp;
     final bool run = true;
@@ -94,23 +95,23 @@ class Decoder {
                 _listener.onInteger(minorType);
               } else if (minorType == ai24) {
                 // 1 byte
-                _currentLength = 1;
+                _currentLength = oneByte;
                 _state = DecoderState.pint;
               } else if (minorType == ai25) {
                 // 2 byte
-                _currentLength = 2;
+                _currentLength = twoByte;
                 _state = DecoderState.pint;
               } else if (minorType == ai26) {
                 // 4 byte
-                _currentLength = 4;
+                _currentLength = fourByte;
                 _state = DecoderState.pint;
               } else if (minorType == ai27) {
                 // 8 byte
-                _currentLength = 8;
+                _currentLength = eightByte;
                 _state = DecoderState.pint;
               } else {
                 _state = DecoderState.error;
-                _listener.onError("invalid integer type");
+                _listener.onError("Decoder::invalid integer type");
               }
               break;
             case majorTypeNint: // negative integer
@@ -118,23 +119,23 @@ class Decoder {
                 _listener.onInteger(-1 - minorType);
               } else if (minorType == ai24) {
                 // 1 byte
-                _currentLength = 1;
+                _currentLength = oneByte;
                 _state = DecoderState.nint;
               } else if (minorType == ai25) {
                 // 2 byte
-                _currentLength = 2;
+                _currentLength = twoByte;
                 _state = DecoderState.nint;
               } else if (minorType == ai26) {
                 // 4 byte
-                _currentLength = 4;
+                _currentLength = fourByte;
                 _state = DecoderState.nint;
               } else if (minorType == ai27) {
                 // 8 byte
-                _currentLength = 8;
+                _currentLength = eightByte;
                 _state = DecoderState.nint;
               } else {
                 _state = DecoderState.error;
-                _listener.onError("invalid integer type");
+                _listener.onError("Decoder::invalid integer type");
               }
               break;
             case majorTypeBytes: // bytes
@@ -143,25 +144,25 @@ class Decoder {
                 _currentLength = minorType;
               } else if (minorType == ai24) {
                 _state = DecoderState.bytesSize;
-                _currentLength = 1;
+                _currentLength = oneByte;
               } else if (minorType == ai25) {
                 // 2 byte
-                _currentLength = 2;
+                _currentLength = twoByte;
                 _state = DecoderState.bytesSize;
               } else if (minorType == ai26) {
                 // 4 byte
-                _currentLength = 4;
+                _currentLength = fourByte;
                 _state = DecoderState.bytesSize;
               } else if (minorType == ai27) {
                 // 8 byte
-                _currentLength = 8;
+                _currentLength = eightByte;
                 _state = DecoderState.bytesSize;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
                 _state = DecoderState.error;
-                _listener.onError("invalid bytes type");
+                _listener.onError("Decoder::invalid bytes type");
               }
               break;
             case majorTypeString: // string
@@ -170,25 +171,25 @@ class Decoder {
                 _currentLength = minorType;
               } else if (minorType == ai24) {
                 _state = DecoderState.stringSize;
-                _currentLength = 1;
+                _currentLength = oneByte;
               } else if (minorType == ai25) {
                 // 2 byte
-                _currentLength = 2;
+                _currentLength = twoByte;
                 _state = DecoderState.stringSize;
               } else if (minorType == ai26) {
                 // 4 byte
-                _currentLength = 4;
+                _currentLength = fourByte;
                 _state = DecoderState.stringSize;
               } else if (minorType == ai27) {
                 // 8 byte
-                _currentLength = 8;
+                _currentLength = eightByte;
                 _state = DecoderState.stringSize;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
                 _state = DecoderState.error;
-                _listener.onError("invalid string type");
+                _listener.onError("Decoder::invalid string type");
               }
               break;
             case majorTypeArray: // array
@@ -196,25 +197,25 @@ class Decoder {
                 _listener.onArray(minorType);
               } else if (minorType == ai24) {
                 _state = DecoderState.array;
-                _currentLength = 1;
+                _currentLength = oneByte;
               } else if (minorType == ai25) {
                 // 2 byte
-                _currentLength = 2;
+                _currentLength = twoByte;
                 _state = DecoderState.array;
               } else if (minorType == ai26) {
                 // 4 byte
-                _currentLength = 4;
+                _currentLength = fourByte;
                 _state = DecoderState.array;
               } else if (minorType == ai27) {
                 // 8 byte
-                _currentLength = 8;
+                _currentLength = eightByte;
                 _state = DecoderState.array;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
                 _state = DecoderState.error;
-                _listener.onError("invalid array type");
+                _listener.onError("Decoder::invalid array type");
               }
               break;
             case majorTypeMap: // map
@@ -222,25 +223,25 @@ class Decoder {
                 _listener.onMap(minorType);
               } else if (minorType == ai24) {
                 _state = DecoderState.map;
-                _currentLength = 1;
+                _currentLength = oneByte;
               } else if (minorType == ai25) {
                 // 2 byte
-                _currentLength = 2;
+                _currentLength = twoByte;
                 _state = DecoderState.map;
               } else if (minorType == ai26) {
                 // 4 byte
-                _currentLength = 4;
+                _currentLength = fourByte;
                 _state = DecoderState.map;
               } else if (minorType == ai27) {
                 // 8 byte
-                _currentLength = 8;
+                _currentLength = eightByte;
                 _state = DecoderState.map;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("start");
               } else {
                 _state = DecoderState.error;
-                _listener.onError("invalid array type");
+                _listener.onError("Decoder::invalid array type");
               }
               break;
             case majorTypeTag: // tag
@@ -248,22 +249,22 @@ class Decoder {
                 _listener.onTag(minorType);
               } else if (minorType == ai24) {
                 _state = DecoderState.tag;
-                _currentLength = 1;
+                _currentLength = oneByte;
               } else if (minorType == ai25) {
                 // 2 byte
-                _currentLength = 2;
+                _currentLength = twoByte;
                 _state = DecoderState.tag;
               } else if (minorType == ai26) {
                 // 4 byte
-                _currentLength = 4;
+                _currentLength = fourByte;
                 _state = DecoderState.tag;
               } else if (minorType == ai27) {
                 // 8 byte
-                _currentLength = 8;
+                _currentLength = eightByte;
                 _state = DecoderState.tag;
               } else {
                 _state = DecoderState.error;
-                _listener.onError("invalid tag type");
+                _listener.onError("Decoder::invalid tag type");
               }
               break;
             case majorTypeSpecial: // special
@@ -279,25 +280,25 @@ class Decoder {
                 _listener.onUndefined();
               } else if (minorType == ai24) {
                 _state = DecoderState.special;
-                _currentLength = 1;
+                _currentLength = oneByte;
               } else if (minorType == ai25) {
                 // 2 byte
-                _currentLength = 2;
+                _currentLength = twoByte;
                 _state = DecoderState.special;
               } else if (minorType == ai26) {
                 // 4 byte
-                _currentLength = 4;
+                _currentLength = fourByte;
                 _state = DecoderState.special;
               } else if (minorType == ai27) {
                 // 8 byte
-                _currentLength = 8;
+                _currentLength = eightByte;
                 _state = DecoderState.special;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
                 _listener.onIndefinate("stop");
               } else {
                 _state = DecoderState.error;
-                _listener.onError("invalid special type");
+                _listener.onError("Decoder::invalid special type");
               }
               break;
           }
@@ -375,7 +376,7 @@ class Decoder {
               break;
             case 8:
               _state = DecoderState.error;
-              _listener.onError("extra long bytes");
+              _listener.onError("Decoder::extra long bytes");
               break;
           }
         } else
@@ -405,7 +406,7 @@ class Decoder {
               break;
             case 8:
               _state = DecoderState.error;
-              _listener.onError("extra long array");
+              _listener.onError("Decoder::extra long array");
               break;
           }
         } else
@@ -437,7 +438,7 @@ class Decoder {
               break;
             case 8:
               _state = DecoderState.error;
-              _listener.onError("extra long array");
+              _listener.onError("Decoder::extra long array");
               break;
           }
         } else
@@ -459,7 +460,7 @@ class Decoder {
               break;
             case 8:
               _state = DecoderState.error;
-              _listener.onError("extra long map");
+              _listener.onError("Decoder::extra long map");
               break;
           }
         } else
@@ -515,13 +516,15 @@ class Decoder {
         } else
           break;
       } else if (_state == DecoderState.error) {
+        _listener.onError("Decoder::general error");
         break;
       } else {
-        print("Decoder::run - UNKNOWN STATE");
+        _listener.onError("Decoder::unknown state");
       }
     }
   }
 
+  /// Set a listener
   void setListener(Listener listenerInstance) {
     _listener = listenerInstance;
   }
