@@ -111,7 +111,7 @@ class Decoder {
                 _state = DecoderState.pint;
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid integer type");
+                _listener.onError("Decoder::invalid positive integer type");
               }
               break;
             case majorTypeNint: // negative integer
@@ -135,7 +135,7 @@ class Decoder {
                 _state = DecoderState.nint;
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid integer type");
+                _listener.onError("Decoder::invalid negative integer type");
               }
               break;
             case majorTypeBytes: // bytes
@@ -241,7 +241,7 @@ class Decoder {
                 _listener.onIndefinate("start");
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid array type");
+                _listener.onError("Decoder::invalid map type");
               }
               break;
             case majorTypeTag: // tag
