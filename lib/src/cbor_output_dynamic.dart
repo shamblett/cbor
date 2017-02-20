@@ -25,6 +25,10 @@ class OutputDynamic extends Output {
     return _buffer;
   }
 
+  List<int> getDataAsList() {
+    return _buffer.toList();
+  }
+
   int size() {
     return _buffer.length;
   }
