@@ -73,5 +73,12 @@ void main() {
       expect(output.getDataAsList(),
           [0x1b, 0x00, 0x00, 0x00, 0xe8, 0xd4, 0xa5, 0x10, 0x00]);
     });
+
+    test('1000000000000', () {
+      output.clear();
+      encoder.writeInt(1000000000000);
+      expect(output.getDataAsList(),
+          [0x1b, 0x00, 0x00, 0x00, 0xe8, 0xd4, 0xa5, 0x10, 0x00]);
+    });
   });
 }

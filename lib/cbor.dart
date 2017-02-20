@@ -9,6 +9,7 @@ library cbor;
 
 import 'dart:convert' as convertor;
 import 'dart:typed_data';
+import 'dart:math';
 import 'package:typed_data/typed_data.dart' as typed;
 
 /// The CBOR package exported interface

@@ -60,8 +60,8 @@ const int fourByte = 4;
 const int eightByte = 8;
 
 /// Numerical constants
-const int two31 = 2 ^ 31;
-const int minusTwo31 = -(2 ^ 31);
+final int two31 = pow(2, 31);
+final int minusTwo31 = -(pow(2, 31));
 
 class Decoder {
   Listener _listener;

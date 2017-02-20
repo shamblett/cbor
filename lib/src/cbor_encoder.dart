@@ -9,7 +9,12 @@ part of cbor;
 
 /// The encoder class implements the CBOR decoder functionality as defined in
 /// RFC7049.
-///
+
+/// Numerical constants
+final int two8 = pow(2, 8);
+final int two16 = pow(2, 16);
+final int two32 = pow(2, 32);
+
 class Encoder {
   Output _out;
 
@@ -24,12 +29,15 @@ class Encoder {
   void _writeTypeValue(int majorType, int value) {
     int type = majorType;
     type <<= 5;
-    if (value < 24) { // Value
+    if (value < 24) {
+      // Value
       _out.putByte((type | value));
-    } else if (value < 256) { // Uint8
+    } else if (value < two8) {
+      // Uint8
       _out.putByte((type | 24));
       _out.putByte(value);
-    } else if (value < 65536) { // Uint16
+    } else if (value < two16) {
+      // Uint16
       _out.putByte((type | 25));
       typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
       buff[0] = value;
@@ -39,7 +47,8 @@ class Encoder {
           .toList()
           .reversed);
       _out.putBytes(data);
-    } else if (value < 2147483648) { // Uint32
+    } else if (value < two32) {
+      // Uint32
       _out.putByte((type | 26));
       typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
       buff[0] = value;
@@ -49,7 +58,8 @@ class Encoder {
           .toList()
           .reversed);
       _out.putBytes(data);
-    } else { // Uint64
+    } else {
+      // Uint64
       _out.putByte((type | 27));
       typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
       buff[0] = value;
