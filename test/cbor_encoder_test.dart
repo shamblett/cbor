@@ -6,6 +6,7 @@
  */
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
+import 'package:typed_data/typed_data.dart' as typed;
 
 void main() {
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
@@ -83,7 +84,12 @@ void main() {
 
     test('18446744073709551616', () {
       output.clear();
-      encoder.writeInt(18446744073709551616);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00
+      ]);
+      encoder.writeTag(2);
+      encoder.writeBytes(data);
       expect(output.getDataAsList(),
           [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00

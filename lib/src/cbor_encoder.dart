@@ -29,7 +29,6 @@ class Encoder {
   void _writeTypeValue(int majorType, int value) {
     int type = majorType;
     type <<= 5;
-    if (majorType == 0 || majorType == 1) {
       if (value < 24) {
         // Value
         _out.putByte((type | value));
@@ -71,7 +70,6 @@ class Encoder {
             .reversed);
         _out.putBytes(data);
       }
-    } else {}
   }
 
   void writeBool(bool value) {
@@ -90,8 +88,8 @@ class Encoder {
     }
   }
 
-  void writeBytes(typed.Uint8Buffer data, int size) {
-    _writeTypeValue(2, size);
+  void writeBytes(typed.Uint8Buffer data) {
+    _writeTypeValue(2, data.length);
     _out.putBytes(data);
   }
 
