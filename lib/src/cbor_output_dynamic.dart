@@ -7,6 +7,9 @@
 
 part of cbor;
 
+/// A dymnamic output class, this allows encoded byte streams to be
+/// of any size.
+
 class OutputDynamic extends Output {
   typed.Uint8Buffer _buffer;
 

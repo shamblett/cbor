@@ -7,6 +7,7 @@
 
 part of cbor;
 
+///
 class Cbor {
 
 }

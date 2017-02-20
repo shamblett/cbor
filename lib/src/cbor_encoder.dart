@@ -7,6 +7,9 @@
 
 part of cbor;
 
+/// The encoder class implements the CBOR decoder functionality as defined in
+/// RFC7049.
+///
 class Encoder {
   Output _out;
 

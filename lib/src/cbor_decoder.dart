@@ -8,7 +8,9 @@
 part of cbor;
 
 /// The decoder class implements the CBOR decoder functionality as defined in
-/// RFC7049.
+/// RFC7049. Output from the decoding process is through the Listener class interface.
+/// Different listener classes can be supplied for different purposes, such as test,
+/// debug as well as the standard stack listener.
 
 /// Decoder states
 enum DecoderState {

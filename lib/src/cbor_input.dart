@@ -7,6 +7,9 @@
 
 part of cbor;
 
+/// The Input class provides data access primitives to the underlying
+/// UTF-8 data buffer supplied.
+
 class Input {
   typed.Uint8Buffer _data;
   int _offset;

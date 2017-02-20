@@ -7,6 +7,9 @@
 
 part of cbor;
 
+/// Listener base class, all listener implementations must at least
+/// implement these methods to interface to the decoder.
+
 abstract class Listener {
   void onInteger(int value);
 
