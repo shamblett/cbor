@@ -39,10 +39,10 @@ class Encoder {
     } else if (value < two16) {
       // Uint16
       _out.putByte((type | 25));
-      typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
+      final typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
       buff[0] = value;
-      Uint8List ulist = new Uint8List.view(buff.buffer);
-      typed.Uint8Buffer data = new typed.Uint8Buffer();
+      final Uint8List ulist = new Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
       data.addAll(ulist
           .toList()
           .reversed);
@@ -50,10 +50,10 @@ class Encoder {
     } else if (value < two32) {
       // Uint32
       _out.putByte((type | 26));
-      typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
+      final typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
       buff[0] = value;
-      Uint8List ulist = new Uint8List.view(buff.buffer);
-      typed.Uint8Buffer data = new typed.Uint8Buffer();
+      final Uint8List ulist = new Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
       data.addAll(ulist
           .toList()
           .reversed);
@@ -61,10 +61,10 @@ class Encoder {
     } else {
       // Uint64
       _out.putByte((type | 27));
-      typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
+      final typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
       buff[0] = value;
-      Uint8List ulist = new Uint8List.view(buff.buffer);
-      typed.Uint8Buffer data = new typed.Uint8Buffer();
+      final Uint8List ulist = new Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
       data.addAll(ulist
           .toList()
           .reversed);
