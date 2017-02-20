@@ -24,21 +24,41 @@ class Encoder {
   void _writeTypeValue(int majorType, int value) {
     int type = majorType;
     type <<= 5;
-    if (value < 24) {
+    if (value < 24) { // Value
       _out.putByte((type | value));
-    } else if (value < 256) {
+    } else if (value < 256) { // Uint8
       _out.putByte((type | 24));
       _out.putByte(value);
-    } else if (value < 65536) {
+    } else if (value < 65536) { // Uint16
       _out.putByte((type | 25));
-      _out.putByte((value >> 8));
-      _out.putByte(value);
-    } else {
+      typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
+      buff[0] = value;
+      Uint8List ulist = new Uint8List.view(buff.buffer);
+      typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll(ulist
+          .toList()
+          .reversed);
+      _out.putBytes(data);
+    } else if (value < 2147483648) { // Uint32
       _out.putByte((type | 26));
-      _out.putByte((value >> 24));
-      _out.putByte((value >> 16));
-      _out.putByte((value >> 8));
-      _out.putByte(value);
+      typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
+      buff[0] = value;
+      Uint8List ulist = new Uint8List.view(buff.buffer);
+      typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll(ulist
+          .toList()
+          .reversed);
+      _out.putBytes(data);
+    } else { // Uint64
+      _out.putByte((type | 27));
+      typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
+      buff[0] = value;
+      Uint8List ulist = new Uint8List.view(buff.buffer);
+      typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll(ulist
+          .toList()
+          .reversed);
+      _out.putBytes(data);
     }
   }
 
