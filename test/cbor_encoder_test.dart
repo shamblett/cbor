@@ -85,15 +85,52 @@ void main() {
     test('18446744073709551616', () {
       output.clear();
       final typed.Uint8Buffer data = new typed.Uint8Buffer();
-      data.addAll([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00
-      ]);
+      data.addAll([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
       encoder.writeTag(2);
       encoder.writeBytes(data);
       expect(output.getDataAsList(),
-          [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-          0x00, 0x00
-          ]);
+          [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+    });
+
+    test('-1', () {
+      output.clear();
+      encoder.writeInt(-1);
+      expect(output.getDataAsList(), [0x20]);
+    });
+
+    test('-10', () {
+      output.clear();
+      encoder.writeInt(-10);
+      expect(output.getDataAsList(), [0x29]);
+    });
+
+    test('-100', () {
+      output.clear();
+      encoder.writeInt(-100);
+      expect(output.getDataAsList(), [0x38, 0x63]);
+    });
+
+    test('-1000', () {
+      output.clear();
+      encoder.writeInt(-1000);
+      expect(output.getDataAsList(), [0x39, 0x03, 0xe7]);
+    });
+
+    test('-18446744073709551616', () {
+      output.clear();
+      encoder.writeInt(-18446744073709551616);
+      expect(output.getDataAsList(),
+          [0x3b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
+    });
+
+    test('-18446744073709551617', () {
+      output.clear();
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      encoder.writeTag(3);
+      encoder.writeBytes(data);
+      expect(output.getDataAsList(),
+          [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
     });
   });
 }

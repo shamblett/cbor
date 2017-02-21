@@ -65,7 +65,8 @@ class Encoder {
             .reversed);
         _out.putBytes(data);
     } else {
-      // Bignum
+      // Bignum - not supported, use tags
+      print("Bignums not supported");
     }
   }
 
@@ -79,7 +80,7 @@ class Encoder {
 
   void writeInt(int value) {
     if (value < 0) {
-      _writeTypeValue(1, -(value));
+      _writeTypeValue(1, -(value + 1));
     } else {
       _writeTypeValue(0, value);
     }
