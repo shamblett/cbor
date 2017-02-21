@@ -11,6 +11,7 @@ import 'package:typed_data/typed_data.dart' as typed;
 void main() {
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
     // Common initialisation
+    cbor.init();
     final cbor.OutputDynamic output = new cbor.OutputDynamic();
     final cbor.Encoder encoder = new cbor.Encoder(output);
 

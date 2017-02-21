@@ -138,6 +138,16 @@ class Encoder {
           uList[1] << 8 +
           uList[2] << 16 +
           uList[3] << 24;
+      final int hBits = baseTable[intVal >> 23] +
+          ((intVal & 0x7FFFFF) >> shiftTable[intVal >> 23]);
+      final typed.Uint16Buffer hBuff = new typed.Uint16Buffer(1);
+      hBuff[0] = hBits;
+      final ByteBuffer lBuff = hBuff.buffer;
+      final Uint8List hList = lBuff.asUint8List();
+      final typed.Uint8Buffer valBuff = new typed.Uint8Buffer();
+      valBuff.addAll(hList);
+      writeSpecial(25);
+      _out.putBytes(valBuff);
     }
   }
 }
