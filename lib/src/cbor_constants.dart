@@ -20,3 +20,14 @@ const int majorTypeArray = 4;
 const int majorTypeMap = 5;
 const int majorTypeTag = 6;
 const int majorTypeSpecial = 7;
+
+/// Additional information constants
+const int ai20 = 20;
+const int ai21 = 21;
+const int ai22 = 22;
+const int ai23 = 23;
+const int ai24 = 24;
+const int ai25 = 25;
+const int ai26 = 26;
+const int ai27 = 27;
+const int aiBreak = 31;
