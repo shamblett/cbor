@@ -132,5 +132,12 @@ void main() {
       expect(output.getDataAsList(),
           [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
     });
+
+    test('0.0', () {
+      output.clear();
+      encoder.writeFloat(0.0);
+      expect(output.getDataAsList(), [0xf9, 0x00, 0x00]);
+    });
+
   });
 }

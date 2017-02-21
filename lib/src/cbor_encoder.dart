@@ -128,4 +128,16 @@ class Encoder {
   void writeUndefined() {
     _out.putByte(0xf7);
   }
+
+  void writeFloat(double value) {
+    if (value <= 65504.0) {
+      final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
+      final ByteBuffer bBuff = fBuff.buffer;
+      final Uint8List uList = bBuff.asUint8List();
+      final int intVal = uList[0] +
+          uList[1] << 8 +
+          uList[2] << 16 +
+          uList[3] << 24;
+    }
+  }
 }
