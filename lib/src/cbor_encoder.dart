@@ -10,11 +10,6 @@ part of cbor;
 /// The encoder class implements the CBOR decoder functionality as defined in
 /// RFC7049.
 
-/// Numerical constants
-final int two8 = pow(2, 8);
-final int two16 = pow(2, 16);
-final int two32 = pow(2, 32);
-
 class Encoder {
   Output _out;
 
@@ -28,17 +23,17 @@ class Encoder {
 
   void _writeTypeValue(int majorType, int value) {
     int type = majorType;
-    type <<= 5;
-      if (value < 24) {
+    type <<= majorTypeShift;
+    if (value < ai24) {
         // Value
         _out.putByte((type | value));
       } else if (value < two8) {
         // Uint8
-        _out.putByte((type | 24));
+      _out.putByte((type | ai24));
         _out.putByte(value);
       } else if (value < two16) {
         // Uint16
-        _out.putByte((type | 25));
+      _out.putByte((type | ai25));
         final typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
         buff[0] = value;
         final Uint8List ulist = new Uint8List.view(buff.buffer);
@@ -49,7 +44,7 @@ class Encoder {
         _out.putBytes(data);
       } else if (value < two32) {
         // Uint32
-        _out.putByte((type | 26));
+      _out.putByte((type | ai26));
         final typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
         buff[0] = value;
         final Uint8List ulist = new Uint8List.view(buff.buffer);
@@ -58,9 +53,9 @@ class Encoder {
             .toList()
             .reversed);
         _out.putBytes(data);
-      } else {
+    } else if (value < two64) {
         // Uint64
-        _out.putByte((type | 27));
+      _out.putByte((type | ai27));
         final typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
         buff[0] = value;
         final Uint8List ulist = new Uint8List.view(buff.buffer);
@@ -69,7 +64,9 @@ class Encoder {
             .toList()
             .reversed);
         _out.putBytes(data);
-      }
+    } else {
+      // Bignum
+    }
   }
 
   void writeBool(bool value) {

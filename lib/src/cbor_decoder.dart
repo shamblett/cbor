@@ -34,10 +34,6 @@ const int twoByte = 2;
 const int fourByte = 4;
 const int eightByte = 8;
 
-/// Numerical constants
-final int two31 = pow(2, 31);
-final int minusTwo31 = -(pow(2, 31));
-
 class Decoder {
   Listener _listener;
   Input _input;
@@ -294,7 +290,7 @@ class Decoder {
               break;
             case 4:
               temp = _input.getInt();
-              if (temp <= two31) {
+              if (temp <= two32) {
                 _listener.onInteger(temp);
               } else {
                 _listener.onExtraInteger(temp, 1);
@@ -321,10 +317,10 @@ class Decoder {
               break;
             case 4:
               temp = _input.getInt();
-              if (temp <= two31) {
+              if (temp <= two32) {
                 _listener.onInteger(-temp);
-              } else if (temp >= two31) {
-                _listener.onInteger(minusTwo31);
+              } else if (temp == two32 + 1) {
+                _listener.onInteger(-two32 - 1);
               } else {
                 _listener.onExtraInteger((-1 - temp), -1);
               }

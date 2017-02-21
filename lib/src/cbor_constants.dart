@@ -31,3 +31,9 @@ const int ai25 = 25;
 const int ai26 = 26;
 const int ai27 = 27;
 const int aiBreak = 31;
+
+/// Numerical constants
+final int two8 = pow(2, 8);
+final int two16 = pow(2, 16);
+final int two32 = pow(2, 32);
+final int two64 = pow(2, 64);
