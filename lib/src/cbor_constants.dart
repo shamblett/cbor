@@ -37,7 +37,10 @@ final int two8 = pow(2, 8);
 final int two16 = pow(2, 16);
 final int two32 = pow(2, 32);
 final int two64 = pow(2, 64);
-const double halfLimit = 65504.0;
+const double halfLimitUpper = 65504.0;
+const double halfLimitLower = -65504.0;
+const double singleLimitUpper = 3.402823466e38;
+const double singleLimitLower = -3.402823466e38;
 
 /// Half precision mapping tables
 final typed.Uint16Buffer baseTable = new typed.Uint16Buffer();

@@ -131,15 +131,35 @@ class Encoder {
     _out.putByte(0xf7);
   }
 
+  /// Generalised float encoder, picks the smallest precision
+  /// it can. If you want a specific precision use the more
+  /// specialised methods.
   void writeFloat(double value) {
-    if (value <= halfLimit) {
-      final typed.Uint8Buffer valBuff = _singleToHalf(value);
-      writeSpecial(ai25);
-      _out.putByte(valBuff[1]);
-      _out.putByte(valBuff[0]);
+    if ((value <= halfLimitUpper) && (value >= halfLimitLower)) {
+      writeHalf(value);
+    } else if ((value <= singleLimitUpper) && (value >= singleLimitLower)) {
+      writeSingle(value);
+    } else {
+      writeDouble(value);
     }
   }
 
+  /// Half precision float
+  void writeHalf(double value) {
+    final typed.Uint8Buffer valBuff = _singleToHalf(value);
+    writeSpecial(ai25);
+    _out.putByte(valBuff[1]);
+    _out.putByte(valBuff[0]);
+  }
+
+  /// Single precision float
+  void writeSingle(double value) {}
+
+  /// Double precision float
+  void writeDouble(double value) {}
+
+  /// Lookup table based single to half precision conversion.
+  /// Rounding is indeterminate.
   typed.Uint8Buffer _singleToHalf(double value) {
     final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
     fBuff[0] = value;
