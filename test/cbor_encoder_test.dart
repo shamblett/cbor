@@ -163,5 +163,17 @@ void main() {
       encoder.writeFloat(65504.0);
       expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
     });
+
+    test('100000.0', () {
+      output.clear();
+      encoder.writeFloat(100000.0);
+      expect(output.getDataAsList(), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
+    });
+
+    test('3.4028234663852886e+38', () {
+      output.clear();
+      encoder.writeFloat(3.4028234663852886e+38);
+      expect(output.getDataAsList(), [0xfa, 0x7f, 0x7f, 0xff, 0xff]);
+    });
   });
 }

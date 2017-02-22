@@ -153,7 +153,17 @@ class Encoder {
   }
 
   /// Single precision float
-  void writeSingle(double value) {}
+  void writeSingle(double value) {
+    final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
+    fBuff[0] = value;
+    final ByteBuffer bBuff = fBuff.buffer;
+    final Uint8List uList = bBuff.asUint8List();
+    writeSpecial(ai26);
+    _out.putByte(uList[3]);
+    _out.putByte(uList[2]);
+    _out.putByte(uList[1]);
+    _out.putByte(uList[0]);
+  }
 
   /// Double precision float
   void writeDouble(double value) {}
