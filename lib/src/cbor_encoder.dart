@@ -131,9 +131,11 @@ class Encoder {
     _out.putByte(0xf7);
   }
 
-  /// Generalised float encoder, picks the smallest precision
+  /// Generalised float encoder, picks the smallest encoding
   /// it can. If you want a specific precision use the more
   /// specialised methods.
+  /// Note this can lead to encodings you don't expect in corner cases,
+  /// if you want a specific sized encodings don't use this.
   void writeFloat(double value) {
     if ((value <= halfLimitUpper) && (value >= halfLimitLower)) {
       writeHalf(value);
