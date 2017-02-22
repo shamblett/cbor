@@ -140,10 +140,28 @@ void main() {
       expect(output.getDataAsList(), [0xf9, 0x00, 0x00]);
     });
 
+    test('-0.0', () {
+      output.clear();
+      encoder.writeFloat(-0.0);
+      expect(output.getDataAsList(), [0xf9, 0x80, 0x00]);
+    });
+
     test('1.0', () {
       output.clear();
       encoder.writeFloat(1.0);
       expect(output.getDataAsList(), [0xf9, 0x3c, 0x00]);
+    });
+
+    test('1.5', () {
+      output.clear();
+      encoder.writeFloat(1.5);
+      expect(output.getDataAsList(), [0xf9, 0x3e, 0x00]);
+    });
+
+    test('65504.0', () {
+      output.clear();
+      encoder.writeFloat(65504.0);
+      expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
     });
   });
 }

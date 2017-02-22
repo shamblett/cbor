@@ -25,45 +25,45 @@ class Encoder {
     int type = majorType;
     type <<= majorTypeShift;
     if (value < ai24) {
-        // Value
-        _out.putByte((type | value));
-      } else if (value < two8) {
-        // Uint8
+      // Value
+      _out.putByte((type | value));
+    } else if (value < two8) {
+      // Uint8
       _out.putByte((type | ai24));
-        _out.putByte(value);
-      } else if (value < two16) {
-        // Uint16
+      _out.putByte(value);
+    } else if (value < two16) {
+      // Uint16
       _out.putByte((type | ai25));
-        final typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
-        buff[0] = value;
-        final Uint8List ulist = new Uint8List.view(buff.buffer);
-        final typed.Uint8Buffer data = new typed.Uint8Buffer();
-        data.addAll(ulist
-            .toList()
-            .reversed);
-        _out.putBytes(data);
-      } else if (value < two32) {
-        // Uint32
+      final typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
+      buff[0] = value;
+      final Uint8List ulist = new Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll(ulist
+          .toList()
+          .reversed);
+      _out.putBytes(data);
+    } else if (value < two32) {
+      // Uint32
       _out.putByte((type | ai26));
-        final typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
-        buff[0] = value;
-        final Uint8List ulist = new Uint8List.view(buff.buffer);
-        final typed.Uint8Buffer data = new typed.Uint8Buffer();
-        data.addAll(ulist
-            .toList()
-            .reversed);
-        _out.putBytes(data);
+      final typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
+      buff[0] = value;
+      final Uint8List ulist = new Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll(ulist
+          .toList()
+          .reversed);
+      _out.putBytes(data);
     } else if (value < two64) {
-        // Uint64
+      // Uint64
       _out.putByte((type | ai27));
-        final typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
-        buff[0] = value;
-        final Uint8List ulist = new Uint8List.view(buff.buffer);
-        final typed.Uint8Buffer data = new typed.Uint8Buffer();
-        data.addAll(ulist
-            .toList()
-            .reversed);
-        _out.putBytes(data);
+      final typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
+      buff[0] = value;
+      final Uint8List ulist = new Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll(ulist
+          .toList()
+          .reversed);
+      _out.putBytes(data);
     } else {
       // Bignum - not supported, use tags
       print("Bignums not supported");
@@ -132,28 +132,30 @@ class Encoder {
   }
 
   void writeFloat(double value) {
-    if (value <= 65504.0) {
-      final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
-      fBuff[0] = value;
-      final ByteBuffer bBuff = fBuff.buffer;
-      final Uint8List uList = bBuff.asUint8List();
-      final int intVal = uList[0] |
-      uList[1] << 8 |
-      uList[2] << 16 |
-          uList[3] << 24;
-      final int index = intVal >> 23;
-      final int masked = intVal & 0x7FFFFF;
-      int bTableVal = baseTable[index];
-      final int hBits = baseTable[index] + ((masked) >> shiftTable[index]);
-      final typed.Uint16Buffer hBuff = new typed.Uint16Buffer(1);
-      hBuff[0] = hBits;
-      final ByteBuffer lBuff = hBuff.buffer;
-      final Uint8List hList = lBuff.asUint8List();
-      final typed.Uint8Buffer valBuff = new typed.Uint8Buffer();
-      valBuff.addAll(hList);
-      writeSpecial(25);
+    if (value <= halfLimit) {
+      final typed.Uint8Buffer valBuff = _singleToHalf(value);
+      writeSpecial(ai25);
       _out.putByte(valBuff[1]);
       _out.putByte(valBuff[0]);
     }
+  }
+
+  typed.Uint8Buffer _singleToHalf(double value) {
+    final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
+    fBuff[0] = value;
+    final ByteBuffer bBuff = fBuff.buffer;
+    final Uint8List uList = bBuff.asUint8List();
+    final int intVal =
+    uList[0] | uList[1] << 8 | uList[2] << 16 | uList[3] << 24;
+    final int index = intVal >> 23;
+    final int masked = intVal & 0x7FFFFF;
+    final int hBits = baseTable[index] + ((masked) >> shiftTable[index]);
+    final typed.Uint16Buffer hBuff = new typed.Uint16Buffer(1);
+    hBuff[0] = hBits;
+    final ByteBuffer lBuff = hBuff.buffer;
+    final Uint8List hList = lBuff.asUint8List();
+    final typed.Uint8Buffer valBuff = new typed.Uint8Buffer();
+    valBuff.addAll(hList);
+    return valBuff;
   }
 }
