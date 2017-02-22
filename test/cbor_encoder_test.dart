@@ -267,5 +267,23 @@ void main() {
       expect(output.getDataAsList(),
           [0xfb, 0xff, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
     });
+
+    test('False', () {
+      output.clear();
+      encoder.writeBool(false);
+      expect(output.getDataAsList(), [0xf4]);
+    });
+
+    test('True', () {
+      output.clear();
+      encoder.writeBool(true);
+      expect(output.getDataAsList(), [0xf5]);
+    });
+
+    test('Null', () {
+      output.clear();
+      encoder.writeNull();
+      expect(output.getDataAsList(), [0xf6]);
+    });
   });
 }
