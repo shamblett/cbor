@@ -118,7 +118,9 @@ class Encoder {
   }
 
   void writeSpecial(int special) {
-    _writeTypeValue(7, special);
+    int type = 7;
+    type <<= majorTypeShift;
+    _out.putByte(type | special);
   }
 
   void writeNull() {
@@ -132,14 +134,17 @@ class Encoder {
   void writeFloat(double value) {
     if (value <= 65504.0) {
       final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
+      fBuff[0] = value;
       final ByteBuffer bBuff = fBuff.buffer;
       final Uint8List uList = bBuff.asUint8List();
-      final int intVal = uList[0] +
-          uList[1] << 8 +
-          uList[2] << 16 +
+      final int intVal = uList[0] |
+      uList[1] << 8 |
+      uList[2] << 16 |
           uList[3] << 24;
-      final int hBits = baseTable[intVal >> 23] +
-          ((intVal & 0x7FFFFF) >> shiftTable[intVal >> 23]);
+      final int index = intVal >> 23;
+      final int masked = intVal & 0x7FFFFF;
+      int bTableVal = baseTable[index];
+      final int hBits = baseTable[index] + ((masked) >> shiftTable[index]);
       final typed.Uint16Buffer hBuff = new typed.Uint16Buffer(1);
       hBuff[0] = hBits;
       final ByteBuffer lBuff = hBuff.buffer;
@@ -147,7 +152,8 @@ class Encoder {
       final typed.Uint8Buffer valBuff = new typed.Uint8Buffer();
       valBuff.addAll(hList);
       writeSpecial(25);
-      _out.putBytes(valBuff);
+      _out.putByte(valBuff[1]);
+      _out.putByte(valBuff[0]);
     }
   }
 }

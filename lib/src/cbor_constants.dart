@@ -39,7 +39,7 @@ final int two32 = pow(2, 32);
 final int two64 = pow(2, 64);
 
 /// Half precision mapping tables
-final typed.Uint16Buffer baseTable = new typed.Uint16Buffer(512);
+final typed.Uint16Buffer baseTable = new typed.Uint16Buffer();
 final List<int> shiftTable = [
   24,
   24,

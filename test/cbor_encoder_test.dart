@@ -140,5 +140,10 @@ void main() {
       expect(output.getDataAsList(), [0xf9, 0x00, 0x00]);
     });
 
+    test('1.0', () {
+      output.clear();
+      encoder.writeFloat(1.0);
+      expect(output.getDataAsList(), [0xf9, 0x3c, 0x00]);
+    });
   });
 }
