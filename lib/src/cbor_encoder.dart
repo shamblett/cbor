@@ -166,7 +166,21 @@ class Encoder {
   }
 
   /// Double precision float
-  void writeDouble(double value) {}
+  void writeDouble(double value) {
+    final typed.Float64Buffer fBuff = new typed.Float64Buffer(1);
+    fBuff[0] = value;
+    final ByteBuffer bBuff = fBuff.buffer;
+    final Uint8List uList = bBuff.asUint8List();
+    writeSpecial(ai27);
+    _out.putByte(uList[7]);
+    _out.putByte(uList[6]);
+    _out.putByte(uList[5]);
+    _out.putByte(uList[4]);
+    _out.putByte(uList[3]);
+    _out.putByte(uList[2]);
+    _out.putByte(uList[1]);
+    _out.putByte(uList[0]);
+  }
 
   /// Lookup table based single to half precision conversion.
   /// Rounding is indeterminate.
