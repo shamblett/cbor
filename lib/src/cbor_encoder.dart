@@ -17,6 +17,7 @@ class Encoder {
     this._out = out;
   }
 
+  /// Clears the output buffer
   void clear() {
     _out.clear();
   }
@@ -70,6 +71,7 @@ class Encoder {
     }
   }
 
+  /// Booleans
   void writeBool(bool value) {
     if (value) {
       _out.putByte(0xf5);
@@ -78,6 +80,7 @@ class Encoder {
     }
   }
 
+  /// Positive and negative integers
   void writeInt(int value) {
     if (value < 0) {
       _writeTypeValue(1, -(value + 1));
@@ -86,11 +89,13 @@ class Encoder {
     }
   }
 
+  /// Raw byte writer
   void writeBytes(typed.Uint8Buffer data) {
     _writeTypeValue(2, data.length);
     _out.putBytes(data);
   }
 
+  /// Raw string writer
   void writeString(String str) {
     _writeTypeValue(3, str.length);
     final typed.Uint8Buffer buff = new typed.Uint8Buffer();
@@ -100,38 +105,45 @@ class Encoder {
     _out.putBytes(buff);
   }
 
+  /// Bytestring primitive
   void writeBuff(typed.Uint8Buffer data, int size) {
     _writeTypeValue(3, size);
     _out.putBytes(data);
   }
 
+  /// Array primitive
   void writeArray(int size) {
     _writeTypeValue(4, size);
   }
 
+  /// Map primitive
   void writeMap(int size) {
     _writeTypeValue(5, size);
   }
 
+  /// Tag primitive
   void writeTag(int tag) {
     _writeTypeValue(6, tag);
   }
 
+  /// Special(major type 7) primitive
   void writeSpecial(int special) {
     int type = 7;
     type <<= majorTypeShift;
     _out.putByte(type | special);
   }
 
+  /// Null writer
   void writeNull() {
     _out.putByte(0xf6);
   }
 
+  /// Undefined writer
   void writeUndefined() {
     _out.putByte(0xf7);
   }
 
-  /// Simple values, values over 255 or less
+  /// Simple values, negative values, values over 255 or less
   /// than 0 will be encoded as an int.
   void writeSimple(int value) {
     if (!value.isNegative) {
