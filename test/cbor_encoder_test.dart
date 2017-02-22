@@ -285,5 +285,35 @@ void main() {
       encoder.writeNull();
       expect(output.getDataAsList(), [0xf6]);
     });
+
+    test('Simple 16', () {
+      output.clear();
+      encoder.writeSimple(16);
+      expect(output.getDataAsList(), [0xf0]);
+    });
+
+    test('Simple 24', () {
+      output.clear();
+      encoder.writeSimple(24);
+      expect(output.getDataAsList(), [0xf8, 0x18]);
+    });
+
+    test('Simple 255', () {
+      output.clear();
+      encoder.writeSimple(255);
+      expect(output.getDataAsList(), [0xf8, 0xff]);
+    });
+
+    test('Simple 1000', () {
+      output.clear();
+      encoder.writeSimple(1000);
+      expect(output.getDataAsList(), [0x19, 0x03, 0xe8]);
+    });
+
+    test('Simple -1000', () {
+      output.clear();
+      encoder.writeSimple(-1000);
+      expect(output.getDataAsList(), [0x39, 0x03, 0xe7]);
+    });
   });
 }

@@ -131,6 +131,25 @@ class Encoder {
     _out.putByte(0xf7);
   }
 
+  /// Simple values, values over 255 or less
+  /// than 0 will be encoded as an int.
+  void writeSimple(int value) {
+    if (!value.isNegative) {
+      if ((value <= simpleLimitUpper) && (value >= simpleLimitLower)) {
+        if (value <= 23) {
+          writeSpecial(value);
+        } else {
+          writeSpecial(24);
+          _out.putByte(value);
+        }
+      } else {
+        writeInt(value);
+      }
+    } else {
+      writeInt(value);
+    }
+  }
+
   /// Generalised float encoder, picks the smallest encoding
   /// it can. If you want a specific precision use the more
   /// specialised methods.
