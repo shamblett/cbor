@@ -146,40 +146,66 @@ class Encoder {
 
   /// Half precision float
   void writeHalf(double value) {
-    final typed.Uint8Buffer valBuff = _singleToHalf(value);
     writeSpecial(ai25);
-    _out.putByte(valBuff[1]);
-    _out.putByte(valBuff[0]);
+    // Special encodings
+    if (value.isNaN) {
+      _out.putByte(0x7e);
+      _out.putByte(0x00);
+    } else {
+      final typed.Uint8Buffer valBuff = _singleToHalf(value);
+      _out.putByte(valBuff[1]);
+      _out.putByte(valBuff[0]);
+    }
   }
 
   /// Single precision float
   void writeSingle(double value) {
-    final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
-    fBuff[0] = value;
-    final ByteBuffer bBuff = fBuff.buffer;
-    final Uint8List uList = bBuff.asUint8List();
     writeSpecial(ai26);
-    _out.putByte(uList[3]);
-    _out.putByte(uList[2]);
-    _out.putByte(uList[1]);
-    _out.putByte(uList[0]);
+    // Special encodings
+    if (value.isNaN) {
+      _out.putByte(0x7f);
+      _out.putByte(0xc0);
+      _out.putByte(0x00);
+      _out.putByte(0x00);
+    } else {
+      final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
+      fBuff[0] = value;
+      final ByteBuffer bBuff = fBuff.buffer;
+      final Uint8List uList = bBuff.asUint8List();
+      _out.putByte(uList[3]);
+      _out.putByte(uList[2]);
+      _out.putByte(uList[1]);
+      _out.putByte(uList[0]);
+    }
   }
 
   /// Double precision float
   void writeDouble(double value) {
-    final typed.Float64Buffer fBuff = new typed.Float64Buffer(1);
-    fBuff[0] = value;
-    final ByteBuffer bBuff = fBuff.buffer;
-    final Uint8List uList = bBuff.asUint8List();
     writeSpecial(ai27);
-    _out.putByte(uList[7]);
-    _out.putByte(uList[6]);
-    _out.putByte(uList[5]);
-    _out.putByte(uList[4]);
-    _out.putByte(uList[3]);
-    _out.putByte(uList[2]);
-    _out.putByte(uList[1]);
-    _out.putByte(uList[0]);
+    // Special encodings
+    if (value.isNaN) {
+      _out.putByte(0x7f);
+      _out.putByte(0xf8);
+      _out.putByte(0x00);
+      _out.putByte(0x00);
+      _out.putByte(0x00);
+      _out.putByte(0x00);
+      _out.putByte(0x00);
+      _out.putByte(0x00);
+    } else {
+      final typed.Float64Buffer fBuff = new typed.Float64Buffer(1);
+      fBuff[0] = value;
+      final ByteBuffer bBuff = fBuff.buffer;
+      final Uint8List uList = bBuff.asUint8List();
+      _out.putByte(uList[7]);
+      _out.putByte(uList[6]);
+      _out.putByte(uList[5]);
+      _out.putByte(uList[4]);
+      _out.putByte(uList[3]);
+      _out.putByte(uList[2]);
+      _out.putByte(uList[1]);
+      _out.putByte(uList[0]);
+    }
   }
 
   /// Lookup table based single to half precision conversion.

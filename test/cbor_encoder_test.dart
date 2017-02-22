@@ -179,9 +179,8 @@ void main() {
     test('1.0e+300', () {
       output.clear();
       encoder.writeFloat(1.0e+300);
-      expect(output.getDataAsList(), [0xfb, 0x7e, 0x37, 0xe4, 0x3c,
-      0x88, 0x00, 0x75, 0x9c
-      ]);
+      expect(output.getDataAsList(),
+          [0xfb, 0x7e, 0x37, 0xe4, 0x3c, 0x88, 0x00, 0x75, 0x9c]);
     });
 
     test('5.960464477539063e-8', () {
@@ -190,5 +189,83 @@ void main() {
       expect(output.getDataAsList(), [0xf9, 0x00, 0x01]);
     });
 
+    test('0.00006103515625', () {
+      output.clear();
+      encoder.writeFloat(0.00006103515625);
+      expect(output.getDataAsList(), [0xf9, 0x04, 0x00]);
+    });
+
+    test('-4.0', () {
+      output.clear();
+      encoder.writeFloat(-4.0);
+      expect(output.getDataAsList(), [0xf9, 0xc4, 0x00]);
+    });
+
+    test('-4.1', () {
+      output.clear();
+      encoder.writeDouble(-4.1);
+      expect(output.getDataAsList(),
+          [0xfb, 0xc0, 0x10, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66]);
+      output.clear();
+      encoder.writeFloat(-4.1);
+      expect(output.getDataAsList(), [0xf9, 0xc4, 0x19]);
+    });
+
+    test('Infinity Half', () {
+      output.clear();
+      encoder.writeHalf(double.INFINITY);
+      expect(output.getDataAsList(), [0xf9, 0x7c, 0x00]);
+    });
+
+    test('Nan Half', () {
+      output.clear();
+      encoder.writeHalf(double.NAN);
+      expect(output.getDataAsList(), [0xf9, 0x7e, 0x00]);
+    });
+
+    test('-Infinity Half', () {
+      output.clear();
+      encoder.writeHalf(-double.INFINITY);
+      expect(output.getDataAsList(), [0xf9, 0xfc, 0x00]);
+    });
+
+    test('Infinity Single', () {
+      output.clear();
+      encoder.writeSingle(double.INFINITY);
+      expect(output.getDataAsList(), [0xfa, 0x7f, 0x80, 0x00, 0x00]);
+    });
+
+    test('Nan Single', () {
+      output.clear();
+      encoder.writeSingle(double.NAN);
+      expect(output.getDataAsList(), [0xfa, 0x7f, 0xc0, 0x00, 0x00]);
+    });
+
+    test('-Infinity Single', () {
+      output.clear();
+      encoder.writeSingle(-double.INFINITY);
+      expect(output.getDataAsList(), [0xfa, 0xff, 0x80, 0x00, 0x00]);
+    });
+
+    test('Infinity Double', () {
+      output.clear();
+      encoder.writeDouble(double.INFINITY);
+      expect(output.getDataAsList(),
+          [0xfb, 0x7f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+    });
+
+    test('Nan Double', () {
+      output.clear();
+      encoder.writeDouble(double.NAN);
+      expect(output.getDataAsList(),
+          [0xfb, 0x7f, 0xf8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+    });
+
+    test('-Infinity Double', () {
+      output.clear();
+      encoder.writeDouble(-double.INFINITY);
+      expect(output.getDataAsList(),
+          [0xfb, 0xff, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+    });
   });
 }
