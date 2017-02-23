@@ -49,11 +49,7 @@ class Encoder {
   /// Primitive string writer
   void writeString(String str) {
     _writeTypeValue(3, str.length);
-    final typed.Uint8Buffer buff = new typed.Uint8Buffer();
-    str.codeUnits.forEach((int unit) {
-      buff.add(unit);
-    });
-    _out.putBytes(buff);
+    _out.putBytes(strToByteString(str));
   }
 
   /// Bytestring primitive
@@ -217,6 +213,45 @@ class Encoder {
     }
   }
 
+  /// Tag based Base64 byte string encoding. The encoder does not
+  /// itself perform the base encoding as stated in RFC7049,
+  /// it just indicates to the decoder that the following byte
+  /// string maybe base encoded.
+  void writeBase64(typed.Uint8Buffer data) {
+    writeTag(22);
+    writeBytes(data);
+  }
+
+  /// Cbor data item encoder, refer to tyhe RFC for details.
+  void writeCborDi(typed.Uint8Buffer data) {
+    writeTag(24);
+    writeBytes(data);
+  }
+
+  /// Tag based Base64 URL byte string encoding. The encoder does not
+  /// itself perform the base encoding as stated in RFC7049,
+  /// it just indicates to the decoder that the following byte
+  /// string maybe base encoded.
+  void writeBase64URL(typed.Uint8Buffer data) {
+    writeTag(21);
+    _out.putBytes(data);
+  }
+
+  /// Tag based Base16 byte string encoding. The encoder does not
+  /// itself perform the base encoding as stated in RFC7049,
+  /// it just indicates to the decoder that the following byte
+  /// string maybe base encoded.
+  void writeBase16(typed.Uint8Buffer data) {
+    writeTag(23);
+    writeBytes(data);
+  }
+
+  /// Tag based URI writer
+  void writeURI(String uri) {
+    writeTag(32);
+    writeString(uri);
+  }
+
   /// Lookup table based single to half precision conversion.
   /// Rounding is indeterminate.
   typed.Uint8Buffer _singleToHalf(double value) {
@@ -286,5 +321,14 @@ class Encoder {
       // Bignum - not supported, use tags
       print("Bignums not supported");
     }
+  }
+
+  ///String to byte string helper.
+  typed.Uint8Buffer strToByteString(String str) {
+    final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+    str.codeUnits.forEach((int unit) {
+      buff.add(unit);
+    });
+    return buff;
   }
 }

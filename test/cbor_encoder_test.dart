@@ -319,19 +319,100 @@ void main() {
     test('Date/Time', () {
       output.clear();
       encoder.writeDateTime("2013-03-21T20:04:00Z");
-      expect(output.getDataAsList(), [0xc0, 0x74, 0x32, 0x30,
-      0x31, 0x33, 0x2d, 0x30, 0x033, 0x2d, 0x32, 0x31, 0x54, 0x32,
-      0x30, 0x3a, 0x30, 0x34, 0x3a, 0x30, 0x30, 0x5a
+      expect(output.getDataAsList(), [
+        0xc0,
+        0x74,
+        0x32,
+        0x30,
+        0x31,
+        0x33,
+        0x2d,
+        0x30,
+        0x033,
+        0x2d,
+        0x32,
+        0x31,
+        0x54,
+        0x32,
+        0x30,
+        0x3a,
+        0x30,
+        0x34,
+        0x3a,
+        0x30,
+        0x30,
+        0x5a
       ]);
     });
 
     test('Epoch 1363896240', () {
       output.clear();
-      encoder.writeEpoch(1363896240, cbor.encodeFloatAs.single);
-      expect(output.getDataAsList(), [0xc1, 0x1a, 0x51, 0x4b,
-      0x67, 0xb0
-      ]);
+      encoder.writeEpoch(1363896240);
+      expect(output.getDataAsList(), [0xc1, 0x1a, 0x51, 0x4b, 0x67, 0xb0]);
     });
 
+    test('Epoch 1363896240.5', () {
+      output.clear();
+      encoder.writeEpoch(1363896240.5, cbor.encodeFloatAs.double);
+      expect(output.getDataAsList(),
+          [0xc1, 0xfb, 0x41, 0xd4, 0x52, 0xd9, 0xec, 0x20, 0x00, 0x00]);
+    });
+
+    test('Base16', () {
+      output.clear();
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll([01, 02, 03, 04]);
+      encoder.writeBase16(buff);
+      expect(output.getDataAsList(), [0xd7, 0x44, 0x01, 0x02, 0x03, 0x04]);
+    });
+
+    test('Base64', () {
+      output.clear();
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll([0x01, 0x02, 0x03, 0x04]);
+      encoder.writeBase64(buff);
+      expect(output.getDataAsList(), [0xd6, 0x44, 0x01, 0x02, 0x03, 0x04]);
+    });
+
+    test('CBOR Data Item', () {
+      output.clear();
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll([0x64, 0x49, 0x45, 0x54, 0x46]);
+      encoder.writeCborDi(buff);
+      expect(output.getDataAsList(),
+          [0xd8, 0x18, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46]);
+    });
+
+    test('URI', () {
+      output.clear();
+      encoder.writeURI("http://www.example.com");
+      expect(output.getDataAsList(), [
+        0xd8,
+        0x20,
+        0x76,
+        0x68,
+        0x74,
+        0x74,
+        0x70,
+        0x3a,
+        0x2f,
+        0x2f,
+        0x77,
+        0x77,
+        0x77,
+        0x2e,
+        0x65,
+        0x78,
+        0x61,
+        0x6d,
+        0x70,
+        0x6c,
+        0x65,
+        0x2e,
+        0x63,
+        0x6f,
+        0x6d
+      ]);
+    });
   });
 }
