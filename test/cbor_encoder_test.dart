@@ -414,5 +414,62 @@ void main() {
         0x6d
       ]);
     });
+
+    test('Empty single quote string', () {
+      output.clear();
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      encoder.writeBytes(buff);
+      expect(output.getDataAsList(), [0x40]);
+    });
+
+    test('single quote string', () {
+      output.clear();
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll([0x01, 0x02, 0x03, 0x04]);
+      encoder.writeBytes(buff);
+      expect(output.getDataAsList(), [0x44, 0x01, 0x02, 0x03, 0x04]);
+    });
+
+    test('Empty double quote string', () {
+      output.clear();
+      encoder.writeString("");
+      expect(output.getDataAsList(), [0x60]);
+    });
+
+    test('"a"', () {
+      output.clear();
+      encoder.writeString("a");
+      expect(output.getDataAsList(), [0x61, 0x61]);
+    });
+
+    test('"IETF"', () {
+      output.clear();
+      encoder.writeString("IETF");
+      expect(output.getDataAsList(), [0x64, 0x49, 0x45, 0x54, 0x46]);
+    });
+
+    test("\"\\", () {
+      output.clear();
+      encoder.writeString("\"\\");
+      expect(output.getDataAsList(), [0x62, 0x22, 0x5c]);
+    });
+
+    test("\u00fc", () {
+      output.clear();
+      encoder.writeString("\u00fc");
+      expect(output.getDataAsList(), [0x62, 0xc3, 0xbc]);
+    });
+
+    test("\u6c34", () {
+      output.clear();
+      encoder.writeString("\u6c34");
+      expect(output.getDataAsList(), [0x63, 0xe6, 0xb0, 0xb4]);
+    });
+
+    test("\ud800\udd51", () {
+      output.clear();
+      encoder.writeString("\ud800\udd51");
+      expect(output.getDataAsList(), [0x64, 0xf0, 0x90, 0x85, 0x91]);
+    });
   });
 }

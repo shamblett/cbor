@@ -48,8 +48,9 @@ class Encoder {
 
   /// Primitive string writer
   void writeString(String str) {
-    _writeTypeValue(3, str.length);
-    _out.putBytes(strToByteString(str));
+    final typed.Uint8Buffer buff = strToByteString(str);
+    _writeTypeValue(3, buff.length);
+    _out.putBytes(buff);
   }
 
   /// Bytestring primitive
@@ -326,9 +327,9 @@ class Encoder {
   ///String to byte string helper.
   typed.Uint8Buffer strToByteString(String str) {
     final typed.Uint8Buffer buff = new typed.Uint8Buffer();
-    str.codeUnits.forEach((int unit) {
-      buff.add(unit);
-    });
+    final convertor.Utf8Encoder utf = new convertor.Utf8Encoder();
+    final List<int> codes = utf.convert(str);
+    buff.addAll(codes);
     return buff;
   }
 }
