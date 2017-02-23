@@ -22,55 +22,6 @@ class Encoder {
     _out.clear();
   }
 
-  void _writeTypeValue(int majorType, int value) {
-    int type = majorType;
-    type <<= majorTypeShift;
-    if (value < ai24) {
-      // Value
-      _out.putByte((type | value));
-    } else if (value < two8) {
-      // Uint8
-      _out.putByte((type | ai24));
-      _out.putByte(value);
-    } else if (value < two16) {
-      // Uint16
-      _out.putByte((type | ai25));
-      final typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
-      buff[0] = value;
-      final Uint8List ulist = new Uint8List.view(buff.buffer);
-      final typed.Uint8Buffer data = new typed.Uint8Buffer();
-      data.addAll(ulist
-          .toList()
-          .reversed);
-      _out.putBytes(data);
-    } else if (value < two32) {
-      // Uint32
-      _out.putByte((type | ai26));
-      final typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
-      buff[0] = value;
-      final Uint8List ulist = new Uint8List.view(buff.buffer);
-      final typed.Uint8Buffer data = new typed.Uint8Buffer();
-      data.addAll(ulist
-          .toList()
-          .reversed);
-      _out.putBytes(data);
-    } else if (value < two64) {
-      // Uint64
-      _out.putByte((type | ai27));
-      final typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
-      buff[0] = value;
-      final Uint8List ulist = new Uint8List.view(buff.buffer);
-      final typed.Uint8Buffer data = new typed.Uint8Buffer();
-      data.addAll(ulist
-          .toList()
-          .reversed);
-      _out.putBytes(data);
-    } else {
-      // Bignum - not supported, use tags
-      print("Bignums not supported");
-    }
-  }
-
   /// Booleans
   void writeBool(bool value) {
     if (value) {
@@ -89,13 +40,13 @@ class Encoder {
     }
   }
 
-  /// Raw byte writer
+  /// Primitive byte writer
   void writeBytes(typed.Uint8Buffer data) {
     _writeTypeValue(2, data.length);
     _out.putBytes(data);
   }
 
-  /// Raw string writer
+  /// Primitive string writer
   void writeString(String str) {
     _writeTypeValue(3, str.length);
     final typed.Uint8Buffer buff = new typed.Uint8Buffer();
@@ -241,6 +192,31 @@ class Encoder {
     }
   }
 
+  /// Tag based Date/Time encoding.
+  /// Standard format as described in RFC339 et al
+  void writeDateTime(String dt) {
+    writeTag(0);
+    writeString(dt);
+  }
+
+  /// Tag based epoch encoding. Format can be a positive
+  /// or negative integer or a floating point number for
+  /// which you can chose the encoding.
+  void writeEpoch(num epoch, [encodeFloatAs floatType = encodeFloatAs.single]) {
+    writeTag(1);
+    if (epoch.runtimeType == int) {
+      writeInt(epoch);
+    } else {
+      if (floatType == encodeFloatAs.half) {
+        writeHalf(epoch);
+      } else if (floatType == encodeFloatAs.single) {
+        writeSingle(epoch);
+      } else {
+        writeDouble(epoch);
+      }
+    }
+  }
+
   /// Lookup table based single to half precision conversion.
   /// Rounding is indeterminate.
   typed.Uint8Buffer _singleToHalf(double value) {
@@ -260,5 +236,55 @@ class Encoder {
     final typed.Uint8Buffer valBuff = new typed.Uint8Buffer();
     valBuff.addAll(hList);
     return valBuff;
+  }
+
+  /// Encoding helper for type encoding
+  void _writeTypeValue(int majorType, int value) {
+    int type = majorType;
+    type <<= majorTypeShift;
+    if (value < ai24) {
+      // Value
+      _out.putByte((type | value));
+    } else if (value < two8) {
+      // Uint8
+      _out.putByte((type | ai24));
+      _out.putByte(value);
+    } else if (value < two16) {
+      // Uint16
+      _out.putByte((type | ai25));
+      final typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
+      buff[0] = value;
+      final Uint8List ulist = new Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll(ulist
+          .toList()
+          .reversed);
+      _out.putBytes(data);
+    } else if (value < two32) {
+      // Uint32
+      _out.putByte((type | ai26));
+      final typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
+      buff[0] = value;
+      final Uint8List ulist = new Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll(ulist
+          .toList()
+          .reversed);
+      _out.putBytes(data);
+    } else if (value < two64) {
+      // Uint64
+      _out.putByte((type | ai27));
+      final typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
+      buff[0] = value;
+      final Uint8List ulist = new Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll(ulist
+          .toList()
+          .reversed);
+      _out.putBytes(data);
+    } else {
+      // Bignum - not supported, use tags
+      print("Bignums not supported");
+    }
   }
 }

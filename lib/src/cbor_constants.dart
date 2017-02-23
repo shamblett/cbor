@@ -44,7 +44,6 @@ const double singleLimitLower = -3.4028234663852886e38;
 const int simpleLimitUpper = 255;
 const int simpleLimitLower = 0;
 
-
 /// Half precision mapping tables
 final typed.Uint16Buffer baseTable = new typed.Uint16Buffer();
 final List<int> shiftTable = [

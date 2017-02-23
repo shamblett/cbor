@@ -315,5 +315,23 @@ void main() {
       encoder.writeSimple(-1000);
       expect(output.getDataAsList(), [0x39, 0x03, 0xe7]);
     });
+
+    test('Date/Time', () {
+      output.clear();
+      encoder.writeDateTime("2013-03-21T20:04:00Z");
+      expect(output.getDataAsList(), [0xc0, 0x74, 0x32, 0x30,
+      0x31, 0x33, 0x2d, 0x30, 0x033, 0x2d, 0x32, 0x31, 0x54, 0x32,
+      0x30, 0x3a, 0x30, 0x34, 0x3a, 0x30, 0x30, 0x5a
+      ]);
+    });
+
+    test('Epoch 1363896240', () {
+      output.clear();
+      encoder.writeEpoch(1363896240, cbor.encodeFloatAs.single);
+      expect(output.getDataAsList(), [0xc1, 0x1a, 0x51, 0x4b,
+      0x67, 0xb0
+      ]);
+    });
+
   });
 }

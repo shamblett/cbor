@@ -24,3 +24,11 @@ part 'src/cbor_encoder.dart';
 part 'src/cbor_listener_debug.dart';
 part 'src/cbor_listener.dart';
 part 'src/cbor_output_dynamic.dart';
+
+/// Float encoding directives
+enum encodeFloatAs {
+  half,
+  single,
+  double
+}
+
