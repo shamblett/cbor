@@ -1,0 +1,48 @@
+/*
+ * Package : Cbor
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 12/12/2016
+ * Copyright :  S.Hamblett
+ */
+
+part of cbor;
+
+/// Float handling support functions
+
+/// Gets a half precision float from its int
+/// value.
+double getHalfPrecisionDouble(int val) {
+  int t1 = val & 0x7fff; // Non-sign bits
+  int t2 = val & 0x8000; // Sign bit
+  final int t3 = val & 0x7c00; // Exponent
+  t1 <<= 13; // Align mantissa on MSB
+  t2 <<= 16; // Shift sign bit into position
+  t1 += 0x38000000; // Adjust bias
+  t1 = (t3 == 0 ? 0 : t1); // Denormalise as zero
+  t1 |= t2; // re-insert sign bit
+  final List<int> tmp = new List<int>();
+  tmp.add((t1 >> 24) & 0xff);
+  tmp.add((t1 >> 16) & 0xff);
+  tmp.add((t1 >> 8) & 0xff);
+  tmp.add(t1 & 0xff);
+  final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+  buff.addAll(tmp);
+  final ByteData bdata = new ByteData.view(buff.buffer);
+  final double ret = bdata.getFloat32(0);
+  return ret;
+}
+
+/// Gets a half precision integer value from a
+/// float.
+int getHalfPrecisionInt(double val) {
+  final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
+  fBuff[0] = val;
+  final ByteBuffer bBuff = fBuff.buffer;
+  final Uint8List uList = bBuff.asUint8List();
+  final int intVal =
+  uList[0] | uList[1] << 8 | uList[2] << 16 | uList[3] << 24;
+  final int index = intVal >> 23;
+  final int masked = intVal & 0x7FFFFF;
+  final int hBits = baseTable[index] + ((masked) >> shiftTable[index]);
+  return hBits;
+}

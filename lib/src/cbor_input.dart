@@ -70,31 +70,13 @@ class Input {
     // Prefilter
     if (val == 1) return 5.960464477539063e-8;
 
-    int t1 = val & 0x7fff; // Non-sign bits
-    int t2 = val & 0x8000; // Sign bit
-    final int t3 = val & 0x7c00; // Exponent
-    t1 <<= 13; // Align mantissa on MSB
-    t2 <<= 16; // Shift sign bit into position
-    t1 += 0x38000000; // Adjust bias
-    t1 = (t3 == 0 ? 0 : t1); // Denormalise as zero
-    t1 |= t2; // re-insert sign bit
-    final List<int> tmp = new List<int>();
-    tmp.add((t1 >> 24) & 0xff);
-    tmp.add((t1 >> 16) & 0xff);
-    tmp.add((t1 >> 8) & 0xff);
-    tmp.add(t1 & 0xff);
-    final typed.Uint8Buffer buff = new typed.Uint8Buffer();
-    buff.addAll(tmp);
-    final ByteData bdata = new ByteData.view(buff.buffer);
-    final double ret = bdata.getFloat32(0);
+    final double ret = getHalfPrecisionDouble(val);
 
     // Post filter
     if (ret == 65536.0) return double.INFINITY;
     if (ret == -65536.0) return -(double.INFINITY);
     if (ret == 98304.0) return double.NAN;
-
     return ret;
-
   }
 
   double getSingleFloat(typed.Uint8Buffer buff) {

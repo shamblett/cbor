@@ -16,6 +16,7 @@ import 'package:typed_data/typed_data.dart' as typed;
 
 part 'src/cbor.dart';
 
+part 'src/cbor_float_support.dart';
 part 'src/cbor_constants.dart';
 part 'src/cbor_output.dart';
 part 'src/cbor_input.dart';
