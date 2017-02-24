@@ -162,11 +162,17 @@ void main() {
       output.clear();
       encoder.writeHalf(65504.0);
       expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
+      output.clear();
+      encoder.writeFloat(65504.0);
+      expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
     });
 
     test('100000.0', () {
       output.clear();
       encoder.writeSingle(100000.0);
+      expect(output.getDataAsList(), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
+      output.clear();
+      encoder.writeFloat(100000.0);
       expect(output.getDataAsList(), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
     });
 
@@ -174,11 +180,18 @@ void main() {
       output.clear();
       encoder.writeSingle(3.4028234663852886e+38);
       expect(output.getDataAsList(), [0xfa, 0x7f, 0x7f, 0xff, 0xff]);
+      output.clear();
+      encoder.writeFloat(3.4028234663852886e+38);
+      expect(output.getDataAsList(), [0xfa, 0x7f, 0x7f, 0xff, 0xff]);
     });
 
     test('1.0e+300', () {
       output.clear();
       encoder.writeDouble(1.0e+300);
+      expect(output.getDataAsList(),
+          [0xfb, 0x7e, 0x37, 0xe4, 0x3c, 0x88, 0x00, 0x75, 0x9c]);
+      output.clear();
+      encoder.writeFloat(1.0e+300);
       expect(output.getDataAsList(),
           [0xfb, 0x7e, 0x37, 0xe4, 0x3c, 0x88, 0x00, 0x75, 0x9c]);
     });

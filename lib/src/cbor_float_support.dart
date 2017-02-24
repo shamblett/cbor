@@ -46,3 +46,24 @@ int getHalfPrecisionInt(double val) {
   final int hBits = baseTable[index] + ((masked) >> shiftTable[index]);
   return hBits;
 }
+
+/// Check if a double can be represented as half precision.
+/// Returns true if it can be.
+bool canBeAHalf(double value) {
+  // Convert to half and back again.
+  final int half = getHalfPrecisionInt(value);
+  final double result = getHalfPrecisionDouble(half);
+  // If the value is the same it can be converted.
+  return result == value ? true : false;
+}
+
+/// Check if a double can be represented as single precision.
+/// Returns true if it can.abstract.
+bool canBeASingle(double value) {
+  /// Convert to single and back again.
+  final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
+  fBuff[0] = value;
+  // If the value is the same it can be converted.
+  final double result = fBuff[0];
+  return value == result ? true : false;
+}

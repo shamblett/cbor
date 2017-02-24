@@ -69,9 +69,7 @@ class Input {
 
     // Prefilter
     if (val == 1) return 5.960464477539063e-8;
-
     final double ret = getHalfPrecisionDouble(val);
-
     // Post filter
     if (ret == 65536.0) return double.INFINITY;
     if (ret == -65536.0) return -(double.INFINITY);

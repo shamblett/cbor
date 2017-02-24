@@ -113,12 +113,12 @@ class Encoder {
   /// Generalised float encoder, picks the smallest encoding
   /// it can. If you want a specific precision use the more
   /// specialised methods.
-  /// Note this can lead to encodings you don't expect in corner cases,
-  /// if you want a specific sized encodings don't use this.
+  /// Note this can lead to encodings you may not expect in corner cases,
+  /// if you want specific sized encodings don't use this.
   void writeFloat(double value) {
-    if ((value <= halfLimitUpper) && (value >= halfLimitLower)) {
+    if (canBeAHalf(value)) {
       writeHalf(value);
-    } else if ((value <= singleLimitUpper) && (value >= singleLimitLower)) {
+    } else if (canBeASingle(value)) {
       writeSingle(value);
     } else {
       writeDouble(value);
