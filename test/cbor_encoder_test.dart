@@ -502,9 +502,70 @@ void main() {
     test("Array 1,[2,3],[4,5]", () {
       output.clear();
       final bool res = encoder.writeArray([1, [2, 3], [4, 5]]);
-      //expect(res, isTrue);
+      expect(res, isTrue);
       expect(output.getDataAsList(), [0x83, 0x01, 0x82, 0x02,
       0x03, 0x82, 0x04, 0x05
+      ]);
+    });
+
+    test("Array 1..25", () {
+      output.clear();
+      final bool res = encoder.writeArray([1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+      ]);
+      expect(res, isTrue);
+      expect(output.getDataAsList(), [0x98,
+      0x19,
+      0x01,
+      0x02,
+      0x03,
+      0x04,
+      0x05,
+      0x06,
+      0x07,
+      0x08,
+      0x09,
+      0x0a,
+      0x0b,
+      0x0c,
+      0x0d,
+      0x0e,
+      0x0f,
+      0x10,
+      0x11,
+      0x12,
+      0x13,
+      0x14,
+      0x15,
+      0x16,
+      0x17,
+      0x18,
+      0x18,
+      0x18,
+      0x19
       ]);
     });
   });
