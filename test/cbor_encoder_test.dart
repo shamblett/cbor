@@ -653,6 +653,34 @@ void main() {
           [0x5f, 0x42, 0x01, 0x02, 0x43, 0x03, 0x04, 0x05, 0xff]);
     });
 
+    test("Indefinite String strea,ming", () {
+      output.clear();
+      encoder.writeString("strea", true);
+      encoder.writeString("ming");
+      encoder.writeBreak();
+      expect(output.getDataAsList(), [
+        0x7f,
+        0x65,
+        0x73,
+        0x74,
+        0x72,
+        0x65,
+        0x61,
+        0x64,
+        0x6d,
+        0x69,
+        0x6e,
+        0x67,
+        0xff
+      ]);
+    });
 
+    test("Indefinite Array empty", () {
+      output.clear();
+      final bool res = encoder.writeArray([], true);
+      encoder.writeBreak();
+      expect(res, isTrue);
+      expect(output.getDataAsList(), [0x9f, 0xff]);
+    });
   });
 }

@@ -133,6 +133,7 @@ class Encoder {
   void startIndefinite(int majorType) {
     _out.putByte((majorType << 5) + aiBreak);
   }
+
   /// Simple values, negative values, values over 255 or less
   /// than 0 will be encoded as an int.
   void writeSimple(int value) {
@@ -371,17 +372,19 @@ class Encoder {
   /// If the array cannot be fully encoded no encoding occurs,
   /// ie false is returned.
   bool writeArrayImpl(List<dynamic> value, [bool indefinite = false]) {
+    // Indefinite
+    if (indefinite) {
+      startIndefinite(majorTypeArray);
+    }
     // Check for empty
     if (value.isEmpty) {
-      _writeTypeValue(majorTypeArray, 0);
+      if (!indefinite) {
+        _writeTypeValue(majorTypeArray, 0);
+      }
       return true;
     }
     // Build the encoded array.
-    if (indefinite) {
-      _writeTypeValue(majorTypeArray, aiBreak);
-    } else {
-      _writeTypeValue(majorTypeArray, value.length);
-    }
+    _writeTypeValue(majorTypeArray, value.length);
     bool ok = true;
     for (dynamic element in value) {
       switch (element.runtimeType.toString()) {
@@ -421,9 +424,15 @@ class Encoder {
   /// If the map cannot be fully encoded no encoding occurs,
   /// ie false is returned.
   bool writeMapImpl(Map<dynamic, dynamic> value, [bool indefinite = false]) {
+    // Indefinite
+    if (indefinite) {
+      startIndefinite(majorTypeArray);
+    }
     // Check for empty
     if (value.isEmpty) {
-      _writeTypeValue(majorTypeMap, 0);
+      if (!indefinite) {
+        _writeTypeValue(majorTypeMap, 0);
+      }
       return true;
     }
     // Check the keys are integers or strings.
@@ -440,11 +449,7 @@ class Encoder {
       return false;
     }
     // Build the encoded map.
-    if (indefinite) {
-      _writeTypeValue(majorTypeMap, aiBreak);
-    } else {
-      _writeTypeValue(majorTypeMap, value.length);
-    }
+    _writeTypeValue(majorTypeMap, value.length);
     bool ok = true;
     value.forEach((dynamic key, dynamic val) {
       // Encode the key, can now onlbe ints or strings.
