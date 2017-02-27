@@ -68,13 +68,17 @@ class Encoder {
   /// Array primitive.
   /// Valid elements are string, integer, float(any size), array
   /// or map. Returns true if the encoding has been successful.
-  bool writeArray(List<dynamic> value, [bool indefinite = false]) {
+  /// If you supply a length this will be used and not calculated from the
+  /// array size, unless you are encoding certain indefinite sequences you
+  /// do not need to do this.
+  bool writeArray(List<dynamic> value,
+      [bool indefinite = false, int length = null]) {
     // Mark the output buffer, if we cannot encode
     // the whole array structure rewind so as to perform
     // no encoding.
     bool res = true;
     _out.mark();
-    final bool ok = writeArrayImpl(value, indefinite);
+    final bool ok = writeArrayImpl(value, indefinite, length);
     if (!ok) {
       _out.resetToMark();
       res = false;
@@ -371,7 +375,8 @@ class Encoder {
   /// Array write implementation method.
   /// If the array cannot be fully encoded no encoding occurs,
   /// ie false is returned.
-  bool writeArrayImpl(List<dynamic> value, [bool indefinite = false]) {
+  bool writeArrayImpl(List<dynamic> value,
+      [bool indefinite = false, int length = null]) {
     // Indefinite
     if (indefinite) {
       startIndefinite(majorTypeArray);
@@ -385,7 +390,11 @@ class Encoder {
     }
     // Build the encoded array.
     if (!indefinite) {
-      _writeTypeValue(majorTypeArray, value.length);
+      if (length != null) {
+        _writeTypeValue(majorTypeArray, length);
+      } else {
+        _writeTypeValue(majorTypeArray, value.length);
+      }
     }
     bool ok = true;
     for (dynamic element in value) {

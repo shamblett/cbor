@@ -716,7 +716,7 @@ void main() {
       final bool res1 = encoder.writeArray([
         1,
         [2, 3]
-      ]);
+      ], false, 3);
       expect(res1, isTrue);
       final bool res2 = encoder.writeArray([4, 5], true);
       expect(res2, isTrue);
