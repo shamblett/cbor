@@ -682,5 +682,47 @@ void main() {
       expect(res, isTrue);
       expect(output.getDataAsList(), [0x9f, 0xff]);
     });
+
+    test("Indefinite Array [_1, [2,3], [_4,5]", () {
+      output.clear();
+      final bool res1 = encoder.writeArray([
+        1,
+        [2, 3]
+      ], true);
+      final bool res2 = encoder.writeArray([4, 5], true);
+      encoder.writeBreak();
+      encoder.writeBreak();
+      expect(res1, isTrue);
+      expect(res2, isTrue);
+      expect(output.getDataAsList(),
+          [0x9f, 0x01, 0x82, 0x02, 0x03, 0x9f, 0x04, 0x05, 0xff, 0xff]);
+    });
+
+    test("Indefinite Array [_1, [2,3], [4,5]", () {
+      output.clear();
+      final bool res1 = encoder.writeArray([
+        1,
+        [2, 3],
+        [4, 5]
+      ], true);
+      encoder.writeBreak();
+      expect(res1, isTrue);
+      expect(output.getDataAsList(),
+          [0x9f, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05, 0xff]);
+    });
+
+    test("Indefinite Array [1, [2,3], [_4,5]", () {
+      output.clear();
+      final bool res1 = encoder.writeArray([
+        1,
+        [2, 3]
+      ]);
+      expect(res1, isTrue);
+      final bool res2 = encoder.writeArray([4, 5], true);
+      expect(res2, isTrue);
+      encoder.writeBreak();
+      expect(output.getDataAsList(),
+          [0x83, 0x01, 0x82, 0x02, 0x03, 0x9f, 0x04, 0x05, 0xff]);
+    });
   });
 }

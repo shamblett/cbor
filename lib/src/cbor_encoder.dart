@@ -384,7 +384,9 @@ class Encoder {
       return true;
     }
     // Build the encoded array.
-    _writeTypeValue(majorTypeArray, value.length);
+    if (!indefinite) {
+      _writeTypeValue(majorTypeArray, value.length);
+    }
     bool ok = true;
     for (dynamic element in value) {
       switch (element.runtimeType.toString()) {
@@ -449,7 +451,9 @@ class Encoder {
       return false;
     }
     // Build the encoded map.
-    _writeTypeValue(majorTypeMap, value.length);
+    if (!indefinite) {
+      _writeTypeValue(majorTypeMap, value.length);
+    }
     bool ok = true;
     value.forEach((dynamic key, dynamic val) {
       // Encode the key, can now onlbe ints or strings.
