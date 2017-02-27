@@ -76,9 +76,22 @@ class Encoder {
     return res;
   }
 
-  /// Map primitive
-  void writeMap(int size) {
-    _writeTypeValue(5, size);
+  /// Map primitive.
+  /// Valid map keys are integer and string.
+  /// Valid map values are integer, string float(any size), array
+  /// or map. Returns true if the encoding has been successful.
+  bool writeMap(Map<dynamic, dynamic> value) {
+    // Mark the output buffer, if we cannot encode
+    // the whole map structure rewind so as to perform
+    // no encoding.
+    bool res = true;
+    _out.mark();
+    final bool ok = writeMapImpl(value);
+    if (!ok) {
+      _out.resetToMark();
+      res = false;
+    }
+    return res;
   }
 
   /// Tag primitive
@@ -339,8 +352,7 @@ class Encoder {
 
   /// Array write implementation method.
   /// If the array cannot be fully encoded no encoding occurs,
-  /// ie null is returned. Note that an empty array will also return null
-  /// however in this case the array major type and length will be encoded.
+  /// ie false is returned.
   bool writeArrayImpl(List<dynamic> value) {
     // Check for empty
     if (value.isEmpty) {
@@ -369,13 +381,82 @@ class Encoder {
           }
           break;
         case "Map":
-        //TODO
+          final bool res = writeMapImpl(element);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
+          }
           break;
         default:
-          print("RT is ${element.runtimeType}");
+          print("writeArrayImpl::RT is ${element.runtimeType.toString()}");
           ok = false;
       }
-    };
+    }
+    return ok;
+  }
+
+  /// Map write implementation method.
+  /// If the map cannot be fully encoded no encoding occurs,
+  /// ie false is returned.
+  bool writeMapImpl(Map<dynamic, dynamic> value) {
+    // Check for empty
+    if (value.isEmpty) {
+      _writeTypeValue(majorTypeMap, 0);
+      return true;
+    }
+    // Check the keys are integers or strings.
+    final dynamic keys = value.keys;
+    bool keysValid = true;
+    for (dynamic element in keys) {
+      if (!(element.runtimeType.toString() == "int") &&
+          !(element.runtimeType.toString() == "String")) {
+        keysValid = false;
+        break;
+      }
+    }
+    if (!keysValid) {
+      return false;
+    }
+    // Build the encoded map.
+    _writeTypeValue(majorTypeMap, value.length);
+    bool ok = true;
+    value.forEach((dynamic key, dynamic val) {
+      // Encode the key, can now onlbe ints or strings.
+      if (key.runtimeType.toString() == "int") {
+        writeInt(key);
+      } else {
+        writeString(key);
+      }
+      // Encode the value
+      switch (val.runtimeType.toString()) {
+        case "int":
+          writeInt(val);
+          break;
+        case "String":
+          writeString(val);
+          break;
+        case "double":
+          writeFloat(val);
+          break;
+        case "List":
+          final bool res = writeArrayImpl(val);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
+          }
+          break;
+        case "Map":
+          final bool res = writeMapImpl(val);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
+          }
+          break;
+        default:
+          print("writeMapImpl::RT is ${val.runtimeType.toString()}");
+          ok = false;
+      }
+    });
     return ok;
   }
 }

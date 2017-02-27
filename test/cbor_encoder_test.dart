@@ -568,5 +568,19 @@ void main() {
       0x19
       ]);
     });
+
+    test("Map empty", () {
+      output.clear();
+      final bool res = encoder.writeMap({});
+      expect(res, isTrue);
+      expect(output.getDataAsList(), [0xa0]);
+    });
+
+    test("Map {1:2,3:4}", () {
+      output.clear();
+      final bool res = encoder.writeMap({1: 2, 3: 4});
+      expect(res, isTrue);
+      expect(output.getDataAsList(), [0xa2, 0x01, 0x02, 0x03, 0x04]);
+    });
   });
 }
