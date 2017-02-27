@@ -13,7 +13,7 @@ void main() {
       // Encoding
       final cbor.OutputDynamic output = new cbor.OutputDynamic();
       final cbor.Encoder encoder = new cbor.Encoder(output);
-      encoder.writeArray(9);
+      encoder.writeArray([9]);
       encoder.writeInt(123);
       encoder.writeInt(-457);
       encoder.writeString("barrr");

@@ -40,4 +40,14 @@ class OutputDynamic extends Output {
   void putBytes(typed.Uint8Buffer data) {
     _buffer.addAll(data);
   }
+
+  void mark() {
+    _markPos = data.length;
+  }
+
+  void resetToMark() {
+    if (data.length > _markPos) {
+      data.removeRange(_markPos + 1, data.length);
+    }
+  }
 }

@@ -484,5 +484,12 @@ void main() {
       encoder.writeString("\ud800\udd51");
       expect(output.getDataAsList(), [0x64, 0xf0, 0x90, 0x85, 0x91]);
     });
+
+    test("Array empty", () {
+      output.clear();
+      final bool res = encoder.writeArray([]);
+      expect(res, isTrue);
+      expect(output.getDataAsList(), [0x80]);
+    });
   });
 }

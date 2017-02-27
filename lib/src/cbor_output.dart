@@ -11,6 +11,7 @@ part of cbor;
 
 abstract class Output {
   typed.Uint8Buffer data;
+  int _markPos = 0;
 
   void clear();
 
@@ -19,4 +20,8 @@ abstract class Output {
   void putByte(int value);
 
   void putBytes(typed.Uint8Buffer data);
+
+  void mark();
+
+  void resetToMark();
 }

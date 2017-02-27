@@ -53,15 +53,27 @@ class Encoder {
     _out.putBytes(buff);
   }
 
-  /// Bytestring primitive
+  /// Bytestring primitive.
   void writeBuff(typed.Uint8Buffer data, int size) {
     _writeTypeValue(3, size);
     _out.putBytes(data);
   }
 
-  /// Array primitive
-  void writeArray(int size) {
-    _writeTypeValue(4, size);
+  /// Array primitive.
+  /// Valid elements are string, integer, float(any size), array
+  /// or map. Returns true if the encoding has been successful.
+  bool writeArray(List<dynamic> value) {
+    // Mark the output buffer, if we cannot encode
+    // the whole array structure rewind so as to perform
+    // no encoding.
+    bool res = true;
+    _out.mark();
+    final bool ok = writeArrayImpl(value);
+    if (!ok) {
+      _out.resetToMark();
+      res = false;
+    }
+    return res;
   }
 
   /// Map primitive
@@ -323,5 +335,46 @@ class Encoder {
     final List<int> codes = utf.convert(str);
     buff.addAll(codes);
     return buff;
+  }
+
+  /// Array write implementation method.
+  /// If the array cannot be fully encoded no encoding occurs,
+  /// ie null is returned. Note that an empty array will also return null
+  /// however in this case the array major type and length will be encoded.
+  bool writeArrayImpl(List<dynamic> value) {
+    // Check for empty
+    if (value.isEmpty) {
+      _writeTypeValue(majorTypeArray, 0);
+      return true;
+    }
+    // Build the encoded array.
+    _writeTypeValue(majorTypeArray, value.length);
+    bool ok = true;
+    value.forEach((element) {
+      switch (element.runtimeType) {
+        case int:
+          writeInt(element);
+          break;
+        case String:
+          writeString(element);
+          break;
+        case double:
+          writeFloat(element);
+          break;
+        case List:
+          final bool res = writeArrayImpl(element);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
+          }
+          break;
+        case Map:
+        //TODO
+          break;
+        default:
+          ok = false;
+      }
+    });
+    return ok;
   }
 }
