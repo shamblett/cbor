@@ -42,33 +42,39 @@ class Encoder {
 
   /// Primitive byte writer
   void writeBytes(typed.Uint8Buffer data) {
-    _writeTypeValue(2, data.length);
+    _writeTypeValue(majorTypeBytes, data.length);
     _out.putBytes(data);
   }
 
   /// Primitive string writer
-  void writeString(String str) {
+  void writeString(String str, [bool indefinite = false]) {
     final typed.Uint8Buffer buff = strToByteString(str);
-    _writeTypeValue(3, buff.length);
+    if (indefinite) {
+      startIndefinite(majorTypeString);
+    }
+    _writeTypeValue(majorTypeString, buff.length);
     _out.putBytes(buff);
   }
 
   /// Bytestring primitive.
-  void writeBuff(typed.Uint8Buffer data, int size) {
-    _writeTypeValue(3, size);
+  void writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
+    if (indefinite) {
+      startIndefinite(majorTypeBytes);
+    }
+    _writeTypeValue(majorTypeBytes, data.length);
     _out.putBytes(data);
   }
 
   /// Array primitive.
   /// Valid elements are string, integer, float(any size), array
   /// or map. Returns true if the encoding has been successful.
-  bool writeArray(List<dynamic> value) {
+  bool writeArray(List<dynamic> value, [bool indefinite = false]) {
     // Mark the output buffer, if we cannot encode
     // the whole array structure rewind so as to perform
     // no encoding.
     bool res = true;
     _out.mark();
-    final bool ok = writeArrayImpl(value);
+    final bool ok = writeArrayImpl(value, indefinite);
     if (!ok) {
       _out.resetToMark();
       res = false;
@@ -82,13 +88,13 @@ class Encoder {
   /// here.
   /// Valid map values are integer, string float(any size), array
   /// or map. Returns true if the encoding has been successful.
-  bool writeMap(Map<dynamic, dynamic> value) {
+  bool writeMap(Map<dynamic, dynamic> value, [bool indefinite = false]) {
     // Mark the output buffer, if we cannot encode
     // the whole map structure rewind so as to perform
     // no encoding.
     bool res = true;
     _out.mark();
-    final bool ok = writeMapImpl(value);
+    final bool ok = writeMapImpl(value, indefinite);
     if (!ok) {
       _out.resetToMark();
       res = false;
@@ -98,12 +104,12 @@ class Encoder {
 
   /// Tag primitive
   void writeTag(int tag) {
-    _writeTypeValue(6, tag);
+    _writeTypeValue(majorTypeTag, tag);
   }
 
   /// Special(major type 7) primitive
   void writeSpecial(int special) {
-    int type = 7;
+    int type = majorTypeSpecial;
     type <<= majorTypeShift;
     _out.putByte(type | special);
   }
@@ -118,15 +124,24 @@ class Encoder {
     _out.putByte(0xf7);
   }
 
+  /// Indefinite item break primitive
+  void writeBreak() {
+    writeSpecial(aiBreak);
+  }
+
+  /// Indefinite item start
+  void startIndefinite(int majorType) {
+    _out.putByte((majorType << 5) + aiBreak);
+  }
   /// Simple values, negative values, values over 255 or less
   /// than 0 will be encoded as an int.
   void writeSimple(int value) {
     if (!value.isNegative) {
       if ((value <= simpleLimitUpper) && (value >= simpleLimitLower)) {
-        if (value <= 23) {
+        if (value <= ai23) {
           writeSpecial(value);
         } else {
-          writeSpecial(24);
+          writeSpecial(ai24);
           _out.putByte(value);
         }
       } else {
@@ -355,14 +370,18 @@ class Encoder {
   /// Array write implementation method.
   /// If the array cannot be fully encoded no encoding occurs,
   /// ie false is returned.
-  bool writeArrayImpl(List<dynamic> value) {
+  bool writeArrayImpl(List<dynamic> value, [bool indefinite = false]) {
     // Check for empty
     if (value.isEmpty) {
       _writeTypeValue(majorTypeArray, 0);
       return true;
     }
     // Build the encoded array.
-    _writeTypeValue(majorTypeArray, value.length);
+    if (indefinite) {
+      _writeTypeValue(majorTypeArray, aiBreak);
+    } else {
+      _writeTypeValue(majorTypeArray, value.length);
+    }
     bool ok = true;
     for (dynamic element in value) {
       switch (element.runtimeType.toString()) {
@@ -401,7 +420,7 @@ class Encoder {
   /// Map write implementation method.
   /// If the map cannot be fully encoded no encoding occurs,
   /// ie false is returned.
-  bool writeMapImpl(Map<dynamic, dynamic> value) {
+  bool writeMapImpl(Map<dynamic, dynamic> value, [bool indefinite = false]) {
     // Check for empty
     if (value.isEmpty) {
       _writeTypeValue(majorTypeMap, 0);
@@ -421,7 +440,11 @@ class Encoder {
       return false;
     }
     // Build the encoded map.
-    _writeTypeValue(majorTypeMap, value.length);
+    if (indefinite) {
+      _writeTypeValue(majorTypeMap, aiBreak);
+    } else {
+      _writeTypeValue(majorTypeMap, value.length);
+    }
     bool ok = true;
     value.forEach((dynamic key, dynamic val) {
       // Encode the key, can now onlbe ints or strings.

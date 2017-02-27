@@ -639,5 +639,20 @@ void main() {
         0x45
       ]);
     });
+
+    test("Indefinite Bytestring 0102030405", () {
+      output.clear();
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll([0x01, 0x02]);
+      encoder.writeBuff(data, true);
+      final typed.Uint8Buffer data1 = new typed.Uint8Buffer();
+      data1.addAll([0x03, 0x04, 0x05]);
+      encoder.writeBuff(data1);
+      encoder.writeBreak();
+      expect(output.getDataAsList(),
+          [0x5f, 0x42, 0x01, 0x02, 0x43, 0x03, 0x04, 0x05, 0xff]);
+    });
+
+
   });
 }
