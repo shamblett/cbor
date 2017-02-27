@@ -381,6 +381,7 @@ class Encoder {
           }
           break;
         case "Map":
+        case "_InternalLinkedHashMap":
           final bool res = writeMapImpl(element);
           if (!res) {
             // Fail the whole encoding
@@ -446,6 +447,7 @@ class Encoder {
           }
           break;
         case "Map":
+        case "_InternalLinkedHashMap":
           final bool res = writeMapImpl(val);
           if (!res) {
             // Fail the whole encoding

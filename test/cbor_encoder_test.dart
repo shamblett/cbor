@@ -582,5 +582,23 @@ void main() {
       expect(res, isTrue);
       expect(output.getDataAsList(), [0xa2, 0x01, 0x02, 0x03, 0x04]);
     });
+
+    test("Map {a:1,b:[2,3]}", () {
+      output.clear();
+      final bool res = encoder.writeMap({"a": 1, "b": [2, 3]});
+      expect(res, isTrue);
+      expect(output.getDataAsList(), [0xa2, 0x61, 0x61, 0x01, 0x061,
+      0x62, 0x82, 0x02, 0x03
+      ]);
+    });
+
+    test("Map [a,{b:c}]", () {
+      output.clear();
+      final bool res = encoder.writeArray(["a", {"b": "c"}]);
+      expect(res, isTrue);
+      expect(output.getDataAsList(), [0x82, 0x61, 0x61, 0xa1, 0x61,
+      0x62, 0x61, 0x63
+      ]);
+    });
   });
 }
