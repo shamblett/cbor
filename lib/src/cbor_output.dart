@@ -10,7 +10,7 @@ part of cbor;
 /// A base class for encoder output.
 
 abstract class Output {
-  typed.Uint8Buffer data;
+  typed.Uint8Buffer _buffer;
   int _markPos = 0;
 
   void clear();

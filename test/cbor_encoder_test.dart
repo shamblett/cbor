@@ -491,5 +491,21 @@ void main() {
       expect(res, isTrue);
       expect(output.getDataAsList(), [0x80]);
     });
+
+    test("Array 1,2,3", () {
+      output.clear();
+      final bool res = encoder.writeArray([1, 2, 3]);
+      expect(res, isTrue);
+      expect(output.getDataAsList(), [0x83, 0x01, 0x02, 0x03]);
+    });
+
+    test("Array 1,[2,3],[4,5]", () {
+      output.clear();
+      final bool res = encoder.writeArray([1, [2, 3], [4, 5]]);
+      //expect(res, isTrue);
+      expect(output.getDataAsList(), [0x83, 0x01, 0x82, 0x02,
+      0x03, 0x82, 0x04, 0x05
+      ]);
+    });
   });
 }

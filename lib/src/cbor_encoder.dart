@@ -350,31 +350,32 @@ class Encoder {
     // Build the encoded array.
     _writeTypeValue(majorTypeArray, value.length);
     bool ok = true;
-    value.forEach((element) {
-      switch (element.runtimeType) {
-        case int:
+    for (dynamic element in value) {
+      switch (element.runtimeType.toString()) {
+        case "int":
           writeInt(element);
           break;
-        case String:
+        case "String":
           writeString(element);
           break;
-        case double:
+        case "double":
           writeFloat(element);
           break;
-        case List:
+        case "List":
           final bool res = writeArrayImpl(element);
           if (!res) {
             // Fail the whole encoding
             ok = false;
           }
           break;
-        case Map:
+        case "Map":
         //TODO
           break;
         default:
+          print("RT is ${element.runtimeType}");
           ok = false;
       }
-    });
+    };
     return ok;
   }
 }

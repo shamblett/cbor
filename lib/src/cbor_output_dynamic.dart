@@ -11,8 +11,6 @@ part of cbor;
 /// of any size.
 
 class OutputDynamic extends Output {
-  typed.Uint8Buffer _buffer;
-
   OutputDynamic() {
     this._buffer = new typed.Uint8Buffer();
   }
@@ -42,12 +40,12 @@ class OutputDynamic extends Output {
   }
 
   void mark() {
-    _markPos = data.length;
+    _markPos = _buffer.length;
   }
 
   void resetToMark() {
-    if (data.length > _markPos) {
-      data.removeRange(_markPos + 1, data.length);
+    if (_buffer.length > _markPos) {
+      _buffer.removeRange(_markPos, _buffer.length);
     }
   }
 }
