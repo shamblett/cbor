@@ -77,7 +77,9 @@ class Encoder {
   }
 
   /// Map primitive.
-  /// Valid map keys are integer and string.
+  /// Valid map keys are integer and string. RFC7049
+  /// recommends keys be of a single type, we are more generous
+  /// here.
   /// Valid map values are integer, string float(any size), array
   /// or map. Returns true if the encoding has been successful.
   bool writeMap(Map<dynamic, dynamic> value) {
