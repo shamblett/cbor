@@ -711,18 +711,18 @@ void main() {
           [0x9f, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05, 0xff]);
     });
 
-    test("Indefinite Array [1, [2,3], [_4,5]", () {
+    test("Indefinite Array [1, [_2,3], [4,5]", () {
       output.clear();
       final bool res1 = encoder.writeArray([
-        1,
-        [2, 3]
-      ], false, 3);
+        1], false, 3);
       expect(res1, isTrue);
-      final bool res2 = encoder.writeArray([4, 5], true);
+      final bool res2 = encoder.writeArray([2, 3], true);
       expect(res2, isTrue);
       encoder.writeBreak();
+      final bool res3 = encoder.writeArray([4, 5], false);
+      expect(res3, isTrue);
       expect(output.getDataAsList(),
-          [0x83, 0x01, 0x82, 0x02, 0x03, 0x9f, 0x04, 0x05, 0xff]);
+          [0x83, 0x01, 0x9f, 0x02, 0x03, 0xff, 0x82, 0x04, 0x05]);
     });
   });
 }
