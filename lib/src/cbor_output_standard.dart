@@ -42,11 +42,21 @@ class OutputStandard extends Output {
   }
 
   void pause() {
-
+    if (!_paused) {
+      _pauseBuffer = _buffer;
+      _buffer.clear();
+      _paused = true;
+    }
   }
 
   void restart([bool append = false]) {
-
+    if (_paused) {
+      if (append) {
+        _pauseBuffer.addAll(_buffer);
+      }
+      _buffer = _pauseBuffer;
+      _paused = false;
+    }
   }
 
   /// Additional methods
@@ -54,6 +64,4 @@ class OutputStandard extends Output {
   List<int> getDataAsList() {
     return _buffer.toList();
   }
-
-
 }
