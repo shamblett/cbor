@@ -11,7 +11,7 @@ void main() {
   group('Original C++ tests', () {
     test('Encode/Decode confidence -> ', () {
       // Encoding
-      final cbor.OutputDynamic output = new cbor.OutputDynamic();
+      final cbor.OutputStandard output = new cbor.OutputStandard();
       final cbor.Encoder encoder = new cbor.Encoder(output);
       encoder.writeArray([9]);
       encoder.writeInt(123);

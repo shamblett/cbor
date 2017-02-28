@@ -12,7 +12,7 @@ import 'cbor_test_listener.dart';
 void main() {
   group('RFC Appendix A Diagnostics decoder tests -> ', () {
     // Common initialisation
-    final cbor.OutputDynamic output = new cbor.OutputDynamic();
+    final cbor.OutputStandard output = new cbor.OutputStandard();
     final ListenerTest listener = new ListenerTest();
 
     test('0', () {

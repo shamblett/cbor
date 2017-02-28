@@ -7,24 +7,16 @@
 
 part of cbor;
 
-/// A dymnamic output class, this allows encoded byte streams to be
-/// of any size.
+/// The standard output class.
 
-class OutputDynamic extends Output {
-  OutputDynamic() {
+class OutputStandard extends Output {
+  OutputStandard() {
     this._buffer = new typed.Uint8Buffer();
   }
 
+  /// Overridden methods
   void clear() {
     _buffer.clear();
-  }
-
-  typed.Uint8Buffer getData() {
-    return _buffer;
-  }
-
-  List<int> getDataAsList() {
-    return _buffer.toList();
   }
 
   int size() {
@@ -48,4 +40,20 @@ class OutputDynamic extends Output {
       _buffer.removeRange(_markPos, _buffer.length);
     }
   }
+
+  void pause() {
+
+  }
+
+  void restart([bool append = false]) {
+
+  }
+
+  /// Additional methods
+
+  List<int> getDataAsList() {
+    return _buffer.toList();
+  }
+
+
 }

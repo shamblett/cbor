@@ -12,7 +12,7 @@ void main() {
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
     // Common initialisation
     cbor.init();
-    final cbor.OutputDynamic output = new cbor.OutputDynamic();
+    final cbor.OutputStandard output = new cbor.OutputStandard();
     final cbor.Encoder encoder = new cbor.Encoder(output);
 
     test('0', () {
