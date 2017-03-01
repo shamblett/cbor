@@ -26,7 +26,9 @@ abstract class Output {
 
   /// Get the current output buffer
   typed.Uint8Buffer getData() {
-    return _buffer;
+    final typed.Uint8Buffer ret = new typed.Uint8Buffer();
+    ret.addAll(_buffer);
+    return ret;
   }
 
   /// Clear the buffer

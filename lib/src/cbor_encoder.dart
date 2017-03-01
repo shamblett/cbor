@@ -46,6 +46,13 @@ class Encoder {
     _out.putBytes(data);
   }
 
+  /// Raw byte buffer writer.
+  /// No encoding is added to the buffer, it goes into the
+  /// output stream as is.
+  void writeRawBuffer(typed.Uint8Buffer buff) {
+    _out.putBytes(buff);
+  }
+
   /// Primitive string writer
   void writeString(String str, [bool indefinite = false]) {
     final typed.Uint8Buffer buff = strToByteString(str);
@@ -66,7 +73,7 @@ class Encoder {
   }
 
   /// Array primitive.
-  /// Valid elements are string, integer, float(any size), array
+  /// Valid elements are string, integer, bool, float(any size), array
   /// or map. Returns true if the encoding has been successful.
   /// If you supply a length this will be used and not calculated from the
   /// array size, unless you are encoding certain indefinite sequences you
@@ -90,7 +97,7 @@ class Encoder {
   /// Valid map keys are integer and string. RFC7049
   /// recommends keys be of a single type, we are more generous
   /// here.
-  /// Valid map values are integer, string float(any size), array
+  /// Valid map values are integer, string, bool, float(any size), array
   /// or map. Returns true if the encoding has been successful.
   bool writeMap(Map<dynamic, dynamic> value,
       [bool indefinite = false, int length = null]) {
@@ -442,6 +449,9 @@ class Encoder {
             }
           }
           break;
+        case "bool":
+          writeBool(element);
+          break;
         default:
           print("writeArrayImpl::RT is ${element.runtimeType.toString()}");
           ok = false;
@@ -538,6 +548,9 @@ class Encoder {
               _out.putByte(a);
             }
           }
+          break;
+        case "bool":
+          writeBool(val);
           break;
         default:
           print("writeMapImpl::RT is ${val.runtimeType.toString()}");

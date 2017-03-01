@@ -65,6 +65,8 @@ class OutputStandard extends Output {
   /// Additional methods
 
   List<int> getDataAsList() {
-    return _buffer.toList();
+    final List<int> ret = new List<int>();
+    ret.addAll(_buffer.toList());
+    return ret;
   }
 }
