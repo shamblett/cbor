@@ -398,7 +398,14 @@ class Encoder {
     }
     bool ok = true;
     for (dynamic element in value) {
-      switch (element.runtimeType.toString()) {
+      String valType = element.runtimeType.toString();
+      if (valType.contains("List")) {
+        valType = "List";
+      }
+      if (valType.contains("Map")) {
+        valType = "Map";
+      }
+      switch (valType) {
         case "int":
           writeInt(element);
           break;
@@ -472,7 +479,14 @@ class Encoder {
         writeString(key);
       }
       // Encode the value
-      switch (val.runtimeType.toString()) {
+      String valType = val.runtimeType.toString();
+      if (valType.contains("List")) {
+        valType = "List";
+      }
+      if (valType.contains("Map")) {
+        valType = "Map";
+      }
+      switch (valType) {
         case "int":
           writeInt(val);
           break;
@@ -490,7 +504,6 @@ class Encoder {
           }
           break;
         case "Map":
-        case "_InternalLinkedHashMap":
           final bool res = writeMapImpl(val);
           if (!res) {
             // Fail the whole encoding
