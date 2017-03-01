@@ -92,13 +92,14 @@ class Encoder {
   /// here.
   /// Valid map values are integer, string float(any size), array
   /// or map. Returns true if the encoding has been successful.
-  bool writeMap(Map<dynamic, dynamic> value, [bool indefinite = false]) {
+  bool writeMap(Map<dynamic, dynamic> value,
+      [bool indefinite = false, int length = null]) {
     // Mark the output buffer, if we cannot encode
     // the whole map structure rewind so as to perform
     // no encoding.
     bool res = true;
     _out.mark();
-    final bool ok = writeMapImpl(value, indefinite);
+    final bool ok = writeMapImpl(value, indefinite, length);
     if (!ok) {
       _out.resetToMark();
       res = false;
@@ -416,18 +417,29 @@ class Encoder {
           writeFloat(element);
           break;
         case "List":
-          final bool res = writeArrayImpl(element);
-          if (!res) {
-            // Fail the whole encoding
-            ok = false;
+          if (!indefinite) {
+            final bool res = writeArrayImpl(element, indefinite);
+            if (!res) {
+              // Fail the whole encoding
+              ok = false;
+            }
+          } else {
+            for (int a in element) {
+              _out.putByte(a);
+            }
           }
           break;
         case "Map":
-        case "_InternalLinkedHashMap":
-          final bool res = writeMapImpl(element);
-          if (!res) {
-            // Fail the whole encoding
-            ok = false;
+          if (!indefinite) {
+            final bool res = writeMapImpl(element, indefinite);
+            if (!res) {
+              // Fail the whole encoding
+              ok = false;
+            }
+          } else {
+            for (int a in element) {
+              _out.putByte(a);
+            }
           }
           break;
         default:
@@ -441,10 +453,11 @@ class Encoder {
   /// Map write implementation method.
   /// If the map cannot be fully encoded no encoding occurs,
   /// ie false is returned.
-  bool writeMapImpl(Map<dynamic, dynamic> value, [bool indefinite = false]) {
+  bool writeMapImpl(Map<dynamic, dynamic> value,
+      [bool indefinite = false, int length = null]) {
     // Indefinite
     if (indefinite) {
-      startIndefinite(majorTypeArray);
+      startIndefinite(majorTypeMap);
     }
     // Check for empty
     if (value.isEmpty) {
@@ -468,7 +481,11 @@ class Encoder {
     }
     // Build the encoded map.
     if (!indefinite) {
-      _writeTypeValue(majorTypeMap, value.length);
+      if (length != null) {
+        _writeTypeValue(majorTypeMap, length);
+      } else {
+        _writeTypeValue(majorTypeMap, value.length);
+      }
     }
     bool ok = true;
     value.forEach((dynamic key, dynamic val) {
@@ -497,17 +514,29 @@ class Encoder {
           writeFloat(val);
           break;
         case "List":
-          final bool res = writeArrayImpl(val);
-          if (!res) {
-            // Fail the whole encoding
-            ok = false;
+          if (!indefinite) {
+            final bool res = writeArrayImpl(val, indefinite);
+            if (!res) {
+              // Fail the whole encoding
+              ok = false;
+            }
+          } else {
+            for (int a in val) {
+              _out.putByte(a);
+            }
           }
           break;
         case "Map":
-          final bool res = writeMapImpl(val);
-          if (!res) {
-            // Fail the whole encoding
-            ok = false;
+          if (!indefinite) {
+            final bool res = writeMapImpl(val, indefinite);
+            if (!res) {
+              // Fail the whole encoding
+              ok = false;
+            }
+          } else {
+            for (int a in val) {
+              _out.putByte(a);
+            }
           }
           break;
         default:

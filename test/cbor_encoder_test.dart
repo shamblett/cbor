@@ -788,20 +788,36 @@ void main() {
       ]);
     });
 
-    test("Indefinite Map [_a:1, b:[_2,3]", () {
+    test("Indefinite Map {_a:1, b:[_2,3]}", () {
       output.clear();
       output.pause();
       final bool res1 = encoder.writeArray([2, 3], true);
       expect(res1, isTrue);
-      final List<int> val = output.getDataAsList();
+      final List<int>val = output.getDataAsList();
       output.restart();
       final bool res2 = encoder.writeMap({"a": 1, "b": val}, true);
       expect(res2, isTrue);
+      encoder.writeBreak();
       encoder.writeBreak();
       expect(output.getDataAsList(),
           [0xbf, 0x61, 0x61, 0x01, 0x61, 0x62, 0x9f, 0x02, 0x03,
           0xff, 0xff
           ]);
+    });
+
+    test('Indefinite Array [a, {_"b":"c"}', () {
+      output.clear();
+      output.pause();
+      final bool res1 = encoder.writeMap({"b": "c"}, true);
+      expect(res1, isTrue);
+      final List<int>val = output.getDataAsList();
+      output.restart();
+      final bool res2 = encoder.writeArray(["a", val], true, 2);
+      expect(res2, isTrue);
+      encoder.writeBreak();
+      expect(output.getDataAsList(),
+          [0x82, 0x61, 0x61, 0xbf, 0x61, 0x62, 0x61, 0x63, 0xff]
+      );
     });
   });
 }

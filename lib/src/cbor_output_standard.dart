@@ -12,6 +12,7 @@ part of cbor;
 class OutputStandard extends Output {
   OutputStandard() {
     this._buffer = new typed.Uint8Buffer();
+    this._pauseBuffer = new typed.Uint8Buffer();
   }
 
   /// Overridden methods
@@ -43,7 +44,8 @@ class OutputStandard extends Output {
 
   void pause() {
     if (!_paused) {
-      _pauseBuffer = _buffer;
+      _pauseBuffer.clear();
+      _pauseBuffer.addAll(_buffer);
       _buffer.clear();
       _paused = true;
     }
@@ -54,7 +56,8 @@ class OutputStandard extends Output {
       if (append) {
         _pauseBuffer.addAll(_buffer);
       }
-      _buffer = _pauseBuffer;
+      _buffer.clear();
+      _buffer.addAll(_pauseBuffer);
       _paused = false;
     }
   }
