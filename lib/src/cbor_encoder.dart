@@ -452,6 +452,12 @@ class Encoder {
         case "bool":
           writeBool(element);
           break;
+        case "Null":
+          writeNull();
+          break;
+        case "Uint8Buffer":
+          writeRawBuffer(element);
+          break;
         default:
           print("writeArrayImpl::RT is ${element.runtimeType.toString()}");
           ok = false;
@@ -551,6 +557,12 @@ class Encoder {
           break;
         case "bool":
           writeBool(val);
+          break;
+        case "Null":
+          writeNull();
+          break;
+        case "Uint8Buffer":
+          writeRawBuffer(val);
           break;
         default:
           print("writeMapImpl::RT is ${val.runtimeType.toString()}");
