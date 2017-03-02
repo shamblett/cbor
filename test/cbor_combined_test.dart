@@ -7,8 +7,12 @@
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
+import 'dart:io';
 
 void main() {
+  // Common
+  final cbor.ListenerDebug listener = new cbor.ListenerDebug();
+
   group('Original C++ tests', () {
     test('Encode/Decode confidence -> ', () {
       // Encoding
@@ -28,9 +32,9 @@ void main() {
 
       // Decoding
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final cbor.ListenerDebug listener = new cbor.ListenerDebug();
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
+      listener.banner('>>> Original C++ tests - Encode/Decode confidence');
       decoder.run();
     });
   });
@@ -248,6 +252,86 @@ void main() {
         0x65,
         0xF5
       ]);
+    });
+  });
+
+  group('File based decoding', () {
+    test('Floats -> ', () {
+      // Decoding
+      final String currDir = Directory.current.path;
+      final File data = new File(currDir + '/test/data/floats.cbor');
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll(data.readAsBytesSync());
+      final cbor.Input input = new cbor.Input(buff, data.lengthSync());
+      listener.banner('>>> File based decoding - floats');
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+    });
+
+    test('Indefinitite string -> ', () {
+      // Decoding
+      final String currDir = Directory.current.path;
+      final File data = new File(currDir + '/test/data/indef_string.cbor');
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll(data.readAsBytesSync());
+      final cbor.Input input = new cbor.Input(buff, data.lengthSync());
+      listener.banner('>>> File based decoding - Indefinitite string');
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+    });
+
+    test('Integer -> ', () {
+      // Decoding
+      final String currDir = Directory.current.path;
+      final File data = new File(currDir + '/test/data/integer.cbor');
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll(data.readAsBytesSync());
+      final cbor.Input input = new cbor.Input(buff, data.lengthSync());
+      listener.banner('>>> File based decoding - Integer');
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+    });
+
+    test('Map -> ', () {
+      // Decoding
+      final String currDir = Directory.current.path;
+      final File data = new File(currDir + '/test/data/map.cbor');
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll(data.readAsBytesSync());
+      final cbor.Input input = new cbor.Input(buff, data.lengthSync());
+      listener.banner('>>> File based decoding - Map');
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+    });
+
+    test('Nested array -> ', () {
+      // Decoding
+      final String currDir = Directory.current.path;
+      final File data = new File(currDir + '/test/data/nested_array.cbor');
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll(data.readAsBytesSync());
+      final cbor.Input input = new cbor.Input(buff, data.lengthSync());
+      listener.banner('>>> File based decoding - Nested array');
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
+    });
+
+    test('Tagged date -> ', () {
+      // Decoding
+      final String currDir = Directory.current.path;
+      final File data = new File(currDir + '/test/data/tagged_date.cbor');
+      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      buff.addAll(data.readAsBytesSync());
+      final cbor.Input input = new cbor.Input(buff, data.lengthSync());
+      listener.banner('>>> File based decoding - Tagged date');
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, listener);
+      decoder.run();
     });
   });
 }

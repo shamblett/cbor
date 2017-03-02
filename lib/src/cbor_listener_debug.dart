@@ -14,6 +14,10 @@ class ListenerDebug extends Listener {
     print("Integer $value");
   }
 
+  void banner(String text) {
+    print(text);
+  }
+
   void onBytes(typed.Uint8Buffer data, int size) {
     print("Bytes with size: $size");
   }
@@ -35,7 +39,7 @@ class ListenerDebug extends Listener {
   }
 
   void onTag(int tag) {
-    print("Tag $tag)");
+    print("Tag $tag");
   }
 
   void onSpecial(int code) {
