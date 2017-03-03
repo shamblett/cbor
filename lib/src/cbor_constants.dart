@@ -20,6 +20,7 @@ const int majorTypeArray = 4;
 const int majorTypeMap = 5;
 const int majorTypeTag = 6;
 const int majorTypeSpecial = 7;
+const int majorTypeNotSet = -1;
 
 /// Additional information constants
 const int ai20 = 20;
