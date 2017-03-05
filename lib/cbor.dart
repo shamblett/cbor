@@ -25,7 +25,7 @@ part 'src/cbor_encoder.dart';
 part 'src/cbor_listener_debug.dart';
 part 'src/cbor_listener.dart';
 
-part 'src/cbor_item.dart';
+part 'src/cbor_dart_item.dart';
 part 'src/cbor_output_standard.dart';
 
 /// Float encoding directives
