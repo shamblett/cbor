@@ -10,12 +10,14 @@ library cbor;
 import 'dart:convert' as convertor;
 import 'dart:typed_data';
 import 'dart:math';
+import 'dart:collection';
 import 'package:typed_data/typed_data.dart' as typed;
 
 /// The CBOR package exported interface
 
 part 'src/cbor.dart';
 
+part 'src/cbor_item_stack.dart';
 part 'src/cbor_float_support.dart';
 part 'src/cbor_constants.dart';
 part 'src/cbor_output.dart';
