@@ -22,7 +22,21 @@ class ItemStack {
 
   LinkedList _stack = new LinkedList();
 
-  /// Get the item stack
-  get stack => _stack;
+  /// Push an item
+  void push(DartItem item) {
+    final ItemEntry entry = new ItemEntry(item);
+    _stack.addFirst(entry);
+  }
 
+  /// Pop an item from the stack top and remove it.
+  DartItem pop() {
+    final ItemEntry entry = _stack.first;
+    _stack.remove(entry);
+    return entry.value;
+  }
+
+  /// Size
+  int size() {
+    return _stack.length;
+  }
 }

@@ -22,7 +22,7 @@ enum dartTypes {
 /// The CBOR Dart item class.
 /// Objects of this class are produced by the standard
 /// stack class.
-class CborDartItem {
+class DartItem {
   /// The item data
   dynamic data = null;
 
