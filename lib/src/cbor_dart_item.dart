@@ -26,10 +26,20 @@ class DartItem {
   /// The item data
   dynamic data = null;
 
+  /// Target size is what we expect the size to
+  /// be.
+  int targetSize = 0;
+
   /// The item type, one of the major types.
   dartTypes type = dartTypes.dtNone;
 
   /// Is the type cpmplete, for maps, lists
   /// and buffers.
   bool complete = false;
+
+  /// Actual size
+  int size() {
+    return data.length;
+  }
+
 }
