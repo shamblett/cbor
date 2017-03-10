@@ -14,6 +14,7 @@ void main() {
     // Common initialisation
     final cbor.OutputStandard output = new cbor.OutputStandard();
     final ListenerTest listener = new ListenerTest();
+    final cbor.ListenerStack slistener = new cbor.ListenerStack();
 
     test('0', () {
       output.clear();
@@ -27,6 +28,12 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [0]);
+      decoder.setListener(slistener);
+      input.reset();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], 0);
     });
 
     test('1', () {

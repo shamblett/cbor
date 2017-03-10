@@ -10,7 +10,15 @@ part of cbor;
 class ListenerStack extends Listener {
   ItemStack _stack = new ItemStack();
 
-  void onInteger(int value) {}
+  /// Get the stack
+  ItemStack get stack => _stack;
+
+  void onInteger(int value) {
+    final DartItem item = new DartItem();
+    item.data = value;
+    item.type = dartTypes.dtInt;
+    _append(item);
+  }
 
   void onBytes(typed.Uint8Buffer data, int size) {}
 
@@ -44,20 +52,28 @@ class ListenerStack extends Listener {
 
   void onIndefinate(String text) {}
 
+  /// Main stack append method
   void _append(DartItem item) {
+    _appendImpl(item);
+  }
+
+  /// Implementation
+  void _appendImpl(DartItem item) {
     if (_stack.size() == 0) {
       // Empty stack, straight add
+      item.complete = true;
       _stack.push(item);
     } else {
-      final DartItem entry = _stack.pop();
+      final DartItem entry = _stack.peek();
 
-      /// If its complete push it back and push
-      /// our item
+      /// If its complete push
+      /// our item. if not complete append and check
+      /// for completeness.
       if (entry.complete) {
-        _stack.push(entry);
+        item.complete = true;
         _stack.push(item);
       } else {
-        /// Map, Array etc.
+        // TODO
       }
     }
   }

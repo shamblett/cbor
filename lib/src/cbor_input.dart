@@ -86,4 +86,9 @@ class Input {
     final ByteData bdata = new ByteData.view(buff.buffer);
     return bdata.getFloat64(0);
   }
+
+  /// Reset the offset
+  void reset() {
+    _offset = 0;
+  }
 }

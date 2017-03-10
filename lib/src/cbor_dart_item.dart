@@ -33,7 +33,7 @@ class DartItem {
   /// The item type, one of the major types.
   dartTypes type = dartTypes.dtNone;
 
-  /// Is the type cpmplete, for maps, lists
+  /// Is the type complete, for maps, lists
   /// and buffers.
   bool complete = false;
 

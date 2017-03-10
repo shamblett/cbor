@@ -28,15 +28,41 @@ class ItemStack {
     _stack.addFirst(entry);
   }
 
-  /// Pop an item from the stack top and remove it.
+  /// Pop an item from the stack top.
   DartItem pop() {
     final ItemEntry entry = _stack.first;
     _stack.remove(entry);
     return entry.value;
   }
 
+  /// Peek the top stack item
+  DartItem peek() {
+    final ItemEntry entry = _stack.first;
+    return entry.value;
+  }
+
   /// Size
   int size() {
     return _stack.length;
+  }
+
+  /// Clear
+  void clear() {
+    _stack.clear();
+  }
+
+  /// Stack walker, returns the stack from bottom to
+  /// top as a list. Returns null if the stack is empty.
+  List<dynamic> walk() {
+    if (_stack.length == 0) return null;
+    final List<dynamic> ret = new List<dynamic>();
+    ItemEntry entry = _stack.last;
+    ret.add(entry.value.data);
+    while (entry.next != null) {
+      final ItemEntry inner = entry.next;
+      ret.add(inner.value.data);
+      entry = inner;
+    }
+    return ret;
   }
 }
