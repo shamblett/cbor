@@ -39,8 +39,7 @@ int getHalfPrecisionInt(double val) {
   fBuff[0] = val;
   final ByteBuffer bBuff = fBuff.buffer;
   final Uint8List uList = bBuff.asUint8List();
-  final int intVal =
-  uList[0] | uList[1] << 8 | uList[2] << 16 | uList[3] << 24;
+  final int intVal = uList[0] | uList[1] << 8 | uList[2] << 16 | uList[3] << 24;
   final int index = intVal >> 23;
   final int masked = intVal & 0x7FFFFF;
   final int hBits = baseTable[index] + ((masked) >> shiftTable[index]);
@@ -58,7 +57,7 @@ bool canBeAHalf(double value) {
 }
 
 /// Check if a double can be represented as single precision.
-/// Returns true if it can.abstract.
+/// Returns true if it can.
 bool canBeASingle(double value) {
   /// Convert to single and back again.
   final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
@@ -66,4 +65,24 @@ bool canBeASingle(double value) {
   // If the value is the same it can be converted.
   final double result = fBuff[0];
   return value == result ? true : false;
+}
+
+/// Bignum functions
+
+/// Bignum byte buffer to int. Returns null
+/// if the conversion fails.
+int bignumToInt(typed.Uint8Buffer buff, String sign) {
+  // Convert to a signed hex string.
+  String res = sign + "0x";
+  for (int i in buff) {
+    String tmp = i.toRadixString(16);
+    if (tmp.length == 1) {
+      tmp = "0" + tmp;
+    }
+    res += tmp;
+  }
+
+  // Try a parse
+  final int value = int.parse(res, onError: (source) => null);
+  return value;
 }

@@ -34,6 +34,7 @@ class ListenerTest extends cbor.Listener {
     print("Bytes with size: $size");
     lastValue.add(data);
     lastByteCount = size;
+    print("To string - ${data.toString()}");
   }
 
   void onString(String str) {

@@ -19,7 +19,8 @@ part 'src/cbor.dart';
 
 part 'src/cbor_listener_stack.dart';
 part 'src/cbor_item_stack.dart';
-part 'src/cbor_float_support.dart';
+
+part 'src/cbor_numeric_support.dart';
 part 'src/cbor_constants.dart';
 part 'src/cbor_output.dart';
 part 'src/cbor_input.dart';

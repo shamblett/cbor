@@ -296,6 +296,13 @@ void main() {
       ]);
       expect(listener.lastTag, 2);
       expect(listener.lastByteCount, 9);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], 18446744073709551616);
     });
 
     test('-18446744073709551616', () {
@@ -320,6 +327,13 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-18446744073709551616]);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], -18446744073709551616);
     });
 
     test('18446744073709551617', () {
