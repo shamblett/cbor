@@ -21,6 +21,8 @@ class ListenerStack extends Listener {
   whatsNext _next = whatsNext.nothing;
 
   void onInteger(int value) {
+    // Do not add nulls
+    if (value == null) return;
     final DartItem item = new DartItem();
     item.data = value;
     item.type = dartTypes.dtInt;
@@ -37,8 +39,9 @@ class ListenerStack extends Listener {
         _next = whatsNext.nothing;
         break;
       case whatsNext.aNegativeBignum:
-        final int value = bignumToInt(data, "-");
-        onInteger(value);
+        int value = bignumToInt(data, "-");
+        value = -1 + value;
+        onInteger(value.abs());
         _next = whatsNext.nothing;
         break;
       case whatsNext.nothing:
