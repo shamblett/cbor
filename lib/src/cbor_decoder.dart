@@ -328,6 +328,7 @@ class Decoder {
               break;
             case 8:
               _listener.onExtraInteger((-1 - _input.getLong()), -1);
+              _state = DecoderState.type;
               break;
           }
         } else
