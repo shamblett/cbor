@@ -77,7 +77,14 @@ class ListenerStack extends Listener {
 
   void onSpecial(int code) {}
 
-  void onSpecialFloat(double value) {}
+  void onSpecialFloat(double value) {
+    // Do not add nulls
+    if (value == null) return;
+    final DartItem item = new DartItem();
+    item.data = value;
+    item.type = dartTypes.dtDouble;
+    _append(item);
+  }
 
   void onBool(bool state) {}
 
