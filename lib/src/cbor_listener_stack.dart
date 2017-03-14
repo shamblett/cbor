@@ -49,7 +49,13 @@ class ListenerStack extends Listener {
     }
   }
 
-  void onString(String str) {}
+  void onString(String str) {
+    if (str == null) return;
+    final DartItem item = new DartItem();
+    item.data = str;
+    item.type = dartTypes.dtString;
+    _append(item);
+  }
 
   void onArray(int size) {}
 
@@ -60,10 +66,6 @@ class ListenerStack extends Listener {
   void onTag(int tag) {
     // Switch on the tag type
     switch (tag) {
-      case 0: // Date/Time string
-        break;
-      case 1: // Date/Time epoch
-        break;
       case 2: // Positive bignum
         _next = whatsNext.aPositiveBignum;
         break;

@@ -1169,6 +1169,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [0, "2013-03-21T20:04:00Z"]);
       expect(listener.lastTag, 0);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "2013-03-21T20:04:00Z");
     });
 
     test('Tag (1) Int', () {
@@ -1184,6 +1191,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [1, 1363896240]);
       expect(listener.lastTag, 1);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], 1363896240);
     });
 
     test('Tag (1) Float', () {
@@ -1210,6 +1224,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [1, 1363896240.5]);
       expect(listener.lastTag, 1);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], 1363896240.5);
     });
 
     test('Tag (23) multiple', () {
