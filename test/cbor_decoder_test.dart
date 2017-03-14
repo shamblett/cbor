@@ -1250,6 +1250,13 @@ void main() {
       ]);
       expect(listener.lastTag, 23);
       expect(listener.lastByteCount, 4);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [1, 2, 3, 4]);
     });
 
     test('Tag (24) multiple', () {

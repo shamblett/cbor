@@ -8,7 +8,7 @@
 part of cbor;
 
 /// What we are waiting for next, if anything.
-enum whatsNext { aPositiveBignum, aNegativeBignum, nothing }
+enum whatsNext { aPositiveBignum, aNegativeBignum, aMultiple, nothing }
 
 class ListenerStack extends Listener {
   ItemStack _stack = new ItemStack();
@@ -44,6 +44,14 @@ class ListenerStack extends Listener {
         onInteger(value.abs());
         _next = whatsNext.nothing;
         break;
+      case whatsNext.aMultiple:
+        if (data == null) return;
+        final DartItem item = new DartItem();
+        item.data = data;
+        item.type = dartTypes.dtBuffer;
+        _append(item);
+        _next = whatsNext.nothing;
+        break;
       case whatsNext.nothing:
         break;
     }
@@ -71,6 +79,11 @@ class ListenerStack extends Listener {
         break;
       case 3: // Negative bignum
         _next = whatsNext.aNegativeBignum;
+        break;
+      case 21:
+      case 22:
+      case 23:
+        _next = whatsNext.aMultiple;
         break;
       default:
         print("Unimplemented tag type $tag");
