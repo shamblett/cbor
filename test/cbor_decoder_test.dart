@@ -998,6 +998,13 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [false]);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], false);
     });
 
     test('true', () {
@@ -1012,6 +1019,13 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [true]);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], true);
     });
 
     test('null', () {
@@ -1026,6 +1040,13 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue[0], isNull);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], null);
     });
 
     test('undefined', () {
@@ -1040,6 +1061,13 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["Undefined"]);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], null);
     });
 
     test('Simple(16)', () {

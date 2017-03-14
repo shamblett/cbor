@@ -86,11 +86,26 @@ class ListenerStack extends Listener {
     _append(item);
   }
 
-  void onBool(bool state) {}
+  void onBool(bool state) {
+    // Do not add nulls
+    if (state == null) return;
+    final DartItem item = new DartItem();
+    item.data = state;
+    item.type = dartTypes.dtBool;
+    _append(item);
+  }
 
-  void onNull() {}
+  void onNull() {
+    final DartItem item = new DartItem();
+    item.type = dartTypes.dtNull;
+    _append(item);
+  }
 
-  void onUndefined() {}
+  void onUndefined() {
+    final DartItem item = new DartItem();
+    item.type = dartTypes.dtUndefined;
+    _append(item);
+  }
 
   void onError(String error) {}
 
