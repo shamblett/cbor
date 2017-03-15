@@ -1257,6 +1257,8 @@ void main() {
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
       expect(slist[0], [1, 2, 3, 4]);
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.base16);
     });
 
     test('Tag (24) multiple', () {
@@ -1276,6 +1278,15 @@ void main() {
       ]);
       expect(listener.lastByteCount, 5);
       expect(listener.lastTag, 24);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [100, 73, 69, 84, 70]);
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.encodedCBOR);
     });
 
     test('Tag (32) URI', () {
@@ -1317,6 +1328,16 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [32, "http://www.example.com"]);
       expect(listener.lastTag, 32);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "http://www.example.com");
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.uri);
+
     });
 
     test('Empty single quotes', () {

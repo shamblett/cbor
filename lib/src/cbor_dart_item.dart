@@ -7,6 +7,7 @@
 
 part of cbor;
 
+/// The Dart types an item can have.
 enum dartTypes {
   dtInt,
   dtDouble,
@@ -19,6 +20,10 @@ enum dartTypes {
   dtUndefined,
   dtNone
 }
+
+/// If the type is dtBuffer or dtString a hint at what the
+/// data may contain.
+enum dataHints { base64Url, base64, base16, encodedCBOR, uri, none }
 
 /// The CBOR Dart item class.
 /// Objects of this class are produced by the standard
@@ -38,9 +43,11 @@ class DartItem {
   /// and buffers.
   bool complete = false;
 
+  /// Hint for buffer or string types
+  dataHints hint = dataHints.none;
+
   /// Actual size
   int size() {
     return data.length;
   }
-
 }

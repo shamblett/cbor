@@ -8,6 +8,4 @@
 part of cbor;
 
 ///
-class Cbor {
-
-}
+class Cbor {}

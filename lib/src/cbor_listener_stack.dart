@@ -8,7 +8,16 @@
 part of cbor;
 
 /// What we are waiting for next, if anything.
-enum whatsNext { aPositiveBignum, aNegativeBignum, aMultiple, nothing }
+enum whatsNext {
+  aPositiveBignum,
+  aNegativeBignum,
+  aMultipleB64Url,
+  aMultipleB64,
+  aMultipleB16,
+  encodedCBOR,
+  aUri,
+  nothing
+}
 
 class ListenerStack extends Listener {
   ItemStack _stack = new ItemStack();
@@ -44,14 +53,43 @@ class ListenerStack extends Listener {
         onInteger(value.abs());
         _next = whatsNext.nothing;
         break;
-      case whatsNext.aMultiple:
+      case whatsNext.aMultipleB64Url:
         if (data == null) return;
         final DartItem item = new DartItem();
         item.data = data;
         item.type = dartTypes.dtBuffer;
+        item.hint = dataHints.base64Url;
         _append(item);
         _next = whatsNext.nothing;
         break;
+      case whatsNext.aMultipleB64:
+        if (data == null) return;
+        final DartItem item = new DartItem();
+        item.data = data;
+        item.type = dartTypes.dtBuffer;
+        item.hint = dataHints.base64;
+        _append(item);
+        _next = whatsNext.nothing;
+        break;
+      case whatsNext.aMultipleB16:
+        if (data == null) return;
+        final DartItem item = new DartItem();
+        item.data = data;
+        item.type = dartTypes.dtBuffer;
+        item.hint = dataHints.base16;
+        _append(item);
+        _next = whatsNext.nothing;
+        break;
+      case whatsNext.encodedCBOR:
+        if (data == null) return;
+        final DartItem item = new DartItem();
+        item.data = data;
+        item.type = dartTypes.dtBuffer;
+        item.hint = dataHints.encodedCBOR;
+        _append(item);
+        _next = whatsNext.nothing;
+        break;
+      case whatsNext.aUri:
       case whatsNext.nothing:
         break;
     }
@@ -62,6 +100,13 @@ class ListenerStack extends Listener {
     final DartItem item = new DartItem();
     item.data = str;
     item.type = dartTypes.dtString;
+    switch (_next) {
+      case whatsNext.aUri:
+        item.hint = dataHints.uri;
+        break;
+      default:
+        break;
+    }
     _append(item);
   }
 
@@ -81,9 +126,19 @@ class ListenerStack extends Listener {
         _next = whatsNext.aNegativeBignum;
         break;
       case 21:
+        _next = whatsNext.aMultipleB64Url;
+        break;
       case 22:
+        _next = whatsNext.aMultipleB64;
+        break;
       case 23:
-        _next = whatsNext.aMultiple;
+        _next = whatsNext.aMultipleB16;
+        break;
+      case 24:
+        _next = whatsNext.encodedCBOR;
+        break;
+      case 32:
+        _next = whatsNext.aUri;
         break;
       default:
         print("Unimplemented tag type $tag");

@@ -16,10 +16,8 @@ class ItemEntry<DartItem> extends LinkedListEntry {
   String toString() => "${super.toString()} : value.toString()";
 }
 
-
 /// The decoded Dart item stack class
 class ItemStack {
-
   LinkedList _stack = new LinkedList();
 
   /// Push an item
