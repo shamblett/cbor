@@ -23,7 +23,7 @@ enum dartTypes {
 
 /// If the type is dtBuffer or dtString a hint at what the
 /// data may contain.
-enum dataHints { base64Url, base64, base16, encodedCBOR, uri, none }
+enum dataHints { base64Url, base64, base16, encodedCBOR, uri, error, none }
 
 /// The CBOR Dart item class.
 /// Objects of this class are produced by the standard

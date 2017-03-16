@@ -45,13 +45,11 @@ class ListenerStack extends Listener {
       // Convert to a positive integer and append
         final int value = bignumToInt(data, "+");
         onInteger(value);
-        _next = whatsNext.nothing;
         break;
       case whatsNext.aNegativeBignum:
         int value = bignumToInt(data, "-");
         value = -1 + value;
         onInteger(value.abs());
-        _next = whatsNext.nothing;
         break;
       case whatsNext.aMultipleB64Url:
         if (data == null) return;
@@ -60,7 +58,6 @@ class ListenerStack extends Listener {
         item.type = dartTypes.dtBuffer;
         item.hint = dataHints.base64Url;
         _append(item);
-        _next = whatsNext.nothing;
         break;
       case whatsNext.aMultipleB64:
         if (data == null) return;
@@ -69,7 +66,6 @@ class ListenerStack extends Listener {
         item.type = dartTypes.dtBuffer;
         item.hint = dataHints.base64;
         _append(item);
-        _next = whatsNext.nothing;
         break;
       case whatsNext.aMultipleB16:
         if (data == null) return;
@@ -78,7 +74,6 @@ class ListenerStack extends Listener {
         item.type = dartTypes.dtBuffer;
         item.hint = dataHints.base16;
         _append(item);
-        _next = whatsNext.nothing;
         break;
       case whatsNext.encodedCBOR:
         if (data == null) return;
@@ -87,12 +82,24 @@ class ListenerStack extends Listener {
         item.type = dartTypes.dtBuffer;
         item.hint = dataHints.encodedCBOR;
         _append(item);
-        _next = whatsNext.nothing;
         break;
       case whatsNext.aUri:
-      case whatsNext.nothing:
         break;
+      case whatsNext.nothing:
+        if (data == null) return;
+        final DartItem item = new DartItem();
+        item.data = data;
+        item.type = dartTypes.dtBuffer;
+        _append(item);
+        break;
+      default:
+        if (data == null) return;
+        final DartItem item = new DartItem();
+        item.data = data;
+        item.type = dartTypes.dtBuffer;
+        _append(item);
     }
+    _next = whatsNext.nothing;
   }
 
   void onString(String str) {
@@ -107,6 +114,7 @@ class ListenerStack extends Listener {
       default:
         break;
     }
+    _next = whatsNext.nothing;
     _append(item);
   }
 
@@ -119,6 +127,9 @@ class ListenerStack extends Listener {
   void onTag(int tag) {
     // Switch on the tag type
     switch (tag) {
+      case 0: // Date time string
+      case 1: // Date/Time epoch
+        break;
       case 2: // Positive bignum
         _next = whatsNext.aPositiveBignum;
         break;
@@ -141,7 +152,9 @@ class ListenerStack extends Listener {
         _next = whatsNext.aUri;
         break;
       default:
-        print("Unimplemented tag type $tag");
+        final String err = "Unimplemented tag type $tag";
+        print(err);
+        onError(err);
     }
   }
 
@@ -183,7 +196,14 @@ class ListenerStack extends Listener {
     _append(item);
   }
 
-  void onError(String error) {}
+  void onError(String error) {
+    if (error == null) return;
+    final DartItem item = new DartItem();
+    item.data = error;
+    item.type = dartTypes.dtString;
+    item.hint = dataHints.error;
+    _append(item);
+  }
 
   void onExtraInteger(int value, int sign) {
     onInteger(value);
