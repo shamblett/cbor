@@ -1359,6 +1359,8 @@ void main() {
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
       expect(slist[0], []);
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.none);
     });
 
     test('4 bytes', () {
@@ -1376,6 +1378,15 @@ void main() {
         [01, 02, 03, 04]
       ]);
       expect(listener.lastByteCount, 4);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [01, 02, 03, 04]);
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.none);
     });
 
     test('Empty double quotes', () {
@@ -1390,6 +1401,15 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [""]);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "");
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.none);
     });
 
     test('a', () {
@@ -1404,6 +1424,15 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["a"]);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "a");
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.none);
     });
 
     test('IETF', () {

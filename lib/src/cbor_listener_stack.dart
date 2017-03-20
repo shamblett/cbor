@@ -28,7 +28,7 @@ enum whatsNext {
   aSelfDescribeCBOR,
   anArrayElement,
   aMapValue,
-  AMapKey,
+  aMapKey,
   nothing
 }
 
