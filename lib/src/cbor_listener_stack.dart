@@ -9,13 +9,26 @@ part of cbor;
 
 /// What we are waiting for next, if anything.
 enum whatsNext {
+  aDateTimeString,
+  aDateTimeEpoch,
+  aDecimalFraction,
+  aBigFloat,
+  unassigned,
   aPositiveBignum,
   aNegativeBignum,
   aMultipleB64Url,
   aMultipleB64,
   aMultipleB16,
   encodedCBOR,
-  aUri,
+  aStringUri,
+  aStringB64Url,
+  aStringB64,
+  aRegExp,
+  aMIMEMessage,
+  aSelfDescribeCBOR,
+  anArrayElement,
+  aMapValue,
+  AMapKey,
   nothing
 }
 
@@ -83,9 +96,22 @@ class ListenerStack extends Listener {
         item.hint = dataHints.encodedCBOR;
         _append(item);
         break;
-      case whatsNext.aUri:
+      case whatsNext.aSelfDescribeCBOR:
+        if (data == null) return;
+        final DartItem item = new DartItem();
+        item.data = data;
+        item.type = dartTypes.dtBuffer;
+        item.hint = dataHints.selfDescCBOR;
+        _append(item);
         break;
       case whatsNext.nothing:
+        if (data == null) return;
+        final DartItem item = new DartItem();
+        item.data = data;
+        item.type = dartTypes.dtBuffer;
+        _append(item);
+        break;
+      case whatsNext.unassigned:
         if (data == null) return;
         final DartItem item = new DartItem();
         item.data = data;
@@ -108,8 +134,23 @@ class ListenerStack extends Listener {
     item.data = str;
     item.type = dartTypes.dtString;
     switch (_next) {
-      case whatsNext.aUri:
+      case whatsNext.aStringUri:
         item.hint = dataHints.uri;
+        break;
+      case whatsNext.aStringB64Url:
+        item.hint = dataHints.base64Url;
+        break;
+      case whatsNext.aStringB64Url:
+        item.hint = dataHints.base64;
+        break;
+      case whatsNext.aStringB64Url:
+        item.hint = dataHints.base16;
+        break;
+      case whatsNext.aRegExp:
+        item.hint = dataHints.regex;
+        break;
+      case whatsNext.aMIMEMessage:
+        item.hint = dataHints.mime;
         break;
       default:
         break;
@@ -128,6 +169,8 @@ class ListenerStack extends Listener {
     // Switch on the tag type
     switch (tag) {
       case 0: // Date time string
+        _next = whatsNext.aDateTimeString;
+        break;
       case 1: // Date/Time epoch
         break;
       case 2: // Positive bignum
@@ -136,25 +179,44 @@ class ListenerStack extends Listener {
       case 3: // Negative bignum
         _next = whatsNext.aNegativeBignum;
         break;
-      case 21:
+      case 4: // Decimal fraction
+        _next = whatsNext.aDecimalFraction;
+        break;
+      case 5: // Bigfloat
+        _next = whatsNext.aBigFloat;
+        break;
+      case 21: // B64 URL
         _next = whatsNext.aMultipleB64Url;
         break;
-      case 22:
+      case 22: // B64
         _next = whatsNext.aMultipleB64;
         break;
-      case 23:
+      case 23: // B16
         _next = whatsNext.aMultipleB16;
         break;
-      case 24:
+      case 24: // Encoded CBOR item
         _next = whatsNext.encodedCBOR;
         break;
-      case 32:
-        _next = whatsNext.aUri;
+      case 32: // URI
+        _next = whatsNext.aStringUri;
         break;
-      default:
-        final String err = "Unimplemented tag type $tag";
-        print(err);
-        onError(err);
+      case 33: // String B64 URL
+        _next = whatsNext.aStringB64Url;
+        break;
+      case 34: // String B64
+        _next = whatsNext.aStringB64;
+        break;
+      case 35: // Regular Expression
+        _next = whatsNext.aRegExp;
+        break;
+      case 36: // MIME message
+        _next = whatsNext.aMIMEMessage;
+        break;
+      case 55799: // Self describe CBOR sequence
+        _next = whatsNext.aSelfDescribeCBOR;
+        break;
+      default: // Unassigned values
+        _next = whatsNext.unassigned;
     }
   }
 
