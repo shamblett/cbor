@@ -1447,6 +1447,15 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["IETF"]);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "IETF");
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.none);
     });
 
     test('Quoted backslash', () {
@@ -1461,6 +1470,15 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["\"\\"]);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "\"\\");
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.none);
     });
 
     test('Unicode ü', () {
@@ -1475,6 +1493,15 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ['ü']);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], 'ü');
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.none);
     });
 
     test('Unicode 水', () {
@@ -1489,6 +1516,15 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ['水']);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], '水');
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.none);
     });
 
     test('Unicode 𐅑', () {
@@ -1503,6 +1539,15 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ['𐅑']);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], '𐅑');
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.none);
     });
 
     test('Array empty', () {
