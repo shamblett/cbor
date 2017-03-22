@@ -26,7 +26,6 @@ enum whatsNext {
   aRegExp,
   aMIMEMessage,
   aSelfDescribeCBOR,
-  anArrayElement,
   aMapValue,
   aMapKey,
   nothing
@@ -41,6 +40,15 @@ class ListenerStack extends Listener {
   /// Used to indicate what the
   /// next decoded item should be.
   whatsNext _next = whatsNext.nothing;
+
+  /// Temporary map to asssemble a key/value pair
+  Map<dynamic, dynamic> _tmpMap;
+
+  /// Temporary map key,int or string
+  dynamic _mapKey;
+
+  /// Temporary map value
+  dynamic _mapValue;
 
   void onInteger(int value) {
     // Do not add nulls
@@ -184,7 +192,14 @@ class ListenerStack extends Listener {
     }
   }
 
-  void onMap(int size) {}
+  void onMap(int size) {
+    final DartItem item = new DartItem();
+    item.type = dartTypes.dtMap;
+    item.data = new List<dynamic>();
+    item.targetSize = size;
+    _append(item);
+    _next = whatsNext.aMapKey;
+  }
 
   void onTag(int tag) {
     // Switch on the tag type
@@ -309,7 +324,7 @@ class ListenerStack extends Listener {
     _appendImpl(item);
   }
 
-  /// Implementation
+  /// Append implementation
   void _appendImpl(DartItem item) {
     if (_stack.size() == 0) {
       // Empty stack, straight add
@@ -322,9 +337,17 @@ class ListenerStack extends Listener {
       if (entry.complete) {
         _stack.push(item);
       } else {
-        entry.data.add(item.data);
-        if (entry.data.length == entry.targetSize) {
-          entry.complete = true;
+        // List or Map
+        if (entry.type == dartTypes.dtList) {
+          entry.data.add(item.data);
+          if (entry.data.length == entry.targetSize) {
+            entry.complete = true;
+            // Recurse for nested lists
+            final DartItem item = _stack.pop();
+            _appendImpl(item);
+          }
+        } else if (entry.type == dartTypes.dtMap) {} else {
+          print("Incomplete stack item is not list or map");
         }
       }
     }
