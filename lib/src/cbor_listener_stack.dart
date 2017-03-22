@@ -48,6 +48,7 @@ class ListenerStack extends Listener {
     final DartItem item = new DartItem();
     item.data = value;
     item.type = dartTypes.dtInt;
+    item.complete = true;
     _append(item);
   }
 
@@ -156,12 +157,32 @@ class ListenerStack extends Listener {
         break;
     }
     _next = whatsNext.nothing;
+    item.complete = true;
     _append(item);
   }
 
-  void onArray(int size) {}
+  void onArray(int size) {
+    final DartItem item = new DartItem();
+    item.type = dartTypes.dtList;
+    item.data = new List<dynamic>();
+    item.targetSize = size;
+    _append(item);
+  }
 
-  void onArrayElement(int value) {}
+  void onArrayElement(int value) {
+    // Peek the stack top, this should be
+    // an incomplete list type, if so add
+    // our value and check for completeness.
+    final DartItem item = _stack.peek();
+    if ((!item.complete) && (item.type == dartTypes.dtList)) {
+      item.data.add(value);
+      if (item.data.length == item.targetSize) {
+        item.complete = true;
+      } else {
+        item.targetSize++;
+      }
+    }
+  }
 
   void onMap(int size) {}
 
@@ -225,6 +246,7 @@ class ListenerStack extends Listener {
     final DartItem item = new DartItem();
     item.data = code;
     item.type = dartTypes.dtInt;
+    item.complete = true;
     _append(item);
   }
 
@@ -234,6 +256,7 @@ class ListenerStack extends Listener {
     final DartItem item = new DartItem();
     item.data = value;
     item.type = dartTypes.dtDouble;
+    item.complete = true;
     _append(item);
   }
 
@@ -243,18 +266,21 @@ class ListenerStack extends Listener {
     final DartItem item = new DartItem();
     item.data = state;
     item.type = dartTypes.dtBool;
+    item.complete = true;
     _append(item);
   }
 
   void onNull() {
     final DartItem item = new DartItem();
     item.type = dartTypes.dtNull;
+    item.complete = true;
     _append(item);
   }
 
   void onUndefined() {
     final DartItem item = new DartItem();
     item.type = dartTypes.dtUndefined;
+    item.complete = true;
     _append(item);
   }
 
@@ -264,6 +290,7 @@ class ListenerStack extends Listener {
     item.data = error;
     item.type = dartTypes.dtString;
     item.hint = dataHints.error;
+    item.complete = true;
     _append(item);
   }
 
@@ -286,19 +313,19 @@ class ListenerStack extends Listener {
   void _appendImpl(DartItem item) {
     if (_stack.size() == 0) {
       // Empty stack, straight add
-      item.complete = true;
       _stack.push(item);
     } else {
       final DartItem entry = _stack.peek();
-
       /// If its complete push
       /// our item. if not complete append and check
       /// for completeness.
       if (entry.complete) {
-        item.complete = true;
         _stack.push(item);
       } else {
-        // TODO
+        entry.data.add(item.data);
+        if (entry.data.length == entry.targetSize) {
+          entry.complete = true;
+        }
       }
     }
   }

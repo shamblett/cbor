@@ -1562,6 +1562,14 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastSize, 0);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], []);
+
     });
 
     test('Array 1,2,3', () {
@@ -1577,6 +1585,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [1, 2, 3]);
       expect(listener.lastSize, 3);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [1, 2, 3]);
     });
 
     test('Array 1,2,3...25', () {
