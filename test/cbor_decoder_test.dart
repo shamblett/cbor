@@ -233,7 +233,6 @@ void main() {
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
       expect(slist[0], 1000000000000);
-
     });
 
     test('18446744073709551615', () {
@@ -1337,7 +1336,6 @@ void main() {
       expect(slist[0], "http://www.example.com");
       final cbor.DartItem item = slistener.stack.peek();
       expect(item.hint, cbor.dataHints.uri);
-
     });
 
     test('Empty single quotes', () {
@@ -1569,7 +1567,6 @@ void main() {
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
       expect(slist[0], []);
-
     });
 
     test('Array 1,2,3', () {
@@ -1717,7 +1714,11 @@ void main() {
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [1, [2, 3], [4, 5]]);
+      expect(slist[0], [
+        1,
+        [2, 3],
+        [4, 5]
+      ]);
     });
 
     test('Empty Map', () {
@@ -1793,13 +1794,16 @@ void main() {
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], {"a": 1, "b": [2, 3]});
+      expect(slist[0], {
+        "a": 1,
+        "b": [2, 3]
+      });
     });
 
-    test('{"a", {"b": "c"}', () {
+    test('["a", {"b": "c"}]', () {
       output.clear();
       listener.clear();
-      final List<int> values = [0xa2, 0x61, 0x61, 0xa1, 0x61, 0x62, 0x61, 0x63];
+      final List<int> values = [0x82, 0x61, 0x61, 0xa1, 0x61, 0x62, 0x61, 0x63];
       final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
@@ -1809,6 +1813,16 @@ void main() {
       decoder.run();
       expect(listener.lastValue, ["a", "b", "c"]);
       expect(listener.lastSize, 1);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [
+        "a",
+        {"b": "c"}
+      ]);
     });
 
     test('{"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"}', () {
@@ -1847,6 +1861,13 @@ void main() {
       expect(listener.lastValue,
           ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E"]);
       expect(listener.lastSize, 5);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], {"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"});
     });
 
     test("(_ h'0102', h'030405')", () {
