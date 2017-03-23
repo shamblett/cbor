@@ -41,15 +41,6 @@ class ListenerStack extends Listener {
   /// next decoded item should be.
   whatsNext _next = whatsNext.nothing;
 
-  /// Temporary map to asssemble a key/value pair
-  Map<dynamic, dynamic> _tmpMap;
-
-  /// Temporary map key,int or string
-  dynamic _mapKey;
-
-  /// Temporary map value
-  dynamic _mapValue;
-
   void onInteger(int value) {
     // Do not add nulls
     if (value == null) return;
@@ -174,14 +165,6 @@ class ListenerStack extends Listener {
     item.type = dartTypes.dtList;
     item.data = new List<dynamic>();
     item.targetSize = size;
-    _append(item);
-  }
-
-  void onArrayElement(int value) {
-    final DartItem item = new DartItem();
-    item.type = dartTypes.dtInt;
-    item.data = value;
-    item.complete = true;
     _append(item);
   }
 
