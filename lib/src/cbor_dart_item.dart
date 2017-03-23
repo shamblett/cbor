@@ -67,6 +67,15 @@ class DartItem {
     return data.length;
   }
 
+  /// Awaiting a map key for Map types
+  bool awaitingMapKey = false;
+
+  /// Awaiting a map value for Map types
+  bool awaitingMapValue = false;
+
+  /// The last key value inserted into a map
+  dynamic lastMapKey;
+
   /// Helper functions
 
   bool isIncompleteList() {
@@ -78,6 +87,13 @@ class DartItem {
 
   bool isIncompleteMap() {
     if ((type == dartTypes.dtMap) && !complete) {
+      return true;
+    }
+    return false;
+  }
+
+  bool awaitingMapEntry() {
+    if (awaitingMapValue || awaitingMapKey) {
       return true;
     }
     return false;

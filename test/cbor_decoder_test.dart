@@ -1733,6 +1733,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, []);
       expect(listener.lastSize, 0);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], {});
     });
 
     test('{1: 2, 3: 4}', () {
@@ -1748,6 +1755,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4]);
       expect(listener.lastSize, 2);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], {1: 2, 3: 4});
     });
 
     test('{"a": 1, "b": [2, 3]}', () {
@@ -1773,6 +1787,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, ["a", 1, "b", 2, 3]);
       expect(listener.lastSize, 2);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], {"a": 1, "b": [2, 3]});
     });
 
     test('{"a", {"b": "c"}', () {

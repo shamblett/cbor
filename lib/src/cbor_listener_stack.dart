@@ -26,8 +26,6 @@ enum whatsNext {
   aRegExp,
   aMIMEMessage,
   aSelfDescribeCBOR,
-  aMapValue,
-  aMapKey,
   nothing
 }
 
@@ -165,16 +163,22 @@ class ListenerStack extends Listener {
     item.type = dartTypes.dtList;
     item.data = new List<dynamic>();
     item.targetSize = size;
+    if (size == 0) {
+      item.complete = true;
+    }
     _append(item);
   }
 
   void onMap(int size) {
     final DartItem item = new DartItem();
     item.type = dartTypes.dtMap;
-    item.data = new List<dynamic>();
+    item.data = new Map<dynamic, dynamic>();
     item.targetSize = size;
+    item.awaitingMapKey = true;
+    if (size == 0) {
+      item.complete = true;
+    }
     _append(item);
-    _next = whatsNext.aMapKey;
   }
 
   void onTag(int tag) {
@@ -327,7 +331,41 @@ class ListenerStack extends Listener {
               _appendImpl(item1);
             }
           }
-        } else if (entry.type == dartTypes.dtMap) {} else {
+        } else if (entry.type == dartTypes.dtMap) {
+          // Check if we are expecting a key or a value
+          if (entry.awaitingMapKey) {
+            // Create the map entry with the key, set we
+            // are now waiting for a value.
+            entry.data.addAll({item.data: null});
+            entry.lastMapKey = item.data;
+            entry.awaitingMapKey = false;
+            entry.awaitingMapValue = true;
+          } else if (entry.awaitingMapValue) {
+            // If the item is a list or a map just push it,
+            // if not then reset awaiting map value.
+            // Either way update the entry with the value.
+            if (item.type == dartTypes.dtList || item.type == dartTypes.dtMap) {
+              _stack.push(item);
+            } else {
+              entry.awaitingMapValue = false;
+            }
+            entry.data[entry.lastMapKey] = item.data;
+
+            // Check for completeness
+            if (entry.data.length == entry.targetSize) {
+              entry.complete = true;
+              // Recurse for nested maps
+              final DartItem item1 = _stack.pop();
+              _appendImpl(item1);
+            } else {
+              // If we are still awiating a value(netsed list
+              // or map) then don't expect a key.
+              if (!entry.awaitingMapValue) {
+                entry.awaitingMapKey = true;
+              }
+            }
+          }
+        } else {
           print("Incomplete stack item is not list or map");
         }
       }
