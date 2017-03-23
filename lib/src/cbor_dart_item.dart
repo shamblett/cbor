@@ -66,4 +66,20 @@ class DartItem {
   int size() {
     return data.length;
   }
+
+  /// Helper functions
+
+  bool isIncompleteList() {
+    if ((type == dartTypes.dtList) && !complete) {
+      return true;
+    }
+    return false;
+  }
+
+  bool isIncompleteMap() {
+    if ((type == dartTypes.dtMap) && !complete) {
+      return true;
+    }
+    return false;
+  }
 }

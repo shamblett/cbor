@@ -1663,6 +1663,39 @@ void main() {
         25
       ]);
       expect(listener.lastSize, 25);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ]);
     });
 
     test('Nested array', () {
@@ -1678,6 +1711,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
       expect(listener.lastSize, 2);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [1, [2, 3], [4, 5]]);
     });
 
     test('Empty Map', () {

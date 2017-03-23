@@ -178,18 +178,11 @@ class ListenerStack extends Listener {
   }
 
   void onArrayElement(int value) {
-    // Peek the stack top, this should be
-    // an incomplete list type, if so add
-    // our value and check for completeness.
-    final DartItem item = _stack.peek();
-    if ((!item.complete) && (item.type == dartTypes.dtList)) {
-      item.data.add(value);
-      if (item.data.length == item.targetSize) {
-        item.complete = true;
-      } else {
-        item.targetSize++;
-      }
-    }
+    final DartItem item = new DartItem();
+    item.type = dartTypes.dtInt;
+    item.data = value;
+    item.complete = true;
+    _append(item);
   }
 
   void onMap(int size) {
@@ -331,20 +324,25 @@ class ListenerStack extends Listener {
       _stack.push(item);
     } else {
       final DartItem entry = _stack.peek();
+
       /// If its complete push
-      /// our item. if not complete append and check
+      /// the item. if not complete append and check
       /// for completeness.
       if (entry.complete) {
         _stack.push(item);
       } else {
         // List or Map
         if (entry.type == dartTypes.dtList) {
-          entry.data.add(item.data);
-          if (entry.data.length == entry.targetSize) {
-            entry.complete = true;
-            // Recurse for nested lists
-            final DartItem item = _stack.pop();
-            _appendImpl(item);
+          if (item.isIncompleteList() || item.isIncompleteMap()) {
+            _stack.push(item);
+          } else {
+            entry.data.add(item.data);
+            if (entry.data.length == entry.targetSize) {
+              entry.complete = true;
+              // Recurse for nested lists
+              final DartItem item1 = _stack.pop();
+              _appendImpl(item1);
+            }
           }
         } else if (entry.type == dartTypes.dtMap) {} else {
           print("Incomplete stack item is not list or map");

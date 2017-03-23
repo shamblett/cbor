@@ -399,15 +399,15 @@ class Decoder {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
             case 1:
-              _listener.onArrayElement(_input.getByte());
+              _listener.onArray(_input.getByte());
               _state = DecoderState.type;
               break;
             case 2:
-              _listener.onArrayElement(_input.getShort());
+              _listener.onArray(_input.getShort());
               _state = DecoderState.type;
               break;
             case 4:
-              _listener.onArrayElement(_input.getInt());
+              _listener.onArray(_input.getInt());
               _state = DecoderState.type;
               break;
             case 8:
