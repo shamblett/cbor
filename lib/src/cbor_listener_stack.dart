@@ -39,6 +39,17 @@ class ListenerStack extends Listener {
   /// next decoded item should be.
   whatsNext _next = whatsNext.nothing;
 
+  /// Indefinite stack
+  /// A list of indefinite items, most recent at the end.
+  /// Can only be string, bytes, list or map.
+  List<String> _indefiniteStack = new List<String>();
+
+  /// Indefinite bytes buffer assembler
+  final List<typed.Uint8Buffer> _byteAssembly = new List<typed.Uint8Buffer>();
+
+  /// Indefinite String buffer assembler
+  final List<String> _StringAssembly = new List<String>();
+
   void onInteger(int value) {
     // Do not add nulls
     if (value == null) return;
@@ -118,6 +129,7 @@ class ListenerStack extends Listener {
         break;
       default:
         if (data == null) return;
+
         final DartItem item = new DartItem();
         item.data = data;
         item.type = dartTypes.dtBuffer;
@@ -297,7 +309,15 @@ class ListenerStack extends Listener {
 
   void onExtraSpecial(int tag) {}
 
-  void onIndefinate(String text) {}
+  void onIndefinate(String text) {
+    if (text != "stop") {
+      _indefiniteStack.add(text);
+    } else {
+      if (_indefiniteStack.length != 0) {
+        _indefiniteStack.removeLast();
+      }
+    }
+  }
 
   /// Main stack append method
   void _append(DartItem item) {
@@ -370,5 +390,27 @@ class ListenerStack extends Listener {
         }
       }
     }
+  }
+
+  /// Helper functions
+
+  /// Waiting for indefinite bytes
+  bool _waitingIndefBytes() {
+    if (_indefiniteStack.length != 0) {
+      if (_indefiniteStack.last == "bytes") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// Waiting for indefinite string
+  bool _waitingIndefString() {
+    if (_indefiniteStack.length != 0) {
+      if (_indefiniteStack.last == "string") {
+        return true;
+      }
+    }
+    return false;
   }
 }

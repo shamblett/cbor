@@ -132,7 +132,7 @@ class Decoder {
                 _state = DecoderState.bytesSize;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinate("start");
+                _listener.onIndefinate("bytes");
               } else {
                 _state = DecoderState.error;
                 _listener.onError("Decoder::invalid bytes type");
@@ -159,7 +159,7 @@ class Decoder {
                 _state = DecoderState.stringSize;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinate("start");
+                _listener.onIndefinate("string");
               } else {
                 _state = DecoderState.error;
                 _listener.onError("Decoder::invalid string type");
