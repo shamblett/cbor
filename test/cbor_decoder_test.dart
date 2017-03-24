@@ -1954,6 +1954,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, []);
       expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], []);
     });
 
     test('[_ 1, [2, 3], [_4, 5]]', () {
@@ -1980,6 +1987,17 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
       expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [
+        1,
+        [2, 3],
+        [4, 5]
+      ]);
     });
 
     test('[_ 1, [2, 3], [4, 5]]', () {
@@ -2005,6 +2023,17 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
       expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [
+        1,
+        [2, 3],
+        [4, 5]
+      ]);
     });
 
     test('[1, [2, 3], [_ 4, 5]]', () {
@@ -2030,6 +2059,17 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
       expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [
+        1,
+        [2, 3],
+        [4, 5]
+      ]);
     });
 
     test('[1, [_ 2, 3], [4, 5]]', () {
@@ -2055,6 +2095,17 @@ void main() {
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
       expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [
+        1,
+        [2, 3],
+        [4, 5]
+      ]);
     });
 
     test('[_ 1, 2, 3 .. 25]', () {
@@ -2126,6 +2177,39 @@ void main() {
         25
       ]);
       expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ]);
     });
 
     test('{_ "a":1, "b": [_ 2,3]}', () {
@@ -2153,9 +2237,19 @@ void main() {
       decoder.run();
       expect(listener.lastValue, ["a", 1, "b", 2, 3]);
       expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], {
+        "a": 1,
+        "b": [2, 3]
+      });
     });
 
-    test('["a", {_ "b": "c"}] }', () {
+    test('["a", {_ "b": "c"}]', () {
       output.clear();
       listener.clear();
       final List<int> values = [
@@ -2178,6 +2272,16 @@ void main() {
       decoder.run();
       expect(listener.lastValue, ["a", "b", "c"]);
       expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [
+        "a",
+        {"b": "c"}
+      ]);
     });
 
     test('{_ "Fun": true, "Amt": -2}', () {
@@ -2206,6 +2310,13 @@ void main() {
       decoder.run();
       expect(listener.lastValue, ["Fun", true, "Amt", -2]);
       expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], {"Fun": true, "Amt": -2});
     });
   });
 }

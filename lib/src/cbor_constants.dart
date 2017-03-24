@@ -1078,3 +1078,11 @@ void init() {
     0xFC00
   ]);
 }
+
+/// Indefinite array/map size limit.
+/// Indefinite arrays and maps are just normal
+/// arrays and maps with an initially unknown size,
+/// we can't model this so just set the initial size to
+/// this arbitrarily high number.
+
+const int indefiniteMaxSize = 100000;

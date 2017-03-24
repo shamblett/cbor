@@ -322,29 +322,43 @@ class ListenerStack extends Listener {
         _stringAssembly = "";
         break;
       case "map":
+        _indefiniteStack.add(text);
+        onMap(indefiniteMaxSize);
         break;
       case "array":
+        _indefiniteStack.add(text);
+        onArray(indefiniteMaxSize);
         break;
       case "stop":
       // Get the top of the indefinite stack and switch on it.
         final String top = _indefiniteStack.removeLast();
         switch (top) {
-          case "bytes" :
+          case "bytes":
             onBytes(_byteAssembly, _byteAssembly.length);
             break;
-          case "string" :
+          case "string":
             onString(_stringAssembly);
             break;
           case "map":
-            break;
           case "array":
+          // Complete the stack top, pop and append
+            _stack
+                .peek()
+                .targetSize = _stack
+                .peek()
+                .data
+                .length;
+            _stack
+                .peek()
+                .complete = true;
+            _append(_stack.pop());
             break;
           default:
-            print("Unknown indefinite type");
+            print("Unknown indefinite type on stop");
         }
         break;
       default:
-        print("Unknown indefinite type");
+        print("Unknown indefinite type on start");
     }
   }
 
