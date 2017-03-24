@@ -14,7 +14,7 @@ class ListenerTest extends cbor.Listener {
   int lastByteCount = 0;
   int lastSize = 0;
   int arrSize = 0;
-  bool indefinateStart = false;
+  bool indefiniteStart = false;
 
   void clear() {
     lastValue.clear();
@@ -22,7 +22,7 @@ class ListenerTest extends cbor.Listener {
     lastByteCount = 0;
     lastSize = 0;
     arrSize = 0;
-    indefinateStart = false;
+    indefiniteStart = false;
   }
 
   void onInteger(int value) {
@@ -109,8 +109,8 @@ class ListenerTest extends cbor.Listener {
     lastValue.add(tag);
   }
 
-  void onIndefinate(String text) {
-    print("Indefinate $text");
-    indefinateStart = true;
+  void onIndefinite(String text) {
+    print("Indefinite $text");
+    indefiniteStart = true;
   }
 }

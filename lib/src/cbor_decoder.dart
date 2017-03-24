@@ -132,7 +132,7 @@ class Decoder {
                 _state = DecoderState.bytesSize;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinate("bytes");
+                _listener.onIndefinite("bytes");
               } else {
                 _state = DecoderState.error;
                 _listener.onError("Decoder::invalid bytes type");
@@ -159,7 +159,7 @@ class Decoder {
                 _state = DecoderState.stringSize;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinate("string");
+                _listener.onIndefinite("string");
               } else {
                 _state = DecoderState.error;
                 _listener.onError("Decoder::invalid string type");
@@ -185,7 +185,7 @@ class Decoder {
                 _state = DecoderState.array;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinate("start");
+                _listener.onIndefinite("array");
               } else {
                 _state = DecoderState.error;
                 _listener.onError("Decoder::invalid array type");
@@ -211,7 +211,7 @@ class Decoder {
                 _state = DecoderState.map;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinate("start");
+                _listener.onIndefinite("map");
               } else {
                 _state = DecoderState.error;
                 _listener.onError("Decoder::invalid map type");
@@ -268,7 +268,7 @@ class Decoder {
                 _state = DecoderState.special;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinate("stop");
+                _listener.onIndefinite("stop");
               } else {
                 _state = DecoderState.error;
                 _listener.onError("Decoder::invalid special type");

@@ -45,10 +45,10 @@ class ListenerStack extends Listener {
   List<String> _indefiniteStack = new List<String>();
 
   /// Indefinite bytes buffer assembler
-  final List<typed.Uint8Buffer> _byteAssembly = new List<typed.Uint8Buffer>();
+  final typed.Uint8Buffer _byteAssembly = new typed.Uint8Buffer();
 
   /// Indefinite String buffer assembler
-  final List<String> _StringAssembly = new List<String>();
+  String _stringAssembly;
 
   void onInteger(int value) {
     // Do not add nulls
@@ -113,13 +113,6 @@ class ListenerStack extends Listener {
         item.hint = dataHints.selfDescCBOR;
         _append(item);
         break;
-      case whatsNext.nothing:
-        if (data == null) return;
-        final DartItem item = new DartItem();
-        item.data = data;
-        item.type = dartTypes.dtBuffer;
-        _append(item);
-        break;
       case whatsNext.unassigned:
         if (data == null) return;
         final DartItem item = new DartItem();
@@ -127,47 +120,55 @@ class ListenerStack extends Listener {
         item.type = dartTypes.dtBuffer;
         _append(item);
         break;
+      case whatsNext.nothing:
       default:
         if (data == null) return;
-
-        final DartItem item = new DartItem();
-        item.data = data;
-        item.type = dartTypes.dtBuffer;
-        _append(item);
+        if (_waitingIndefBytes()) {
+          _byteAssembly.addAll(data);
+        } else {
+          final DartItem item = new DartItem();
+          item.data = data;
+          item.type = dartTypes.dtBuffer;
+          _append(item);
+        }
     }
     _next = whatsNext.nothing;
   }
 
   void onString(String str) {
     if (str == null) return;
-    final DartItem item = new DartItem();
-    item.data = str;
-    item.type = dartTypes.dtString;
-    switch (_next) {
-      case whatsNext.aStringUri:
-        item.hint = dataHints.uri;
-        break;
-      case whatsNext.aStringB64Url:
-        item.hint = dataHints.base64Url;
-        break;
-      case whatsNext.aStringB64Url:
-        item.hint = dataHints.base64;
-        break;
-      case whatsNext.aStringB64Url:
-        item.hint = dataHints.base16;
-        break;
-      case whatsNext.aRegExp:
-        item.hint = dataHints.regex;
-        break;
-      case whatsNext.aMIMEMessage:
-        item.hint = dataHints.mime;
-        break;
-      default:
-        break;
+    if (_waitingIndefString()) {
+      _stringAssembly += str;
+    } else {
+      final DartItem item = new DartItem();
+      item.data = str;
+      item.type = dartTypes.dtString;
+      switch (_next) {
+        case whatsNext.aStringUri:
+          item.hint = dataHints.uri;
+          break;
+        case whatsNext.aStringB64Url:
+          item.hint = dataHints.base64Url;
+          break;
+        case whatsNext.aStringB64Url:
+          item.hint = dataHints.base64;
+          break;
+        case whatsNext.aStringB64Url:
+          item.hint = dataHints.base16;
+          break;
+        case whatsNext.aRegExp:
+          item.hint = dataHints.regex;
+          break;
+        case whatsNext.aMIMEMessage:
+          item.hint = dataHints.mime;
+          break;
+        default:
+          break;
+      }
+      _next = whatsNext.nothing;
+      item.complete = true;
+      _append(item);
     }
-    _next = whatsNext.nothing;
-    item.complete = true;
-    _append(item);
   }
 
   void onArray(int size) {
@@ -309,13 +310,41 @@ class ListenerStack extends Listener {
 
   void onExtraSpecial(int tag) {}
 
-  void onIndefinate(String text) {
-    if (text != "stop") {
-      _indefiniteStack.add(text);
-    } else {
-      if (_indefiniteStack.length != 0) {
-        _indefiniteStack.removeLast();
-      }
+  void onIndefinite(String text) {
+    // Process depending on indefinite type.
+    switch (text) {
+      case "bytes":
+        _indefiniteStack.add(text);
+        _byteAssembly.clear();
+        break;
+      case "string":
+        _indefiniteStack.add(text);
+        _stringAssembly = "";
+        break;
+      case "map":
+        break;
+      case "array":
+        break;
+      case "stop":
+      // Get the top of the indefinite stack and switch on it.
+        final String top = _indefiniteStack.removeLast();
+        switch (top) {
+          case "bytes" :
+            onBytes(_byteAssembly, _byteAssembly.length);
+            break;
+          case "string" :
+            onString(_stringAssembly);
+            break;
+          case "map":
+            break;
+          case "array":
+            break;
+          default:
+            print("Unknown indefinite type");
+        }
+        break;
+      default:
+        print("Unknown indefinite type");
     }
   }
 

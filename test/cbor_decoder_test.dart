@@ -1895,7 +1895,14 @@ void main() {
         [1, 2],
         [3, 4, 5]
       ]);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [1, 2, 3, 4, 5]);
     });
 
     test('(_ "strea", "ming")', () {
@@ -1924,36 +1931,14 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["strea", "ming"]);
-      expect(listener.indefinateStart, isTrue);
-    });
-
-    test('(_ "strea", "ming")', () {
-      output.clear();
-      listener.clear();
-      final List<int> values = [
-        0x7f,
-        0x65,
-        0x73,
-        0x74,
-        0x72,
-        0x65,
-        0x61,
-        0x64,
-        0x6d,
-        0x69,
-        0x6e,
-        0x67,
-        0xff
-      ];
-      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
-      buffer.addAll(values);
-      output.putBytes(buffer);
-      final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final cbor.Decoder decoder =
-      new cbor.Decoder.withListener(input, listener);
+      expect(listener.indefiniteStart, isTrue);
+      decoder.setListener(slistener);
+      input.reset();
+      slistener.stack.clear();
       decoder.run();
-      expect(listener.lastValue, ["strea", "ming"]);
-      expect(listener.indefinateStart, isTrue);
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "streaming");
     });
 
     test('[_ ]', () {
@@ -1968,7 +1953,7 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, []);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
     });
 
     test('[_ 1, [2, 3], [_4, 5]]', () {
@@ -1994,7 +1979,7 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
     });
 
     test('[_ 1, [2, 3], [4, 5]]', () {
@@ -2019,7 +2004,7 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
     });
 
     test('[1, [2, 3], [_ 4, 5]]', () {
@@ -2044,7 +2029,7 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
     });
 
     test('[1, [_ 2, 3], [4, 5]]', () {
@@ -2069,7 +2054,7 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
     });
 
     test('[_ 1, 2, 3 .. 25]', () {
@@ -2140,7 +2125,7 @@ void main() {
         24,
         25
       ]);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
     });
 
     test('{_ "a":1, "b": [_ 2,3]}', () {
@@ -2167,7 +2152,7 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["a", 1, "b", 2, 3]);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
     });
 
     test('["a", {_ "b": "c"}] }', () {
@@ -2192,7 +2177,7 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["a", "b", "c"]);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
     });
 
     test('{_ "Fun": true, "Amt": -2}', () {
@@ -2220,7 +2205,7 @@ void main() {
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["Fun", true, "Amt", -2]);
-      expect(listener.indefinateStart, isTrue);
+      expect(listener.indefiniteStart, isTrue);
     });
   });
 }
