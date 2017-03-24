@@ -12,6 +12,7 @@ import 'dart:io';
 void main() {
   // Common
   final cbor.ListenerDebug listener = new cbor.ListenerDebug();
+  final cbor.ListenerStack slistener = new cbor.ListenerStack();
 
   group('Original C++ tests', () {
     test('Encode/Decode confidence -> ', () {
@@ -267,6 +268,17 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
+      decoder.setListener(slistener);
+      slistener.stack.clear();
+      input.reset();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], {
+        "half": 0.0,
+        "single": 3.4028234663852886e+38,
+        "simple values": [true, false, null]
+      });
     });
 
     test('Indefinitite string -> ', () {
@@ -280,6 +292,13 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
+      decoder.setListener(slistener);
+      slistener.stack.clear();
+      input.reset();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "Helloworld!");
     });
 
     test('Integer -> ', () {
@@ -293,6 +312,13 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
+      decoder.setListener(slistener);
+      slistener.stack.clear();
+      input.reset();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], 42);
     });
 
     test('Map -> ', () {
@@ -306,6 +332,13 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
+      decoder.setListener(slistener);
+      slistener.stack.clear();
+      input.reset();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], {"a key": false, "a secret key": "42", 0: -1});
     });
 
     test('Nested array -> ', () {
@@ -319,6 +352,20 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
+      decoder.setListener(slistener);
+      slistener.stack.clear();
+      input.reset();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [
+        1,
+        2,
+        [
+          3,
+          [4, 5, []]
+        ]
+      ]);
     });
 
     test('Tagged date -> ', () {
@@ -332,6 +379,16 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
+      decoder.setListener(slistener);
+      slistener.stack.clear();
+      input.reset();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "2013-03-21T20:04:00Z");
+      slistener.stack
+          .peek()
+          .hint == cbor.dataHints.dateTimeString;
     });
   });
 }
