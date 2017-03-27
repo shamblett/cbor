@@ -10,7 +10,6 @@ part of cbor;
 /// A base class for encoder output.
 /// Derived classes must implement these methods as a minimum
 /// to provide full CBOR encoding.
-
 abstract class Output {
   /// The encoded output buffer
   typed.Uint8Buffer _buffer;
@@ -56,7 +55,7 @@ abstract class Output {
   /// Pauses encoding, copies the encoded output buffer to the pause buffer,
   /// and clears the output buffer. Further encoding carries on as normal
   /// in the output buffer. Used to encode CBOR items as standalone entities
-  /// for later inclusion in the main encoding stream, e.g map values. Hs
+  /// for later inclusion in the main encoding stream, e.g map values. Has
   /// no effect if already paused.
   void pause();
 

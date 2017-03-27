@@ -104,11 +104,6 @@ class ListenerTest extends cbor.Listener {
     lastTag = tag;
   }
 
-  void onExtraSpecial(int tag) {
-    print("Extra Special $tag");
-    lastValue.add(tag);
-  }
-
   void onIndefinite(String text) {
     print("Indefinite $text");
     indefiniteStart = true;

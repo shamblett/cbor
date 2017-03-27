@@ -8,7 +8,6 @@
 part of cbor;
 
 /// The standard output class.
-
 class OutputStandard extends Output {
   OutputStandard() {
     this._buffer = new typed.Uint8Buffer();
@@ -62,7 +61,7 @@ class OutputStandard extends Output {
     }
   }
 
-  /// Additional methods
+  /// Additional methods.
 
   List<int> getDataAsList() {
     return _buffer.toList();

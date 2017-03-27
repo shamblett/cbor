@@ -305,12 +305,14 @@ class ListenerStack extends Listener {
   }
 
   void onExtraInteger(int value, int sign) {
+    // Sign adjustment is done by the decoder so
+    // we can ignore it here
     onInteger(value);
   }
 
-  void onExtraTag(int tag) {}
-
-  void onExtraSpecial(int tag) {}
+  void onExtraTag(int tag) {
+    // Not yet implemented
+  }
 
   void onIndefinite(String text) {
     // Process depending on indefinite type.

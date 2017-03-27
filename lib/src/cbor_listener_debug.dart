@@ -73,10 +73,6 @@ class ListenerDebug extends Listener {
     print("Extra Tag $tag");
   }
 
-  void onExtraSpecial(int tag) {
-    print("Extra Special $tag");
-  }
-
   void onIndefinite(String text) {
     print("Indefinate Item $text");
   }

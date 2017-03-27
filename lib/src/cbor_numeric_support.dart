@@ -7,7 +7,9 @@
 
 part of cbor;
 
-/// Float handling support functions
+/// Numeric handling support functions.
+
+/// Float handling support functions.
 
 /// Gets a half precision float from its int
 /// value.
