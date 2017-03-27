@@ -1089,3 +1089,10 @@ void init() {
 /// this arbitrarily high number.
 
 const int indefiniteMaxSize = 100000;
+
+/// Indefinite stack types and stop marker.
+const String indefStop = "stop";
+const String indefBytes = "bytes";
+const String indefString = "string";
+const String indefArray = "array";
+const String indefMap = "map";

@@ -64,4 +64,33 @@ class ItemStack {
     }
     return ret;
   }
+
+  /// Check if any error entries are present in the stack.
+  /// Returns a list of error strings if any are found, null
+  /// if none are found.
+  List<String> errors() {
+    final List<String> text = new List<String>();
+    if (_stack.length == 0) return null;
+    ItemEntry entry = _stack.last;
+    if (entry.value.hint == dataHints.error) {
+      text.add(entry.value.data);
+    }
+    while (entry.next != null) {
+      final ItemEntry inner = entry.next;
+      if (inner.value.hint == dataHints.error) {
+        text.add(entry.value.data);
+      }
+      entry = inner;
+    }
+    return text;
+  }
+
+  /// Quick check if the stack contains any errors.
+  bool isInError() {
+    if (errors() == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

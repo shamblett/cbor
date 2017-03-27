@@ -60,7 +60,9 @@ class DartItem {
   bool complete = false;
 
   /// Possible type usage hint for buffer or string types.
-  /// See RFC 7049 for more details.
+  /// See RFC 7049 for more details. Also used to indicate
+  /// an error condition in which case the data field will
+  /// contain a string representation of the error.
   dataHints hint = dataHints.none;
 
   /// Actual size

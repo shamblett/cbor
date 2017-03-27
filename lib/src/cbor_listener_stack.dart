@@ -317,34 +317,34 @@ class ListenerStack extends Listener {
   void onIndefinite(String text) {
     // Process depending on indefinite type.
     switch (text) {
-      case "bytes":
+      case indefBytes:
         _indefiniteStack.add(text);
         _byteAssembly.clear();
         break;
-      case "string":
+      case indefString:
         _indefiniteStack.add(text);
         _stringAssembly = "";
         break;
-      case "map":
+      case indefMap:
         _indefiniteStack.add(text);
         onMap(indefiniteMaxSize);
         break;
-      case "array":
+      case indefArray:
         _indefiniteStack.add(text);
         onArray(indefiniteMaxSize);
         break;
-      case "stop":
+      case indefStop:
       // Get the top of the indefinite stack and switch on it.
         final String top = _indefiniteStack.removeLast();
         switch (top) {
-          case "bytes":
+          case indefBytes:
             onBytes(_byteAssembly, _byteAssembly.length);
             break;
-          case "string":
+          case indefString:
             onString(_stringAssembly);
             break;
-          case "map":
-          case "array":
+          case indefMap:
+          case indefArray:
           // Complete the stack top, pop and append
             _stack
                 .peek()
@@ -358,11 +358,11 @@ class ListenerStack extends Listener {
             _append(_stack.pop());
             break;
           default:
-            print("Unknown indefinite type on stop");
+            onError("Unknown indefinite type on stop");
         }
         break;
       default:
-        print("Unknown indefinite type on start");
+        onError("Unknown indefinite type on start");
     }
   }
 
@@ -433,7 +433,7 @@ class ListenerStack extends Listener {
             }
           }
         } else {
-          print("Incomplete stack item is not list or map");
+          onError("Incomplete stack item is not list or map");
         }
       }
     }
@@ -444,7 +444,7 @@ class ListenerStack extends Listener {
   /// Waiting for indefinite bytes.
   bool _waitingIndefBytes() {
     if (_indefiniteStack.length != 0) {
-      if (_indefiniteStack.last == "bytes") {
+      if (_indefiniteStack.last == indefBytes) {
         return true;
       }
     }
@@ -454,7 +454,7 @@ class ListenerStack extends Listener {
   /// Waiting for indefinite string.
   bool _waitingIndefString() {
     if (_indefiniteStack.length != 0) {
-      if (_indefiniteStack.last == "string") {
+      if (_indefiniteStack.last == indefString) {
         return true;
       }
     }
