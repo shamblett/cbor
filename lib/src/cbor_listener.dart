@@ -9,6 +9,8 @@ part of cbor;
 
 /// Listener base class, all listener implementations must at least
 /// implement these methods to interface to the decoder.
+/// The methods are not documented at the API level, usage should
+/// be obvious from the naming.
 abstract class Listener {
   void onInteger(int value);
 
