@@ -43,9 +43,9 @@ enum dataHints {
 
 /// The CBOR Dart item class.
 /// Objects of this class are produced by the standard
-/// stack class.
+/// stack listener class by the decode process.
 class DartItem {
-  /// The item data
+  /// The item data.
   dynamic data = null;
 
   /// Target size is what we expect the size to
@@ -55,11 +55,12 @@ class DartItem {
   /// The item type, one of the major types.
   dartTypes type = dartTypes.dtNone;
 
-  /// Is the type complete, for maps, lists
-  /// and buffers.
+  /// Is the type complete, i,e is its actual size
+  /// equql to its target size.
   bool complete = false;
 
-  /// Hint for buffer or string types
+  /// Possible type usage hint for buffer or string types.
+  /// See RFC 7049 for more details.
   dataHints hint = dataHints.none;
 
   /// Actual size
@@ -67,10 +68,10 @@ class DartItem {
     return data.length;
   }
 
-  /// Awaiting a map key for Map types
+  /// Awaiting a map key for Map types.
   bool awaitingMapKey = false;
 
-  /// Awaiting a map value for Map types
+  /// Awaiting a map value for Map types.
   bool awaitingMapValue = false;
 
   /// The last key value inserted into a map

@@ -29,6 +29,8 @@ enum whatsNext {
   nothing
 }
 
+/// The stack based listener class, produces a stack of DartItems
+/// from the decoder output.
 class ListenerStack extends Listener {
   ItemStack _stack = new ItemStack();
 
@@ -39,15 +41,15 @@ class ListenerStack extends Listener {
   /// next decoded item should be.
   whatsNext _next = whatsNext.nothing;
 
-  /// Indefinite stack
+  /// Indefinite stack.
   /// A list of indefinite items, most recent at the end.
   /// Can only be string, bytes, list or map.
   List<String> _indefiniteStack = new List<String>();
 
-  /// Indefinite bytes buffer assembler
+  /// Indefinite bytes buffer assembler.
   final typed.Uint8Buffer _byteAssembly = new typed.Uint8Buffer();
 
-  /// Indefinite String buffer assembler
+  /// Indefinite String buffer assembler.
   String _stringAssembly;
 
   void onInteger(int value) {
@@ -362,12 +364,12 @@ class ListenerStack extends Listener {
     }
   }
 
-  /// Main stack append method
+  /// Main stack append method.
   void _append(DartItem item) {
     _appendImpl(item);
   }
 
-  /// Append implementation
+  /// Append implementation.
   void _appendImpl(DartItem item) {
     if (_stack.size() == 0) {
       // Empty stack, straight add
@@ -435,9 +437,9 @@ class ListenerStack extends Listener {
     }
   }
 
-  /// Helper functions
+  /// Helper functions.
 
-  /// Waiting for indefinite bytes
+  /// Waiting for indefinite bytes.
   bool _waitingIndefBytes() {
     if (_indefiniteStack.length != 0) {
       if (_indefiniteStack.last == "bytes") {
@@ -447,7 +449,7 @@ class ListenerStack extends Listener {
     return false;
   }
 
-  /// Waiting for indefinite string
+  /// Waiting for indefinite string.
   bool _waitingIndefString() {
     if (_indefiniteStack.length != 0) {
       if (_indefiniteStack.last == "string") {

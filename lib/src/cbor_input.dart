@@ -9,7 +9,6 @@ part of cbor;
 
 /// The Input class provides data access primitives to the underlying
 /// UTF-8 data buffer supplied.
-
 class Input {
   typed.Uint8Buffer _data;
   int _offset;
@@ -19,20 +18,24 @@ class Input {
     this._offset = 0;
   }
 
+  /// Does the input have the numbe of bytes.
   bool hasBytes(int count) {
     return _data.lengthInBytes - _offset >= count;
   }
 
+  /// Get a single byte.
   int getByte() {
     return _data[_offset++];
   }
 
+  /// Get a short, 16 bits.
   int getShort() {
     final int value = (_data[_offset] << 8 | _data[_offset + 1]);
     _offset += 2;
     return value;
   }
 
+  /// Get an int, 32 bits.
   int getInt() {
     final int value = (_data[_offset] << 24) |
     (_data[_offset + 1] << 16) |
@@ -42,6 +45,7 @@ class Input {
     return value;
   }
 
+  /// Get a long, 64 bits.
   int getLong() {
     final int value = (_data[_offset] << 56) |
     (_data[_offset + 1] << 48) |
@@ -55,6 +59,7 @@ class Input {
     return value;
   }
 
+  /// Get the number of bytes specified.
   typed.Uint8Buffer getBytes(int count) {
     final List<int> tmp = _data.sublist(_offset, _offset + count);
     final typed.Uint8Buffer buff = new typed.Uint8Buffer();
@@ -63,6 +68,7 @@ class Input {
     return buff;
   }
 
+  /// Get a half-precision float from an integer value.
   double getHalfFloat(int val) {
     // Check for known patterns/anomalies and return
     // the correct values otherwise use the algorithm below.
@@ -77,17 +83,19 @@ class Input {
     return ret;
   }
 
+  /// Get a single-precision float from a buffer value.
   double getSingleFloat(typed.Uint8Buffer buff) {
     final ByteData bdata = new ByteData.view(buff.buffer);
     return bdata.getFloat32(0);
   }
 
+  /// Get a double-precision float from a buffer value.
   double getDoubleFloat(typed.Uint8Buffer buff) {
     final ByteData bdata = new ByteData.view(buff.buffer);
     return bdata.getFloat64(0);
   }
 
-  /// Reset the offset
+  /// Reset the offset.
   void reset() {
     _offset = 0;
   }

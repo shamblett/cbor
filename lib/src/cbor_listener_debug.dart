@@ -7,8 +7,7 @@
 
 part of cbor;
 
-/// A simple debug listener
-
+/// A simple debug listener.
 class ListenerDebug extends Listener {
   void onInteger(int value) {
     print("Integer $value");

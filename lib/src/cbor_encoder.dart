@@ -9,7 +9,6 @@ part of cbor;
 
 /// The encoder class implements the CBOR decoder functionality as defined in
 /// RFC7049.
-
 class Encoder {
   Output _out;
 
@@ -17,12 +16,12 @@ class Encoder {
     this._out = out;
   }
 
-  /// Clears the output buffer
+  /// Clears the output buffer.
   void clear() {
     _out.clear();
   }
 
-  /// Booleans
+  /// Booleans.
   void writeBool(bool value) {
     if (value) {
       _out.putByte(0xf5);
@@ -31,7 +30,7 @@ class Encoder {
     }
   }
 
-  /// Positive and negative integers
+  /// Positive and negative integers.
   void writeInt(int value) {
     if (value < 0) {
       _writeTypeValue(1, -(value + 1));
@@ -40,7 +39,7 @@ class Encoder {
     }
   }
 
-  /// Primitive byte writer
+  /// Primitive byte writer.
   void writeBytes(typed.Uint8Buffer data) {
     _writeTypeValue(majorTypeBytes, data.length);
     _out.putBytes(data);
@@ -53,7 +52,7 @@ class Encoder {
     _out.putBytes(buff);
   }
 
-  /// Primitive string writer
+  /// Primitive string writer.
   void writeString(String str, [bool indefinite = false]) {
     final typed.Uint8Buffer buff = strToByteString(str);
     if (indefinite) {
@@ -98,7 +97,7 @@ class Encoder {
   /// recommends keys be of a single type, we are more generous
   /// here.
   /// Valid map values are integer, string, bool, float(any size), array
-  /// or map. Returns true if the encoding has been successful.
+  /// map or buffer. Returns true if the encoding has been successful.
   bool writeMap(Map<dynamic, dynamic> value,
       [bool indefinite = false, int length = null]) {
     // Mark the output buffer, if we cannot encode
@@ -114,34 +113,34 @@ class Encoder {
     return res;
   }
 
-  /// Tag primitive
+  /// Tag primitive.
   void writeTag(int tag) {
     _writeTypeValue(majorTypeTag, tag);
   }
 
-  /// Special(major type 7) primitive
+  /// Special(major type 7) primitive.
   void writeSpecial(int special) {
     int type = majorTypeSpecial;
     type <<= majorTypeShift;
     _out.putByte(type | special);
   }
 
-  /// Null writer
+  /// Null writer.
   void writeNull() {
     _out.putByte(0xf6);
   }
 
-  /// Undefined writer
+  /// Undefined writer.
   void writeUndefined() {
     _out.putByte(0xf7);
   }
 
-  /// Indefinite item break primitive
+  /// Indefinite item break primitive.
   void writeBreak() {
     writeSpecial(aiBreak);
   }
 
-  /// Indefinite item start
+  /// Indefinite item start.
   void startIndefinite(int majorType) {
     _out.putByte((majorType << 5) + aiBreak);
   }
@@ -180,7 +179,7 @@ class Encoder {
     }
   }
 
-  /// Half precision float
+  /// Half precision float.
   void writeHalf(double value) {
     writeSpecial(ai25);
     // Special encodings
@@ -194,7 +193,7 @@ class Encoder {
     }
   }
 
-  /// Single precision float
+  /// Single precision float.
   void writeSingle(double value) {
     writeSpecial(ai26);
     // Special encodings
@@ -215,7 +214,7 @@ class Encoder {
     }
   }
 
-  /// Double precision float
+  /// Double precision float.
   void writeDouble(double value) {
     writeSpecial(ai27);
     // Special encodings
@@ -245,7 +244,7 @@ class Encoder {
   }
 
   /// Tag based Date/Time encoding.
-  /// Standard format as described in RFC339 et al
+  /// Standard format as described in RFC339 et al.
   void writeDateTime(String dt) {
     writeTag(0);
     writeString(dt);
@@ -308,6 +307,8 @@ class Encoder {
     writeString(uri);
   }
 
+  /// Helper functions
+
   /// Lookup table based single to half precision conversion.
   /// Rounding is indeterminate.
   typed.Uint8Buffer _singleToHalf(double value) {
@@ -321,7 +322,7 @@ class Encoder {
     return valBuff;
   }
 
-  /// Encoding helper for type encoding
+  /// Encoding helper for type encoding.
   void _writeTypeValue(int majorType, int value) {
     int type = majorType;
     type <<= majorTypeShift;
@@ -371,7 +372,7 @@ class Encoder {
     }
   }
 
-  ///String to byte string helper.
+  /// String to byte string helper.
   typed.Uint8Buffer strToByteString(String str) {
     final typed.Uint8Buffer buff = new typed.Uint8Buffer();
     final convertor.Utf8Encoder utf = new convertor.Utf8Encoder();

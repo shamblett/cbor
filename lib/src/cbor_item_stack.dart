@@ -16,11 +16,11 @@ class ItemEntry<DartItem> extends LinkedListEntry {
   String toString() => "${super.toString()} : value.toString()";
 }
 
-/// The decoded Dart item stack class
+/// The decoded Dart item stack class.
 class ItemStack {
   LinkedList _stack = new LinkedList();
 
-  /// Push an item
+  /// Push an item.
   void push(DartItem item) {
     final ItemEntry entry = new ItemEntry(item);
     _stack.addFirst(entry);
@@ -33,24 +33,25 @@ class ItemStack {
     return entry.value;
   }
 
-  /// Peek the top stack item
+  /// Peek the top stack item.
   DartItem peek() {
     final ItemEntry entry = _stack.first;
     return entry.value;
   }
 
-  /// Size
+  /// Size.
   int size() {
     return _stack.length;
   }
 
-  /// Clear
+  /// Clear.
   void clear() {
     _stack.clear();
   }
 
   /// Stack walker, returns the stack from bottom to
-  /// top as a list. Returns null if the stack is empty.
+  /// top as a list of Dart data items.
+  /// Returns null if the stack is empty.
   List<dynamic> walk() {
     if (_stack.length == 0) return null;
     final List<dynamic> ret = new List<dynamic>();

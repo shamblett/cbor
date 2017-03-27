@@ -7,11 +7,6 @@
 
 part of cbor;
 
-/// The decoder class implements the CBOR decoder functionality as defined in
-/// RFC7049. Output from the decoding process is through the Listener class interface.
-/// Different listener classes can be supplied for different purposes, such as test,
-/// debug as well as the standard stack listener.
-
 /// Decoder states
 enum DecoderState {
   type,
@@ -34,6 +29,10 @@ const int twoByte = 2;
 const int fourByte = 4;
 const int eightByte = 8;
 
+/// The decoder class implements the CBOR decoder functionality as defined in
+/// RFC7049. Output from the decoding process is through the Listener class interface.
+/// Different listener classes can be supplied for different purposes, such as test,
+/// debug as well as the standard stack listener.
 class Decoder {
   Listener _listener;
   Input _input;
@@ -51,7 +50,7 @@ class Decoder {
     _listener = listener;
   }
 
-  /// Decoder entry point
+  /// Decoder entry point.
   void run() {
     int temp;
     final bool run = true;
@@ -498,7 +497,7 @@ class Decoder {
     }
   }
 
-  /// Set a listener
+  /// Set a listener.
   void setListener(Listener listenerInstance) {
     _listener = listenerInstance;
   }

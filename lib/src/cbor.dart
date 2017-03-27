@@ -7,5 +7,5 @@
 
 part of cbor;
 
-///
+/// The CBOR package main API.
 class Cbor {}
