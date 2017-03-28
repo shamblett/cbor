@@ -13,6 +13,7 @@ void main() {
   // Common
   final cbor.ListenerDebug listener = new cbor.ListenerDebug();
   final cbor.ListenerStack slistener = new cbor.ListenerStack();
+  final cbor.OutputStandard output = new cbor.OutputStandard();
 
   group('Original C++ tests', () {
     test('Encode/Decode confidence -> ', () {
@@ -390,5 +391,56 @@ void main() {
           .peek()
           .hint == cbor.dataHints.dateTimeString;
     });
+  });
+
+  group('Error handling', () {
+    test('No input -> ', () {
+      output.clear();
+      slistener.stack.clear();
+      final List<int> values = [];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, slistener);
+      decoder.run();
+      expect(slistener.stack.hasErrors(), false);
+      final List<String> errors = slistener.stack.errors();
+      expect(errors, isNull);
+    });
+
+    test('Random bytes -> ', () {
+      output.clear();
+      slistener.stack.clear();
+      final List<int> values = [0xcd, 0xfe, 0x00];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, slistener);
+      decoder.run();
+      expect(slistener.stack.hasErrors(), true);
+      final List<String> errors = slistener.stack.errors();
+      expect(errors[0], "Decoder::invalid special type");
+    });
+
+    test('Premature termination -> ', () {
+      output.clear();
+      slistener.stack.clear();
+      final List<int> values = [0x44, 0x01, 0x02, 0x03];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, slistener);
+      decoder.run();
+      expect(slistener.stack.hasErrors(), false);
+      final List<String> errors = slistener.stack.errors();
+      expect(errors, isNull);
+    });
+
   });
 }

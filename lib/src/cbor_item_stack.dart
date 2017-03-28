@@ -86,7 +86,7 @@ class ItemStack {
   }
 
   /// Quick check if the stack contains any errors.
-  bool isInError() {
+  bool hasErrors() {
     if (errors() == null) {
       return false;
     } else {
