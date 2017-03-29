@@ -79,6 +79,12 @@ class DartItem {
   /// The last key value inserted into a map
   dynamic lastMapKey;
 
+  /// Ignore indicator. Used to indicate the item
+  /// should be ignored during stack traversal, the
+  /// item has been used as a partial build area for
+  /// another stack item for instance.
+  bool ignore = false;
+
   /// Helper functions
 
   bool isIncompleteList() {

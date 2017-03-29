@@ -50,18 +50,19 @@ class ItemStack {
   }
 
   /// Stack walker, returns the stack from bottom to
-  /// top as a list of Dart data items.
+  /// top as a list of Dart types.
   /// Returns null if the stack is empty.
   List<dynamic> walk() {
     if (_stack.length == 0) return null;
     final List<dynamic> ret = new List<dynamic>();
-    ItemEntry entry = _stack.last;
-    ret.add(entry.value.data);
-    while (entry.next != null) {
-      final ItemEntry inner = entry.next;
-      ret.add(inner.value.data);
-      entry = inner;
-    }
+    _stack
+        .toList()
+        .reversed
+        .forEach((item) {
+      if (!item.value.ignore) {
+        ret.add(item.value.data);
+      }
+    });
     return ret;
   }
 

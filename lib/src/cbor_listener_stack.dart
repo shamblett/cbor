@@ -352,7 +352,8 @@ class ListenerStack extends Listener {
             _stack
                 .peek()
                 .complete = true;
-            _append(_stack.pop());
+            DartItem item = _stack.pop();
+            _append(item);
             break;
           default:
             onError("Unknown indefinite type on stop");
@@ -390,6 +391,8 @@ class ListenerStack extends Listener {
             entry.data.add(item.data);
             if (entry.data.length == entry.targetSize) {
               entry.complete = true;
+              // Item can be ignored.
+              item.ignore = true;
               // Recurse for nested lists
               final DartItem item1 = _stack.pop();
               _appendImpl(item1);
@@ -405,11 +408,14 @@ class ListenerStack extends Listener {
             entry.awaitingMapKey = false;
             entry.awaitingMapValue = true;
           } else if (entry.awaitingMapValue) {
-            // If the item is a list or a map just push it,
+            // If the item is a list or a map just push it if it
+            // is not complete,
             // if not then reset awaiting map value.
             // Either way update the entry with the value.
             if (item.type == dartTypes.dtList || item.type == dartTypes.dtMap) {
-              _stack.push(item);
+              if (!item.complete) {
+                _stack.push(item);
+              }
             } else {
               entry.awaitingMapValue = false;
             }
@@ -418,6 +424,8 @@ class ListenerStack extends Listener {
             // Check for completeness
             if (entry.data.length == entry.targetSize) {
               entry.complete = true;
+              // Item can be ignored.
+              item.ignore = true;
               // Recurse for nested maps
               final DartItem item1 = _stack.pop();
               _appendImpl(item1);

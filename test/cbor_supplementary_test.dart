@@ -15,32 +15,6 @@ void main() {
   final cbor.ListenerStack slistener = new cbor.ListenerStack();
   final cbor.OutputStandard output = new cbor.OutputStandard();
 
-  group('Original C++ tests', () {
-    test('Encode/Decode confidence -> ', () {
-      // Encoding
-      final cbor.OutputStandard output = new cbor.OutputStandard();
-      final cbor.Encoder encoder = new cbor.Encoder(output);
-      encoder.writeArray([9]);
-      encoder.writeInt(123);
-      encoder.writeInt(-457);
-      encoder.writeString("barrr");
-      encoder.writeInt(321);
-      encoder.writeInt(322);
-      encoder.writeString("foo");
-      encoder.writeBool(true);
-      encoder.writeBool(false);
-      encoder.writeNull();
-      encoder.writeUndefined();
-
-      // Decoding
-      final cbor.Input input = new cbor.Input(output.getData(), output.size());
-      final cbor.Decoder decoder =
-      new cbor.Decoder.withListener(input, listener);
-      listener.banner('>>> Original C++ tests - Encode/Decode confidence');
-      decoder.run();
-    });
-  });
-
   group('Known patterns', () {
     test('Pattern 1  -> ', () {
       // Encoding
@@ -646,6 +620,34 @@ void main() {
       expect(slist[0], [0x64, 0x49, 0x45, 0x54, 0x46]);
       final cbor.DartItem item = slistener.stack.peek();
       expect(item.hint, cbor.dataHints.selfDescCBOR);
+    });
+  });
+
+  group('Dog Food', () {
+    test('Encode/Decode confidence -> ', () {
+      // Encoding
+      final cbor.OutputStandard output = new cbor.OutputStandard();
+      final cbor.Encoder encoder = new cbor.Encoder(output);
+      encoder.writeArray([9, 10, 11]);
+      encoder.writeInt(123);
+      encoder.writeInt(-457);
+      encoder.writeString("barrr");
+      encoder.writeInt(321);
+      encoder.writeInt(322);
+      encoder.writeString("foo");
+      encoder.writeBool(true);
+      encoder.writeBool(false);
+      encoder.writeNull();
+      encoder.writeUndefined();
+
+      // Decoding
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, slistener);
+      slistener.stack.clear();
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 11);
     });
   });
 }
