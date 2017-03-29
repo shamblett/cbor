@@ -152,11 +152,8 @@ class ListenerStack extends Listener {
         case whatsNext.aStringB64Url:
           item.hint = dataHints.base64Url;
           break;
-        case whatsNext.aStringB64Url:
+        case whatsNext.aStringB64:
           item.hint = dataHints.base64;
-          break;
-        case whatsNext.aStringB64Url:
-          item.hint = dataHints.base16;
           break;
         case whatsNext.aRegExp:
           item.hint = dataHints.regex;

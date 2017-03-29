@@ -441,6 +441,211 @@ void main() {
       final List<String> errors = slistener.stack.errors();
       expect(errors, isNull);
     });
+  });
 
+  group('Extra tags', () {
+    test('Tag (33) Base64 URL', () {
+      output.clear();
+      slistener.stack.clear();
+      final List<int> values = [
+        0xd8,
+        0x21,
+        0x76,
+        0x68,
+        0x74,
+        0x74,
+        0x70,
+        0x3a,
+        0x2f,
+        0x2f,
+        0x77,
+        0x77,
+        0x77,
+        0x2e,
+        0x65,
+        0x78,
+        0x61,
+        0x6d,
+        0x70,
+        0x6c,
+        0x65,
+        0x2e,
+        0x63,
+        0x6f,
+        0x6d
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, slistener);
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "http://www.example.com");
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.base64Url);
+    });
+
+    test('Tag (34) Base64 String', () {
+      output.clear();
+      slistener.stack.clear();
+      final List<int> values = [
+        0xd8,
+        0x22,
+        0x76,
+        0x68,
+        0x74,
+        0x74,
+        0x70,
+        0x3a,
+        0x2f,
+        0x2f,
+        0x77,
+        0x77,
+        0x77,
+        0x2e,
+        0x65,
+        0x78,
+        0x61,
+        0x6d,
+        0x70,
+        0x6c,
+        0x65,
+        0x2e,
+        0x63,
+        0x6f,
+        0x6d
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, slistener);
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "http://www.example.com");
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.base64);
+    });
+
+    test('Tag (35) RegExp', () {
+      output.clear();
+      slistener.stack.clear();
+      final List<int> values = [
+        0xd8,
+        0x23,
+        0x76,
+        0x68,
+        0x74,
+        0x74,
+        0x70,
+        0x3a,
+        0x2f,
+        0x2f,
+        0x77,
+        0x77,
+        0x77,
+        0x2e,
+        0x65,
+        0x78,
+        0x61,
+        0x6d,
+        0x70,
+        0x6c,
+        0x65,
+        0x2e,
+        0x63,
+        0x6f,
+        0x6d
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, slistener);
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "http://www.example.com");
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.regex);
+    });
+
+    test('Tag (36) MIME', () {
+      output.clear();
+      slistener.stack.clear();
+      final List<int> values = [
+        0xd8,
+        0x24,
+        0x76,
+        0x68,
+        0x74,
+        0x74,
+        0x70,
+        0x3a,
+        0x2f,
+        0x2f,
+        0x77,
+        0x77,
+        0x77,
+        0x2e,
+        0x65,
+        0x78,
+        0x61,
+        0x6d,
+        0x70,
+        0x6c,
+        0x65,
+        0x2e,
+        0x63,
+        0x6f,
+        0x6d
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, slistener);
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], "http://www.example.com");
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.mime);
+    });
+
+    test('Tag (55799) Self Describe CBOR', () {
+      output.clear();
+      slistener.stack.clear();
+      final List<int> values = [
+        0xd9,
+        0xd9,
+        0xf7,
+        0x45,
+        0x64,
+        0x49,
+        0x45,
+        0x54,
+        0x46
+      ];
+      final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+      buffer.addAll(values);
+      output.putBytes(buffer);
+      final cbor.Input input = new cbor.Input(output.getData(), output.size());
+      final cbor.Decoder decoder =
+      new cbor.Decoder.withListener(input, slistener);
+      decoder.run();
+      final List<dynamic> slist = slistener.stack.walk();
+      expect(slist.length, 1);
+      expect(slist[0], [0x64, 0x49, 0x45, 0x54, 0x46]);
+      final cbor.DartItem item = slistener.stack.peek();
+      expect(item.hint, cbor.dataHints.selfDescCBOR);
+    });
   });
 }
