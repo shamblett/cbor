@@ -81,6 +81,7 @@ class ListenerStack extends Listener {
         item.data = data;
         item.type = dartTypes.dtBuffer;
         item.hint = dataHints.base64Url;
+        item.complete = true;
         _append(item);
         break;
       case whatsNext.aMultipleB64:
@@ -89,6 +90,7 @@ class ListenerStack extends Listener {
         item.data = data;
         item.type = dartTypes.dtBuffer;
         item.hint = dataHints.base64;
+        item.complete = true;
         _append(item);
         break;
       case whatsNext.aMultipleB16:
@@ -97,6 +99,7 @@ class ListenerStack extends Listener {
         item.data = data;
         item.type = dartTypes.dtBuffer;
         item.hint = dataHints.base16;
+        item.complete = true;
         _append(item);
         break;
       case whatsNext.encodedCBOR:
@@ -105,6 +108,7 @@ class ListenerStack extends Listener {
         item.data = data;
         item.type = dartTypes.dtBuffer;
         item.hint = dataHints.encodedCBOR;
+        item.complete = true;
         _append(item);
         break;
       case whatsNext.aSelfDescribeCBOR:
@@ -113,6 +117,7 @@ class ListenerStack extends Listener {
         item.data = data;
         item.type = dartTypes.dtBuffer;
         item.hint = dataHints.selfDescCBOR;
+        item.complete = true;
         _append(item);
         break;
       case whatsNext.unassigned:
@@ -120,6 +125,7 @@ class ListenerStack extends Listener {
         final DartItem item = new DartItem();
         item.data = data;
         item.type = dartTypes.dtBuffer;
+        item.complete = true;
         _append(item);
         break;
       case whatsNext.nothing:
@@ -131,6 +137,7 @@ class ListenerStack extends Listener {
           final DartItem item = new DartItem();
           item.data = data;
           item.type = dartTypes.dtBuffer;
+          item.complete = true;
           _append(item);
         }
     }

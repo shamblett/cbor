@@ -289,7 +289,7 @@ class Encoder {
   /// string maybe base encoded.
   void writeBase64URL(typed.Uint8Buffer data) {
     writeTag(21);
-    _out.putBytes(data);
+    writeBytes(data);
   }
 
   /// Tag based Base16 byte string encoding. The encoder does not

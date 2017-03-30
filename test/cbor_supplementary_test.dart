@@ -649,11 +649,20 @@ void main() {
       encoder.writeSingle(36.908);
       encoder.writeDouble(35.66e4);
       encoder.writeHalf(20.0);
+      encoder.writeDateTime("2013-03-21T20:04:00Z");
+      encoder.writeEpoch(1234567);
+      encoder.writeSimple(10);
       final typed.Uint8Buffer data = new typed.Uint8Buffer();
       data.addAll([01, 02, 03, 89]);
       encoder.writeBytes(data);
-      encoder.writeDateTime("2013-03-21T20:04:00Z");
-      //encoder.writeEpoch(1234567);
+      data[3] = 90;
+      encoder.writeBase64(data);
+      data[3] = 91;
+      encoder.writeCborDi(data);
+      data[3] = 92;
+      encoder.writeBase64URL(data);
+      data[3] = 93;
+      encoder.writeBase16(data);
 
       // Decoding
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
@@ -662,7 +671,7 @@ void main() {
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
-      expect(slist.length, 17);
+      expect(slist.length, 23);
       expect(slist[0], [9, 10, 11]);
       expect(slist[1], 123);
       expect(slist[2], -457);
@@ -682,9 +691,14 @@ void main() {
       expect(slist[12], greaterThanOrEqualTo(36.908));
       expect(slist[13], 35.66e4);
       expect(slist[14], 20.0);
-      expect(slist[15], [01, 02, 03, 89]);
-      expect(slist[16], "2013-03-21T20:04:00Z");
-      //expect(slist[17], 1234567);
+      expect(slist[15], "2013-03-21T20:04:00Z");
+      expect(slist[16], 1234567);
+      expect(slist[17], 10);
+      expect(slist[18], [01, 02, 03, 89]);
+      expect(slist[19], [01, 02, 03, 90]);
+      expect(slist[20], [01, 02, 03, 91]);
+      expect(slist[21], [01, 02, 03, 92]);
+      expect(slist[22], [01, 02, 03, 93]);
     });
   });
 }
