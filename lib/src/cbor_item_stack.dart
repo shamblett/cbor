@@ -55,10 +55,8 @@ class ItemStack {
   List<dynamic> walk() {
     if (_stack.length == 0) return null;
     final List<dynamic> ret = new List<dynamic>();
-    _stack
-        .toList()
-        .reversed
-        .forEach((item) {
+    final List<ItemEntry> stackList = _stack.toList();
+    stackList.reversed.forEach((item) {
       if (!item.value.ignore) {
         ret.add(item.value.data);
       }
