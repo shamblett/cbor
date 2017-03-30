@@ -412,10 +412,8 @@ class ListenerStack extends Listener {
             // is not complete,
             // if not then reset awaiting map value.
             // Either way update the entry with the value.
-            if (item.type == dartTypes.dtList || item.type == dartTypes.dtMap) {
-              if (!item.complete) {
+            if (item.isIncompleteList() || item.isIncompleteMap()) {
                 _stack.push(item);
-              }
             } else {
               entry.awaitingMapValue = false;
             }

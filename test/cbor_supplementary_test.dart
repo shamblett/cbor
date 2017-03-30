@@ -624,8 +624,10 @@ void main() {
   });
 
   group('Dog Food', () {
+
     test('Encode/Decode confidence -> ', () {
       // Encoding
+      cbor.init();
       final cbor.OutputStandard output = new cbor.OutputStandard();
       final cbor.Encoder encoder = new cbor.Encoder(output);
       encoder.writeArray([9, 10, 11]);
@@ -639,6 +641,19 @@ void main() {
       encoder.writeBool(false);
       encoder.writeNull();
       encoder.writeUndefined();
+      encoder.writeMap({
+        "a": [1, 2, 3],
+        2: true,
+        3: "Hello"
+      });
+      encoder.writeSingle(36.908);
+      encoder.writeDouble(35.66e4);
+      encoder.writeHalf(20.0);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll([01, 02, 03, 89]);
+      encoder.writeBytes(data);
+      encoder.writeDateTime("2013-03-21T20:04:00Z");
+      //encoder.writeEpoch(1234567);
 
       // Decoding
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
@@ -647,7 +662,29 @@ void main() {
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
-      expect(slist.length, 11);
+      expect(slist.length, 17);
+      expect(slist[0], [9, 10, 11]);
+      expect(slist[1], 123);
+      expect(slist[2], -457);
+      expect(slist[3], "barrr");
+      expect(slist[4], 321);
+      expect(slist[5], 322);
+      expect(slist[6], "foo");
+      expect(slist[7], isTrue);
+      expect(slist[8], isFalse);
+      expect(slist[9], isNull);
+      expect(slist[10], isNull);
+      expect(slist[11], {
+        "a": [1, 2, 3],
+        2: true,
+        3: "Hello"
+      });
+      expect(slist[12], greaterThanOrEqualTo(36.908));
+      expect(slist[13], 35.66e4);
+      expect(slist[14], 20.0);
+      expect(slist[15], [01, 02, 03, 89]);
+      expect(slist[16], "2013-03-21T20:04:00Z");
+      //expect(slist[17], 1234567);
     });
   });
 }
