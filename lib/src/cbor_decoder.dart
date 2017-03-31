@@ -317,7 +317,7 @@ class Decoder {
             case 4:
               temp = _input.getInt();
               if (temp <= two32) {
-                _listener.onInteger(-temp);
+                _listener.onInteger(-1 - temp);
               } else if (temp == two32 + 1) {
                 _listener.onInteger(-two32 - 1);
               } else {
