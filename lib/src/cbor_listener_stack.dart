@@ -339,6 +339,10 @@ class ListenerStack extends Listener {
         break;
       case indefStop:
       // Get the top of the indefinite stack and switch on it.
+        if (_indefiniteStack.length == 0) {
+          onError("Unbalanced indefinite break");
+          break;
+        }
         final String top = _indefiniteStack.removeLast();
         switch (top) {
           case indefBytes:
@@ -359,8 +363,7 @@ class ListenerStack extends Listener {
             _stack
                 .peek()
                 .complete = true;
-            DartItem item = _stack.pop();
-            _append(item);
+            _append(_stack.pop());
             break;
           default:
             onError("Unknown indefinite type on stop");
@@ -420,7 +423,7 @@ class ListenerStack extends Listener {
             // if not then reset awaiting map value.
             // Either way update the entry with the value.
             if (item.isIncompleteList() || item.isIncompleteMap()) {
-                _stack.push(item);
+              _stack.push(item);
             } else {
               entry.awaitingMapValue = false;
             }

@@ -10,7 +10,12 @@ part of cbor;
 /// The encoder class implements the CBOR decoder functionality as defined in
 /// RFC7049.
 class Encoder {
+  /// The output buffer
   Output _out;
+
+  /// Indefinite sequence indicator, incremented on start
+  /// decremented on stop.
+  int _indefSequenceCount = 0;
 
   Encoder(Output out) {
     this._out = out;
@@ -138,11 +143,13 @@ class Encoder {
   /// Indefinite item break primitive.
   void writeBreak() {
     writeSpecial(aiBreak);
+    _indefSequenceCount--;
   }
 
   /// Indefinite item start.
   void startIndefinite(int majorType) {
     _out.putByte((majorType << 5) + aiBreak);
+    _indefSequenceCount++;
   }
 
   /// Simple values, negative values, values over 255 or less
@@ -386,17 +393,16 @@ class Encoder {
   /// ie false is returned.
   bool writeArrayImpl(List<dynamic> value,
       [bool indefinite = false, int length = null]) {
-    // Indefinite
-    if (indefinite) {
-      startIndefinite(majorTypeArray);
-    }
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {
         _writeTypeValue(majorTypeArray, 0);
+      } else {
+        startIndefinite(majorTypeArray);
       }
       return true;
     }
+
     // Build the encoded array.
     if (!indefinite) {
       if (length != null) {
@@ -404,7 +410,10 @@ class Encoder {
       } else {
         _writeTypeValue(majorTypeArray, value.length);
       }
+    } else {
+      startIndefinite(majorTypeArray);
     }
+
     bool ok = true;
     for (dynamic element in value) {
       String valType = element.runtimeType.toString();
@@ -472,10 +481,6 @@ class Encoder {
   /// ie false is returned.
   bool writeMapImpl(Map<dynamic, dynamic> value,
       [bool indefinite = false, int length = null]) {
-    // Indefinite
-    if (indefinite) {
-      startIndefinite(majorTypeMap);
-    }
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {
@@ -483,6 +488,7 @@ class Encoder {
       }
       return true;
     }
+
     // Check the keys are integers or strings.
     final dynamic keys = value.keys;
     bool keysValid = true;
@@ -498,15 +504,20 @@ class Encoder {
     }
     // Build the encoded map.
     if (!indefinite) {
-      if (length != null) {
-        _writeTypeValue(majorTypeMap, length);
-      } else {
-        _writeTypeValue(majorTypeMap, value.length);
+      if (_indefSequenceCount == 0) {
+        if (length != null) {
+          _writeTypeValue(majorTypeMap, length);
+        } else {
+          _writeTypeValue(majorTypeMap, value.length);
+        }
       }
+    } else {
+      startIndefinite(majorTypeMap);
     }
+
     bool ok = true;
     value.forEach((dynamic key, dynamic val) {
-      // Encode the key, can now onlbe ints or strings.
+      // Encode the key, can now only be ints or strings.
       if (key.runtimeType.toString() == "int") {
         writeInt(key);
       } else {

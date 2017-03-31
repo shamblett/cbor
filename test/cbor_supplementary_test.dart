@@ -624,7 +624,6 @@ void main() {
   });
 
   group('Dog Food', () {
-
     test('Encode/Decode confidence -> ', () {
       // Encoding
       cbor.init();
@@ -663,6 +662,23 @@ void main() {
       encoder.writeBase64URL(data);
       data[3] = 93;
       encoder.writeBase16(data);
+      encoder.writeURI("example.com");
+      encoder.writeFloat(19876.66);
+      encoder.writeSpecial(6);
+      encoder.writeString("Strea", true);
+      encoder.writeString("ming");
+      encoder.writeBreak();
+      data[3] = 94;
+      encoder.writeBuff(data, true);
+      data[3] = 95;
+      encoder.writeBuff(data);
+      encoder.writeBreak();
+      encoder.writeArray([6, 7, 8], true);
+      encoder.writeArray([9, 10, 11]);
+      encoder.writeBreak();
+      encoder.writeMap({"1": "First", "2": "Second"}, true);
+      encoder.writeMap({"3": "Third"});
+      encoder.writeBreak();
 
       // Decoding
       final cbor.Input input = new cbor.Input(output.getData(), output.size());
@@ -671,7 +687,7 @@ void main() {
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
-      expect(slist.length, 23);
+      expect(slist.length, 30);
       expect(slist[0], [9, 10, 11]);
       expect(slist[1], 123);
       expect(slist[2], -457);
@@ -699,6 +715,13 @@ void main() {
       expect(slist[20], [01, 02, 03, 91]);
       expect(slist[21], [01, 02, 03, 92]);
       expect(slist[22], [01, 02, 03, 93]);
+      expect(slist[23], "example.com");
+      expect(slist[24], greaterThanOrEqualTo(19876.66));
+      expect(slist[25], 6);
+      expect(slist[26], "Streaming");
+      expect(slist[27], [01, 02, 03, 94, 01, 02, 03, 95]);
+      expect(slist[28], [06, 07, 08, [09, 10, 11]]);
+      expect(slist[29], {"1": "First", "2": "Second", "3": "Third"});
     });
   });
 }
