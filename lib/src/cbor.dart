@@ -9,7 +9,6 @@ part of cbor;
 
 /// The CBOR package main API.
 class Cbor {
-
   /// Construction
   Cbor() {
     init();
@@ -46,7 +45,13 @@ class Cbor {
 
   /// Decode from a list of integer payload
   void decodeFromList(List<int> ints) {
-
+    _listener = new ListenerStack();
+    final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+    buffer.addAll(ints);
+    _input = new Input(buffer, buffer.length);
+    _output = new OutputStandard();
+    _decoder = new Decoder.withListener(_input, _listener);
+    _decoder.run();
   }
 
   /// Get the decoded data as a list
@@ -55,19 +60,13 @@ class Cbor {
   }
 
   /// Get the decoded hints
-  List<dataHints> getDecodedHints() {
-
-  }
+  List<dataHints> getDecodedHints() {}
 
   /// Pretty print the decoded data
-  String decodedPrettyPrint() {
-
-  }
+  String decodedPrettyPrint() {}
 
   /// To JSON
-  String decodedToJSON() {
-
-  }
+  String decodedToJSON() {}
 
   /// Encoder
   Output _output;
@@ -76,5 +75,4 @@ class Cbor {
   Output get rawOutput => _output;
 
   Encoder get encoder => _encoder;
-
 }
