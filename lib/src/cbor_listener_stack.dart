@@ -59,6 +59,10 @@ class ListenerStack extends Listener {
     item.data = value;
     item.type = dartTypes.dtInt;
     item.complete = true;
+    if (_next == whatsNext.aDateTimeEpoch) {
+      item.hint = dataHints.dateTimeEpoch;
+      _next = whatsNext.nothing;
+    }
     _append(item);
   }
 
@@ -153,6 +157,9 @@ class ListenerStack extends Listener {
       item.data = str;
       item.type = dartTypes.dtString;
       switch (_next) {
+        case whatsNext.aDateTimeString:
+          item.hint = dataHints.dateTimeString;
+          break;
         case whatsNext.aStringUri:
           item.hint = dataHints.uri;
           break;
@@ -207,6 +214,7 @@ class ListenerStack extends Listener {
         _next = whatsNext.aDateTimeString;
         break;
       case 1: // Date/Time epoch
+        _next = whatsNext.aDateTimeEpoch;
         break;
       case 2: // Positive bignum
         _next = whatsNext.aPositiveBignum;

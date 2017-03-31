@@ -64,6 +64,22 @@ class ItemStack {
     return ret;
   }
 
+  /// Gets item hints. Returns item hints for stack items.
+  /// If used with the walk stack the returned list can
+  /// be used on a per index basis.
+  List<dataHints> hints() {
+    if (_stack.length == 0) return null;
+    final List<dataHints> ret = new List<dataHints>();
+    final List<ItemEntry> stackList = _stack.toList();
+    stackList.reversed.forEach((item) {
+      if (!item.value.ignore) {
+        ret.add(item.value.hint);
+      }
+    });
+    return ret;
+  }
+
+
   /// Check if any error entries are present in the stack.
   /// Returns a list of error strings if any are found, null
   /// if none are found.
