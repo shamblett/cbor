@@ -10,6 +10,11 @@ part of cbor;
 /// The CBOR package main API.
 class Cbor {
 
+  /// Construction
+  Cbor() {
+    init();
+  }
+
   /// Decoder
   typed.Uint8Buffer _buffer;
   Input _input;
@@ -32,7 +37,11 @@ class Cbor {
 
   /// Decode from a byte buffer payload
   void decodeFromBuffer(typed.Uint8Buffer buffer) {
-
+    _listener = new ListenerStack();
+    _input = new Input(buffer, buffer.length);
+    _output = new OutputStandard();
+    _decoder = new Decoder.withListener(_input, _listener);
+    _decoder.run();
   }
 
   /// Decode from a list of integer payload
@@ -42,7 +51,7 @@ class Cbor {
 
   /// Get the decoded data as a list
   List<dynamic> getDecodedData() {
-
+    return _listener.stack.walk();
   }
 
   /// Get the decoded hints
@@ -64,7 +73,7 @@ class Cbor {
   Output _output;
   Encoder _encoder;
 
-  Output get output => _output;
+  Output get rawOutput => _output;
 
   Encoder get encoder => _encoder;
 
