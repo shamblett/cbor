@@ -79,7 +79,6 @@ class ItemStack {
     return ret;
   }
 
-
   /// Check if any error entries are present in the stack.
   /// Returns a list of error strings if any are found, null
   /// if none are found.

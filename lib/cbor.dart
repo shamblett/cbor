@@ -33,9 +33,4 @@ part 'src/cbor_dart_item.dart';
 part 'src/cbor_output_standard.dart';
 
 /// Float encoding directives
-enum encodeFloatAs {
-  half,
-  single,
-  double
-}
-
+enum encodeFloatAs { half, single, double }

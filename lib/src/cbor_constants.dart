@@ -5,7 +5,6 @@
  * Copyright :  S.Hamblett
  */
 
-
 part of cbor;
 
 /// Constants for use across the CBOR package.
