@@ -246,6 +246,8 @@ void main() {
         "n255": -255,
         "btrue": true
       });
+      print("Pretty Print");
+      print(inst.decodedPrettyPrint());
     });
 
     test('Hints -> ', () {
@@ -279,6 +281,8 @@ void main() {
       expect(hints[5], cbor.dataHints.base64Url);
       expect(hints[6], cbor.dataHints.base16);
       expect(hints[7], cbor.dataHints.uri);
+      print("Pretty Print");
+      print(inst.decodedPrettyPrint(true));
     });
   });
 }

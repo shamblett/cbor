@@ -75,7 +75,22 @@ class Cbor {
   }
 
   /// Pretty print the decoded data
-  String decodedPrettyPrint([bool withHints = false]) {}
+  String decodedPrettyPrint([bool withHints = false]) {
+    String ret = "";
+    final List<dynamic> values = getDecodedData();
+    List<dataHints> hints;
+    if (withHints) {
+      hints = getDecodedHints();
+    }
+    final int length = values.length;
+    for (int i = 0; i < length; i++) {
+      ret += "Entry $i   : Value is => ${values[i].toString()}\n";
+      if (withHints) {
+        ret += "          : Hint is => ${hints[i].toString()}\n";
+      }
+    }
+    return ret;
+  }
 
   /// To JSON
   String decodedToJSON() {}
