@@ -12,6 +12,9 @@ class Cbor {
   /// Construction
   Cbor() {
     init();
+    _output = new OutputStandard();
+    _encoder = new Encoder(output);
+    _listener = new ListenerStack();
   }
 
   /// Decoder
@@ -21,6 +24,8 @@ class Cbor {
   Listener _listener;
 
   Input get input => _input;
+
+  set input(Input val) => _input = val;
 
   Decoder get decoder => _decoder;
 
@@ -36,20 +41,25 @@ class Cbor {
 
   /// Decode from a byte buffer payload
   void decodeFromBuffer(typed.Uint8Buffer buffer) {
-    _listener = new ListenerStack();
+    _listener.stack.clear();
     _input = new Input(buffer, buffer.length);
-    _output = new OutputStandard();
     _decoder = new Decoder.withListener(_input, _listener);
     _decoder.run();
   }
 
   /// Decode from a list of integer payload
   void decodeFromList(List<int> ints) {
-    _listener = new ListenerStack();
+    _listener.stack.clear();
     final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
     buffer.addAll(ints);
     _input = new Input(buffer, buffer.length);
-    _output = new OutputStandard();
+    _decoder = new Decoder.withListener(_input, _listener);
+    _decoder.run();
+  }
+
+  /// Decode from the input attribute.
+  void decodeFromInput() {
+    _listener.stack.clear();
     _decoder = new Decoder.withListener(_input, _listener);
     _decoder.run();
   }
@@ -60,10 +70,12 @@ class Cbor {
   }
 
   /// Get the decoded hints
-  List<dataHints> getDecodedHints() {}
+  List<dataHints> getDecodedHints() {
+    return listener.stack.hints();
+  }
 
   /// Pretty print the decoded data
-  String decodedPrettyPrint() {}
+  String decodedPrettyPrint([bool withHints = false]) {}
 
   /// To JSON
   String decodedToJSON() {}
@@ -75,4 +87,9 @@ class Cbor {
   Output get rawOutput => _output;
 
   Encoder get encoder => _encoder;
+
+  /// Clear the encoded output
+  void clearEncoded() {
+    _output.clear();
+  }
 }

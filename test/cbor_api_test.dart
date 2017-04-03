@@ -247,5 +247,38 @@ void main() {
         "btrue": true
       });
     });
+
+    test('Hints -> ', () {
+      // Encoding
+      inst.encoder.writeDateTime("2013-03-21T20:04:00Z");
+      inst.encoder.writeEpoch(1234567);
+      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      data.addAll([01, 02, 03, 89]);
+      inst.encoder.writeBytes(data);
+      data[3] = 90;
+      inst.encoder.writeBase64(data);
+      data[3] = 91;
+      inst.encoder.writeCborDi(data);
+      data[3] = 92;
+      inst.encoder.writeBase64URL(data);
+      data[3] = 93;
+      inst.encoder.writeBase16(data);
+      inst.encoder.writeURI("example.com");
+
+      // Decoding
+      final cbor.Input dataIn =
+      new cbor.Input(inst.rawOutput.getData(), inst.rawOutput.size());
+      inst.input = dataIn;
+      inst.decodeFromInput();
+      final List<cbor.dataHints> hints = inst.getDecodedHints();
+      expect(hints[0], cbor.dataHints.dateTimeString);
+      expect(hints[1], cbor.dataHints.dateTimeEpoch);
+      expect(hints[2], cbor.dataHints.none);
+      expect(hints[3], cbor.dataHints.base64);
+      expect(hints[4], cbor.dataHints.encodedCBOR);
+      expect(hints[5], cbor.dataHints.base64Url);
+      expect(hints[6], cbor.dataHints.base16);
+      expect(hints[7], cbor.dataHints.uri);
+    });
   });
 }
