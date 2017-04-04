@@ -93,7 +93,9 @@ class Cbor {
   }
 
   /// To JSON
-  String decodedToJSON() {}
+  String decodedToJSON() {
+    return json.serialize(getDecodedData());
+  }
 
   /// Encoder
   Output _output;
