@@ -7,7 +7,6 @@
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
-import 'dart:io';
 
 void main() {
   // Common

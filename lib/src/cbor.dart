@@ -41,7 +41,8 @@ class Cbor {
 
   /// Decode from a byte buffer payload
   void decodeFromBuffer(typed.Uint8Buffer buffer) {
-    _listener.stack.clear();
+    final ListenerStack listener = _listener as ListenerStack;
+    listener.stack.clear();
     _input = new Input(buffer, buffer.length);
     _decoder = new Decoder.withListener(_input, _listener);
     _decoder.run();
@@ -49,7 +50,8 @@ class Cbor {
 
   /// Decode from a list of integer payload
   void decodeFromList(List<int> ints) {
-    _listener.stack.clear();
+    final ListenerStack listener = _listener as ListenerStack;
+    listener.stack.clear();
     final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
     buffer.addAll(ints);
     _input = new Input(buffer, buffer.length);
@@ -59,18 +61,21 @@ class Cbor {
 
   /// Decode from the input attribute.
   void decodeFromInput() {
-    _listener.stack.clear();
+    final ListenerStack listener = _listener as ListenerStack;
+    listener.stack.clear();
     _decoder = new Decoder.withListener(_input, _listener);
     _decoder.run();
   }
 
   /// Get the decoded data as a list
   List<dynamic> getDecodedData() {
-    return _listener.stack.walk();
+    final ListenerStack listener = _listener as ListenerStack;
+    return listener.stack.walk();
   }
 
   /// Get the decoded hints
   List<dataHints> getDecodedHints() {
+    final ListenerStack listener = _listener as ListenerStack;
     return listener.stack.hints();
   }
 
