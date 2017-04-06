@@ -61,7 +61,8 @@ class Cbor {
     _decoder.run();
   }
 
-  /// Decode from the input attribute.
+  /// Decode from the input attribute, i.e decode what we have
+  /// just encoded.
   void decodeFromInput() {
     final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
