@@ -1,0 +1,662 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.lcov - src/cbor_encoder.dart</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - cbor_encoder.dart<span style="font-size: 80%;"> (source / <a href="cbor_encoder.dart.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.lcov</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">203</td>
+            <td class="headerCovTableEntry">226</td>
+            <td class="headerCovTableEntryMed">89.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-04-06</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  * Package : Cbor
+<span class="lineNum">       3 </span>            :  * Author : S. Hamblett &lt;steve.hamblett@linux.com&gt;
+<span class="lineNum">       4 </span>            :  * Date   : 12/12/2016
+<span class="lineNum">       5 </span>            :  * Copyright :  S.Hamblett
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : part of cbor;
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : /// The encoder class implements the CBOR decoder functionality as defined in
+<span class="lineNum">      11 </span>            : /// RFC7049.
+<span class="lineNum">      12 </span>            : class Encoder {
+<span class="lineNum">      13 </span>            :   /// The output buffer
+<span class="lineNum">      14 </span>            :   Output _out;
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :   /// Indefinite sequence indicator, incremented on start
+<span class="lineNum">      17 </span>            :   /// decremented on stop.
+<span class="lineNum">      18 </span>            :   int _indefSequenceCount = 0;
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span><span class="lineCov">          3 :   Encoder(Output out) {</span>
+<span class="lineNum">      21 </span><span class="lineCov">          3 :     this._out = out;</span>
+<span class="lineNum">      22 </span>            :   }
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            :   /// Clears the output buffer.
+<span class="lineNum">      25 </span>            :   void clear() {
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :     _out.clear();</span>
+<span class="lineNum">      27 </span>            :   }
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            :   /// Booleans.
+<span class="lineNum">      30 </span>            :   void writeBool(bool value) {
+<span class="lineNum">      31 </span>            :     if (value) {
+<span class="lineNum">      32 </span><span class="lineCov">          6 :       _out.putByte(0xf5);</span>
+<span class="lineNum">      33 </span>            :     } else {
+<span class="lineNum">      34 </span><span class="lineCov">          6 :       _out.putByte(0xf4);</span>
+<span class="lineNum">      35 </span>            :     }
+<span class="lineNum">      36 </span>            :   }
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            :   /// Positive and negative integers.
+<span class="lineNum">      39 </span>            :   void writeInt(int value) {
+<span class="lineNum">      40 </span><span class="lineCov">          3 :     if (value &lt; 0) {</span>
+<span class="lineNum">      41 </span><span class="lineCov">          9 :       _writeTypeValue(1, -(value + 1));</span>
+<span class="lineNum">      42 </span>            :     } else {
+<span class="lineNum">      43 </span><span class="lineCov">          3 :       _writeTypeValue(0, value);</span>
+<span class="lineNum">      44 </span>            :     }
+<span class="lineNum">      45 </span>            :   }
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            :   /// Primitive byte writer.
+<span class="lineNum">      48 </span>            :   void writeBytes(typed.Uint8Buffer data) {
+<span class="lineNum">      49 </span><span class="lineCov">          6 :     _writeTypeValue(majorTypeBytes, data.length);</span>
+<span class="lineNum">      50 </span><span class="lineCov">          6 :     _out.putBytes(data);</span>
+<span class="lineNum">      51 </span>            :   }
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span>            :   /// Raw byte buffer writer.
+<span class="lineNum">      54 </span>            :   /// No encoding is added to the buffer, it goes into the
+<span class="lineNum">      55 </span>            :   /// output stream as is.
+<span class="lineNum">      56 </span>            :   void writeRawBuffer(typed.Uint8Buffer buff) {
+<span class="lineNum">      57 </span><span class="lineCov">          4 :     _out.putBytes(buff);</span>
+<span class="lineNum">      58 </span>            :   }
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            :   /// Primitive string writer.
+<span class="lineNum">      61 </span>            :   void writeString(String str, [bool indefinite = false]) {
+<span class="lineNum">      62 </span><span class="lineCov">          3 :     final typed.Uint8Buffer buff = strToByteString(str);</span>
+<span class="lineNum">      63 </span>            :     if (indefinite) {
+<span class="lineNum">      64 </span><span class="lineCov">          2 :       startIndefinite(majorTypeString);</span>
+<span class="lineNum">      65 </span>            :     }
+<span class="lineNum">      66 </span><span class="lineCov">          6 :     _writeTypeValue(majorTypeString, buff.length);</span>
+<span class="lineNum">      67 </span><span class="lineCov">          6 :     _out.putBytes(buff);</span>
+<span class="lineNum">      68 </span>            :   }
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            :   /// Bytestring primitive.
+<span class="lineNum">      71 </span>            :   void writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
+<span class="lineNum">      72 </span>            :     if (indefinite) {
+<span class="lineNum">      73 </span><span class="lineCov">          2 :       startIndefinite(majorTypeBytes);</span>
+<span class="lineNum">      74 </span>            :     }
+<span class="lineNum">      75 </span><span class="lineCov">          4 :     _writeTypeValue(majorTypeBytes, data.length);</span>
+<span class="lineNum">      76 </span><span class="lineCov">          4 :     _out.putBytes(data);</span>
+<span class="lineNum">      77 </span>            :   }
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            :   /// Array primitive.
+<span class="lineNum">      80 </span>            :   /// Valid elements are string, integer, bool, float(any size), array
+<span class="lineNum">      81 </span>            :   /// or map. Returns true if the encoding has been successful.
+<span class="lineNum">      82 </span>            :   /// If you supply a length this will be used and not calculated from the
+<span class="lineNum">      83 </span>            :   /// array size, unless you are encoding certain indefinite sequences you
+<span class="lineNum">      84 </span>            :   /// do not need to do this.
+<span class="lineNum">      85 </span>            :   bool writeArray(List&lt;dynamic&gt; value,
+<span class="lineNum">      86 </span>            :       [bool indefinite = false, int length = null]) {
+<span class="lineNum">      87 </span>            :     // Mark the output buffer, if we cannot encode
+<span class="lineNum">      88 </span>            :     // the whole array structure rewind so as to perform
+<span class="lineNum">      89 </span>            :     // no encoding.
+<span class="lineNum">      90 </span>            :     bool res = true;
+<span class="lineNum">      91 </span><span class="lineCov">          6 :     _out.mark();</span>
+<span class="lineNum">      92 </span><span class="lineCov">          3 :     final bool ok = writeArrayImpl(value, indefinite, length);</span>
+<span class="lineNum">      93 </span>            :     if (!ok) {
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :       _out.resetToMark();</span>
+<span class="lineNum">      95 </span>            :       res = false;
+<span class="lineNum">      96 </span>            :     }
+<span class="lineNum">      97 </span>            :     return res;
+<span class="lineNum">      98 </span>            :   }
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span>            :   /// Map primitive.
+<span class="lineNum">     101 </span>            :   /// Valid map keys are integer and string. RFC7049
+<span class="lineNum">     102 </span>            :   /// recommends keys be of a single type, we are more generous
+<span class="lineNum">     103 </span>            :   /// here.
+<span class="lineNum">     104 </span>            :   /// Valid map values are integer, string, bool, float(any size), array
+<span class="lineNum">     105 </span>            :   /// map or buffer. Returns true if the encoding has been successful.
+<span class="lineNum">     106 </span>            :   bool writeMap(Map&lt;dynamic, dynamic&gt; value,
+<span class="lineNum">     107 </span>            :       [bool indefinite = false, int length = null]) {
+<span class="lineNum">     108 </span>            :     // Mark the output buffer, if we cannot encode
+<span class="lineNum">     109 </span>            :     // the whole map structure rewind so as to perform
+<span class="lineNum">     110 </span>            :     // no encoding.
+<span class="lineNum">     111 </span>            :     bool res = true;
+<span class="lineNum">     112 </span><span class="lineCov">          6 :     _out.mark();</span>
+<span class="lineNum">     113 </span><span class="lineCov">          3 :     final bool ok = writeMapImpl(value, indefinite, length);</span>
+<span class="lineNum">     114 </span>            :     if (!ok) {
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :       _out.resetToMark();</span>
+<span class="lineNum">     116 </span>            :       res = false;
+<span class="lineNum">     117 </span>            :     }
+<span class="lineNum">     118 </span>            :     return res;
+<span class="lineNum">     119 </span>            :   }
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            :   /// Tag primitive.
+<span class="lineNum">     122 </span>            :   void writeTag(int tag) {
+<span class="lineNum">     123 </span><span class="lineCov">          3 :     _writeTypeValue(majorTypeTag, tag);</span>
+<span class="lineNum">     124 </span>            :   }
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span>            :   /// Special(major type 7) primitive.
+<span class="lineNum">     127 </span>            :   void writeSpecial(int special) {
+<span class="lineNum">     128 </span>            :     int type = majorTypeSpecial;
+<span class="lineNum">     129 </span><span class="lineCov">          3 :     type &lt;&lt;= majorTypeShift;</span>
+<span class="lineNum">     130 </span><span class="lineCov">          9 :     _out.putByte(type | special);</span>
+<span class="lineNum">     131 </span>            :   }
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :   /// Null writer.
+<span class="lineNum">     134 </span>            :   void writeNull() {
+<span class="lineNum">     135 </span><span class="lineCov">          6 :     _out.putByte(0xf6);</span>
+<span class="lineNum">     136 </span>            :   }
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span>            :   /// Undefined writer.
+<span class="lineNum">     139 </span>            :   void writeUndefined() {
+<span class="lineNum">     140 </span><span class="lineCov">          4 :     _out.putByte(0xf7);</span>
+<span class="lineNum">     141 </span>            :   }
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span>            :   /// Indefinite item break primitive.
+<span class="lineNum">     144 </span>            :   void writeBreak() {
+<span class="lineNum">     145 </span><span class="lineCov">          2 :     writeSpecial(aiBreak);</span>
+<span class="lineNum">     146 </span><span class="lineCov">          4 :     _indefSequenceCount--;</span>
+<span class="lineNum">     147 </span>            :   }
+<span class="lineNum">     148 </span>            : 
+<span class="lineNum">     149 </span>            :   /// Indefinite item start.
+<span class="lineNum">     150 </span>            :   void startIndefinite(int majorType) {
+<span class="lineNum">     151 </span><span class="lineCov">          8 :     _out.putByte((majorType &lt;&lt; 5) + aiBreak);</span>
+<span class="lineNum">     152 </span><span class="lineCov">          4 :     _indefSequenceCount++;</span>
+<span class="lineNum">     153 </span>            :   }
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span>            :   /// Simple values, negative values, values over 255 or less
+<span class="lineNum">     156 </span>            :   /// than 0 will be encoded as an int.
+<span class="lineNum">     157 </span>            :   void writeSimple(int value) {
+<span class="lineNum">     158 </span><span class="lineCov">          3 :     if (!value.isNegative) {</span>
+<span class="lineNum">     159 </span><span class="lineCov">          6 :       if ((value &lt;= simpleLimitUpper) &amp;&amp; (value &gt;= simpleLimitLower)) {</span>
+<span class="lineNum">     160 </span><span class="lineCov">          3 :         if (value &lt;= ai23) {</span>
+<span class="lineNum">     161 </span><span class="lineCov">          3 :           writeSpecial(value);</span>
+<span class="lineNum">     162 </span>            :         } else {
+<span class="lineNum">     163 </span><span class="lineCov">          1 :           writeSpecial(ai24);</span>
+<span class="lineNum">     164 </span><span class="lineCov">          2 :           _out.putByte(value);</span>
+<span class="lineNum">     165 </span>            :         }
+<span class="lineNum">     166 </span>            :       } else {
+<span class="lineNum">     167 </span><span class="lineCov">          1 :         writeInt(value);</span>
+<span class="lineNum">     168 </span>            :       }
+<span class="lineNum">     169 </span>            :     } else {
+<span class="lineNum">     170 </span><span class="lineCov">          1 :       writeInt(value);</span>
+<span class="lineNum">     171 </span>            :     }
+<span class="lineNum">     172 </span>            :   }
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span>            :   /// Generalised float encoder, picks the smallest encoding
+<span class="lineNum">     175 </span>            :   /// it can. If you want a specific precision use the more
+<span class="lineNum">     176 </span>            :   /// specialised methods.
+<span class="lineNum">     177 </span>            :   /// Note this can lead to encodings you may not expect in corner cases,
+<span class="lineNum">     178 </span>            :   /// if you want specific sized encodings don't use this.
+<span class="lineNum">     179 </span>            :   void writeFloat(double value) {
+<span class="lineNum">     180 </span><span class="lineCov">          2 :     if (canBeAHalf(value)) {</span>
+<span class="lineNum">     181 </span><span class="lineCov">          1 :       writeHalf(value);</span>
+<span class="lineNum">     182 </span><span class="lineCov">          2 :     } else if (canBeASingle(value)) {</span>
+<span class="lineNum">     183 </span><span class="lineCov">          1 :       writeSingle(value);</span>
+<span class="lineNum">     184 </span>            :     } else {
+<span class="lineNum">     185 </span><span class="lineCov">          2 :       writeDouble(value);</span>
+<span class="lineNum">     186 </span>            :     }
+<span class="lineNum">     187 </span>            :   }
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span>            :   /// Half precision float.
+<span class="lineNum">     190 </span>            :   void writeHalf(double value) {
+<span class="lineNum">     191 </span><span class="lineCov">          3 :     writeSpecial(ai25);</span>
+<span class="lineNum">     192 </span>            :     // Special encodings
+<span class="lineNum">     193 </span><span class="lineCov">          3 :     if (value.isNaN) {</span>
+<span class="lineNum">     194 </span><span class="lineCov">          2 :       _out.putByte(0x7e);</span>
+<span class="lineNum">     195 </span><span class="lineCov">          2 :       _out.putByte(0x00);</span>
+<span class="lineNum">     196 </span>            :     } else {
+<span class="lineNum">     197 </span><span class="lineCov">          3 :       final typed.Uint8Buffer valBuff = _singleToHalf(value);</span>
+<span class="lineNum">     198 </span><span class="lineCov">          9 :       _out.putByte(valBuff[1]);</span>
+<span class="lineNum">     199 </span><span class="lineCov">          9 :       _out.putByte(valBuff[0]);</span>
+<span class="lineNum">     200 </span>            :     }
+<span class="lineNum">     201 </span>            :   }
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span>            :   /// Single precision float.
+<span class="lineNum">     204 </span>            :   void writeSingle(double value) {
+<span class="lineNum">     205 </span><span class="lineCov">          3 :     writeSpecial(ai26);</span>
+<span class="lineNum">     206 </span>            :     // Special encodings
+<span class="lineNum">     207 </span><span class="lineCov">          3 :     if (value.isNaN) {</span>
+<span class="lineNum">     208 </span><span class="lineCov">          2 :       _out.putByte(0x7f);</span>
+<span class="lineNum">     209 </span><span class="lineCov">          2 :       _out.putByte(0xc0);</span>
+<span class="lineNum">     210 </span><span class="lineCov">          2 :       _out.putByte(0x00);</span>
+<span class="lineNum">     211 </span><span class="lineCov">          2 :       _out.putByte(0x00);</span>
+<span class="lineNum">     212 </span>            :     } else {
+<span class="lineNum">     213 </span><span class="lineCov">          3 :       final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);</span>
+<span class="lineNum">     214 </span><span class="lineCov">          3 :       fBuff[0] = value;</span>
+<span class="lineNum">     215 </span><span class="lineCov">          3 :       final ByteBuffer bBuff = fBuff.buffer;</span>
+<span class="lineNum">     216 </span><span class="lineCov">          3 :       final Uint8List uList = bBuff.asUint8List();</span>
+<span class="lineNum">     217 </span><span class="lineCov">          9 :       _out.putByte(uList[3]);</span>
+<span class="lineNum">     218 </span><span class="lineCov">          9 :       _out.putByte(uList[2]);</span>
+<span class="lineNum">     219 </span><span class="lineCov">          9 :       _out.putByte(uList[1]);</span>
+<span class="lineNum">     220 </span><span class="lineCov">          9 :       _out.putByte(uList[0]);</span>
+<span class="lineNum">     221 </span>            :     }
+<span class="lineNum">     222 </span>            :   }
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span>            :   /// Double precision float.
+<span class="lineNum">     225 </span>            :   void writeDouble(double value) {
+<span class="lineNum">     226 </span><span class="lineCov">          3 :     writeSpecial(ai27);</span>
+<span class="lineNum">     227 </span>            :     // Special encodings
+<span class="lineNum">     228 </span><span class="lineCov">          3 :     if (value.isNaN) {</span>
+<span class="lineNum">     229 </span><span class="lineCov">          2 :       _out.putByte(0x7f);</span>
+<span class="lineNum">     230 </span><span class="lineCov">          2 :       _out.putByte(0xf8);</span>
+<span class="lineNum">     231 </span><span class="lineCov">          2 :       _out.putByte(0x00);</span>
+<span class="lineNum">     232 </span><span class="lineCov">          2 :       _out.putByte(0x00);</span>
+<span class="lineNum">     233 </span><span class="lineCov">          2 :       _out.putByte(0x00);</span>
+<span class="lineNum">     234 </span><span class="lineCov">          2 :       _out.putByte(0x00);</span>
+<span class="lineNum">     235 </span><span class="lineCov">          2 :       _out.putByte(0x00);</span>
+<span class="lineNum">     236 </span><span class="lineCov">          2 :       _out.putByte(0x00);</span>
+<span class="lineNum">     237 </span>            :     } else {
+<span class="lineNum">     238 </span><span class="lineCov">          3 :       final typed.Float64Buffer fBuff = new typed.Float64Buffer(1);</span>
+<span class="lineNum">     239 </span><span class="lineCov">          3 :       fBuff[0] = value;</span>
+<span class="lineNum">     240 </span><span class="lineCov">          3 :       final ByteBuffer bBuff = fBuff.buffer;</span>
+<span class="lineNum">     241 </span><span class="lineCov">          3 :       final Uint8List uList = bBuff.asUint8List();</span>
+<span class="lineNum">     242 </span><span class="lineCov">          9 :       _out.putByte(uList[7]);</span>
+<span class="lineNum">     243 </span><span class="lineCov">          9 :       _out.putByte(uList[6]);</span>
+<span class="lineNum">     244 </span><span class="lineCov">          9 :       _out.putByte(uList[5]);</span>
+<span class="lineNum">     245 </span><span class="lineCov">          9 :       _out.putByte(uList[4]);</span>
+<span class="lineNum">     246 </span><span class="lineCov">          9 :       _out.putByte(uList[3]);</span>
+<span class="lineNum">     247 </span><span class="lineCov">          9 :       _out.putByte(uList[2]);</span>
+<span class="lineNum">     248 </span><span class="lineCov">          9 :       _out.putByte(uList[1]);</span>
+<span class="lineNum">     249 </span><span class="lineCov">          9 :       _out.putByte(uList[0]);</span>
+<span class="lineNum">     250 </span>            :     }
+<span class="lineNum">     251 </span>            :   }
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span>            :   /// Tag based Date/Time encoding.
+<span class="lineNum">     254 </span>            :   /// Standard format as described in RFC339 et al.
+<span class="lineNum">     255 </span>            :   void writeDateTime(String dt) {
+<span class="lineNum">     256 </span><span class="lineCov">          3 :     writeTag(0);</span>
+<span class="lineNum">     257 </span><span class="lineCov">          3 :     writeString(dt);</span>
+<span class="lineNum">     258 </span>            :   }
+<span class="lineNum">     259 </span>            : 
+<span class="lineNum">     260 </span>            :   /// Tag based epoch encoding. Format can be a positive
+<span class="lineNum">     261 </span>            :   /// or negative integer or a floating point number for
+<span class="lineNum">     262 </span>            :   /// which you can chose the encoding.
+<span class="lineNum">     263 </span>            :   void writeEpoch(num epoch, [encodeFloatAs floatType = encodeFloatAs.single]) {
+<span class="lineNum">     264 </span><span class="lineCov">          3 :     writeTag(1);</span>
+<span class="lineNum">     265 </span><span class="lineCov">          6 :     if (epoch.runtimeType == int) {</span>
+<span class="lineNum">     266 </span><span class="lineCov">          3 :       writeInt(epoch);</span>
+<span class="lineNum">     267 </span>            :     } else {
+<span class="lineNum">     268 </span><span class="lineCov">          1 :       if (floatType == encodeFloatAs.half) {</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         writeHalf(epoch);</span>
+<span class="lineNum">     270 </span><span class="lineCov">          1 :       } else if (floatType == encodeFloatAs.single) {</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         writeSingle(epoch);</span>
+<span class="lineNum">     272 </span>            :       } else {
+<span class="lineNum">     273 </span><span class="lineCov">          1 :         writeDouble(epoch);</span>
+<span class="lineNum">     274 </span>            :       }
+<span class="lineNum">     275 </span>            :     }
+<span class="lineNum">     276 </span>            :   }
+<span class="lineNum">     277 </span>            : 
+<span class="lineNum">     278 </span>            :   /// Tag based Base64 byte string encoding. The encoder does not
+<span class="lineNum">     279 </span>            :   /// itself perform the base encoding as stated in RFC7049,
+<span class="lineNum">     280 </span>            :   /// it just indicates to the decoder that the following byte
+<span class="lineNum">     281 </span>            :   /// string maybe base encoded.
+<span class="lineNum">     282 </span>            :   void writeBase64(typed.Uint8Buffer data) {
+<span class="lineNum">     283 </span><span class="lineCov">          3 :     writeTag(22);</span>
+<span class="lineNum">     284 </span><span class="lineCov">          3 :     writeBytes(data);</span>
+<span class="lineNum">     285 </span>            :   }
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span>            :   /// Cbor data item encoder, refer to tyhe RFC for details.
+<span class="lineNum">     288 </span>            :   void writeCborDi(typed.Uint8Buffer data) {
+<span class="lineNum">     289 </span><span class="lineCov">          3 :     writeTag(24);</span>
+<span class="lineNum">     290 </span><span class="lineCov">          3 :     writeBytes(data);</span>
+<span class="lineNum">     291 </span>            :   }
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span>            :   /// Tag based Base64 URL byte string encoding. The encoder does not
+<span class="lineNum">     294 </span>            :   /// itself perform the base encoding as stated in RFC7049,
+<span class="lineNum">     295 </span>            :   /// it just indicates to the decoder that the following byte
+<span class="lineNum">     296 </span>            :   /// string maybe base encoded.
+<span class="lineNum">     297 </span>            :   void writeBase64URL(typed.Uint8Buffer data) {
+<span class="lineNum">     298 </span><span class="lineCov">          2 :     writeTag(21);</span>
+<span class="lineNum">     299 </span><span class="lineCov">          2 :     writeBytes(data);</span>
+<span class="lineNum">     300 </span>            :   }
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span>            :   /// Tag based Base16 byte string encoding. The encoder does not
+<span class="lineNum">     303 </span>            :   /// itself perform the base encoding as stated in RFC7049,
+<span class="lineNum">     304 </span>            :   /// it just indicates to the decoder that the following byte
+<span class="lineNum">     305 </span>            :   /// string maybe base encoded.
+<span class="lineNum">     306 </span>            :   void writeBase16(typed.Uint8Buffer data) {
+<span class="lineNum">     307 </span><span class="lineCov">          3 :     writeTag(23);</span>
+<span class="lineNum">     308 </span><span class="lineCov">          3 :     writeBytes(data);</span>
+<span class="lineNum">     309 </span>            :   }
+<span class="lineNum">     310 </span>            : 
+<span class="lineNum">     311 </span>            :   /// Tag based URI writer
+<span class="lineNum">     312 </span>            :   void writeURI(String uri) {
+<span class="lineNum">     313 </span><span class="lineCov">          3 :     writeTag(32);</span>
+<span class="lineNum">     314 </span><span class="lineCov">          3 :     writeString(uri);</span>
+<span class="lineNum">     315 </span>            :   }
+<span class="lineNum">     316 </span>            : 
+<span class="lineNum">     317 </span>            :   /// Helper functions
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span>            :   /// Lookup table based single to half precision conversion.
+<span class="lineNum">     320 </span>            :   /// Rounding is indeterminate.
+<span class="lineNum">     321 </span>            :   typed.Uint8Buffer _singleToHalf(double value) {
+<span class="lineNum">     322 </span><span class="lineCov">          3 :     final int hBits = getHalfPrecisionInt(value);</span>
+<span class="lineNum">     323 </span><span class="lineCov">          3 :     final typed.Uint16Buffer hBuff = new typed.Uint16Buffer(1);</span>
+<span class="lineNum">     324 </span><span class="lineCov">          3 :     hBuff[0] = hBits;</span>
+<span class="lineNum">     325 </span><span class="lineCov">          3 :     final ByteBuffer lBuff = hBuff.buffer;</span>
+<span class="lineNum">     326 </span><span class="lineCov">          3 :     final Uint8List hList = lBuff.asUint8List();</span>
+<span class="lineNum">     327 </span><span class="lineCov">          3 :     final typed.Uint8Buffer valBuff = new typed.Uint8Buffer();</span>
+<span class="lineNum">     328 </span><span class="lineCov">          3 :     valBuff.addAll(hList);</span>
+<span class="lineNum">     329 </span>            :     return valBuff;
+<span class="lineNum">     330 </span>            :   }
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            :   /// Encoding helper for type encoding.
+<span class="lineNum">     333 </span>            :   void _writeTypeValue(int majorType, int value) {
+<span class="lineNum">     334 </span>            :     int type = majorType;
+<span class="lineNum">     335 </span><span class="lineCov">          3 :     type &lt;&lt;= majorTypeShift;</span>
+<span class="lineNum">     336 </span><span class="lineCov">          3 :     if (value &lt; ai24) {</span>
+<span class="lineNum">     337 </span>            :       // Value
+<span class="lineNum">     338 </span><span class="lineCov">          9 :       _out.putByte((type | value));</span>
+<span class="lineNum">     339 </span><span class="lineCov">          6 :     } else if (value &lt; two8) {</span>
+<span class="lineNum">     340 </span>            :       // Uint8
+<span class="lineNum">     341 </span><span class="lineCov">          9 :       _out.putByte((type | ai24));</span>
+<span class="lineNum">     342 </span><span class="lineCov">          6 :       _out.putByte(value);</span>
+<span class="lineNum">     343 </span><span class="lineCov">          6 :     } else if (value &lt; two16) {</span>
+<span class="lineNum">     344 </span>            :       // Uint16
+<span class="lineNum">     345 </span><span class="lineCov">          9 :       _out.putByte((type | ai25));</span>
+<span class="lineNum">     346 </span><span class="lineCov">          3 :       final typed.Uint16Buffer buff = new typed.Uint16Buffer(1);</span>
+<span class="lineNum">     347 </span><span class="lineCov">          3 :       buff[0] = value;</span>
+<span class="lineNum">     348 </span><span class="lineCov">          6 :       final Uint8List ulist = new Uint8List.view(buff.buffer);</span>
+<span class="lineNum">     349 </span><span class="lineCov">          3 :       final typed.Uint8Buffer data = new typed.Uint8Buffer();</span>
+<span class="lineNum">     350 </span><span class="lineCov">          3 :       data.addAll(ulist</span>
+<span class="lineNum">     351 </span><span class="lineCov">          3 :           .toList()</span>
+<span class="lineNum">     352 </span><span class="lineCov">          3 :           .reversed);</span>
+<span class="lineNum">     353 </span><span class="lineCov">          6 :       _out.putBytes(data);</span>
+<span class="lineNum">     354 </span><span class="lineCov">          6 :     } else if (value &lt; two32) {</span>
+<span class="lineNum">     355 </span>            :       // Uint32
+<span class="lineNum">     356 </span><span class="lineCov">          9 :       _out.putByte((type | ai26));</span>
+<span class="lineNum">     357 </span><span class="lineCov">          3 :       final typed.Uint32Buffer buff = new typed.Uint32Buffer(1);</span>
+<span class="lineNum">     358 </span><span class="lineCov">          3 :       buff[0] = value;</span>
+<span class="lineNum">     359 </span><span class="lineCov">          6 :       final Uint8List ulist = new Uint8List.view(buff.buffer);</span>
+<span class="lineNum">     360 </span><span class="lineCov">          3 :       final typed.Uint8Buffer data = new typed.Uint8Buffer();</span>
+<span class="lineNum">     361 </span><span class="lineCov">          3 :       data.addAll(ulist</span>
+<span class="lineNum">     362 </span><span class="lineCov">          3 :           .toList()</span>
+<span class="lineNum">     363 </span><span class="lineCov">          3 :           .reversed);</span>
+<span class="lineNum">     364 </span><span class="lineCov">          6 :       _out.putBytes(data);</span>
+<span class="lineNum">     365 </span><span class="lineCov">          2 :     } else if (value &lt; two64) {</span>
+<span class="lineNum">     366 </span>            :       // Uint64
+<span class="lineNum">     367 </span><span class="lineCov">          3 :       _out.putByte((type | ai27));</span>
+<span class="lineNum">     368 </span><span class="lineCov">          1 :       final typed.Uint64Buffer buff = new typed.Uint64Buffer(1);</span>
+<span class="lineNum">     369 </span><span class="lineCov">          1 :       buff[0] = value;</span>
+<span class="lineNum">     370 </span><span class="lineCov">          2 :       final Uint8List ulist = new Uint8List.view(buff.buffer);</span>
+<span class="lineNum">     371 </span><span class="lineCov">          1 :       final typed.Uint8Buffer data = new typed.Uint8Buffer();</span>
+<span class="lineNum">     372 </span><span class="lineCov">          1 :       data.addAll(ulist</span>
+<span class="lineNum">     373 </span><span class="lineCov">          1 :           .toList()</span>
+<span class="lineNum">     374 </span><span class="lineCov">          1 :           .reversed);</span>
+<span class="lineNum">     375 </span><span class="lineCov">          2 :       _out.putBytes(data);</span>
+<span class="lineNum">     376 </span>            :     } else {
+<span class="lineNum">     377 </span>            :       // Bignum - not supported, use tags
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :       print(&quot;Bignums not supported&quot;);</span>
+<span class="lineNum">     379 </span>            :     }
+<span class="lineNum">     380 </span>            :   }
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span>            :   /// String to byte string helper.
+<span class="lineNum">     383 </span>            :   typed.Uint8Buffer strToByteString(String str) {
+<span class="lineNum">     384 </span><span class="lineCov">          3 :     final typed.Uint8Buffer buff = new typed.Uint8Buffer();</span>
+<span class="lineNum">     385 </span><span class="lineCov">          3 :     final convertor.Utf8Encoder utf = new convertor.Utf8Encoder();</span>
+<span class="lineNum">     386 </span><span class="lineCov">          3 :     final List&lt;int&gt; codes = utf.convert(str);</span>
+<span class="lineNum">     387 </span><span class="lineCov">          3 :     buff.addAll(codes);</span>
+<span class="lineNum">     388 </span>            :     return buff;
+<span class="lineNum">     389 </span>            :   }
+<span class="lineNum">     390 </span>            : 
+<span class="lineNum">     391 </span>            :   /// Array write implementation method.
+<span class="lineNum">     392 </span>            :   /// If the array cannot be fully encoded no encoding occurs,
+<span class="lineNum">     393 </span>            :   /// ie false is returned.
+<span class="lineNum">     394 </span>            :   bool writeArrayImpl(List&lt;dynamic&gt; value,
+<span class="lineNum">     395 </span>            :       [bool indefinite = false, int length = null]) {
+<span class="lineNum">     396 </span>            :     // Check for empty
+<span class="lineNum">     397 </span><span class="lineCov">          3 :     if (value.isEmpty) {</span>
+<span class="lineNum">     398 </span>            :       if (!indefinite) {
+<span class="lineNum">     399 </span><span class="lineCov">          2 :         _writeTypeValue(majorTypeArray, 0);</span>
+<span class="lineNum">     400 </span>            :       } else {
+<span class="lineNum">     401 </span><span class="lineCov">          1 :         startIndefinite(majorTypeArray);</span>
+<span class="lineNum">     402 </span>            :       }
+<span class="lineNum">     403 </span>            :       return true;
+<span class="lineNum">     404 </span>            :     }
+<span class="lineNum">     405 </span>            : 
+<span class="lineNum">     406 </span>            :     // Build the encoded array.
+<span class="lineNum">     407 </span>            :     if (!indefinite) {
+<span class="lineNum">     408 </span>            :       if (length != null) {
+<span class="lineNum">     409 </span><span class="lineCov">          1 :         _writeTypeValue(majorTypeArray, length);</span>
+<span class="lineNum">     410 </span>            :       } else {
+<span class="lineNum">     411 </span><span class="lineCov">          6 :         _writeTypeValue(majorTypeArray, value.length);</span>
+<span class="lineNum">     412 </span>            :       }
+<span class="lineNum">     413 </span>            :     } else {
+<span class="lineNum">     414 </span><span class="lineCov">          2 :       startIndefinite(majorTypeArray);</span>
+<span class="lineNum">     415 </span>            :     }
+<span class="lineNum">     416 </span>            : 
+<span class="lineNum">     417 </span>            :     bool ok = true;
+<span class="lineNum">     418 </span><span class="lineCov">          6 :     for (dynamic element in value) {</span>
+<span class="lineNum">     419 </span><span class="lineCov">          6 :       String valType = element.runtimeType.toString();</span>
+<span class="lineNum">     420 </span><span class="lineCov">          3 :       if (valType.contains(&quot;List&quot;)) {</span>
+<span class="lineNum">     421 </span>            :         valType = &quot;List&quot;;
+<span class="lineNum">     422 </span>            :       }
+<span class="lineNum">     423 </span><span class="lineCov">          3 :       if (valType.contains(&quot;Map&quot;)) {</span>
+<span class="lineNum">     424 </span>            :         valType = &quot;Map&quot;;
+<span class="lineNum">     425 </span>            :       }
+<span class="lineNum">     426 </span>            :       switch (valType) {
+<span class="lineNum">     427 </span><span class="lineCov">          3 :         case &quot;int&quot;:</span>
+<span class="lineNum">     428 </span><span class="lineCov">          3 :           writeInt(element);</span>
+<span class="lineNum">     429 </span>            :           break;
+<span class="lineNum">     430 </span><span class="lineCov">          1 :         case &quot;String&quot;:</span>
+<span class="lineNum">     431 </span><span class="lineCov">          1 :           writeString(element);</span>
+<span class="lineNum">     432 </span>            :           break;
+<span class="lineNum">     433 </span><span class="lineCov">          1 :         case &quot;double&quot;:</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :           writeFloat(element);</span>
+<span class="lineNum">     435 </span>            :           break;
+<span class="lineNum">     436 </span><span class="lineCov">          1 :         case &quot;List&quot;:</span>
+<span class="lineNum">     437 </span>            :           if (!indefinite) {
+<span class="lineNum">     438 </span><span class="lineCov">          1 :             final bool res = writeArrayImpl(element, indefinite);</span>
+<span class="lineNum">     439 </span>            :             if (!res) {
+<span class="lineNum">     440 </span>            :               // Fail the whole encoding
+<span class="lineNum">     441 </span>            :               ok = false;
+<span class="lineNum">     442 </span>            :             }
+<span class="lineNum">     443 </span>            :           } else {
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :             for (int a in element) {</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :               _out.putByte(a);</span>
+<span class="lineNum">     446 </span>            :             }
+<span class="lineNum">     447 </span>            :           }
+<span class="lineNum">     448 </span>            :           break;
+<span class="lineNum">     449 </span><span class="lineCov">          1 :         case &quot;Map&quot;:</span>
+<span class="lineNum">     450 </span>            :           if (!indefinite) {
+<span class="lineNum">     451 </span><span class="lineCov">          1 :             final bool res = writeMapImpl(element, indefinite);</span>
+<span class="lineNum">     452 </span>            :             if (!res) {
+<span class="lineNum">     453 </span>            :               // Fail the whole encoding
+<span class="lineNum">     454 </span>            :               ok = false;
+<span class="lineNum">     455 </span>            :             }
+<span class="lineNum">     456 </span>            :           } else {
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :             for (int a in element) {</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :               _out.putByte(a);</span>
+<span class="lineNum">     459 </span>            :             }
+<span class="lineNum">     460 </span>            :           }
+<span class="lineNum">     461 </span>            :           break;
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :         case &quot;bool&quot;:</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :           writeBool(element);</span>
+<span class="lineNum">     464 </span>            :           break;
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :         case &quot;Null&quot;:</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :           writeNull();</span>
+<span class="lineNum">     467 </span>            :           break;
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :         case &quot;Uint8Buffer&quot;:</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :           writeRawBuffer(element);</span>
+<span class="lineNum">     470 </span>            :           break;
+<span class="lineNum">     471 </span>            :         default:
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :           print(&quot;writeArrayImpl::RT is ${element.runtimeType.toString()}&quot;);</span>
+<span class="lineNum">     473 </span>            :           ok = false;
+<span class="lineNum">     474 </span>            :       }
+<span class="lineNum">     475 </span>            :     }
+<span class="lineNum">     476 </span>            :     return ok;
+<span class="lineNum">     477 </span>            :   }
+<span class="lineNum">     478 </span>            : 
+<span class="lineNum">     479 </span>            :   /// Map write implementation method.
+<span class="lineNum">     480 </span>            :   /// If the map cannot be fully encoded no encoding occurs,
+<span class="lineNum">     481 </span>            :   /// ie false is returned.
+<span class="lineNum">     482 </span>            :   bool writeMapImpl(Map&lt;dynamic, dynamic&gt; value,
+<span class="lineNum">     483 </span>            :       [bool indefinite = false, int length = null]) {
+<span class="lineNum">     484 </span>            :     // Check for empty
+<span class="lineNum">     485 </span><span class="lineCov">          3 :     if (value.isEmpty) {</span>
+<span class="lineNum">     486 </span>            :       if (!indefinite) {
+<span class="lineNum">     487 </span><span class="lineCov">          1 :         _writeTypeValue(majorTypeMap, 0);</span>
+<span class="lineNum">     488 </span>            :       }
+<span class="lineNum">     489 </span>            :       return true;
+<span class="lineNum">     490 </span>            :     }
+<span class="lineNum">     491 </span>            : 
+<span class="lineNum">     492 </span>            :     // Check the keys are integers or strings.
+<span class="lineNum">     493 </span><span class="lineCov">          3 :     final dynamic keys = value.keys;</span>
+<span class="lineNum">     494 </span>            :     bool keysValid = true;
+<span class="lineNum">     495 </span><span class="lineCov">          6 :     for (dynamic element in keys) {</span>
+<span class="lineNum">     496 </span><span class="lineCov">          9 :       if (!(element.runtimeType.toString() == &quot;int&quot;) &amp;&amp;</span>
+<span class="lineNum">     497 </span><span class="lineCov">          9 :           !(element.runtimeType.toString() == &quot;String&quot;)) {</span>
+<span class="lineNum">     498 </span>            :         keysValid = false;
+<span class="lineNum">     499 </span>            :         break;
+<span class="lineNum">     500 </span>            :       }
+<span class="lineNum">     501 </span>            :     }
+<span class="lineNum">     502 </span>            :     if (!keysValid) {
+<span class="lineNum">     503 </span>            :       return false;
+<span class="lineNum">     504 </span>            :     }
+<span class="lineNum">     505 </span>            :     // Build the encoded map.
+<span class="lineNum">     506 </span>            :     if (!indefinite) {
+<span class="lineNum">     507 </span><span class="lineCov">          6 :       if (_indefSequenceCount == 0) {</span>
+<span class="lineNum">     508 </span>            :         if (length != null) {
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :           _writeTypeValue(majorTypeMap, length);</span>
+<span class="lineNum">     510 </span>            :         } else {
+<span class="lineNum">     511 </span><span class="lineCov">          6 :           _writeTypeValue(majorTypeMap, value.length);</span>
+<span class="lineNum">     512 </span>            :         }
+<span class="lineNum">     513 </span>            :       }
+<span class="lineNum">     514 </span>            :     } else {
+<span class="lineNum">     515 </span><span class="lineCov">          2 :       startIndefinite(majorTypeMap);</span>
+<span class="lineNum">     516 </span>            :     }
+<span class="lineNum">     517 </span>            : 
+<span class="lineNum">     518 </span>            :     bool ok = true;
+<span class="lineNum">     519 </span><span class="lineCov">          3 :     value.forEach((dynamic key, dynamic val) {</span>
+<span class="lineNum">     520 </span>            :       // Encode the key, can now only be ints or strings.
+<span class="lineNum">     521 </span><span class="lineCov">          9 :       if (key.runtimeType.toString() == &quot;int&quot;) {</span>
+<span class="lineNum">     522 </span><span class="lineCov">          2 :         writeInt(key);</span>
+<span class="lineNum">     523 </span>            :       } else {
+<span class="lineNum">     524 </span><span class="lineCov">          3 :         writeString(key);</span>
+<span class="lineNum">     525 </span>            :       }
+<span class="lineNum">     526 </span>            :       // Encode the value
+<span class="lineNum">     527 </span><span class="lineCov">          6 :       String valType = val.runtimeType.toString();</span>
+<span class="lineNum">     528 </span><span class="lineCov">          3 :       if (valType.contains(&quot;List&quot;)) {</span>
+<span class="lineNum">     529 </span>            :         valType = &quot;List&quot;;
+<span class="lineNum">     530 </span>            :       }
+<span class="lineNum">     531 </span><span class="lineCov">          3 :       if (valType.contains(&quot;Map&quot;)) {</span>
+<span class="lineNum">     532 </span>            :         valType = &quot;Map&quot;;
+<span class="lineNum">     533 </span>            :       }
+<span class="lineNum">     534 </span>            :       switch (valType) {
+<span class="lineNum">     535 </span><span class="lineCov">          3 :         case &quot;int&quot;:</span>
+<span class="lineNum">     536 </span><span class="lineCov">          2 :           writeInt(val);</span>
+<span class="lineNum">     537 </span>            :           break;
+<span class="lineNum">     538 </span><span class="lineCov">          3 :         case &quot;String&quot;:</span>
+<span class="lineNum">     539 </span><span class="lineCov">          3 :           writeString(val);</span>
+<span class="lineNum">     540 </span>            :           break;
+<span class="lineNum">     541 </span><span class="lineCov">          3 :         case &quot;double&quot;:</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :           writeFloat(val);</span>
+<span class="lineNum">     543 </span>            :           break;
+<span class="lineNum">     544 </span><span class="lineCov">          3 :         case &quot;List&quot;:</span>
+<span class="lineNum">     545 </span>            :           if (!indefinite) {
+<span class="lineNum">     546 </span><span class="lineCov">          3 :             final bool res = writeArrayImpl(val, indefinite);</span>
+<span class="lineNum">     547 </span>            :             if (!res) {
+<span class="lineNum">     548 </span>            :               // Fail the whole encoding
+<span class="lineNum">     549 </span>            :               ok = false;
+<span class="lineNum">     550 </span>            :             }
+<span class="lineNum">     551 </span>            :           } else {
+<span class="lineNum">     552 </span><span class="lineCov">          2 :             for (int a in val) {</span>
+<span class="lineNum">     553 </span><span class="lineCov">          2 :               _out.putByte(a);</span>
+<span class="lineNum">     554 </span>            :             }
+<span class="lineNum">     555 </span>            :           }
+<span class="lineNum">     556 </span>            :           break;
+<span class="lineNum">     557 </span><span class="lineCov">          3 :         case &quot;Map&quot;:</span>
+<span class="lineNum">     558 </span>            :           if (!indefinite) {
+<span class="lineNum">     559 </span><span class="lineCov">          1 :             final bool res = writeMapImpl(val, indefinite);</span>
+<span class="lineNum">     560 </span>            :             if (!res) {
+<span class="lineNum">     561 </span>            :               // Fail the whole encoding
+<span class="lineNum">     562 </span>            :               ok = false;
+<span class="lineNum">     563 </span>            :             }
+<span class="lineNum">     564 </span>            :           } else {
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :             for (int a in val) {</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :               _out.putByte(a);</span>
+<span class="lineNum">     567 </span>            :             }
+<span class="lineNum">     568 </span>            :           }
+<span class="lineNum">     569 </span>            :           break;
+<span class="lineNum">     570 </span><span class="lineCov">          3 :         case &quot;bool&quot;:</span>
+<span class="lineNum">     571 </span><span class="lineCov">          3 :           writeBool(val);</span>
+<span class="lineNum">     572 </span>            :           break;
+<span class="lineNum">     573 </span><span class="lineCov">          1 :         case &quot;Null&quot;:</span>
+<span class="lineNum">     574 </span><span class="lineCov">          1 :           writeNull();</span>
+<span class="lineNum">     575 </span>            :           break;
+<span class="lineNum">     576 </span><span class="lineCov">          1 :         case &quot;Uint8Buffer&quot;:</span>
+<span class="lineNum">     577 </span><span class="lineCov">          1 :           writeRawBuffer(val);</span>
+<span class="lineNum">     578 </span>            :           break;
+<span class="lineNum">     579 </span>            :         default:
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :           print(&quot;writeMapImpl::RT is ${val.runtimeType.toString()}&quot;);</span>
+<span class="lineNum">     581 </span>            :           ok = false;
+<span class="lineNum">     582 </span>            :       }
+<span class="lineNum">     583 </span>            :     });
+<span class="lineNum">     584 </span>            :     return ok;
+<span class="lineNum">     585 </span>            :   }
+<span class="lineNum">     586 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

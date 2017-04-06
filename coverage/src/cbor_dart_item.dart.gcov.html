@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.lcov - src/cbor_dart_item.dart</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - cbor_dart_item.dart<span style="font-size: 80%;"> (source / <a href="cbor_dart_item.dart.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.lcov</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-04-06</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  * Package : Cbor
+<span class="lineNum">       3 </span>            :  * Author : S. Hamblett &lt;steve.hamblett@linux.com&gt;
+<span class="lineNum">       4 </span>            :  * Date   : 12/12/2016
+<span class="lineNum">       5 </span>            :  * Copyright :  S.Hamblett
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : part of cbor;
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : /// The Dart types an item can have.
+<span class="lineNum">      11 </span>            : enum dartTypes {
+<span class="lineNum">      12 </span>            :   dtInt,
+<span class="lineNum">      13 </span>            :   dtDouble,
+<span class="lineNum">      14 </span>            :   dtMap,
+<span class="lineNum">      15 </span>            :   dtList,
+<span class="lineNum">      16 </span>            :   dtBuffer,
+<span class="lineNum">      17 </span>            :   dtNull,
+<span class="lineNum">      18 </span>            :   dtString,
+<span class="lineNum">      19 </span>            :   dtBool,
+<span class="lineNum">      20 </span>            :   dtUndefined,
+<span class="lineNum">      21 </span>            :   dtNone
+<span class="lineNum">      22 </span>            : }
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : /// If the type is dtBuffer or dtString a hint at what the
+<span class="lineNum">      25 </span>            : /// data may contain.
+<span class="lineNum">      26 </span>            : enum dataHints {
+<span class="lineNum">      27 </span>            :   base64Url,
+<span class="lineNum">      28 </span>            :   base64,
+<span class="lineNum">      29 </span>            :   base16,
+<span class="lineNum">      30 </span>            :   encodedCBOR,
+<span class="lineNum">      31 </span>            :   uri,
+<span class="lineNum">      32 </span>            :   unassigned,
+<span class="lineNum">      33 </span>            :   selfDescCBOR,
+<span class="lineNum">      34 </span>            :   mime,
+<span class="lineNum">      35 </span>            :   regex,
+<span class="lineNum">      36 </span>            :   bigfloat,
+<span class="lineNum">      37 </span>            :   decFraction,
+<span class="lineNum">      38 </span>            :   error,
+<span class="lineNum">      39 </span>            :   none,
+<span class="lineNum">      40 </span>            :   dateTimeString,
+<span class="lineNum">      41 </span>            :   dateTimeEpoch
+<span class="lineNum">      42 </span>            : }
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : /// The CBOR Dart item class.
+<span class="lineNum">      45 </span>            : /// Objects of this class are produced by the standard
+<span class="lineNum">      46 </span>            : /// stack listener class by the decode process.
+<span class="lineNum">      47 </span>            : class DartItem {
+<span class="lineNum">      48 </span>            :   /// The item data.
+<span class="lineNum">      49 </span>            :   dynamic data = null;
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            :   /// Target size is what we expect the size to
+<span class="lineNum">      52 </span>            :   /// be.
+<span class="lineNum">      53 </span>            :   int targetSize = 0;
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            :   /// The item type, one of the major types.
+<span class="lineNum">      56 </span>            :   dartTypes type = dartTypes.dtNone;
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :   /// Is the type complete, i,e is its actual size
+<span class="lineNum">      59 </span>            :   /// equql to its target size.
+<span class="lineNum">      60 </span>            :   bool complete = false;
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            :   /// Possible type usage hint for buffer or string types.
+<span class="lineNum">      63 </span>            :   /// See RFC 7049 for more details. Also used to indicate
+<span class="lineNum">      64 </span>            :   /// an error condition in which case the data field will
+<span class="lineNum">      65 </span>            :   /// contain a string representation of the error.
+<span class="lineNum">      66 </span>            :   dataHints hint = dataHints.none;
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            :   /// Actual size
+<span class="lineNum">      69 </span>            :   int size() {
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     return data.length;</span>
+<span class="lineNum">      71 </span>            :   }
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            :   /// Awaiting a map key for Map types.
+<span class="lineNum">      74 </span>            :   bool awaitingMapKey = false;
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span>            :   /// Awaiting a map value for Map types.
+<span class="lineNum">      77 </span>            :   bool awaitingMapValue = false;
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            :   /// The last key value inserted into a map
+<span class="lineNum">      80 </span>            :   dynamic lastMapKey;
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            :   /// Ignore indicator. Used to indicate the item
+<span class="lineNum">      83 </span>            :   /// should be ignored during stack traversal, the
+<span class="lineNum">      84 </span>            :   /// item has been used as a partial build area for
+<span class="lineNum">      85 </span>            :   /// another stack item for instance.
+<span class="lineNum">      86 </span>            :   bool ignore = false;
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span>            :   /// Helper functions
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span>            :   bool isIncompleteList() {
+<span class="lineNum">      91 </span><span class="lineCov">          9 :     if ((type == dartTypes.dtList) &amp;&amp; !complete) {</span>
+<span class="lineNum">      92 </span>            :       return true;
+<span class="lineNum">      93 </span>            :     }
+<span class="lineNum">      94 </span>            :     return false;
+<span class="lineNum">      95 </span>            :   }
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span>            :   bool isIncompleteMap() {
+<span class="lineNum">      98 </span><span class="lineCov">          8 :     if ((type == dartTypes.dtMap) &amp;&amp; !complete) {</span>
+<span class="lineNum">      99 </span>            :       return true;
+<span class="lineNum">     100 </span>            :     }
+<span class="lineNum">     101 </span>            :     return false;
+<span class="lineNum">     102 </span>            :   }
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            :   bool awaitingMapEntry() {
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     if (awaitingMapValue || awaitingMapKey) {</span>
+<span class="lineNum">     106 </span>            :       return true;
+<span class="lineNum">     107 </span>            :     }
+<span class="lineNum">     108 </span>            :     return false;
+<span class="lineNum">     109 </span>            :   }
+<span class="lineNum">     110 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
