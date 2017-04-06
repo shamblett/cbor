@@ -251,7 +251,7 @@ void main() {
       final String jsonString = inst.decodedToJSON();
       print(jsonString);
       expect(jsonString,
-          '[{"p16":16,"uni":"通訊連接埠 (COM1)","n1":-1,"ascii":"hello","nil":null,"empty_arr":[],"p65535":65535,"bin":[49,50,85],"n2G":-2147483648,"p1":1,"n65535":-65535,"n16":-16,"zero":0,"arr":[1,2,3],"obj":{"foo":"bar"},"bfalse":false,"p255":255,"p2G":2147483648,"n255":-255,"btrue":true}]');
+          '{"p16":16,"uni":"通訊連接埠 (COM1)","n1":-1,"ascii":"hello","nil":null,"empty_arr":[],"p65535":65535,"bin":[49,50,85],"n2G":-2147483648,"p1":1,"n65535":-65535,"n16":-16,"zero":0,"arr":[1,2,3],"obj":{"foo":"bar"},"bfalse":false,"p255":255,"p2G":2147483648,"n255":-255,"btrue":true}');
     });
 
     test('Hints -> ', () {
@@ -291,7 +291,7 @@ void main() {
       final String jsonString = inst.decodedToJSON();
       print(jsonString);
       expect(jsonString,
-          '["2013-03-21T20:04:00Z",1234567,[1,2,3,89],[1,2,3,90],[1,2,3,91],[1,2,3,92],[1,2,3,93],"example.com"]');
+          '"2013-03-21T20:04:00Z",1234567,[1,2,3,89],[1,2,3,90],[1,2,3,91],[1,2,3,92],[1,2,3,93],"example.com"');
     });
   });
 }

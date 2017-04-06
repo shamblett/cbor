@@ -99,7 +99,9 @@ class Cbor {
 
   /// To JSON
   String decodedToJSON() {
-    return json.serialize(getDecodedData());
+    String ret = json.serialize(getDecodedData());
+    // Remove the [] from the JSOM string
+    return ret.substring(1, ret.length - 1);
   }
 
   /// Encoder
