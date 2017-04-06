@@ -293,5 +293,40 @@ void main() {
       expect(jsonString,
           '"2013-03-21T20:04:00Z",1234567,[1,2,3,89],[1,2,3,90],[1,2,3,91],[1,2,3,92],[1,2,3,93],"example.com"');
     });
+
+    test('JSON -> ', () {
+      // Encoding
+      inst.clearEncoded();
+      final cbor.Encoder encoder = inst.encoder;
+      encoder.writeArray([9, 10, 11]);
+      encoder.writeInt(123);
+      encoder.writeInt(-457);
+      encoder.writeString("barrr");
+      encoder.writeInt(321);
+      encoder.writeInt(322);
+      encoder.writeString("foo");
+      encoder.writeBool(true);
+      encoder.writeBool(false);
+      encoder.writeNull();
+      encoder.writeUndefined();
+      encoder.writeMap({
+        "a": [1, 2, 3],
+        "2": true,
+        "3": "Hello"
+      });
+      encoder.writeSingle(36.908);
+      encoder.writeDouble(35.66e4);
+      encoder.writeHalf(20.0);
+      encoder.writeDateTime("2013-03-21T20:04:00Z");
+      encoder.writeEpoch(1234567);
+      encoder.writeSimple(10);
+
+      // Decode ourselves
+      inst.decodeFromInput();
+      final String json = inst.decodedToJSON();
+      print(json);
+      expect(json,
+          '[9,10,11],123,-457,"barrr",321,322,"foo",true,false,null,null,{"a":[1,2,3],"2":true,"3":"Hello"},36.90800094604492,356600.0,20.0,"2013-03-21T20:04:00Z",1234567,10');
+    });
   });
 }

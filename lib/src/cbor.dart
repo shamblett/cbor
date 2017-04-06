@@ -43,6 +43,7 @@ class Cbor {
   void decodeFromBuffer(typed.Uint8Buffer buffer) {
     final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
+    _output.clear();
     _input = new Input(buffer, buffer.length);
     _decoder = new Decoder.withListener(_input, _listener);
     _decoder.run();
@@ -52,6 +53,7 @@ class Cbor {
   void decodeFromList(List<int> ints) {
     final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
+    _output.clear();
     final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
     buffer.addAll(ints);
     _input = new Input(buffer, buffer.length);
@@ -63,6 +65,7 @@ class Cbor {
   void decodeFromInput() {
     final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
+    _input = new Input(_output.getData(), _output.size());
     _decoder = new Decoder.withListener(_input, _listener);
     _decoder.run();
   }
@@ -97,10 +100,16 @@ class Cbor {
     return ret;
   }
 
-  /// To JSON
+  /// To JSON, only supports strings as map keys.
+  /// Returns null if the conversion fails.
   String decodedToJSON() {
-    String ret = json.serialize(getDecodedData());
-    // Remove the [] from the JSOM string
+    String ret;
+    try {
+      ret = json.serialize(getDecodedData());
+    } catch (exception) {
+      return null;
+    }
+    // Remove the [] from the JSON string
     return ret.substring(1, ret.length - 1);
   }
 
