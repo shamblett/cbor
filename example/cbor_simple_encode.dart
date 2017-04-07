@@ -28,6 +28,7 @@ int main() {
   final Uint8Buffer buff = inst.output.getData();
 
   // and do what you want with it
+  buff.toString();
 
   // Or, we can decode ourselves
   inst.decodeFromInput();

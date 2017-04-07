@@ -2,7 +2,6 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'package:cbor/cbor.dart' as cbor;
-import 'package:typed_data/typed_data.dart';
 
 /// A more complex encoding sequence followed by a self decode and a JSON
 /// output.
@@ -34,6 +33,8 @@ int main() {
   // an array as indefinite also.
   inst.output.pause();
   encoder.writeArray([2, 3], true);
+  // You MUST end indefinite sequences with a break, only you know
+  // when your sequence ends, not the encoder.
   encoder.writeBreak();
 
   // Ok, restart encoding and append our partial encoding stream.
@@ -48,6 +49,20 @@ int main() {
   encoder.writeArray([5, 6, 7], true);
   encoder.writeBreak();
 
+  // Indefinites can be nested, the indfinite string below will
+  // now appear as an array member.
+  encoder.writeArray([8, 9, 10], true);
+
+  // Indefinite string, treated as a chunk, refer to RFC 7049
+  encoder.writeString("Strea", true);
+  // This is now encoded as a string chunk and appended to the
+  // string above to give 'Streaming' in the output.
+  encoder.writeString("ming");
+
+  // Write breaks for BOTH the opened indefinite items above.
+  encoder.writeBreak();
+  encoder.writeBreak();
+
   // Decode ourselves and pretty print it, this time with data hints
   inst.decodeFromInput();
   print(inst.decodedPrettyPrint(true));
@@ -55,5 +70,7 @@ int main() {
   // Finally to JSON
   print(inst.decodedToJSON());
 
+  // JSON output is :-
+  // [1,2,3],67.89,10,{"1":"one","2":"two"},"hello",[2,3],"01:01:01 16-02-2017",[5,6,7],[8,9,10,"Streaming"]
   return 0;
 }
