@@ -1,6 +1,6 @@
 name: cbor
 description: A CBOR library for Dart
-version: 0.0.1
+version: 0.1.0
 author: Steve Hamblett <steve.hamblett@linux.com>
 
 environment:
