@@ -12,7 +12,7 @@ in packet size and processing overheads.
 
 The Cbor package provides an RFC7049 compliant solution for both the encoding and decoding of CBOR data.
 
-The test suite supports the encoding and decoding examples in Appendix A of RFC7049 amongst others. Spcifically :-
+The test suite supports the encoding and decoding examples in Appendix A of RFC7049 amongst others. Specifically :-
 
 1. Half, Single and Double precision floats are supported.
 2. Tag based encoding is supported(table 3 of the RFC).
