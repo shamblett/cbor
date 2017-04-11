@@ -23,8 +23,8 @@ The test suite supports the encoding and decoding examples in Appendix A of RFC7
    this size is used, similarly a double will be encoded into its smallest precision
    size(unless you specify otherwise);
    
-The implementation of maps restricts map keys to be of either string or integer type,
-note this is an extension to the RFC which suggests that only string keys be supported.
+The implementation of maps restricts map keys to be of either string or integer type, note
+however that at the moment decoding to JSON will fail if map keys are not strings.
 
 Please examine the files in the examples directory for usage examples and the
 API docs for greater detail.
