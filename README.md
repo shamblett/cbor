@@ -1,4 +1,6 @@
-# cbor
+# cbor 
+
+![Build Status](https://travis-ci.org/shamblett/cborg.svg?branch=master)
 
 A CBOR library for Dart developers.
 
