@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.2
+
+- SDK version constraint update
+
 ### 1.0.1
 
 - Minor update to the README, issue 1.
