@@ -18,24 +18,23 @@ class ItemEntry<DartItem> extends LinkedListEntry {
 
 /// The decoded Dart item stack class.
 class ItemStack {
-  LinkedList _stack = new LinkedList();
+  final List<ItemEntry> _stack = <ItemEntry>[];
 
   /// Push an item.
   void push(DartItem item) {
     final ItemEntry entry = new ItemEntry(item);
-    _stack.addFirst(entry);
+    _stack.add(entry);
   }
 
   /// Pop an item from the stack top.
   DartItem pop() {
-    final ItemEntry entry = _stack.first;
-    _stack.remove(entry);
+    final ItemEntry entry = _stack.removeLast();
     return entry.value;
   }
 
   /// Peek the top stack item.
   DartItem peek() {
-    final ItemEntry entry = _stack.first;
+    final ItemEntry entry = _stack.last;
     return entry.value;
   }
 
@@ -53,50 +52,33 @@ class ItemStack {
   /// top as a list of Dart types.
   /// Returns null if the stack is empty.
   List<dynamic> walk() {
-    if (_stack.length == 0) return null;
-    final List<dynamic> ret = new List<dynamic>();
-    final List<ItemEntry> stackList = _stack.toList();
-    stackList.reversed.forEach((item) {
-      if (!item.value.ignore) {
-        ret.add(item.value.data);
-      }
-    });
-    return ret;
+    if (_stack.isEmpty) return null;
+    return _stack
+        .where((e) => !e.value.ignore)
+        .map((e) => e.value.data)
+        .toList();
   }
 
   /// Gets item hints. Returns item hints for stack items.
   /// If used with the walk stack the returned list can
   /// be used on a per index basis.
   List<dataHints> hints() {
-    if (_stack.length == 0) return null;
-    final List<dataHints> ret = new List<dataHints>();
-    final List<ItemEntry> stackList = _stack.toList();
-    stackList.reversed.forEach((item) {
-      if (!item.value.ignore) {
-        ret.add(item.value.hint);
-      }
-    });
-    return ret;
+    if (_stack.isEmpty) return null;
+    return _stack
+        .where((e) => !e.value.ignore)
+        .map((e) => e.value.hint)
+        .toList();
   }
 
   /// Check if any error entries are present in the stack.
   /// Returns a list of error strings if any are found, null
   /// if none are found.
   List<String> errors() {
-    final List<String> text = new List<String>();
-    if (_stack.length == 0) return null;
-    ItemEntry entry = _stack.last;
-    if (entry.value.hint == dataHints.error) {
-      text.add(entry.value.data);
-    }
-    while (entry.next != null) {
-      final ItemEntry inner = entry.next;
-      if (inner.value.hint == dataHints.error) {
-        text.add(entry.value.data);
-      }
-      entry = inner;
-    }
-    return text;
+    if (_stack.isEmpty) return null;
+    return _stack
+        .where((e) => e.value.hint == dataHints.error)
+        .map((e) => e.value.data)
+        .toList();
   }
 
   /// Quick check if the stack contains any errors.
