@@ -1,4 +1,6 @@
 # Changelog
+### 1.0.3
+Strong mode updates for pub.
 
 ### 1.0.2
 

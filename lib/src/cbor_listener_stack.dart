@@ -80,57 +80,63 @@ class ListenerStack extends Listener {
         onInteger(value.abs());
         break;
       case whatsNext.aMultipleB64Url:
-        if (data == null) return;
-        final DartItem item = new DartItem();
-        item.data = data;
-        item.type = dartTypes.dtBuffer;
-        item.hint = dataHints.base64Url;
-        item.complete = true;
-        _append(item);
+        if (data != null) {
+          final DartItem item = new DartItem();
+          item.data = data;
+          item.type = dartTypes.dtBuffer;
+          item.hint = dataHints.base64Url;
+          item.complete = true;
+          _append(item);
+        }
         break;
       case whatsNext.aMultipleB64:
-        if (data == null) return;
-        final DartItem item = new DartItem();
-        item.data = data;
-        item.type = dartTypes.dtBuffer;
-        item.hint = dataHints.base64;
-        item.complete = true;
-        _append(item);
+        if (data != null) {
+          final DartItem item = new DartItem();
+          item.data = data;
+          item.type = dartTypes.dtBuffer;
+          item.hint = dataHints.base64;
+          item.complete = true;
+          _append(item);
+        }
         break;
       case whatsNext.aMultipleB16:
-        if (data == null) return;
-        final DartItem item = new DartItem();
-        item.data = data;
-        item.type = dartTypes.dtBuffer;
-        item.hint = dataHints.base16;
-        item.complete = true;
-        _append(item);
+        if (data != null) {
+          final DartItem item = new DartItem();
+          item.data = data;
+          item.type = dartTypes.dtBuffer;
+          item.hint = dataHints.base16;
+          item.complete = true;
+          _append(item);
+        }
         break;
       case whatsNext.encodedCBOR:
-        if (data == null) return;
-        final DartItem item = new DartItem();
-        item.data = data;
-        item.type = dartTypes.dtBuffer;
-        item.hint = dataHints.encodedCBOR;
-        item.complete = true;
-        _append(item);
+        if (data != null) {
+          final DartItem item = new DartItem();
+          item.data = data;
+          item.type = dartTypes.dtBuffer;
+          item.hint = dataHints.encodedCBOR;
+          item.complete = true;
+          _append(item);
+        }
         break;
       case whatsNext.aSelfDescribeCBOR:
-        if (data == null) return;
-        final DartItem item = new DartItem();
-        item.data = data;
-        item.type = dartTypes.dtBuffer;
-        item.hint = dataHints.selfDescCBOR;
-        item.complete = true;
-        _append(item);
+        if (data != null) {
+          final DartItem item = new DartItem();
+          item.data = data;
+          item.type = dartTypes.dtBuffer;
+          item.hint = dataHints.selfDescCBOR;
+          item.complete = true;
+          _append(item);
+        }
         break;
       case whatsNext.unassigned:
-        if (data == null) return;
-        final DartItem item = new DartItem();
-        item.data = data;
-        item.type = dartTypes.dtBuffer;
-        item.complete = true;
-        _append(item);
+        if (data != null) {
+          final DartItem item = new DartItem();
+          item.data = data;
+          item.type = dartTypes.dtBuffer;
+          item.complete = true;
+          _append(item);
+        }
         break;
       case whatsNext.nothing:
       default:
