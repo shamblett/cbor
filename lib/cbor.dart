@@ -10,9 +10,9 @@ library cbor;
 import 'dart:convert' as convertor;
 import 'dart:typed_data';
 import 'dart:math';
+import 'dart:convert';
 import 'dart:collection';
 import 'package:typed_data/typed_data.dart' as typed;
-import 'package:json_mapper/json_mapper.dart' as json;
 
 /// The CBOR package exported interface
 

@@ -1,4 +1,7 @@
 # Changelog
+### 1.0.4
+Updates for pub. Remove json_mapper
+
 ### 1.0.3
 Strong mode updates for pub.
 
