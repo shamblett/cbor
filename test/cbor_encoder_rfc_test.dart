@@ -69,30 +69,6 @@ void main() {
       expect(output.getDataAsList(), [0x1a, 0x00, 0x0f, 0x42, 0x40]);
     });
 
-    test('1000000000000', () {
-      output.clear();
-      encoder.writeInt(1000000000000);
-      expect(output.getDataAsList(),
-          [0x1b, 0x00, 0x00, 0x00, 0xe8, 0xd4, 0xa5, 0x10, 0x00]);
-    });
-
-    test('18446744073709551615', () {
-      output.clear();
-      encoder.writeInt(18446744073709551615);
-      expect(output.getDataAsList(),
-          [0x1b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
-    });
-
-    test('18446744073709551616', () {
-      output.clear();
-      final typed.Uint8Buffer data = new typed.Uint8Buffer();
-      data.addAll([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
-      encoder.writeTag(2);
-      encoder.writeBytes(data);
-      expect(output.getDataAsList(),
-          [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
-    });
-
     test('-1', () {
       output.clear();
       encoder.writeInt(-1);
@@ -115,13 +91,6 @@ void main() {
       output.clear();
       encoder.writeInt(-1000);
       expect(output.getDataAsList(), [0x39, 0x03, 0xe7]);
-    });
-
-    test('-18446744073709551616', () {
-      output.clear();
-      encoder.writeInt(-18446744073709551616);
-      expect(output.getDataAsList(),
-          [0x3b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
     });
 
     test('-18446744073709551617', () {
@@ -226,57 +195,57 @@ void main() {
 
     test('Infinity Half', () {
       output.clear();
-      encoder.writeHalf(double.INFINITY);
+      encoder.writeHalf(double.infinity);
       expect(output.getDataAsList(), [0xf9, 0x7c, 0x00]);
     });
 
     test('Nan Half', () {
       output.clear();
-      encoder.writeHalf(double.NAN);
+      encoder.writeHalf(double.nan);
       expect(output.getDataAsList(), [0xf9, 0x7e, 0x00]);
     });
 
     test('-Infinity Half', () {
       output.clear();
-      encoder.writeHalf(-double.INFINITY);
+      encoder.writeHalf(-double.infinity);
       expect(output.getDataAsList(), [0xf9, 0xfc, 0x00]);
     });
 
     test('Infinity Single', () {
       output.clear();
-      encoder.writeSingle(double.INFINITY);
+      encoder.writeSingle(double.infinity);
       expect(output.getDataAsList(), [0xfa, 0x7f, 0x80, 0x00, 0x00]);
     });
 
     test('Nan Single', () {
       output.clear();
-      encoder.writeSingle(double.NAN);
+      encoder.writeSingle(double.nan);
       expect(output.getDataAsList(), [0xfa, 0x7f, 0xc0, 0x00, 0x00]);
     });
 
     test('-Infinity Single', () {
       output.clear();
-      encoder.writeSingle(-double.INFINITY);
+      encoder.writeSingle(-double.infinity);
       expect(output.getDataAsList(), [0xfa, 0xff, 0x80, 0x00, 0x00]);
     });
 
     test('Infinity Double', () {
       output.clear();
-      encoder.writeDouble(double.INFINITY);
+      encoder.writeDouble(double.infinity);
       expect(output.getDataAsList(),
           [0xfb, 0x7f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
     });
 
     test('Nan Double', () {
       output.clear();
-      encoder.writeDouble(double.NAN);
+      encoder.writeDouble(double.nan);
       expect(output.getDataAsList(),
           [0xfb, 0x7f, 0xf8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
     });
 
     test('-Infinity Double', () {
       output.clear();
-      encoder.writeDouble(-double.INFINITY);
+      encoder.writeDouble(-double.infinity);
       expect(output.getDataAsList(),
           [0xfb, 0xff, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
     });

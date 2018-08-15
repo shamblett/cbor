@@ -256,14 +256,15 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [18446744073709551615]);
+      final BigInt temp = BigInt.parse("18446744073709551615").toSigned(64);
+      expect(BigInt.from(listener.lastValue[0]).compareTo(temp), 0);
       decoder.setListener(slistener);
       input.reset();
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 18446744073709551615);
+      expect(BigInt.from(slist[0]).compareTo(temp), 0);
     });
 
     test('18446744073709551616', () {
@@ -301,7 +302,8 @@ void main() {
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 18446744073709551616);
+      final BigInt temp = BigInt.parse("18446744073709551616").toSigned(64);
+      expect(slist[0].toSigned(64).compareTo(temp), 0);
     });
 
     test('-18446744073709551616', () {
@@ -325,14 +327,15 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [-18446744073709551616]);
+      final BigInt temp = BigInt.parse("-18446744073709551616").toSigned(64);
+      expect(BigInt.from(listener.lastValue[0]).compareTo(temp), 0);
       decoder.setListener(slistener);
       input.reset();
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -18446744073709551616);
+      expect(BigInt.zero.compareTo(temp), 0);
     });
 
     test('18446744073709551617', () {
@@ -370,7 +373,8 @@ void main() {
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 18446744073709551617);
+      final BigInt temp = BigInt.parse("18446744073709551617").toSigned(64);
+      expect(slist[0].toSigned(64).compareTo(temp), 0);
     });
 
     test('-1', () {
@@ -771,14 +775,14 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [double.INFINITY]);
+      expect(listener.lastValue, [double.infinity]);
       decoder.setListener(slistener);
       input.reset();
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], double.INFINITY);
+      expect(slist[0], double.infinity);
     });
 
     test('NaN half', () {
@@ -813,14 +817,14 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [-(double.INFINITY)]);
+      expect(listener.lastValue, [-(double.infinity)]);
       decoder.setListener(slistener);
       input.reset();
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -(double.INFINITY));
+      expect(slist[0], -(double.infinity));
     });
 
     test('Infinity single', () {
@@ -834,14 +838,14 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [double.INFINITY]);
+      expect(listener.lastValue, [double.infinity]);
       decoder.setListener(slistener);
       input.reset();
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], double.INFINITY);
+      expect(slist[0], double.infinity);
     });
 
     test('NaN single', () {
@@ -882,14 +886,14 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [-(double.INFINITY)]);
+      expect(listener.lastValue, [-(double.infinity)]);
       decoder.setListener(slistener);
       input.reset();
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -(double.INFINITY));
+      expect(slist[0], -(double.infinity));
     });
 
     test('Infinity double', () {
@@ -913,14 +917,14 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [double.INFINITY]);
+      expect(listener.lastValue, [double.infinity]);
       decoder.setListener(slistener);
       input.reset();
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], double.INFINITY);
+      expect(slist[0], double.infinity);
     });
 
     test('NaN double', () {
@@ -975,14 +979,14 @@ void main() {
       final cbor.Decoder decoder =
       new cbor.Decoder.withListener(input, listener);
       decoder.run();
-      expect(listener.lastValue, [-(double.INFINITY)]);
+      expect(listener.lastValue, [-(double.infinity)]);
       decoder.setListener(slistener);
       input.reset();
       slistener.stack.clear();
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -(double.INFINITY));
+      expect(slist[0], -(double.infinity));
     });
 
     test('false', () {

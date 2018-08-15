@@ -66,18 +66,32 @@ class ListenerStack extends Listener {
     _append(item);
   }
 
+  void onBigInteger(BigInt value) {
+    // Do not add nulls
+    if (value == null) return;
+    final DartItem item = new DartItem();
+    item.data = value;
+    item.type = dartTypes.dtBigInt;
+    item.complete = true;
+    if (_next == whatsNext.aDateTimeEpoch) {
+      item.hint = dataHints.dateTimeEpoch;
+      _next = whatsNext.nothing;
+    }
+    _append(item);
+  }
+
   void onBytes(typed.Uint8Buffer data, int size) {
     // Check if we are expecting something, ie whats next
     switch (_next) {
       case whatsNext.aPositiveBignum:
       // Convert to a positive integer and append
-        final int value = bignumToInt(data, "+");
-        onInteger(value);
+        final BigInt value = bignumToBigInt(data, "+");
+        onBigInteger(value);
         break;
       case whatsNext.aNegativeBignum:
-        int value = bignumToInt(data, "-");
-        value = -1 + value;
-        onInteger(value.abs());
+        BigInt value = bignumToBigInt(data, "-");
+        value = BigInt.from(-1) + value;
+        onBigInteger(value.abs());
         break;
       case whatsNext.aMultipleB64Url:
         if (data != null) {

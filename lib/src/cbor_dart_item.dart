@@ -10,6 +10,7 @@ part of cbor;
 /// The Dart types an item can have.
 enum dartTypes {
   dtInt,
+  dtBigInt,
   dtDouble,
   dtMap,
   dtList,

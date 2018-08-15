@@ -728,7 +728,12 @@ void main() {
       expect(slist[25], 6);
       expect(slist[26], "Streaming");
       expect(slist[27], [01, 02, 03, 94, 01, 02, 03, 95]);
-      expect(slist[28], [06, 07, 08, [09, 10, 11]]);
+      expect(slist[28], [
+        06,
+        07,
+        08,
+        [09, 10, 11]
+      ]);
       expect(slist[29], {"1": "First", "2": "Second", "3": "Third"});
     });
   });

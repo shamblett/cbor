@@ -71,9 +71,9 @@ bool canBeASingle(double value) {
 
 /// Bignum functions
 
-/// Bignum byte buffer to int. Returns null
+/// Bignum byte buffer to BigInt. Returns null
 /// if the conversion fails.
-int bignumToInt(typed.Uint8Buffer buff, String sign) {
+BigInt bignumToBigInt(typed.Uint8Buffer buff, String sign) {
   // Convert to a signed hex string.
   String res = sign + "0x";
   for (int i in buff) {
@@ -83,8 +83,5 @@ int bignumToInt(typed.Uint8Buffer buff, String sign) {
     }
     res += tmp;
   }
-
-  // Try a parse
-  final int value = int.parse(res, onError: (source) => null);
-  return value;
+  return BigInt.tryParse(res);
 }

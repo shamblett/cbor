@@ -67,7 +67,7 @@ class ItemStack {
     return _stack
         .where((e) => !e.value.ignore)
         .map((e) => e.value.hint)
-        .toList();
+        .toList().cast<dataHints>();
   }
 
   /// Check if any error entries are present in the stack.
@@ -78,7 +78,7 @@ class ItemStack {
     return _stack
         .where((e) => e.value.hint == dataHints.error)
         .map((e) => e.value.data)
-        .toList();
+        .toList().cast<String>();
   }
 
   /// Quick check if the stack contains any errors.

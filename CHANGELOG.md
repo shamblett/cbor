@@ -1,4 +1,6 @@
-# Changelog
+### 2.0.0
+Issue 4, update to Dart 2
+
 ### 1.0.4
 Updates for pub. Remove json_mapper
 
