@@ -8,7 +8,7 @@
 part of cbor;
 
 /// A Dart item linked list entry for use by the stack
-class ItemEntry<DartItem> extends LinkedListEntry {
+class ItemEntry<DartItem> extends LinkedListEntry<ItemEntry> {
   DartItem value;
 
   ItemEntry(this.value);
