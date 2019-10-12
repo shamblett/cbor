@@ -8,40 +8,42 @@
 part of cbor;
 
 /// A Dart item linked list entry for use by the stack
-class ItemEntry<DartItem> extends LinkedListEntry<ItemEntry> {
-  DartItem value;
-
+class ItemEntry<DartItem> extends LinkedListEntry<ItemEntry<DartItem>> {
+  /// Construction
   ItemEntry(this.value);
 
-  String toString() => "${super.toString()} : value.toString()";
+  /// The item
+  DartItem value;
+
+  @override
+  String toString() => '${super.toString()} : value.toString()';
 }
 
 /// The decoded Dart item stack class.
 class ItemStack {
-  final List<ItemEntry> _stack = <ItemEntry>[];
+  /// The stack
+  final List<ItemEntry<DartItem>> _stack = <ItemEntry<DartItem>>[];
 
   /// Push an item.
   void push(DartItem item) {
-    final ItemEntry entry = new ItemEntry(item);
+    final ItemEntry<DartItem> entry = ItemEntry<DartItem>(item);
     _stack.add(entry);
   }
 
   /// Pop an item from the stack top.
   DartItem pop() {
-    final ItemEntry entry = _stack.removeLast();
+    final ItemEntry<DartItem> entry = _stack.removeLast();
     return entry.value;
   }
 
   /// Peek the top stack item.
   DartItem peek() {
-    final ItemEntry entry = _stack.last;
+    final ItemEntry<DartItem> entry = _stack.last;
     return entry.value;
   }
 
   /// Size.
-  int size() {
-    return _stack.length;
-  }
+  int size() => _stack.length;
 
   /// Clear.
   void clear() {
@@ -52,9 +54,13 @@ class ItemStack {
   /// top as a list of Dart types.
   /// Returns null if the stack is empty.
   List<dynamic> walk() {
-    if (_stack.isEmpty) return null;
+    if (_stack.isEmpty) {
+      return null;
+    }
     return _stack
+        // ignore: always_specify_types
         .where((e) => !e.value.ignore)
+        // ignore: always_specify_types
         .map((e) => e.value.data)
         .toList();
   }
@@ -63,9 +69,13 @@ class ItemStack {
   /// If used with the walk stack the returned list can
   /// be used on a per index basis.
   List<dataHints> hints() {
-    if (_stack.isEmpty) return null;
+    if (_stack.isEmpty) {
+      return null;
+    }
     return _stack
+        // ignore: always_specify_types
         .where((e) => !e.value.ignore)
+        // ignore: always_specify_types
         .map((e) => e.value.hint)
         .toList()
         .cast<dataHints>();
@@ -75,9 +85,13 @@ class ItemStack {
   /// Returns a list of error strings if any are found, null
   /// if none are found.
   List<String> errors() {
-    if (_stack.isEmpty) return null;
+    if (_stack.isEmpty) {
+      return null;
+    }
     return _stack
+        // ignore: always_specify_types
         .where((e) => e.value.hint == dataHints.error)
+        // ignore: always_specify_types
         .map((e) => e.value.data)
         .toList()
         .cast<String>();

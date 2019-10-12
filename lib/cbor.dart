@@ -7,11 +7,11 @@
 
 library cbor;
 
-import 'dart:convert' as convertor;
-import 'dart:typed_data';
-import 'dart:math';
-import 'dart:convert';
 import 'dart:collection';
+import 'dart:convert' as convertor;
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:typed_data/typed_data.dart' as typed;
 
 /// The CBOR package exported interface
@@ -34,4 +34,5 @@ part 'src/cbor_dart_item.dart';
 part 'src/cbor_output_standard.dart';
 
 /// Float encoding directives
+// ignore: public_member_api_docs
 enum encodeFloatAs { half, single, double }

@@ -7,6 +7,8 @@
 
 part of cbor;
 
+// ignore_for_file: prefer_final_fields
+
 /// A base class for encoder output.
 /// Derived classes must implement these methods as a minimum
 /// to provide full CBOR encoding.
@@ -25,7 +27,7 @@ abstract class Output {
 
   /// Get the current output buffer
   typed.Uint8Buffer getData() {
-    final typed.Uint8Buffer ret = new typed.Uint8Buffer();
+    final typed.Uint8Buffer ret = typed.Uint8Buffer();
     ret.addAll(_buffer);
     return ret;
   }
@@ -62,5 +64,6 @@ abstract class Output {
   /// Restart after pause, copies the pause buffer back into the output buffer,
   /// if append is true the current output buffer contents are appended to the
   /// pause buffer.
+  // ignore: avoid_positional_boolean_parameters
   void restart([bool append = false]);
 }

@@ -8,12 +8,12 @@ import 'package:typed_data/typed_data.dart';
 int main() {
   // Get our cbor instance, always do this,it correctly
   // initialises the decoder.
-  final cbor.Cbor inst = new cbor.Cbor();
+  final cbor.Cbor inst = cbor.Cbor();
 
   // Assume we have received a CBOR encoded byte buffer from the network.
   // The byte sequence below gives :-
   // {"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"}
-  final List<int> payload = [
+  final List<int> payload = <int>[
     0xa5,
     0x61,
     0x61,
@@ -37,7 +37,7 @@ int main() {
     0x45
   ];
 
-  final Uint8Buffer payloadBuffer = new Uint8Buffer();
+  final Uint8Buffer payloadBuffer = Uint8Buffer();
   payloadBuffer.addAll(payload);
 
   // Decode from the buffer, you can also decode from the

@@ -1,4 +1,8 @@
+### 2.0.3
+Issue 6, linter rules update
+
 ### 2.0.2
+
 Issue 4, update to Dart 2
 
 ### 1.0.4

@@ -7,14 +7,17 @@
 
 part of cbor;
 
+// ignore_for_file: unnecessary_getters_setters
+// ignore_for_file: avoid_as
+
 /// The CBOR package main API.
 class Cbor {
   /// Construction
   Cbor() {
     init();
-    _output = new OutputStandard();
-    _encoder = new Encoder(output);
-    _listener = new ListenerStack();
+    _output = OutputStandard();
+    _encoder = Encoder(output);
+    _listener = ListenerStack();
   }
 
   /// Decoder
@@ -23,16 +26,21 @@ class Cbor {
   Decoder _decoder;
   Listener _listener;
 
+  /// Input
   Input get input => _input;
 
   set input(Input val) => _input = val;
 
+  /// Decoder
   Decoder get decoder => _decoder;
 
+  /// Output
   Output get output => _output;
 
+  /// Buffer
   typed.Uint8Buffer get buffer => _buffer;
 
+  /// Listener
   Listener get listener => _listener;
 
   set listener(Listener value) {
@@ -44,8 +52,8 @@ class Cbor {
     final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
     _output.clear();
-    _input = new Input(buffer, buffer.length);
-    _decoder = new Decoder.withListener(_input, _listener);
+    _input = Input(buffer, buffer.length);
+    _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
 
@@ -54,10 +62,10 @@ class Cbor {
     final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
     _output.clear();
-    final typed.Uint8Buffer buffer = new typed.Uint8Buffer();
+    final typed.Uint8Buffer buffer = typed.Uint8Buffer();
     buffer.addAll(ints);
-    _input = new Input(buffer, buffer.length);
-    _decoder = new Decoder.withListener(_input, _listener);
+    _input = Input(buffer, buffer.length);
+    _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
 
@@ -66,8 +74,8 @@ class Cbor {
   void decodeFromInput() {
     final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
-    _input = new Input(_output.getData(), _output.size());
-    _decoder = new Decoder.withListener(_input, _listener);
+    _input = Input(_output.getData(), _output.size());
+    _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
 
@@ -84,8 +92,9 @@ class Cbor {
   }
 
   /// Pretty print the decoded data
+  // ignore: avoid_positional_boolean_parameters
   String decodedPrettyPrint([bool withHints = false]) {
-    String ret = "";
+    String ret = '';
     final List<dynamic> values = getDecodedData();
     List<dataHints> hints;
     if (withHints) {
@@ -93,9 +102,10 @@ class Cbor {
     }
     final int length = values.length;
     for (int i = 0; i < length; i++) {
-      ret += "Entry $i   : Value is => ${values[i].toString()}\n";
+      // ignore: use_string_buffers
+      ret += 'Entry $i   : Value is => ${values[i].toString()}\n';
       if (withHints) {
-        ret += "          : Hint is => ${hints[i].toString()}\n";
+        ret += '          : Hint is => ${hints[i].toString()}\n';
       }
     }
     return ret;
@@ -106,8 +116,8 @@ class Cbor {
   String decodedToJSON() {
     String ret;
     try {
-      ret = json.encode(getDecodedData());
-    } catch (exception) {
+      ret = convertor.json.encode(getDecodedData());
+    } on Exception {
       return null;
     }
     // Remove the [] from the JSON string
@@ -118,8 +128,10 @@ class Cbor {
   Output _output;
   Encoder _encoder;
 
+  /// Raw output
   Output get rawOutput => _output;
 
+  /// Encoder
   Encoder get encoder => _encoder;
 
   /// Clear the encoded output

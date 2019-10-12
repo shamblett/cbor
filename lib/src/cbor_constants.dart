@@ -7,6 +7,8 @@
 
 part of cbor;
 
+// ignore_for_file: public_member_api_docs
+
 /// Constants for use across the CBOR package.
 
 /// CBOR decoding constants
@@ -40,7 +42,9 @@ final int two8 = pow(2, 8);
 final int two16 = pow(2, 16);
 final int two32 = pow(2, 32);
 final int two64 = pow(2, 64);
+// ignore: prefer_int_literals
 const double halfLimitUpper = 65504.0;
+// ignore: prefer_int_literals
 const double halfLimitLower = -65504.0;
 const double singleLimitUpper = 3.4028234663852886e38;
 const double singleLimitLower = -3.4028234663852886e38;
@@ -48,8 +52,8 @@ const int simpleLimitUpper = 255;
 const int simpleLimitLower = 0;
 
 /// Half precision mapping tables
-final typed.Uint16Buffer baseTable = new typed.Uint16Buffer();
-final List<int> shiftTable = [
+final typed.Uint16Buffer baseTable = typed.Uint16Buffer();
+final List<int> shiftTable = <int>[
   24,
   24,
   24,
@@ -565,7 +569,7 @@ final List<int> shiftTable = [
 ];
 
 void init() {
-  baseTable.addAll([
+  baseTable.addAll(<int>[
     0x0000,
     0x0000,
     0x0000,
@@ -1090,8 +1094,8 @@ void init() {
 const int indefiniteMaxSize = 100000;
 
 /// Indefinite stack types and stop marker.
-const String indefStop = "stop";
-const String indefBytes = "bytes";
-const String indefString = "string";
-const String indefArray = "array";
-const String indefMap = "map";
+const String indefStop = 'stop';
+const String indefBytes = 'bytes';
+const String indefString = 'string';
+const String indefArray = 'array';
+const String indefMap = 'map';

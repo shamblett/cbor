@@ -10,6 +10,11 @@ part of cbor;
 /// The encoder class implements the CBOR decoder functionality as defined in
 /// RFC7049.
 class Encoder {
+  /// Construction
+  Encoder(Output out) {
+    _out = out;
+  }
+
   /// The output buffer
   Output _out;
 
@@ -17,16 +22,13 @@ class Encoder {
   /// decremented on stop.
   int _indefSequenceCount = 0;
 
-  Encoder(Output out) {
-    this._out = out;
-  }
-
   /// Clears the output buffer.
   void clear() {
     _out.clear();
   }
 
   /// Booleans.
+  // ignore: avoid_positional_boolean_parameters
   void writeBool(bool value) {
     if (value) {
       _out.putByte(0xf5);
@@ -58,6 +60,7 @@ class Encoder {
   }
 
   /// Primitive string writer.
+  // ignore: avoid_positional_boolean_parameters
   void writeString(String str, [bool indefinite = false]) {
     final typed.Uint8Buffer buff = strToByteString(str);
     if (indefinite) {
@@ -68,6 +71,7 @@ class Encoder {
   }
 
   /// Bytestring primitive.
+  // ignore: avoid_positional_boolean_parameters
   void writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
     if (indefinite) {
       startIndefinite(majorTypeBytes);
@@ -83,7 +87,9 @@ class Encoder {
   /// array size, unless you are encoding certain indefinite sequences you
   /// do not need to do this.
   bool writeArray(List<dynamic> value,
-      [bool indefinite = false, int length = null]) {
+      // ignore: avoid_positional_boolean_parameters
+      [bool indefinite = false,
+      int length]) {
     // Mark the output buffer, if we cannot encode
     // the whole array structure rewind so as to perform
     // no encoding.
@@ -104,7 +110,9 @@ class Encoder {
   /// Valid map values are integer, string, bool, float(any size), array
   /// map or buffer. Returns true if the encoding has been successful.
   bool writeMap(Map<dynamic, dynamic> value,
-      [bool indefinite = false, int length = null]) {
+      // ignore: avoid_positional_boolean_parameters
+      [bool indefinite = false,
+      int length]) {
     // Mark the output buffer, if we cannot encode
     // the whole map structure rewind so as to perform
     // no encoding.
@@ -210,7 +218,7 @@ class Encoder {
       _out.putByte(0x00);
       _out.putByte(0x00);
     } else {
-      final typed.Float32Buffer fBuff = new typed.Float32Buffer(1);
+      final typed.Float32Buffer fBuff = typed.Float32Buffer(1);
       fBuff[0] = value;
       final ByteBuffer bBuff = fBuff.buffer;
       final Uint8List uList = bBuff.asUint8List();
@@ -235,7 +243,7 @@ class Encoder {
       _out.putByte(0x00);
       _out.putByte(0x00);
     } else {
-      final typed.Float64Buffer fBuff = new typed.Float64Buffer(1);
+      final typed.Float64Buffer fBuff = typed.Float64Buffer(1);
       fBuff[0] = value;
       final ByteBuffer bBuff = fBuff.buffer;
       final Uint8List uList = bBuff.asUint8List();
@@ -320,11 +328,11 @@ class Encoder {
   /// Rounding is indeterminate.
   typed.Uint8Buffer _singleToHalf(double value) {
     final int hBits = getHalfPrecisionInt(value);
-    final typed.Uint16Buffer hBuff = new typed.Uint16Buffer(1);
+    final typed.Uint16Buffer hBuff = typed.Uint16Buffer(1);
     hBuff[0] = hBits;
     final ByteBuffer lBuff = hBuff.buffer;
     final Uint8List hList = lBuff.asUint8List();
-    final typed.Uint8Buffer valBuff = new typed.Uint8Buffer();
+    final typed.Uint8Buffer valBuff = typed.Uint8Buffer();
     valBuff.addAll(hList);
     return valBuff;
   }
@@ -335,54 +343,48 @@ class Encoder {
     type <<= majorTypeShift;
     if (value < ai24) {
       // Value
-      _out.putByte((type | value));
+      _out.putByte(type | value);
     } else if (value < two8) {
       // Uint8
-      _out.putByte((type | ai24));
+      _out.putByte(type | ai24);
       _out.putByte(value);
     } else if (value < two16) {
       // Uint16
-      _out.putByte((type | ai25));
-      final typed.Uint16Buffer buff = new typed.Uint16Buffer(1);
+      _out.putByte(type | ai25);
+      final typed.Uint16Buffer buff = typed.Uint16Buffer(1);
       buff[0] = value;
-      final Uint8List ulist = new Uint8List.view(buff.buffer);
-      final typed.Uint8Buffer data = new typed.Uint8Buffer();
-      data.addAll(ulist
-          .toList()
-          .reversed);
+      final Uint8List ulist = Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
     } else if (value < two32) {
       // Uint32
-      _out.putByte((type | ai26));
-      final typed.Uint32Buffer buff = new typed.Uint32Buffer(1);
+      _out.putByte(type | ai26);
+      final typed.Uint32Buffer buff = typed.Uint32Buffer(1);
       buff[0] = value;
-      final Uint8List ulist = new Uint8List.view(buff.buffer);
-      final typed.Uint8Buffer data = new typed.Uint8Buffer();
-      data.addAll(ulist
-          .toList()
-          .reversed);
+      final Uint8List ulist = Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
     } else if (value < two64) {
       // Uint64
-      _out.putByte((type | ai27));
-      final typed.Uint64Buffer buff = new typed.Uint64Buffer(1);
+      _out.putByte(type | ai27);
+      final typed.Uint64Buffer buff = typed.Uint64Buffer(1);
       buff[0] = value;
-      final Uint8List ulist = new Uint8List.view(buff.buffer);
-      final typed.Uint8Buffer data = new typed.Uint8Buffer();
-      data.addAll(ulist
-          .toList()
-          .reversed);
+      final Uint8List ulist = Uint8List.view(buff.buffer);
+      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
     } else {
       // Bignum - not supported, use tags
-      print("Bignums not supported");
+      print('Bignums not supported');
     }
   }
 
   /// String to byte string helper.
   typed.Uint8Buffer strToByteString(String str) {
-    final typed.Uint8Buffer buff = new typed.Uint8Buffer();
-    final convertor.Utf8Encoder utf = new convertor.Utf8Encoder();
+    final typed.Uint8Buffer buff = typed.Uint8Buffer();
+    const convertor.Utf8Encoder utf = convertor.Utf8Encoder();
     final List<int> codes = utf.convert(str);
     buff.addAll(codes);
     return buff;
@@ -392,7 +394,9 @@ class Encoder {
   /// If the array cannot be fully encoded no encoding occurs,
   /// ie false is returned.
   bool writeArrayImpl(List<dynamic> value,
-      [bool indefinite = false, int length = null]) {
+      // ignore: avoid_positional_boolean_parameters
+      [bool indefinite = false,
+      int length]) {
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {
@@ -415,25 +419,25 @@ class Encoder {
     }
 
     bool ok = true;
-    for (dynamic element in value) {
+    for (final dynamic element in value) {
       String valType = element.runtimeType.toString();
-      if (valType.contains("List")) {
-        valType = "List";
+      if (valType.contains('List')) {
+        valType = 'List';
       }
-      if (valType.contains("Map")) {
-        valType = "Map";
+      if (valType.contains('Map')) {
+        valType = 'Map';
       }
       switch (valType) {
-        case "int":
+        case 'int':
           writeInt(element);
           break;
-        case "String":
+        case 'String':
           writeString(element);
           break;
-        case "double":
+        case 'double':
           writeFloat(element);
           break;
-        case "List":
+        case 'List':
           if (!indefinite) {
             final bool res = writeArrayImpl(element, indefinite);
             if (!res) {
@@ -441,12 +445,10 @@ class Encoder {
               ok = false;
             }
           } else {
-            for (int a in element) {
-              _out.putByte(a);
-            }
+            element.forEach(_out.putByte);
           }
           break;
-        case "Map":
+        case 'Map':
           if (!indefinite) {
             final bool res = writeMapImpl(element, indefinite);
             if (!res) {
@@ -454,22 +456,20 @@ class Encoder {
               ok = false;
             }
           } else {
-            for (int a in element) {
-              _out.putByte(a);
-            }
+            element.forEach(_out.putByte);
           }
           break;
-        case "bool":
+        case 'bool':
           writeBool(element);
           break;
-        case "Null":
+        case 'Null':
           writeNull();
           break;
-        case "Uint8Buffer":
+        case 'Uint8Buffer':
           writeRawBuffer(element);
           break;
         default:
-          print("writeArrayImpl::RT is ${element.runtimeType.toString()}");
+          print('writeArrayImpl::RT is ${element.runtimeType.toString()}');
           ok = false;
       }
     }
@@ -480,7 +480,9 @@ class Encoder {
   /// If the map cannot be fully encoded no encoding occurs,
   /// ie false is returned.
   bool writeMapImpl(Map<dynamic, dynamic> value,
-      [bool indefinite = false, int length = null]) {
+      // ignore: avoid_positional_boolean_parameters
+      [bool indefinite = false,
+      int length]) {
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {
@@ -492,9 +494,9 @@ class Encoder {
     // Check the keys are integers or strings.
     final dynamic keys = value.keys;
     bool keysValid = true;
-    for (dynamic element in keys) {
-      if (!(element.runtimeType.toString() == "int") &&
-          !(element.runtimeType.toString() == "String")) {
+    for (final dynamic element in keys) {
+      if (!(element.runtimeType.toString() == 'int') &&
+          !(element.runtimeType.toString() == 'String')) {
         keysValid = false;
         break;
       }
@@ -516,32 +518,33 @@ class Encoder {
     }
 
     bool ok = true;
-    value.forEach((dynamic key, dynamic val) {
+    // ignore: always_specify_types
+    value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
-      if (key.runtimeType.toString() == "int") {
+      if (key.runtimeType.toString() == 'int') {
         writeInt(key);
       } else {
         writeString(key);
       }
       // Encode the value
       String valType = val.runtimeType.toString();
-      if (valType.contains("List")) {
-        valType = "List";
+      if (valType.contains('List')) {
+        valType = 'List';
       }
-      if (valType.contains("Map")) {
-        valType = "Map";
+      if (valType.contains('Map')) {
+        valType = 'Map';
       }
       switch (valType) {
-        case "int":
+        case 'int':
           writeInt(val);
           break;
-        case "String":
+        case 'String':
           writeString(val);
           break;
-        case "double":
+        case 'double':
           writeFloat(val);
           break;
-        case "List":
+        case 'List':
           if (!indefinite) {
             final bool res = writeArrayImpl(val, indefinite);
             if (!res) {
@@ -549,12 +552,10 @@ class Encoder {
               ok = false;
             }
           } else {
-            for (int a in val) {
-              _out.putByte(a);
-            }
+            val.forEach(_out.putByte);
           }
           break;
-        case "Map":
+        case 'Map':
           if (!indefinite) {
             final bool res = writeMapImpl(val, indefinite);
             if (!res) {
@@ -562,22 +563,20 @@ class Encoder {
               ok = false;
             }
           } else {
-            for (int a in val) {
-              _out.putByte(a);
-            }
+            val.forEach(_out.putByte);
           }
           break;
-        case "bool":
+        case 'bool':
           writeBool(val);
           break;
-        case "Null":
+        case 'Null':
           writeNull();
           break;
-        case "Uint8Buffer":
+        case 'Uint8Buffer':
           writeRawBuffer(val);
           break;
         default:
-          print("writeMapImpl::RT is ${val.runtimeType.toString()}");
+          print('writeMapImpl::RT is ${val.runtimeType.toString()}');
           ok = false;
       }
     });
