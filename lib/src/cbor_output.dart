@@ -7,6 +7,8 @@
 
 part of cbor;
 
+// ignore_for_file: prefer_final_fields
+
 /// A base class for encoder output.
 /// Derived classes must implement these methods as a minimum
 /// to provide full CBOR encoding.
