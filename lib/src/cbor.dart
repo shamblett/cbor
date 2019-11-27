@@ -106,7 +106,7 @@ class Cbor {
   String decodedToJSON() {
     String ret;
     try {
-      ret = json.encode(getDecodedData());
+      ret = convertor.json.encode(getDecodedData());
     } catch (exception) {
       return null;
     }
