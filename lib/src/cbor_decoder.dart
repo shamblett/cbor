@@ -7,6 +7,8 @@
 
 part of cbor;
 
+// ignore_for_file: public_member_api_docs
+
 /// Decoder states
 enum DecoderState {
   type,
@@ -30,30 +32,34 @@ const int fourByte = 4;
 const int eightByte = 8;
 
 /// The decoder class implements the CBOR decoder functionality as defined in
-/// RFC7049. Output from the decoding process is through the Listener class interface.
-/// Different listener classes can be supplied for different purposes, such as test,
-/// debug as well as the standard stack listener.
+/// RFC7049. Output from the decoding process is through the Listener
+/// class interface.
+///
+/// Different listener classes can be supplied for different purposes,
+/// such as test, debug as well as the standard stack listener.
 class Decoder {
-  Listener _listener;
-  Input _input;
-  DecoderState _state;
-  int _currentLength;
-
+  /// Default
   Decoder(Input input) {
     _input = input;
     _state = DecoderState.type;
   }
 
+  /// With a listener
   Decoder.withListener(Input input, Listener listener) {
     _input = input;
     _state = DecoderState.type;
     _listener = listener;
   }
 
+  Listener _listener;
+  Input _input;
+  DecoderState _state;
+  int _currentLength;
+
   /// Decoder entry point.
   void run() {
     int temp;
-    final bool run = true;
+    const bool run = true;
     while (run) {
       if (_state == DecoderState.type) {
         if (_input.hasBytes(1)) {
@@ -83,7 +89,7 @@ class Decoder {
                 _state = DecoderState.pint;
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid positive integer type");
+                _listener.onError('Decoder::invalid positive integer type');
               }
               break;
             case majorTypeNint: // negative integer
@@ -107,7 +113,7 @@ class Decoder {
                 _state = DecoderState.nint;
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid negative integer type");
+                _listener.onError('Decoder::invalid negative integer type');
               }
               break;
             case majorTypeBytes: // bytes
@@ -131,10 +137,10 @@ class Decoder {
                 _state = DecoderState.bytesSize;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinite("bytes");
+                _listener.onIndefinite('bytes');
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid bytes type");
+                _listener.onError('Decoder::invalid bytes type');
               }
               break;
             case majorTypeString: // string
@@ -158,10 +164,10 @@ class Decoder {
                 _state = DecoderState.stringSize;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinite("string");
+                _listener.onIndefinite('string');
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid string type");
+                _listener.onError('Decoder::invalid string type');
               }
               break;
             case majorTypeArray: // array
@@ -184,10 +190,10 @@ class Decoder {
                 _state = DecoderState.array;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinite("array");
+                _listener.onIndefinite('array');
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid array type");
+                _listener.onError('Decoder::invalid array type');
               }
               break;
             case majorTypeMap: // map
@@ -210,10 +216,10 @@ class Decoder {
                 _state = DecoderState.map;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinite("map");
+                _listener.onIndefinite('map');
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid map type");
+                _listener.onError('Decoder::invalid map type');
               }
               break;
             case majorTypeTag: // tag
@@ -236,7 +242,7 @@ class Decoder {
                 _state = DecoderState.tag;
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid tag type");
+                _listener.onError('Decoder::invalid tag type');
               }
               break;
             case majorTypeSpecial: // special
@@ -267,15 +273,16 @@ class Decoder {
                 _state = DecoderState.special;
               } else if (minorType == aiBreak) {
                 _state = DecoderState.type;
-                _listener.onIndefinite("stop");
+                _listener.onIndefinite('stop');
               } else {
                 _state = DecoderState.error;
-                _listener.onError("Decoder::invalid special type");
+                _listener.onError('Decoder::invalid special type');
               }
               break;
           }
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.pint) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
@@ -301,8 +308,9 @@ class Decoder {
               _state = DecoderState.type;
               break;
           }
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.nint) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
@@ -321,17 +329,18 @@ class Decoder {
               } else if (temp == two32 + 1) {
                 _listener.onInteger(-two32 - 1);
               } else {
-                _listener.onExtraInteger((-1 - temp), -1);
+                _listener.onExtraInteger(-1 - temp, -1);
               }
               _state = DecoderState.type;
               break;
             case 8:
-              _listener.onExtraInteger((-1 - _input.getLong()), -1);
+              _listener.onExtraInteger(-1 - _input.getLong(), -1);
               _state = DecoderState.type;
               break;
           }
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.bytesSize) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
@@ -349,19 +358,21 @@ class Decoder {
               break;
             case 8:
               _state = DecoderState.error;
-              _listener.onError("Decoder::extra long bytes");
+              _listener.onError('Decoder::extra long bytes');
               break;
           }
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.bytesData) {
         if (_input.hasBytes(_currentLength)) {
           typed.Uint8Buffer data;
           data = _input.getBytes(_currentLength);
           _state = DecoderState.type;
           _listener.onBytes(data, _currentLength);
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.stringSize) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
@@ -379,21 +390,23 @@ class Decoder {
               break;
             case 8:
               _state = DecoderState.error;
-              _listener.onError("Decoder::extra long array");
+              _listener.onError('Decoder::extra long array');
               break;
           }
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.stringData) {
         if (_input.hasBytes(_currentLength)) {
           typed.Uint8Buffer data;
           data = _input.getBytes(_currentLength);
-          final convertor.Utf8Decoder decoder = new convertor.Utf8Decoder();
+          const convertor.Utf8Decoder decoder = convertor.Utf8Decoder();
           final String tmp = decoder.convert(data);
           _listener.onString(tmp);
           _state = DecoderState.type;
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.array) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
@@ -411,11 +424,12 @@ class Decoder {
               break;
             case 8:
               _state = DecoderState.error;
-              _listener.onError("Decoder::extra long array");
+              _listener.onError('Decoder::extra long array');
               break;
           }
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.map) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
@@ -433,11 +447,12 @@ class Decoder {
               break;
             case 8:
               _state = DecoderState.error;
-              _listener.onError("Decoder::extra long map");
+              _listener.onError('Decoder::extra long map');
               break;
           }
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.tag) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
@@ -458,8 +473,9 @@ class Decoder {
               _state = DecoderState.type;
               break;
           }
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.special) {
         if (_input.hasBytes(_currentLength)) {
           switch (_currentLength) {
@@ -486,19 +502,18 @@ class Decoder {
               _state = DecoderState.type;
               break;
           }
-        } else
+        } else {
           break;
+        }
       } else if (_state == DecoderState.error) {
-        _listener.onError("Decoder::general error");
+        _listener.onError('Decoder::general error');
         break;
       } else {
-        _listener.onError("Decoder::unknown state");
+        _listener.onError('Decoder::unknown state');
       }
     }
   }
 
-  /// Set a listener.
-  void setListener(Listener listenerInstance) {
-    _listener = listenerInstance;
-  }
+  /// Listener.
+  set listener(Listener listenerInstance) => _listener = listenerInstance;
 }

@@ -7,55 +7,73 @@
 
 part of cbor;
 
-/// A Dart item linked list entry for use by the stack
-class ItemEntry<DartItem> extends LinkedListEntry {
-  DartItem value;
+/// Stack helper class
+class Stack<T> {
+  final ListQueue<T> _list = ListQueue<T>();
 
-  ItemEntry(this.value);
+  /// Check if the stack is empty.
+  bool get isEmpty => _list.isEmpty;
 
-  String toString() => "${super.toString()} : value.toString()";
+  /// Check if the stack is not empty.
+  bool get isNotEmpty => _list.isNotEmpty;
+
+  /// Push an element on to the top of the stack.
+  void push(T e) {
+    _list.addLast(e);
+  }
+
+  /// Get the top of the stack and delete it(pop).
+  T pop() {
+    final T res = _list.last;
+    _list.removeLast();
+    return res;
+  }
+
+  /// Get the top of the stack without deleting it(peek).
+  T top() => _list.last;
+
+  /// Length
+  int get length => _list.length;
+
+  /// Clear
+  void clear() => _list.clear();
+
+  /// toList
+  List<T> toList() => _list.toList();
 }
 
 /// The decoded Dart item stack class.
 class ItemStack {
-  final List<ItemEntry> _stack = <ItemEntry>[];
+  final Stack<DartItem> _stack = Stack<DartItem>();
 
   /// Push an item.
   void push(DartItem item) {
-    final ItemEntry entry = new ItemEntry(item);
-    _stack.add(entry);
+    _stack.push(item);
   }
 
   /// Pop an item from the stack top.
-  DartItem pop() {
-    final ItemEntry entry = _stack.removeLast();
-    return entry.value;
-  }
+  DartItem pop() => _stack.pop();
 
   /// Peek the top stack item.
-  DartItem peek() {
-    final ItemEntry entry = _stack.last;
-    return entry.value;
-  }
+  DartItem peek() => _stack.top();
 
   /// Size.
-  int size() {
-    return _stack.length;
-  }
+  int size() => _stack.length;
 
   /// Clear.
-  void clear() {
-    _stack.clear();
-  }
+  void clear() => _stack.clear();
 
   /// Stack walker, returns the stack from bottom to
   /// top as a list of Dart types.
   /// Returns null if the stack is empty.
   List<dynamic> walk() {
-    if (_stack.isEmpty) return null;
+    if (_stack.isEmpty) {
+      return null;
+    }
     return _stack
-        .where((e) => !e.value.ignore)
-        .map((e) => e.value.data)
+        .toList()
+        .where((DartItem e) => !e.ignore)
+        .map((DartItem e) => e.data)
         .toList();
   }
 
@@ -63,10 +81,13 @@ class ItemStack {
   /// If used with the walk stack the returned list can
   /// be used on a per index basis.
   List<dataHints> hints() {
-    if (_stack.isEmpty) return null;
+    if (_stack.isEmpty) {
+      return null;
+    }
     return _stack
-        .where((e) => !e.value.ignore)
-        .map((e) => e.value.hint)
+        .toList()
+        .where((DartItem e) => !e.ignore)
+        .map((DartItem e) => e.hint)
         .toList()
         .cast<dataHints>();
   }
@@ -75,10 +96,13 @@ class ItemStack {
   /// Returns a list of error strings if any are found, null
   /// if none are found.
   List<String> errors() {
-    if (_stack.isEmpty) return null;
+    if (_stack.isEmpty) {
+      return null;
+    }
     return _stack
-        .where((e) => e.value.hint == dataHints.error)
-        .map((e) => e.value.data)
+        .toList()
+        .where((DartItem e) => e.hint == dataHints.error)
+        .map((DartItem e) => e.data)
         .toList()
         .cast<String>();
   }

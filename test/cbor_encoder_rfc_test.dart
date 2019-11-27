@@ -8,12 +8,15 @@ import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
+// ignore_for_file: always_specify_types
+// ignore_for_file: prefer_single_quotes
+
 void main() {
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
     // Common initialisation
     cbor.init();
-    final cbor.OutputStandard output = new cbor.OutputStandard();
-    final cbor.Encoder encoder = new cbor.Encoder(output);
+    final cbor.OutputStandard output = cbor.OutputStandard();
+    final cbor.Encoder encoder = cbor.Encoder(output);
 
     test('0', () {
       output.clear();
@@ -95,7 +98,7 @@ void main() {
 
     test('-18446744073709551617', () {
       output.clear();
-      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      final typed.Uint8Buffer data = typed.Uint8Buffer();
       data.addAll([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
       encoder.writeTag(3);
       encoder.writeBytes(data);
@@ -105,19 +108,19 @@ void main() {
 
     test('0.0', () {
       output.clear();
-      encoder.writeHalf(0.0);
+      encoder.writeHalf(0);
       expect(output.getDataAsList(), [0xf9, 0x00, 0x00]);
     });
 
     test('-0.0', () {
       output.clear();
-      encoder.writeHalf(-0.0);
+      encoder.writeHalf(-0);
       expect(output.getDataAsList(), [0xf9, 0x80, 0x00]);
     });
 
     test('1.0', () {
       output.clear();
-      encoder.writeHalf(1.0);
+      encoder.writeHalf(1);
       expect(output.getDataAsList(), [0xf9, 0x3c, 0x00]);
     });
 
@@ -129,19 +132,19 @@ void main() {
 
     test('65504.0', () {
       output.clear();
-      encoder.writeHalf(65504.0);
+      encoder.writeHalf(65504);
       expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
       output.clear();
-      encoder.writeFloat(65504.0);
+      encoder.writeFloat(65504);
       expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
     });
 
     test('100000.0', () {
       output.clear();
-      encoder.writeSingle(100000.0);
+      encoder.writeSingle(100000);
       expect(output.getDataAsList(), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
       output.clear();
-      encoder.writeFloat(100000.0);
+      encoder.writeFloat(100000);
       expect(output.getDataAsList(), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
     });
 
@@ -179,7 +182,7 @@ void main() {
 
     test('-4.0', () {
       output.clear();
-      encoder.writeHalf(-4.0);
+      encoder.writeHalf(-4);
       expect(output.getDataAsList(), [0xf9, 0xc4, 0x00]);
     });
 
@@ -342,7 +345,7 @@ void main() {
 
     test('Base16', () {
       output.clear();
-      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll([01, 02, 03, 04]);
       encoder.writeBase16(buff);
       expect(output.getDataAsList(), [0xd7, 0x44, 0x01, 0x02, 0x03, 0x04]);
@@ -350,7 +353,7 @@ void main() {
 
     test('Base64', () {
       output.clear();
-      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll([0x01, 0x02, 0x03, 0x04]);
       encoder.writeBase64(buff);
       expect(output.getDataAsList(), [0xd6, 0x44, 0x01, 0x02, 0x03, 0x04]);
@@ -358,7 +361,7 @@ void main() {
 
     test('CBOR Data Item', () {
       output.clear();
-      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll([0x64, 0x49, 0x45, 0x54, 0x46]);
       encoder.writeCborDi(buff);
       expect(output.getDataAsList(),
@@ -399,14 +402,14 @@ void main() {
 
     test('Empty single quote string', () {
       output.clear();
-      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      final typed.Uint8Buffer buff = typed.Uint8Buffer();
       encoder.writeBytes(buff);
       expect(output.getDataAsList(), [0x40]);
     });
 
     test('single quote string', () {
       output.clear();
-      final typed.Uint8Buffer buff = new typed.Uint8Buffer();
+      final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll([0x01, 0x02, 0x03, 0x04]);
       encoder.writeBytes(buff);
       expect(output.getDataAsList(), [0x44, 0x01, 0x02, 0x03, 0x04]);
@@ -582,7 +585,7 @@ void main() {
     test('Map {"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"}', () {
       output.clear();
       final bool res =
-      encoder.writeMap({"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"});
+          encoder.writeMap({"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"});
       expect(res, isTrue);
       expect(output.getDataAsList(), [
         0xa5,
@@ -611,10 +614,10 @@ void main() {
 
     test("Indefinite Bytestring 0102030405", () {
       output.clear();
-      final typed.Uint8Buffer data = new typed.Uint8Buffer();
+      final typed.Uint8Buffer data = typed.Uint8Buffer();
       data.addAll([0x01, 0x02]);
       encoder.writeBuff(data, true);
-      final typed.Uint8Buffer data1 = new typed.Uint8Buffer();
+      final typed.Uint8Buffer data1 = typed.Uint8Buffer();
       data1.addAll([0x03, 0x04, 0x05]);
       encoder.writeBuff(data1);
       encoder.writeBreak();

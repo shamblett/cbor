@@ -9,16 +9,19 @@ part of cbor;
 
 /// The standard output class.
 class OutputStandard extends Output {
+  /// Construction
+  @override
   OutputStandard() {
     this._buffer = new typed.Uint8Buffer();
     this._pauseBuffer = new typed.Uint8Buffer();
   }
 
-  /// Overridden methods
+  @override
   void clear() {
     _buffer.clear();
   }
 
+  @override
   int size() {
     return _buffer.length;
   }
