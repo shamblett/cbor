@@ -1,5 +1,8 @@
-### 2.0.3
+### 2.0.4
 Update to Dart 2.6.1, linter updates and general tidy up
+
+### 2.0.3
+Update to Dart 2.4.1, linter updates and general tidy up
 
 ### 2.0.2
 Issue 4, update to Dart 2
