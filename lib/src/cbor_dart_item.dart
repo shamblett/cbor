@@ -7,6 +7,8 @@
 
 part of cbor;
 
+// ignore_for_file: public_member_api_docs
+
 /// The Dart types an item can have.
 enum dartTypes {
   dtInt,
@@ -47,7 +49,7 @@ enum dataHints {
 /// stack listener class by the decode process.
 class DartItem {
   /// The item data.
-  dynamic data = null;
+  dynamic data;
 
   /// Target size is what we expect the size to
   /// be.
@@ -67,9 +69,7 @@ class DartItem {
   dataHints hint = dataHints.none;
 
   /// Actual size
-  int size() {
-    return data.length;
-  }
+  int size() => data.length;
 
   /// Awaiting a map key for Map types.
   bool awaitingMapKey = false;

@@ -9,71 +9,91 @@ part of cbor;
 
 /// A simple debug listener.
 class ListenerDebug extends Listener {
+  @override
   void onInteger(int value) {
-    print("Integer $value");
+    print('Integer $value');
   }
 
+  /// Banner
   void banner(String text) {
     print(text);
   }
 
+  @override
   void onBytes(typed.Uint8Buffer data, int size) {
-    print("Bytes with size: $size");
+    print('Bytes with size: $size');
   }
 
+  @override
   void onString(String str) {
-    print("String $str");
+    print('String $str');
   }
 
+  @override
   void onArray(int size) {
-    print("Array size $size");
+    print('Array size $size');
   }
 
+  /// On array element
   void onArrayElement(int value) {
-    print("Array Element $value");
+    print('Array Element $value');
   }
 
+  @override
   void onMap(int size) {
-    print("Map size $size");
+    print('Map size $size');
   }
 
+  @override
   void onTag(int tag) {
-    print("Tag $tag");
+    print('Tag $tag');
   }
 
+  @override
   void onSpecial(int code) {
-    print("Code $code");
+    print('Code $code');
   }
 
+  @override
   void onSpecialFloat(double value) {
-    print("Float Value $value");
+    print('Float Value $value');
   }
 
+  @override
   void onBool(bool state) {
-    print("State $state");
+    print('State $state');
   }
 
+  @override
   void onNull() {
-    print("Null");
+    print('Null');
   }
 
+  @override
   void onUndefined() {
-    print("Undefined");
+    print('Undefined');
   }
 
+  @override
   void onError(String error) {
-    print("Error $error");
+    print('Error $error');
   }
 
+  /// Extra integer
+  @override
   void onExtraInteger(int value, int sign) {
-    print("Extra Integer value $value, Sign $sign");
+    print('Extra Integer value $value, Sign $sign');
   }
 
+  /// Extra tag
+  @override
   void onExtraTag(int tag) {
-    print("Extra Tag $tag");
+    print('Extra Tag $tag');
   }
 
+  /// Indefinite
+  @override
   void onIndefinite(String text) {
-    print("Indefinate Item $text");
+    print('Indefinate Item $text');
   }
 }

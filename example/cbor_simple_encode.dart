@@ -9,20 +9,20 @@ import 'package:typed_data/typed_data.dart';
 int main() {
   // Get our cbor instance, always do this,it correctly
   // initialises the decoder.
-  final cbor.Cbor inst = new cbor.Cbor();
+  final cbor.Cbor inst = cbor.Cbor();
 
   // Get our encoder
   final cbor.Encoder encoder = inst.encoder;
 
   // Encode some values
-  encoder.writeArray([1, 2, 3]);
+  encoder.writeArray(<int>[1, 2, 3]);
   encoder.writeFloat(67.89);
   encoder.writeInt(10);
   // Note you can encode maps with either string or integer keys,
   // Cbor also decodes maps with these keys, however, Cbor only
   // converts maps with string keys to JSON.
-  encoder.writeMap({1: "one", 2: "two"});
-  encoder.writeString("hello");
+  encoder.writeMap(<int, String>{1: 'one', 2: 'two'});
+  encoder.writeString('hello');
 
   // You can now get the encoded output.
   final Uint8Buffer buff = inst.output.getData();

@@ -18,14 +18,16 @@ abstract class Output {
   typed.Uint8Buffer _pauseBuffer;
 
   /// Pause indicator
+  // ignore: prefer_final_fields
   bool _paused = false;
 
   /// Position of the last mark operation
+  // ignore: prefer_final_fields
   int _markPos = 0;
 
   /// Get the current output buffer
   typed.Uint8Buffer getData() {
-    final typed.Uint8Buffer ret = new typed.Uint8Buffer();
+    final typed.Uint8Buffer ret = typed.Uint8Buffer();
     ret.addAll(_buffer);
     return ret;
   }
@@ -62,5 +64,6 @@ abstract class Output {
   /// Restart after pause, copies the pause buffer back into the output buffer,
   /// if append is true the current output buffer contents are appended to the
   /// pause buffer.
+  // ignore: avoid_positional_boolean_parameters
   void restart([bool append = false]);
 }
