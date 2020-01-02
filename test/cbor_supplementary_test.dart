@@ -245,7 +245,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       expect(slistener.stack.hasErrors(), false);
@@ -260,7 +260,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       expect(slistener.stack.hasErrors(), true);
@@ -275,7 +275,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       expect(slistener.stack.hasErrors(), false);
@@ -318,7 +318,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
@@ -361,7 +361,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
@@ -404,7 +404,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
@@ -447,7 +447,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
@@ -474,7 +474,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       final List<dynamic> slist = slistener.stack.walk();
@@ -545,7 +545,7 @@ void main() {
       encoder.writeBreak();
 
       // Decoding
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
       slistener.stack.clear();
       decoder.run();

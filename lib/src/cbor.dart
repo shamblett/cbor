@@ -56,7 +56,7 @@ class Cbor {
     final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
     _output.clear();
-    _input = Input(buffer, buffer.length);
+    _input = Input(buffer);
     _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
@@ -68,7 +68,7 @@ class Cbor {
     _output.clear();
     final typed.Uint8Buffer buffer = typed.Uint8Buffer();
     buffer.addAll(ints);
-    _input = Input(buffer, buffer.length);
+    _input = Input(buffer);
     _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
@@ -78,7 +78,7 @@ class Cbor {
   void decodeFromInput() {
     final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
-    _input = Input(_output.getData(), _output.size());
+    _input = Input(_output.getData());
     _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }

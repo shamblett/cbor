@@ -14,8 +14,8 @@ class OutputStandard extends Output {
   /// Construction
   @override
   OutputStandard() {
-    this._buffer = new typed.Uint8Buffer();
-    this._pauseBuffer = new typed.Uint8Buffer();
+    _buffer = typed.Uint8Buffer();
+    _pauseBuffer = typed.Uint8Buffer();
   }
 
   @override
@@ -24,28 +24,31 @@ class OutputStandard extends Output {
   }
 
   @override
-  int size() {
-    return _buffer.length;
-  }
+  int size() => _buffer.length;
 
+  @override
   void putByte(int value) {
     _buffer.add(value);
   }
 
+  @override
   void putBytes(typed.Uint8Buffer data) {
     _buffer.addAll(data);
   }
 
+  @override
   void mark() {
     _markPos = _buffer.length;
   }
 
+  @override
   void resetToMark() {
     if (_buffer.length > _markPos) {
       _buffer.removeRange(_markPos, _buffer.length);
     }
   }
 
+  @override
   void pause() {
     if (!_paused) {
       _pauseBuffer.clear();
@@ -55,6 +58,7 @@ class OutputStandard extends Output {
     }
   }
 
+  @override
   void restart([bool append = false]) {
     if (_paused) {
       if (append) {
@@ -68,7 +72,5 @@ class OutputStandard extends Output {
 
   /// Additional methods.
 
-  List<int> getDataAsList() {
-    return _buffer.toList();
-  }
+  List<int> getDataAsList() => _buffer.toList();
 }

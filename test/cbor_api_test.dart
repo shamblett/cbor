@@ -282,8 +282,7 @@ void main() {
       inst.encoder.writeURI("example.com");
 
       // Decoding
-      final cbor.Input dataIn =
-          cbor.Input(inst.rawOutput.getData(), inst.rawOutput.size());
+      final cbor.Input dataIn = cbor.Input(inst.rawOutput.getData());
       inst.input = dataIn;
       inst.decodeFromInput();
       final List<cbor.dataHints> hints = inst.getDecodedHints();

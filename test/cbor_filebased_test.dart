@@ -31,7 +31,7 @@ void main() {
       final File data = File('$currDir/test/data/floats.cbor');
       final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll(data.readAsBytesSync());
-      final cbor.Input input = cbor.Input(buff, data.lengthSync());
+      final cbor.Input input = cbor.Input(buff);
       listener.banner('>>> File based decoding - floats');
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -54,7 +54,7 @@ void main() {
       final File data = File('$currDir/test/data/indef_string.cbor');
       final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll(data.readAsBytesSync());
-      final cbor.Input input = cbor.Input(buff, data.lengthSync());
+      final cbor.Input input = cbor.Input(buff);
       listener.banner('>>> File based decoding - Indefinitite string');
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -73,7 +73,7 @@ void main() {
       final File data = File('$currDir/test/data/integer.cbor');
       final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll(data.readAsBytesSync());
-      final cbor.Input input = cbor.Input(buff, data.lengthSync());
+      final cbor.Input input = cbor.Input(buff);
       listener.banner('>>> File based decoding - Integer');
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -92,7 +92,7 @@ void main() {
       final File data = File('$currDir/test/data/map.cbor');
       final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll(data.readAsBytesSync());
-      final cbor.Input input = cbor.Input(buff, data.lengthSync());
+      final cbor.Input input = cbor.Input(buff);
       listener.banner('>>> File based decoding - Map');
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -111,7 +111,7 @@ void main() {
       final File data = File('$currDir/test/data/nested_array.cbor');
       final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll(data.readAsBytesSync());
-      final cbor.Input input = cbor.Input(buff, data.lengthSync());
+      final cbor.Input input = cbor.Input(buff);
       listener.banner('>>> File based decoding - Nested array');
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
@@ -137,7 +137,7 @@ void main() {
       final File data = File('$currDir/test/data/tagged_date.cbor');
       final typed.Uint8Buffer buff = typed.Uint8Buffer();
       buff.addAll(data.readAsBytesSync());
-      final cbor.Input input = cbor.Input(buff, data.lengthSync());
+      final cbor.Input input = cbor.Input(buff);
       listener.banner('>>> File based decoding - Tagged date');
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();

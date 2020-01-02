@@ -31,7 +31,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [0]);
@@ -50,7 +50,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1]);
@@ -70,7 +70,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [10]);
@@ -90,7 +90,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [23]);
@@ -110,7 +110,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [24]);
@@ -130,7 +130,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [25]);
@@ -150,7 +150,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [100]);
@@ -170,7 +170,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1000]);
@@ -190,7 +190,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       slistener.stack.clear();
@@ -220,7 +220,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1000000000000]);
@@ -250,7 +250,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       final BigInt temp = BigInt.parse("18446744073709551615").toSigned(64);
@@ -283,7 +283,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [
@@ -319,7 +319,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       final BigInt temp = BigInt.parse("-18446744073709551616").toSigned(64);
@@ -352,7 +352,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [
@@ -378,7 +378,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-1]);
@@ -398,7 +398,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-10]);
@@ -418,7 +418,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-100]);
@@ -438,7 +438,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-1000]);
@@ -458,7 +458,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [0.0]);
@@ -478,7 +478,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-0.0]);
@@ -498,7 +498,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1.0]);
@@ -528,7 +528,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1.1]);
@@ -548,7 +548,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1.5]);
@@ -568,7 +568,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [65504.0]);
@@ -588,7 +588,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [100000.0]);
@@ -608,7 +608,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [3.4028234663852886e+38]);
@@ -638,7 +638,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1.0e+300]);
@@ -658,7 +658,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [5.960464477539063e-8]);
@@ -678,7 +678,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [0.00006103515625]);
@@ -698,7 +698,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-4.0]);
@@ -728,7 +728,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-4.1]);
@@ -748,7 +748,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [double.infinity]);
@@ -768,7 +768,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue[0], isNaN);
@@ -788,7 +788,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-double.infinity]);
@@ -808,7 +808,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [double.infinity]);
@@ -828,7 +828,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue[0], isNaN);
@@ -854,7 +854,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-double.infinity]);
@@ -884,7 +884,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [double.infinity]);
@@ -914,7 +914,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue[0], isNaN);
@@ -944,7 +944,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [-double.infinity]);
@@ -964,7 +964,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [false]);
@@ -984,7 +984,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [true]);
@@ -1004,7 +1004,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue[0], isNull);
@@ -1024,7 +1024,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["Undefined"]);
@@ -1044,7 +1044,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [16]);
@@ -1064,7 +1064,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [24]);
@@ -1084,7 +1084,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [255]);
@@ -1127,7 +1127,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [0, "2013-03-21T20:04:00Z"]);
@@ -1148,7 +1148,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 1363896240]);
@@ -1180,7 +1180,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 1363896240.5]);
@@ -1201,7 +1201,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [
@@ -1228,7 +1228,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [
@@ -1281,7 +1281,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [32, "http://www.example.com"]);
@@ -1304,7 +1304,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [[]]);
@@ -1326,7 +1326,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [
@@ -1351,7 +1351,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [""]);
@@ -1373,7 +1373,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["a"]);
@@ -1395,7 +1395,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["IETF"]);
@@ -1417,7 +1417,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["\"\\"]);
@@ -1439,7 +1439,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ['ü']);
@@ -1461,7 +1461,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ['水']);
@@ -1483,7 +1483,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ['𐅑']);
@@ -1505,7 +1505,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastSize, 0);
@@ -1525,7 +1525,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3]);
@@ -1576,7 +1576,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [
@@ -1649,7 +1649,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
@@ -1674,7 +1674,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, []);
@@ -1695,7 +1695,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4]);
@@ -1726,7 +1726,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["a", 1, "b", 2, 3]);
@@ -1750,7 +1750,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["a", "b", "c"]);
@@ -1796,7 +1796,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue,
@@ -1828,7 +1828,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [
@@ -1866,7 +1866,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["strea", "ming"]);
@@ -1887,7 +1887,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, []);
@@ -1919,7 +1919,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
@@ -1954,7 +1954,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
@@ -1989,7 +1989,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
@@ -2024,7 +2024,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [1, 2, 3, 4, 5]);
@@ -2079,7 +2079,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, [
@@ -2164,7 +2164,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["a", 1, "b", 2, 3]);
@@ -2198,7 +2198,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["a", "b", "c"]);
@@ -2235,7 +2235,7 @@ void main() {
       final typed.Uint8Buffer buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData(), output.size());
+      final cbor.Input input = cbor.Input(output.getData());
       final cbor.Decoder decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       expect(listener.lastValue, ["Fun", true, "Amt", -2]);
