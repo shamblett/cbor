@@ -10,6 +10,11 @@ import 'package:typed_data/typed_data.dart' as typed;
 
 // ignore_for_file: prefer_single_quotes
 // ignore_for_file: always_specify_types
+// ignore_for_file: prefer_final_fields
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
 
 class ListenerTest extends cbor.Listener {
   List<dynamic> lastValue = <dynamic>[];

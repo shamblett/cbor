@@ -4,6 +4,11 @@
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:typed_data/typed_data.dart';
 
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
+
 /// A simple encoding sequence followed by a self decode and a pretty print
 /// and JSON output.
 int main() {

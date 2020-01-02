@@ -1,3 +1,6 @@
+### 2.0.4
+Linter rules update
+
 ### 2.0.3
 Issue 6, linter rules update
 

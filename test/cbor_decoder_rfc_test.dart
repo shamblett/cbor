@@ -11,6 +11,11 @@ import 'cbor_test_listener.dart';
 
 // ignore_for_file: prefer_single_quotes
 // ignore_for_file: always_specify_types
+// ignore_for_file: prefer_final_fields
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
 
 void main() {
   group('RFC Appendix A Diagnostics decoder tests -> ', () {

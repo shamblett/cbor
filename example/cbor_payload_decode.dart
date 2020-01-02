@@ -4,6 +4,11 @@
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:typed_data/typed_data.dart';
 
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
+
 /// A payload based decode.
 int main() {
   // Get our cbor instance, always do this,it correctly

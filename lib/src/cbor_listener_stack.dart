@@ -8,6 +8,9 @@
 part of cbor;
 
 // ignore_for_file: public_member_api_docs
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
 
 /// What we are waiting for next, if anything.
 enum whatsNext {

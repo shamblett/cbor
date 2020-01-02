@@ -7,6 +7,8 @@
 
 part of cbor;
 
+// ignore_for_file: cascade_invocations
+
 /// The standard output class.
 class OutputStandard extends Output {
   /// Construction

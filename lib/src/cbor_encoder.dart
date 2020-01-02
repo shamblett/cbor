@@ -7,6 +7,11 @@
 
 part of cbor;
 
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
+
 /// The encoder class implements the CBOR decoder functionality as defined in
 /// RFC7049.
 class Encoder {
