@@ -36,17 +36,19 @@ const int fourByte = 4;
 const int eightByte = 8;
 
 /// The decoder class implements the CBOR decoder functionality as defined in
-/// RFC7049. Output from the decoding process is through the
-/// Listener class interface.
-/// Different listener classes can be supplied for different
-/// purposes, such as test, debug as well as the
-/// standard stack listener.
+/// RFC7049. Output from the decoding process is through the Listener
+/// class interface.
+///
+/// Different listener classes can be supplied for different purposes,
+/// such as test, debug as well as the standard stack listener.
 class Decoder {
+  /// Default
   Decoder(Input input) {
     _input = input;
     _state = DecoderState.type;
   }
 
+  /// With a listener
   Decoder.withListener(Input input, Listener listener) {
     _input = input;
     _state = DecoderState.type;
@@ -516,7 +518,6 @@ class Decoder {
     }
   }
 
-  /// Set a listener.
-  // ignore: avoid_setters_without_getters
+  /// Listener.
   set listener(Listener listenerInstance) => _listener = listenerInstance;
 }

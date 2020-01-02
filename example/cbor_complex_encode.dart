@@ -32,7 +32,7 @@ int main() {
   // for details of what we are doing here, most users will not
   // need to do stuff like this.
 
-  // Pause encoding, and start a new encoding stream, there
+  // Pause encoding, and start a encoding stream, there
   // can be only one pause at any one time. We are encoding
   // an indefinite array sequence here. You can do this by encoding
   // an array as indefinite also.

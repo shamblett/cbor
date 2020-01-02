@@ -79,14 +79,14 @@ bool canBeASingle(double value) {
 /// if the conversion fails.
 BigInt bignumToBigInt(typed.Uint8Buffer buff, String sign) {
   // Convert to a signed hex string.
-  String res = '${sign}0x';
+  final StringBuffer res = StringBuffer();
+  res.write('${sign}0x');
   for (final int i in buff) {
     String tmp = i.toRadixString(16);
     if (tmp.length == 1) {
       tmp = '0$tmp';
     }
-    // ignore: use_string_buffers
-    res += tmp;
+    res.write(tmp);
   }
-  return BigInt.tryParse(res);
+  return BigInt.tryParse(res.toString());
 }

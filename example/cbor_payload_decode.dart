@@ -17,7 +17,7 @@ int main() {
 
   // Assume we have received a CBOR encoded byte buffer from the network.
   // The byte sequence below gives :-
-  // {"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"}
+  // {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E'}
   final List<int> payload = <int>[
     0xa5,
     0x61,

@@ -23,9 +23,11 @@ abstract class Output {
   typed.Uint8Buffer _pauseBuffer;
 
   /// Pause indicator
+  // ignore: prefer_final_fields
   bool _paused = false;
 
   /// Position of the last mark operation
+  // ignore: prefer_final_fields
   int _markPos = 0;
 
   /// Get the current output buffer

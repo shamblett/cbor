@@ -15,9 +15,8 @@ part of cbor;
 /// The Input class provides data access primitives to the underlying
 /// UTF-8 data buffer supplied.
 class Input {
-  /// Construction
-  // ignore: avoid_unused_constructor_parameters
-  Input(typed.Uint8Buffer data, int size) {
+  /// Default
+  Input(typed.Uint8Buffer data) {
     _data = data;
     _offset = 0;
   }

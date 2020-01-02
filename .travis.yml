@@ -2,4 +2,7 @@ language: dart
 dart:
   # Install the latest stable release
   - stable
-  
+branches:
+  only:
+    - master
+
