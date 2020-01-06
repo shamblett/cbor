@@ -611,7 +611,6 @@ void main() {
       final cbor.Cbor inst = cbor.Cbor();
       inst.decodeFromList(bytes);
       final List<dynamic> decoded = inst.getDecodedData();
-      print(decoded);
       expect(decoded, [{1: {1: 1}, 3: {1: 1}, 12: {1: 1}}]);
     });
   });
