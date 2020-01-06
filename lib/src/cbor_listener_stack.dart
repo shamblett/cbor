@@ -452,18 +452,13 @@ class ListenerStack extends Listener {
       } else {
         // List or Map
         if (entry.type == dartTypes.dtList) {
-          if (item.isIncompleteList() || item.isIncompleteMap()) {
+          if (item.isIncompleteList()) {
+            _stack.push(item);
+          } else if (item.isIncompleteMap()) {
+            _addItemToEntry(item, entry);
             _stack.push(item);
           } else {
-            entry.data.add(item.data);
-            if (entry.data.length == entry.targetSize) {
-              entry.complete = true;
-              // Item can be ignored.
-              item.ignore = true;
-              // Recurse for nested lists
-              final DartItem item1 = _stack.pop();
-              _appendImpl(item1);
-            }
+            _addItemToEntry(item, entry);
           }
         } else if (entry.type == dartTypes.dtMap) {
           // Check if we are expecting a key or a value
@@ -529,5 +524,17 @@ class ListenerStack extends Listener {
       }
     }
     return false;
+  }
+
+  void _addItemToEntry(DartItem item, DartItem entry) {
+    entry.data.add(item.data);
+    if (entry.data.length == entry.targetSize) {
+      entry.complete = true;
+      // Item can be ignored.
+      item.ignore = true;
+      // Recurse for nested lists
+      final DartItem item1 = _stack.pop();
+      _appendImpl(item1);
+    }
   }
 }
