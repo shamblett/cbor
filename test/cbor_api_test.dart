@@ -8,13 +8,18 @@ import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
-// ignore_for_file: always_specify_types
 // ignore_for_file: prefer_single_quotes
+// ignore_for_file: always_specify_types
+// ignore_for_file: prefer_final_fields
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
 
 void main() {
   // Common
   final cbor.Cbor inst = cbor.Cbor();
-  final List<int> data = [
+  final List<int> data = <int>[
     0xB4,
     0x63,
     0x70,
@@ -199,7 +204,7 @@ void main() {
       buff.addAll(data);
       inst.decodeFromBuffer(buff);
       final List<dynamic> decode = inst.getDecodedData();
-      expect(decode[0], {
+      expect(decode[0], <dynamic, dynamic>{
         "p16": 16,
         "uni": "\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)",
         "n1": -1,
@@ -255,11 +260,8 @@ void main() {
       print(jsonString);
       expect(
           jsonString,
-          '{"p16":16,"uni":"通訊連接埠 (COM1)","n1":-1,"ascii":"hello",'
-          '"nil":null,"empty_arr":[],"p65535":65535,"bin":[49,50,85],'
-          '"n2G":-2147483648,"p1":1,"n65535":-65535,"n16":-16,'
-          '"zero":0,"arr":[1,2,3],"obj":{"foo":"bar"},"bfalse":false,'
-          '"p255":255,"p2G":2147483648,"n255":-255,"btrue":true}');
+          // ignore: lines_longer_than_80_chars
+          '{"p16":16,"uni":"通訊連接埠 (COM1)","n1":-1,"ascii":"hello","nil":null,"empty_arr":[],"p65535":65535,"bin":[49,50,85],"n2G":-2147483648,"p1":1,"n65535":-65535,"n16":-16,"zero":0,"arr":[1,2,3],"obj":{"foo":"bar"},"bfalse":false,"p255":255,"p2G":2147483648,"n255":-255,"btrue":true}');
     });
 
     test('Hints -> ', () {
@@ -299,8 +301,8 @@ void main() {
       print(jsonString);
       expect(
           jsonString,
-          '"2013-03-21T20:04:00Z",1234567,[1,2,3,89],[1,2,3,90],[1,2,3,91],'
-          '[1,2,3,92],[1,2,3,93],"example.com"');
+          // ignore: lines_longer_than_80_chars
+          '"2013-03-21T20:04:00Z",1234567,[1,2,3,89],[1,2,3,90],[1,2,3,91],[1,2,3,92],[1,2,3,93],"example.com"');
     });
 
     test('JSON -> ', () {
@@ -324,8 +326,10 @@ void main() {
         "3": "Hello"
       });
       encoder.writeSingle(36.908);
-      encoder.writeDouble(356600);
-      encoder.writeHalf(20);
+      // ignore: prefer_int_literals
+      encoder.writeDouble(35.66e4);
+      // ignore: prefer_int_literals
+      encoder.writeHalf(20.0);
       encoder.writeDateTime("2013-03-21T20:04:00Z");
       encoder.writeEpoch(1234567);
       encoder.writeSimple(10);
@@ -336,10 +340,8 @@ void main() {
       print(json);
       expect(
           json,
-          '[9,10,11],123,-457,"barrr",321,322,"foo",true,false,null,'
-          'null,{"a":[1,2,3],"2":true,"3":"Hello"},'
-          '36.90800094604492,356600.0,20.0,'
-          '"2013-03-21T20:04:00Z",1234567,10');
+          // ignore: lines_longer_than_80_chars
+          '[9,10,11],123,-457,"barrr",321,322,"foo",true,false,null,null,{"a":[1,2,3],"2":true,"3":"Hello"},36.90800094604492,356600.0,20.0,"2013-03-21T20:04:00Z",1234567,10');
     });
   });
 }

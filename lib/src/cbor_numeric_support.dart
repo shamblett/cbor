@@ -7,6 +7,10 @@
 
 part of cbor;
 
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+
 /// Numeric handling support functions.
 
 /// Float handling support functions.

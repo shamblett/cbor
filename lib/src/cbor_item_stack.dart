@@ -7,61 +7,53 @@
 
 part of cbor;
 
-/// Stack helper class
-class Stack<T> {
-  final ListQueue<T> _list = ListQueue<T>();
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
 
-  /// Check if the stack is empty.
-  bool get isEmpty => _list.isEmpty;
+/// A Dart item linked list entry for use by the stack
+class ItemEntry<DartItem> extends LinkedListEntry<ItemEntry<DartItem>> {
+  /// Construction
+  ItemEntry(this.value);
 
-  /// Check if the stack is not empty.
-  bool get isNotEmpty => _list.isNotEmpty;
+  /// The item
+  DartItem value;
 
-  /// Push an element on to the top of the stack.
-  void push(T e) {
-    _list.addLast(e);
-  }
-
-  /// Get the top of the stack and delete it(pop).
-  T pop() {
-    final T res = _list.last;
-    _list.removeLast();
-    return res;
-  }
-
-  /// Get the top of the stack without deleting it(peek).
-  T top() => _list.last;
-
-  /// Length
-  int get length => _list.length;
-
-  /// Clear
-  void clear() => _list.clear();
-
-  /// toList
-  List<T> toList() => _list.toList();
+  @override
+  String toString() => '${super.toString()} : value.toString()';
 }
 
 /// The decoded Dart item stack class.
 class ItemStack {
-  final Stack<DartItem> _stack = Stack<DartItem>();
+  /// The stack
+  final List<ItemEntry<DartItem>> _stack = <ItemEntry<DartItem>>[];
 
   /// Push an item.
   void push(DartItem item) {
-    _stack.push(item);
+    final ItemEntry<DartItem> entry = ItemEntry<DartItem>(item);
+    _stack.add(entry);
   }
 
   /// Pop an item from the stack top.
-  DartItem pop() => _stack.pop();
+  DartItem pop() {
+    final ItemEntry<DartItem> entry = _stack.removeLast();
+    return entry.value;
+  }
 
   /// Peek the top stack item.
-  DartItem peek() => _stack.top();
+  DartItem peek() {
+    final ItemEntry<DartItem> entry = _stack.last;
+    return entry.value;
+  }
 
   /// Size.
   int size() => _stack.length;
 
   /// Clear.
-  void clear() => _stack.clear();
+  void clear() {
+    _stack.clear();
+  }
 
   /// Stack walker, returns the stack from bottom to
   /// top as a list of Dart types.
@@ -71,9 +63,10 @@ class ItemStack {
       return null;
     }
     return _stack
-        .toList()
-        .where((DartItem e) => !e.ignore)
-        .map((DartItem e) => e.data)
+        // ignore: always_specify_types
+        .where((e) => !e.value.ignore)
+        // ignore: always_specify_types
+        .map((e) => e.value.data)
         .toList();
   }
 
@@ -85,9 +78,10 @@ class ItemStack {
       return null;
     }
     return _stack
-        .toList()
-        .where((DartItem e) => !e.ignore)
-        .map((DartItem e) => e.hint)
+        // ignore: always_specify_types
+        .where((e) => !e.value.ignore)
+        // ignore: always_specify_types
+        .map((e) => e.value.hint)
         .toList()
         .cast<dataHints>();
   }
@@ -100,9 +94,10 @@ class ItemStack {
       return null;
     }
     return _stack
-        .toList()
-        .where((DartItem e) => e.hint == dataHints.error)
-        .map((DartItem e) => e.data)
+        // ignore: always_specify_types
+        .where((e) => e.value.hint == dataHints.error)
+        // ignore: always_specify_types
+        .map((e) => e.value.data)
         .toList()
         .cast<String>();
   }

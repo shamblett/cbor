@@ -7,6 +7,13 @@
 
 part of cbor;
 
+// ignore_for_file: unnecessary_getters_setters
+// ignore_for_file: avoid_as
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
+
 /// The CBOR package main API.
 class Cbor {
   /// Construction
@@ -19,71 +26,79 @@ class Cbor {
 
   /// Decoder
   typed.Uint8Buffer _buffer;
-
-  /// The input
-  Input input;
-
+  Input _input;
   Decoder _decoder;
-
   Listener _listener;
 
-  /// The decoder
+  /// Input
+  Input get input => _input;
+
+  set input(Input val) => _input = val;
+
+  /// Decoder
   Decoder get decoder => _decoder;
 
-  /// The output
+  /// Output
   Output get output => _output;
 
-  /// The buffer
+  /// Buffer
   typed.Uint8Buffer get buffer => _buffer;
+
+  /// Listener
+  Listener get listener => _listener;
+
+  set listener(Listener value) {
+    _listener = value;
+  }
 
   /// Decode from a byte buffer payload
   void decodeFromBuffer(typed.Uint8Buffer buffer) {
-    final ListenerStack listener = _listener;
+    final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
     _output.clear();
-    input = Input(buffer);
-    _decoder = Decoder.withListener(input, _listener);
+    _input = Input(buffer);
+    _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
 
   /// Decode from a list of integer payload
   void decodeFromList(List<int> ints) {
-    final ListenerStack listener = _listener;
+    final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
     _output.clear();
     final typed.Uint8Buffer buffer = typed.Uint8Buffer();
     buffer.addAll(ints);
-    input = Input(buffer);
-    _decoder = Decoder.withListener(input, _listener);
+    _input = Input(buffer);
+    _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
 
   /// Decode from the input attribute, i.e decode what we have
   /// just encoded.
   void decodeFromInput() {
-    final ListenerStack listener = _listener;
+    final ListenerStack listener = _listener as ListenerStack;
     listener.stack.clear();
-    input = Input(_output.getData());
-    _decoder = Decoder.withListener(input, _listener);
+    _input = Input(_output.getData());
+    _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
 
   /// Get the decoded data as a list
   List<dynamic> getDecodedData() {
-    final ListenerStack listener = _listener;
+    final ListenerStack listener = _listener as ListenerStack;
     return listener.stack.walk();
   }
 
   /// Get the decoded hints
   List<dataHints> getDecodedHints() {
-    final ListenerStack listener = _listener;
+    final ListenerStack listener = _listener as ListenerStack;
     return listener.stack.hints();
   }
 
   /// Pretty print the decoded data
   // ignore: avoid_positional_boolean_parameters
   String decodedPrettyPrint([bool withHints = false]) {
-    final StringBuffer ret = StringBuffer();
+    String ret = '';
     final List<dynamic> values = getDecodedData();
     List<dataHints> hints;
     if (withHints) {
@@ -91,12 +106,13 @@ class Cbor {
     }
     final int length = values.length;
     for (int i = 0; i < length; i++) {
-      ret.write('Entry $i   : Value is => ${values[i].toString()}\n');
+      // ignore: use_string_buffers
+      ret += 'Entry $i   : Value is => ${values[i].toString()}\n';
       if (withHints) {
-        ret.write('          : Hint is => ${hints[i].toString()}\n');
+        ret += '          : Hint is => ${hints[i].toString()}\n';
       }
     }
-    return ret.toString();
+    return ret;
   }
 
   /// To JSON, only supports strings as map keys.

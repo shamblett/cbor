@@ -8,8 +8,13 @@ import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
-// ignore_for_file: always_specify_types
 // ignore_for_file: prefer_single_quotes
+// ignore_for_file: always_specify_types
+// ignore_for_file: prefer_final_fields
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
 
 void main() {
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
@@ -108,19 +113,22 @@ void main() {
 
     test('0.0', () {
       output.clear();
-      encoder.writeHalf(0);
+      // ignore: prefer_int_literals
+      encoder.writeHalf(0.0);
       expect(output.getDataAsList(), [0xf9, 0x00, 0x00]);
     });
 
     test('-0.0', () {
       output.clear();
-      encoder.writeHalf(-0);
+      // ignore: prefer_int_literals
+      encoder.writeHalf(-0.0);
       expect(output.getDataAsList(), [0xf9, 0x80, 0x00]);
     });
 
     test('1.0', () {
       output.clear();
-      encoder.writeHalf(1);
+      // ignore: prefer_int_literals
+      encoder.writeHalf(1.0);
       expect(output.getDataAsList(), [0xf9, 0x3c, 0x00]);
     });
 
@@ -132,19 +140,23 @@ void main() {
 
     test('65504.0', () {
       output.clear();
-      encoder.writeHalf(65504);
+      // ignore: prefer_int_literals
+      encoder.writeHalf(65504.0);
       expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
       output.clear();
-      encoder.writeFloat(65504);
+      // ignore: prefer_int_literals
+      encoder.writeFloat(65504.0);
       expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
     });
 
     test('100000.0', () {
       output.clear();
-      encoder.writeSingle(100000);
+      // ignore: prefer_int_literals
+      encoder.writeSingle(100000.0);
       expect(output.getDataAsList(), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
       output.clear();
-      encoder.writeFloat(100000);
+      // ignore: prefer_int_literals
+      encoder.writeFloat(100000.0);
       expect(output.getDataAsList(), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
     });
 
@@ -182,7 +194,8 @@ void main() {
 
     test('-4.0', () {
       output.clear();
-      encoder.writeHalf(-4);
+      // ignore: prefer_int_literals
+      encoder.writeHalf(-4.0);
       expect(output.getDataAsList(), [0xf9, 0xc4, 0x00]);
     });
 

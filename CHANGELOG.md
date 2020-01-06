@@ -1,10 +1,14 @@
+### 2.0.5
+Linter rules update
+
 ### 2.0.4
-Update to Dart 2.6.1, linter updates and general tidy up
+Linter rules update
 
 ### 2.0.3
-Update to Dart 2.4.1, linter updates and general tidy up
+Issue 6, linter rules update
 
 ### 2.0.2
+
 Issue 4, update to Dart 2
 
 ### 1.0.4

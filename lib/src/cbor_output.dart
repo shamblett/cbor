@@ -8,6 +8,9 @@
 part of cbor;
 
 // ignore_for_file: prefer_final_fields
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
 
 /// A base class for encoder output.
 /// Derived classes must implement these methods as a minimum

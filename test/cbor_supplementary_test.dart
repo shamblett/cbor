@@ -8,8 +8,13 @@ import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
-// ignore_for_file: always_specify_types
 // ignore_for_file: prefer_single_quotes
+// ignore_for_file: always_specify_types
+// ignore_for_file: prefer_final_fields
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
 
 void main() {
   // Common
@@ -503,8 +508,10 @@ void main() {
         3: "Hello"
       });
       encoder.writeSingle(36.908);
-      encoder.writeDouble(356600);
-      encoder.writeHalf(20);
+      // ignore: prefer_int_literals
+      encoder.writeDouble(35.66e4);
+      // ignore: prefer_int_literals
+      encoder.writeHalf(20.0);
       encoder.writeDateTime("2013-03-21T20:04:00Z");
       encoder.writeEpoch(1234567);
       encoder.writeSimple(10);

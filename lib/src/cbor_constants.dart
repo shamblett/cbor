@@ -8,6 +8,11 @@
 part of cbor;
 
 // ignore_for_file: public_member_api_docs
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
+
 /// Constants for use across the CBOR package.
 
 /// CBOR decoding constants
@@ -41,8 +46,10 @@ final int two8 = pow(2, 8);
 final int two16 = pow(2, 16);
 final int two32 = pow(2, 32);
 final int two64 = pow(2, 64);
-const double halfLimitUpper = 65504;
-const double halfLimitLower = -65504;
+// ignore: prefer_int_literals
+const double halfLimitUpper = 65504.0;
+// ignore: prefer_int_literals
+const double halfLimitLower = -65504.0;
 const double singleLimitUpper = 3.4028234663852886e38;
 const double singleLimitLower = -3.4028234663852886e38;
 const int simpleLimitUpper = 255;

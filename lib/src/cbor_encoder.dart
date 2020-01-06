@@ -7,14 +7,15 @@
 
 part of cbor;
 
-/// Float encoding directives
-// ignore: public_member_api_docs
-enum encodeFloatAs { half, single, double }
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+// ignore_for_file: avoid_print
 
 /// The encoder class implements the CBOR decoder functionality as defined in
 /// RFC7049.
 class Encoder {
-  /// Default
+  /// Construction
   Encoder(Output out) {
     _out = out;
   }
@@ -522,7 +523,8 @@ class Encoder {
     }
 
     bool ok = true;
-    value.forEach((dynamic key, dynamic val) {
+    // ignore: always_specify_types
+    value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
       if (key.runtimeType.toString() == 'int') {
         writeInt(key);

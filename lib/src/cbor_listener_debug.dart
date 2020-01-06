@@ -7,6 +7,12 @@
 
 part of cbor;
 
+// ignore_for_file: public_member_api_docs
+// ignore_for_file: avoid_print
+// ignore_for_file: omit_local_variable_types
+// ignore_for_file: unnecessary_final
+// ignore_for_file: cascade_invocations
+
 /// A simple debug listener.
 class ListenerDebug extends Listener {
   @override
@@ -14,7 +20,6 @@ class ListenerDebug extends Listener {
     print('Integer $value');
   }
 
-  /// Banner
   void banner(String text) {
     print(text);
   }
@@ -34,7 +39,6 @@ class ListenerDebug extends Listener {
     print('Array size $size');
   }
 
-  /// On array element
   void onArrayElement(int value) {
     print('Array Element $value');
   }
@@ -79,19 +83,16 @@ class ListenerDebug extends Listener {
     print('Error $error');
   }
 
-  /// Extra integer
   @override
   void onExtraInteger(int value, int sign) {
     print('Extra Integer value $value, Sign $sign');
   }
 
-  /// Extra tag
   @override
   void onExtraTag(int tag) {
     print('Extra Tag $tag');
   }
 
-  /// Indefinite
   @override
   void onIndefinite(String text) {
     print('Indefinate Item $text');
