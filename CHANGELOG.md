@@ -1,3 +1,6 @@
+### 2.0.6
+Issue 9
+
 ### 2.0.5
 Linter rules update
 

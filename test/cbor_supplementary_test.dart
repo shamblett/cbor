@@ -4,6 +4,8 @@
  * Date   : 12/12/2016
  * Copyright :  S.Hamblett
  */
+import 'package:convert/convert.dart';
+
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
@@ -598,6 +600,19 @@ void main() {
         [09, 10, 11]
       ]);
       expect(slist[29], {"1": "First", "2": "Second", "3": "Third"});
+    });
+  });
+  group('Issues', ()
+  {
+    test('9', () {
+      print('Issue 9 - invalid decoding of arrays');
+      const String hexString = "81a301a1010103a101010ca10101";
+      final List<int> bytes = hex.decode(hexString);
+      final cbor.Cbor inst = cbor.Cbor();
+      inst.decodeFromList(bytes);
+      final List<dynamic> decoded = inst.getDecodedData();
+      print(decoded);
+      expect(decoded, [{1: {1: 1}, 3: {1: 1}, 12: {1: 1}}]);
     });
   });
 }
