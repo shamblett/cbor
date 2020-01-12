@@ -66,12 +66,8 @@ class ItemStack {
         // ignore: always_specify_types
         .where((e) => !e.value.ignore)
         // ignore: always_specify_types
-        .map((e) => e.value.data);
-    if ( walk is Iterable) {
-      return walk.toList()[0];
-    } else {
-      return walk.toList();
-    }
+        .map((e) => e.value.data).cast<dynamic>().toList();
+    return walk;
 
   }
 
