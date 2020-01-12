@@ -602,16 +602,73 @@ void main() {
       expect(slist[29], {"1": "First", "2": "Second", "3": "Third"});
     });
   });
-  group('Issues', ()
-  {
-    test('9', () {
-      print('Issue 9 - invalid decoding of arrays');
-      const String hexString = "81a301a1010103a101010ca10101";
-      final List<int> bytes = hex.decode(hexString);
-      final cbor.Cbor inst = cbor.Cbor();
-      inst.decodeFromList(bytes);
-      final List<dynamic> decoded = inst.getDecodedData();
-      expect(decoded, [{1: {1: 1}, 3: {1: 1}, 12: {1: 1}}]);
+  group('Issues', () {
+    group('Issue 9', () {
+      test('1', () {
+        print('1 - invalid decoding of arrays');
+        //        81          # array(1)
+        //        A3       # map(3)
+        //        01    # unsigned(1)
+        //        A1    # map(1)
+        //        01 # unsigned(1)
+        //        01 # unsigned(1)
+        //        03    # unsigned(3)
+        //        A1    # map(1)
+        //        01 # unsigned(1)
+        //        01 # unsigned(1)
+        //        0C    # unsigned(12)
+        //        A1    # map(1)
+        //        01 # unsigned(1)
+        //        01 # unsigned(1)
+
+        const String hexString = "81a301a1010103a101010ca10101";
+        final List<int> bytes = hex.decode(hexString);
+        final cbor.Cbor inst = cbor.Cbor();
+        inst.decodeFromList(bytes);
+        print(inst.decodedPrettyPrint());
+        final List<dynamic> decoded = inst.getDecodedData();
+        expect(decoded, [
+          {
+            1: {1: 1},
+            3: {1: 1},
+            12: {1: 1}
+          }
+        ]);
+      });
+      test('2', () {
+        print('2 - invalid decoding of arrays');
+        //        81             # array(1)
+        //        A3          # map(3)
+        //        01       # unsigned(1)
+        //        A1       # map(1)
+        //        01    # unsigned(1)
+        //        02    # unsigned(2)
+        //        03       # unsigned(3)
+        //        A1       # map(1)
+        //        01    # unsigned(1)
+        //        81    # array(1)
+        //        01 # unsigned(1)
+        //        0C       # unsigned(12)
+        //        A1       # map(1)
+        //        01    # unsigned(1)
+        //        02    # unsigned(2)
+
+        const String hexString = "81A301A1010203A10181010CA10102";
+        final List<int> bytes = hex.decode(hexString);
+        final cbor.Cbor inst = cbor.Cbor();
+        inst.decodeFromList(bytes);
+        print(inst.decodedPrettyPrint());
+        final List<dynamic> decoded = inst.getDecodedData();
+        expect(decoded, [
+          {
+            1: {1: 2},
+            3: {
+              1: [1]
+            },
+            12: {1: 2}
+          }
+        ]);
+      });
     });
   });
 }
