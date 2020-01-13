@@ -62,13 +62,12 @@ class ItemStack {
     if (_stack.isEmpty) {
       return null;
     }
-    final dynamic walk = _stack
+    return _stack
         // ignore: always_specify_types
         .where((e) => !e.value.ignore)
         // ignore: always_specify_types
-        .map((e) => e.value.data).cast<dynamic>().toList();
-    return walk;
-
+        .map((e) => e.value.data)
+        .toList();
   }
 
   /// Gets item hints. Returns item hints for stack items.
