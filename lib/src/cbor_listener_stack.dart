@@ -528,13 +528,19 @@ class ListenerStack extends Listener {
 
   void _addItemToEntry(DartItem item, DartItem entry) {
     entry.data.add(item.data);
-    if (entry.data.length == entry.targetSize) {
-      entry.complete = true;
-      // Item can be ignored.
-      item.ignore = true;
-      // Recurse for nested lists
-      final DartItem item1 = _stack.pop();
-      _appendImpl(item1);
+    // If the entry is a list and the item is a map we can't
+    // test against the target size until the map is complete
+    if (entry.type == dartTypes.dtList) {
+      print('KKK');
+    } else {
+      if (entry.data.length == entry.targetSize) {
+        entry.complete = true;
+        // Item can be ignored.
+        item.ignore = true;
+        // Recurse for nested lists
+        final DartItem item1 = _stack.pop();
+        _appendImpl(item1);
+      }
     }
   }
 }
