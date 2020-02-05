@@ -531,7 +531,6 @@ class ListenerStack extends Listener {
     // If the entry is a list and the item is a map we can't
     // test against the target size until the map is complete
     if (entry.type == dartTypes.dtList) {
-      print('KKK');
     } else {
       if (entry.data.length == entry.targetSize) {
         entry.complete = true;

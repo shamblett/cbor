@@ -21,7 +21,7 @@ class ItemEntry<DartItem> extends LinkedListEntry<ItemEntry<DartItem>> {
   DartItem value;
 
   @override
-  String toString() => '${super.toString()} : value.toString()';
+  String toString() => '${super.toString()} : ${value.toString()}';
 }
 
 /// The decoded Dart item stack class.
@@ -45,6 +45,14 @@ class ItemStack {
   DartItem peek() {
     final ItemEntry<DartItem> entry = _stack.last;
     return entry.value;
+  }
+
+  /// Add an item to the entry at the top of the stack
+  void addItemToTop(DartItem item) {
+    final ItemEntry<DartItem> top = _stack.removeLast();
+    final ItemEntry<DartItem> entry = ItemEntry<DartItem>(item);
+    top.insertAfter(entry);
+    _stack.add(top);
   }
 
   /// Size.
