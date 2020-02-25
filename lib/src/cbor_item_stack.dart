@@ -42,6 +42,9 @@ class ItemStack {
     return entry.value;
   }
 
+  /// Peek the top stack entry
+  ItemEntry<DartItem> peekEntry() => _stack.last;
+
   /// Add an item to the entry at the top of the stack
   void addItemToTop(DartItem item) {
     final top = _stack.removeLast();
@@ -49,6 +52,10 @@ class ItemStack {
     top.insertAfter(entry);
     _stack.add(top);
   }
+
+  /// Entry has multiple items
+  bool hasMultipleItems(ItemEntry<DartItem> entry) =>
+      entry.list?.isNotEmpty == null ? false : entry.list.isNotEmpty;
 
   /// Size.
   int size() => _stack.length;

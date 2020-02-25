@@ -437,68 +437,73 @@ class ListenerStack extends Listener {
       // Empty stack, straight add
       _stack.push(item);
     } else {
-      final entry = _stack.peek();
-
-      /// If its complete push
-      /// the item. if not complete append and check
-      /// for completeness.
-      if (entry.complete) {
-        _stack.push(item);
+      final entry = _stack.peekEntry();
+      if (_stack.hasMultipleItems(entry)) {
+        /// Multiple entry item
       } else {
-        // List or Map
-        if (entry.type == dartTypes.dtList) {
-          if (item.isIncompleteList() || item.isIncompleteMap()) {
-            _stack.push(item);
-          } else {
-            entry.data.add(item.data);
-            if (entry.data.length == entry.targetSize) {
-              entry.complete = true;
-              // Item can be ignored.
-              item.ignore = true;
-              // Recurse for nested lists
-              final item1 = _stack.pop();
-              _appendImpl(item1);
-            }
-          }
-        } else if (entry.type == dartTypes.dtMap) {
-          // Check if we are expecting a key or a value
-          if (entry.awaitingMapKey) {
-            // Create the map entry with the key, set we
-            // are now waiting for a value.
-            entry.data.addAll(<dynamic, dynamic>{item.data: null});
-            entry.lastMapKey = item.data;
-            entry.awaitingMapKey = false;
-            entry.awaitingMapValue = true;
-          } else if (entry.awaitingMapValue) {
-            // If the item is a list or a map just push it if it
-            // is not complete,
-            // if not then reset awaiting map value.
-            // Either way update the entry with the value.
+        /// Single entry Item
+        /// If its complete push
+        /// the item. if not complete append and check
+        /// for completeness.
+        final entry = _stack.peek();
+        if (entry.complete) {
+          _stack.push(item);
+        } else {
+          // List or Map
+          if (entry.type == dartTypes.dtList) {
             if (item.isIncompleteList() || item.isIncompleteMap()) {
               _stack.push(item);
             } else {
-              entry.awaitingMapValue = false;
-            }
-            entry.data[entry.lastMapKey] = item.data;
-
-            // Check for completeness
-            if (entry.data.length == entry.targetSize) {
-              entry.complete = true;
-              // Item can be ignored.
-              item.ignore = true;
-              // Recurse for nested maps
-              final item1 = _stack.pop();
-              _appendImpl(item1);
-            } else {
-              // If we are still awiating a value(netsed list
-              // or map) then don't expect a key.
-              if (!entry.awaitingMapValue) {
-                entry.awaitingMapKey = true;
+              entry.data.add(item.data);
+              if (entry.data.length == entry.targetSize) {
+                entry.complete = true;
+                // Item can be ignored.
+                item.ignore = true;
+                // Recurse for nested lists
+                final item1 = _stack.pop();
+                _appendImpl(item1);
               }
             }
+          } else if (entry.type == dartTypes.dtMap) {
+            // Check if we are expecting a key or a value
+            if (entry.awaitingMapKey) {
+              // Create the map entry with the key, set we
+              // are now waiting for a value.
+              entry.data.addAll(<dynamic, dynamic>{item.data: null});
+              entry.lastMapKey = item.data;
+              entry.awaitingMapKey = false;
+              entry.awaitingMapValue = true;
+            } else if (entry.awaitingMapValue) {
+              // If the item is a list or a map just push it if it
+              // is not complete,
+              // if not then reset awaiting map value.
+              // Either way update the entry with the value.
+              if (item.isIncompleteList() || item.isIncompleteMap()) {
+                _stack.push(item);
+              } else {
+                entry.awaitingMapValue = false;
+              }
+              entry.data[entry.lastMapKey] = item.data;
+
+              // Check for completeness
+              if (entry.data.length == entry.targetSize) {
+                entry.complete = true;
+                // Item can be ignored.
+                item.ignore = true;
+                // Recurse for nested maps
+                final item1 = _stack.pop();
+                _appendImpl(item1);
+              } else {
+                // If we are still awiating a value(netsed list
+                // or map) then don't expect a key.
+                if (!entry.awaitingMapValue) {
+                  entry.awaitingMapKey = true;
+                }
+              }
+            }
+          } else {
+            onError('Incomplete stack item is not list or map');
           }
-        } else {
-          onError('Incomplete stack item is not list or map');
         }
       }
     }
@@ -524,22 +529,5 @@ class ListenerStack extends Listener {
       }
     }
     return false;
-  }
-
-  void _addItemToEntry(DartItem item, DartItem entry) {
-    entry.data.add(item.data);
-    // If the entry is a list and the item is a map we can't
-    // test against the target size until the map is complete
-    if (entry.type == dartTypes.dtList) {
-    } else {
-      if (entry.data.length == entry.targetSize) {
-        entry.complete = true;
-        // Item can be ignored.
-        item.ignore = true;
-        // Recurse for nested lists
-        final item1 = _stack.pop();
-        _appendImpl(item1);
-      }
-    }
   }
 }
