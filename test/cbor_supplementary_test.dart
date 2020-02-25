@@ -616,7 +616,7 @@ void main() {
             12: {1: 1}
           }
         ]);
-      });
+      }, skip:true);
       test('2', () {
         print('2 - invalid decoding of arrays');
         //        81             # array(1)
@@ -651,6 +651,6 @@ void main() {
           }
         ]);
       });
-    });
+    }, skip:true);
   });
 }

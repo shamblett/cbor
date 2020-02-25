@@ -447,13 +447,18 @@ class ListenerStack extends Listener {
       } else {
         // List or Map
         if (entry.type == dartTypes.dtList) {
-          if (item.isIncompleteList()) {
-            _stack.push(item);
-          } else if (item.isIncompleteMap()) {
-            _addItemToEntry(item, entry);
+          if (item.isIncompleteList() || item.isIncompleteMap()) {
             _stack.push(item);
           } else {
-            _addItemToEntry(item, entry);
+            entry.data.add(item.data);
+            if (entry.data.length == entry.targetSize) {
+              entry.complete = true;
+              // Item can be ignored.
+              item.ignore = true;
+              // Recurse for nested lists
+              final item1 = _stack.pop();
+              _appendImpl(item1);
+            }
           }
         } else if (entry.type == dartTypes.dtMap) {
           // Check if we are expecting a key or a value
