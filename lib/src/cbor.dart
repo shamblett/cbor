@@ -7,13 +7,6 @@
 
 part of cbor;
 
-// ignore_for_file: unnecessary_getters_setters
-// ignore_for_file: avoid_as
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
-
 /// The CBOR package main API.
 class Cbor {
   /// Construction
@@ -53,7 +46,7 @@ class Cbor {
 
   /// Decode from a byte buffer payload
   void decodeFromBuffer(typed.Uint8Buffer buffer) {
-    final ListenerStack listener = _listener as ListenerStack;
+    final listener = _listener as ListenerStack;
     listener.stack.clear();
     _output.clear();
     _input = Input(buffer);
@@ -63,10 +56,10 @@ class Cbor {
 
   /// Decode from a list of integer payload
   void decodeFromList(List<int> ints) {
-    final ListenerStack listener = _listener as ListenerStack;
+    final listener = _listener as ListenerStack;
     listener.stack.clear();
     _output.clear();
-    final typed.Uint8Buffer buffer = typed.Uint8Buffer();
+    final buffer = typed.Uint8Buffer();
     buffer.addAll(ints);
     _input = Input(buffer);
     _decoder = Decoder.withListener(_input, _listener);
@@ -76,7 +69,7 @@ class Cbor {
   /// Decode from the input attribute, i.e decode what we have
   /// just encoded.
   void decodeFromInput() {
-    final ListenerStack listener = _listener as ListenerStack;
+    final listener = _listener as ListenerStack;
     listener.stack.clear();
     _input = Input(_output.getData());
     _decoder = Decoder.withListener(_input, _listener);
@@ -85,27 +78,27 @@ class Cbor {
 
   /// Get the decoded data as a list
   List<dynamic> getDecodedData() {
-    final ListenerStack listener = _listener as ListenerStack;
+    final listener = _listener as ListenerStack;
     return listener.stack.walk();
   }
 
   /// Get the decoded hints
   List<dataHints> getDecodedHints() {
-    final ListenerStack listener = _listener as ListenerStack;
+    final listener = _listener as ListenerStack;
     return listener.stack.hints();
   }
 
   /// Pretty print the decoded data
   // ignore: avoid_positional_boolean_parameters
   String decodedPrettyPrint([bool withHints = false]) {
-    String ret = '';
-    final List<dynamic> values = getDecodedData();
+    var ret = '';
+    final values = getDecodedData();
     List<dataHints> hints;
     if (withHints) {
       hints = getDecodedHints();
     }
-    final int length = values.length;
-    for (int i = 0; i < length; i++) {
+    final length = values.length;
+    for (var i = 0; i < length; i++) {
       // ignore: use_string_buffers
       ret += 'Entry $i   : Value is => ${values[i].toString()}\n';
       if (withHints) {

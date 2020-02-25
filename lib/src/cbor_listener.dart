@@ -7,8 +7,6 @@
 
 part of cbor;
 
-// ignore_for_file: public_member_api_docs
-
 /// Listener base class, all listener implementations must at least
 /// implement these methods to interface to the decoder.
 /// The methods are not documented at the API level, usage should

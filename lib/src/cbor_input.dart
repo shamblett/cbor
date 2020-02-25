@@ -7,11 +7,6 @@
 
 part of cbor;
 
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
-
 /// The Input class provides data access primitives to the underlying
 /// UTF-8 data buffer supplied.
 class Input {
@@ -32,14 +27,14 @@ class Input {
 
   /// Get a short, 16 bits.
   int getShort() {
-    final int value = _data[_offset] << 8 | _data[_offset + 1];
+    final value = _data[_offset] << 8 | _data[_offset + 1];
     _offset += 2;
     return value;
   }
 
   /// Get an int, 32 bits.
   int getInt() {
-    final int value = (_data[_offset] << 24) |
+    final value = (_data[_offset] << 24) |
         (_data[_offset + 1] << 16) |
         (_data[_offset + 2] << 8) |
         (_data[_offset + 3]);
@@ -49,7 +44,7 @@ class Input {
 
   /// Get a long, 64 bits.
   int getLong() {
-    final int value = (_data[_offset] << 56) |
+    final value = (_data[_offset] << 56) |
         (_data[_offset + 1] << 48) |
         (_data[_offset + 2] << 40) |
         (_data[_offset + 3] << 32) |
@@ -63,8 +58,8 @@ class Input {
 
   /// Get the number of bytes specified.
   typed.Uint8Buffer getBytes(int count) {
-    final List<int> tmp = _data.sublist(_offset, _offset + count);
-    final typed.Uint8Buffer buff = typed.Uint8Buffer();
+    final tmp = _data.sublist(_offset, _offset + count);
+    final buff = typed.Uint8Buffer();
     buff.addAll(tmp);
     _offset += count;
     return buff;
@@ -79,7 +74,7 @@ class Input {
     if (val == 1) {
       return 5.960464477539063e-8;
     }
-    final double ret = getHalfPrecisionDouble(val);
+    final ret = getHalfPrecisionDouble(val);
     // Post filter
     if (ret == 65536.0) {
       return double.infinity;
@@ -95,13 +90,13 @@ class Input {
 
   /// Get a single-precision float from a buffer value.
   double getSingleFloat(typed.Uint8Buffer buff) {
-    final ByteData bdata = ByteData.view(buff.buffer);
+    final bdata = ByteData.view(buff.buffer);
     return bdata.getFloat32(0);
   }
 
   /// Get a double-precision float from a buffer value.
   double getDoubleFloat(typed.Uint8Buffer buff) {
-    final ByteData bdata = ByteData.view(buff.buffer);
+    final bdata = ByteData.view(buff.buffer);
     return bdata.getFloat64(0);
   }
 

@@ -10,54 +10,46 @@ import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
-// ignore_for_file: prefer_single_quotes
-// ignore_for_file: always_specify_types
-// ignore_for_file: prefer_final_fields
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
-
 void main() {
   // Common
-  final cbor.ListenerStack slistener = cbor.ListenerStack();
-  final cbor.OutputStandard output = cbor.OutputStandard();
+  final slistener = cbor.ListenerStack();
+  final output = cbor.OutputStandard();
 
   group('Known patterns', () {
     test('Pattern 1  -> ', () {
       // Encoding
-      final cbor.OutputStandard output = cbor.OutputStandard();
-      final cbor.Encoder encoder = cbor.Encoder(output);
-      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      final output = cbor.OutputStandard();
+      final encoder = cbor.Encoder(output);
+      final data = typed.Uint8Buffer();
       data.addAll([0x31, 0x32, 0x55]);
       output.pause();
       encoder.writeBytes(data);
-      final typed.Uint8Buffer dVal = output.getData();
+      final dVal = output.getData();
       output.restart();
-      final bool res = encoder.writeMap({
-        "p16": 16,
-        "uni": "\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)",
-        "n1": -1,
-        "ascii": "hello",
-        "nil": null,
-        "empty_arr": [],
-        "p65535": 65535,
-        "bin": dVal,
-        "n2G": -2147483648,
-        "p1": 1,
-        "n65535": -65535,
-        "n16": -16,
-        "zero": 0,
-        "arr": [1, 2, 3],
-        "obj": {"foo": "bar"},
-        "bfalse": false,
-        "p255": 255,
-        "p2G": 2147483648,
-        "n255": -255,
-        "btrue": true
+      final res = encoder.writeMap({
+        'p16': 16,
+        'uni': '\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)',
+        'n1': -1,
+        'ascii': 'hello',
+        'nil': null,
+        'empty_arr': [],
+        'p65535': 65535,
+        'bin': dVal,
+        'n2G': -2147483648,
+        'p1': 1,
+        'n65535': -65535,
+        'n16': -16,
+        'zero': 0,
+        'arr': [1, 2, 3],
+        'obj': {'foo': 'bar'},
+        'bfalse': false,
+        'p255': 255,
+        'p2G': 2147483648,
+        'n255': -255,
+        'btrue': true
       });
       expect(res, isTrue);
-      final List<int> val = output.getDataAsList();
+      final val = output.getDataAsList();
       expect(val, [
         0xB4,
         0x63,
@@ -243,45 +235,45 @@ void main() {
     test('No input -> ', () {
       output.clear();
       slistener.stack.clear();
-      final List<int> values = [];
-      final typed.Uint8Buffer buffer = typed.Uint8Buffer();
+      final values = <int>[];
+      final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData());
-      final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
+      final input = cbor.Input(output.getData());
+      final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       expect(slistener.stack.hasErrors(), false);
-      final List<String> errors = slistener.stack.errors();
+      final errors = slistener.stack.errors();
       expect(errors, isNull);
     });
 
     test('Random bytes -> ', () {
       output.clear();
       slistener.stack.clear();
-      final List<int> values = [0xcd, 0xfe, 0x00];
-      final typed.Uint8Buffer buffer = typed.Uint8Buffer();
+      final values = [0xcd, 0xfe, 0x00];
+      final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData());
-      final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
+      final input = cbor.Input(output.getData());
+      final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       expect(slistener.stack.hasErrors(), true);
-      final List<String> errors = slistener.stack.errors();
-      expect(errors[0], "Decoder::invalid special type");
+      final errors = slistener.stack.errors();
+      expect(errors[0], 'Decoder::invalid special type');
     });
 
     test('Premature termination -> ', () {
       output.clear();
       slistener.stack.clear();
-      final List<int> values = [0x44, 0x01, 0x02, 0x03];
-      final typed.Uint8Buffer buffer = typed.Uint8Buffer();
+      final values = [0x44, 0x01, 0x02, 0x03];
+      final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData());
-      final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
+      final input = cbor.Input(output.getData());
+      final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
       expect(slistener.stack.hasErrors(), false);
-      final List<String> errors = slistener.stack.errors();
+      final errors = slistener.stack.errors();
       expect(errors, isNull);
     });
   });
@@ -290,7 +282,7 @@ void main() {
     test('Tag (33) Base64 URL', () {
       output.clear();
       slistener.stack.clear();
-      final List<int> values = [
+      final values = [
         0xd8,
         0x21,
         0x76,
@@ -317,23 +309,23 @@ void main() {
         0x6f,
         0x6d
       ];
-      final typed.Uint8Buffer buffer = typed.Uint8Buffer();
+      final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData());
-      final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
+      final input = cbor.Input(output.getData());
+      final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final List<dynamic> slist = slistener.stack.walk();
+      final slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], "http://www.example.com");
-      final List<cbor.dataHints> hints = slistener.stack.hints();
+      expect(slist[0], 'http://www.example.com');
+      final hints = slistener.stack.hints();
       expect(hints[0], cbor.dataHints.base64Url);
     });
 
     test('Tag (34) Base64 String', () {
       output.clear();
       slistener.stack.clear();
-      final List<int> values = [
+      final values = [
         0xd8,
         0x22,
         0x76,
@@ -360,23 +352,23 @@ void main() {
         0x6f,
         0x6d
       ];
-      final typed.Uint8Buffer buffer = typed.Uint8Buffer();
+      final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData());
-      final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
+      final input = cbor.Input(output.getData());
+      final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final List<dynamic> slist = slistener.stack.walk();
+      final slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], "http://www.example.com");
-      final List<cbor.dataHints> hints = slistener.stack.hints();
+      expect(slist[0], 'http://www.example.com');
+      final hints = slistener.stack.hints();
       expect(hints[0], cbor.dataHints.base64);
     });
 
     test('Tag (35) RegExp', () {
       output.clear();
       slistener.stack.clear();
-      final List<int> values = [
+      final values = [
         0xd8,
         0x23,
         0x76,
@@ -403,23 +395,23 @@ void main() {
         0x6f,
         0x6d
       ];
-      final typed.Uint8Buffer buffer = typed.Uint8Buffer();
+      final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData());
-      final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
+      final input = cbor.Input(output.getData());
+      final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final List<dynamic> slist = slistener.stack.walk();
+      final slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], "http://www.example.com");
-      final List<cbor.dataHints> hints = slistener.stack.hints();
+      expect(slist[0], 'http://www.example.com');
+      final hints = slistener.stack.hints();
       expect(hints[0], cbor.dataHints.regex);
     });
 
     test('Tag (36) MIME', () {
       output.clear();
       slistener.stack.clear();
-      final List<int> values = [
+      final values = [
         0xd8,
         0x24,
         0x76,
@@ -446,43 +438,33 @@ void main() {
         0x6f,
         0x6d
       ];
-      final typed.Uint8Buffer buffer = typed.Uint8Buffer();
+      final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData());
-      final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
+      final input = cbor.Input(output.getData());
+      final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final List<dynamic> slist = slistener.stack.walk();
+      final slist = slistener.stack.walk();
       expect(slist.length, 1);
-      expect(slist[0], "http://www.example.com");
-      final List<cbor.dataHints> hints = slistener.stack.hints();
+      expect(slist[0], 'http://www.example.com');
+      final hints = slistener.stack.hints();
       expect(hints[0], cbor.dataHints.mime);
     });
 
     test('Tag (55799) Self Describe CBOR', () {
       output.clear();
       slistener.stack.clear();
-      final List<int> values = [
-        0xd9,
-        0xd9,
-        0xf7,
-        0x45,
-        0x64,
-        0x49,
-        0x45,
-        0x54,
-        0x46
-      ];
-      final typed.Uint8Buffer buffer = typed.Uint8Buffer();
+      final values = [0xd9, 0xd9, 0xf7, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46];
+      final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
       output.putBytes(buffer);
-      final cbor.Input input = cbor.Input(output.getData());
-      final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
+      final input = cbor.Input(output.getData());
+      final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final List<dynamic> slist = slistener.stack.walk();
+      final slist = slistener.stack.walk();
       expect(slist.length, 1);
       expect(slist[0], [0x64, 0x49, 0x45, 0x54, 0x46]);
-      final List<cbor.dataHints> hints = slistener.stack.hints();
+      final hints = slistener.stack.hints();
       expect(hints[0], cbor.dataHints.selfDescCBOR);
     });
   });
@@ -491,33 +473,33 @@ void main() {
     test('Encode/Decode confidence -> ', () {
       // Encoding
       cbor.init();
-      final cbor.OutputStandard output = cbor.OutputStandard();
-      final cbor.Encoder encoder = cbor.Encoder(output);
+      final output = cbor.OutputStandard();
+      final encoder = cbor.Encoder(output);
       encoder.writeArray([9, 10, 11]);
       encoder.writeInt(123);
       encoder.writeInt(-457);
-      encoder.writeString("barrr");
+      encoder.writeString('barrr');
       encoder.writeInt(321);
       encoder.writeInt(322);
-      encoder.writeString("foo");
+      encoder.writeString('foo');
       encoder.writeBool(true);
       encoder.writeBool(false);
       encoder.writeNull();
       encoder.writeUndefined();
       encoder.writeMap({
-        "a": [1, 2, 3],
+        'a': [1, 2, 3],
         2: true,
-        3: "Hello"
+        3: 'Hello'
       });
       encoder.writeSingle(36.908);
       // ignore: prefer_int_literals
       encoder.writeDouble(35.66e4);
       // ignore: prefer_int_literals
       encoder.writeHalf(20.0);
-      encoder.writeDateTime("2013-03-21T20:04:00Z");
+      encoder.writeDateTime('2013-03-21T20:04:00Z');
       encoder.writeEpoch(1234567);
       encoder.writeSimple(10);
-      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      final data = typed.Uint8Buffer();
       data.addAll([01, 02, 03, 89]);
       encoder.writeBytes(data);
       data[3] = 90;
@@ -528,11 +510,11 @@ void main() {
       encoder.writeBase64URL(data);
       data[3] = 93;
       encoder.writeBase16(data);
-      encoder.writeURI("example.com");
+      encoder.writeURI('example.com');
       encoder.writeFloat(19876.66);
       encoder.writeSpecial(6);
-      encoder.writeString("Strea", true);
-      encoder.writeString("ming");
+      encoder.writeString('Strea', true);
+      encoder.writeString('ming');
       encoder.writeBreak();
       data[3] = 94;
       encoder.writeBuff(data, true);
@@ -542,38 +524,38 @@ void main() {
       encoder.writeArray([6, 7, 8], true);
       encoder.writeArray([9, 10, 11]);
       encoder.writeBreak();
-      encoder.writeMap({"1": "First", "2": "Second"}, true);
-      encoder.writeMap({"3": "Third"});
+      encoder.writeMap({'1': 'First', '2': 'Second'}, true);
+      encoder.writeMap({'3': 'Third'});
       encoder.writeBreak();
 
       // Decoding
-      final cbor.Input input = cbor.Input(output.getData());
-      final cbor.Decoder decoder = cbor.Decoder.withListener(input, slistener);
+      final input = cbor.Input(output.getData());
+      final decoder = cbor.Decoder.withListener(input, slistener);
       slistener.stack.clear();
       decoder.run();
-      final List<dynamic> slist = slistener.stack.walk();
-      final List<cbor.dataHints> hints = slistener.stack.hints();
+      final slist = slistener.stack.walk();
+      final hints = slistener.stack.hints();
       expect(slist.length, 30);
       expect(slist[0], [9, 10, 11]);
       expect(slist[1], 123);
       expect(slist[2], -457);
-      expect(slist[3], "barrr");
+      expect(slist[3], 'barrr');
       expect(slist[4], 321);
       expect(slist[5], 322);
-      expect(slist[6], "foo");
+      expect(slist[6], 'foo');
       expect(slist[7], isTrue);
       expect(slist[8], isFalse);
       expect(slist[9], isNull);
       expect(slist[10], isNull);
       expect(slist[11], {
-        "a": [1, 2, 3],
+        'a': [1, 2, 3],
         2: true,
-        3: "Hello"
+        3: 'Hello'
       });
       expect(slist[12], greaterThanOrEqualTo(36.908));
       expect(slist[13], 35.66e4);
       expect(slist[14], 20.0);
-      expect(slist[15], "2013-03-21T20:04:00Z");
+      expect(slist[15], '2013-03-21T20:04:00Z');
       expect(hints[15], cbor.dataHints.dateTimeString);
       expect(slist[16], 1234567);
       expect(hints[16], cbor.dataHints.dateTimeEpoch);
@@ -587,11 +569,11 @@ void main() {
       expect(hints[21], cbor.dataHints.base64Url);
       expect(slist[22], [01, 02, 03, 93]);
       expect(hints[22], cbor.dataHints.base16);
-      expect(slist[23], "example.com");
+      expect(slist[23], 'example.com');
       expect(hints[23], cbor.dataHints.uri);
       expect(slist[24], greaterThanOrEqualTo(19876.66));
       expect(slist[25], 6);
-      expect(slist[26], "Streaming");
+      expect(slist[26], 'Streaming');
       expect(slist[27], [01, 02, 03, 94, 01, 02, 03, 95]);
       expect(slist[28], [
         06,
@@ -599,7 +581,7 @@ void main() {
         08,
         [09, 10, 11]
       ]);
-      expect(slist[29], {"1": "First", "2": "Second", "3": "Third"});
+      expect(slist[29], {'1': 'First', '2': 'Second', '3': 'Third'});
     });
   });
   group('Issues', () {
@@ -621,12 +603,12 @@ void main() {
         //        01 # unsigned(1)
         //        01 # unsigned(1)
 
-        const String hexString = "81a301a1010103a101010ca10101";
-        final List<int> bytes = hex.decode(hexString);
-        final cbor.Cbor inst = cbor.Cbor();
+        const hexString = '81a301a1010103a101010ca10101';
+        final bytes = hex.decode(hexString);
+        final inst = cbor.Cbor();
         inst.decodeFromList(bytes);
         print(inst.decodedPrettyPrint());
-        final List<dynamic> decoded = inst.getDecodedData();
+        final decoded = inst.getDecodedData();
         expect(decoded, [
           {
             1: {1: 1},
@@ -653,12 +635,12 @@ void main() {
         //        01    # unsigned(1)
         //        02    # unsigned(2)
 
-        const String hexString = "81A301A1010203A10181010CA10102";
-        final List<int> bytes = hex.decode(hexString);
-        final cbor.Cbor inst = cbor.Cbor();
+        const hexString = '81A301A1010203A10181010CA10102';
+        final bytes = hex.decode(hexString);
+        final inst = cbor.Cbor();
         inst.decodeFromList(bytes);
         print(inst.decodedPrettyPrint());
-        final List<dynamic> decoded = inst.getDecodedData();
+        final decoded = inst.getDecodedData();
         expect(decoded, [
           {
             1: {1: 2},

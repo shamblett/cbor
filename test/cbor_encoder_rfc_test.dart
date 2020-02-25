@@ -8,20 +8,12 @@ import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
-// ignore_for_file: prefer_single_quotes
-// ignore_for_file: always_specify_types
-// ignore_for_file: prefer_final_fields
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
-
 void main() {
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
     // Common initialisation
     cbor.init();
-    final cbor.OutputStandard output = cbor.OutputStandard();
-    final cbor.Encoder encoder = cbor.Encoder(output);
+    final output = cbor.OutputStandard();
+    final encoder = cbor.Encoder(output);
 
     test('0', () {
       output.clear();
@@ -103,7 +95,7 @@ void main() {
 
     test('-18446744073709551617', () {
       output.clear();
-      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      final data = typed.Uint8Buffer();
       data.addAll([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
       encoder.writeTag(3);
       encoder.writeBytes(data);
@@ -316,7 +308,7 @@ void main() {
 
     test('Date/Time', () {
       output.clear();
-      encoder.writeDateTime("2013-03-21T20:04:00Z");
+      encoder.writeDateTime('2013-03-21T20:04:00Z');
       expect(output.getDataAsList(), [
         0xc0,
         0x74,
@@ -358,7 +350,7 @@ void main() {
 
     test('Base16', () {
       output.clear();
-      final typed.Uint8Buffer buff = typed.Uint8Buffer();
+      final buff = typed.Uint8Buffer();
       buff.addAll([01, 02, 03, 04]);
       encoder.writeBase16(buff);
       expect(output.getDataAsList(), [0xd7, 0x44, 0x01, 0x02, 0x03, 0x04]);
@@ -366,7 +358,7 @@ void main() {
 
     test('Base64', () {
       output.clear();
-      final typed.Uint8Buffer buff = typed.Uint8Buffer();
+      final buff = typed.Uint8Buffer();
       buff.addAll([0x01, 0x02, 0x03, 0x04]);
       encoder.writeBase64(buff);
       expect(output.getDataAsList(), [0xd6, 0x44, 0x01, 0x02, 0x03, 0x04]);
@@ -374,7 +366,7 @@ void main() {
 
     test('CBOR Data Item', () {
       output.clear();
-      final typed.Uint8Buffer buff = typed.Uint8Buffer();
+      final buff = typed.Uint8Buffer();
       buff.addAll([0x64, 0x49, 0x45, 0x54, 0x46]);
       encoder.writeCborDi(buff);
       expect(output.getDataAsList(),
@@ -383,7 +375,7 @@ void main() {
 
     test('URI', () {
       output.clear();
-      encoder.writeURI("http://www.example.com");
+      encoder.writeURI('http://www.example.com');
       expect(output.getDataAsList(), [
         0xd8,
         0x20,
@@ -415,14 +407,14 @@ void main() {
 
     test('Empty single quote string', () {
       output.clear();
-      final typed.Uint8Buffer buff = typed.Uint8Buffer();
+      final buff = typed.Uint8Buffer();
       encoder.writeBytes(buff);
       expect(output.getDataAsList(), [0x40]);
     });
 
     test('single quote string', () {
       output.clear();
-      final typed.Uint8Buffer buff = typed.Uint8Buffer();
+      final buff = typed.Uint8Buffer();
       buff.addAll([0x01, 0x02, 0x03, 0x04]);
       encoder.writeBytes(buff);
       expect(output.getDataAsList(), [0x44, 0x01, 0x02, 0x03, 0x04]);
@@ -430,63 +422,63 @@ void main() {
 
     test('Empty double quote string', () {
       output.clear();
-      encoder.writeString("");
+      encoder.writeString('');
       expect(output.getDataAsList(), [0x60]);
     });
 
     test('"a"', () {
       output.clear();
-      encoder.writeString("a");
+      encoder.writeString('a');
       expect(output.getDataAsList(), [0x61, 0x61]);
     });
 
     test('"IETF"', () {
       output.clear();
-      encoder.writeString("IETF");
+      encoder.writeString('IETF');
       expect(output.getDataAsList(), [0x64, 0x49, 0x45, 0x54, 0x46]);
     });
 
-    test("\"\\", () {
+    test('\"\\', () {
       output.clear();
-      encoder.writeString("\"\\");
+      encoder.writeString('\"\\');
       expect(output.getDataAsList(), [0x62, 0x22, 0x5c]);
     });
 
-    test("\u00fc", () {
+    test('\u00fc', () {
       output.clear();
-      encoder.writeString("\u00fc");
+      encoder.writeString('\u00fc');
       expect(output.getDataAsList(), [0x62, 0xc3, 0xbc]);
     });
 
-    test("\u6c34", () {
+    test('\u6c34', () {
       output.clear();
-      encoder.writeString("\u6c34");
+      encoder.writeString('\u6c34');
       expect(output.getDataAsList(), [0x63, 0xe6, 0xb0, 0xb4]);
     });
 
-    test("\ud800\udd51", () {
+    test('\ud800\udd51', () {
       output.clear();
-      encoder.writeString("\ud800\udd51");
+      encoder.writeString('\ud800\udd51');
       expect(output.getDataAsList(), [0x64, 0xf0, 0x90, 0x85, 0x91]);
     });
 
-    test("Array empty", () {
+    test('Array empty', () {
       output.clear();
-      final bool res = encoder.writeArray([]);
+      final res = encoder.writeArray([]);
       expect(res, isTrue);
       expect(output.getDataAsList(), [0x80]);
     });
 
-    test("Array 1,2,3", () {
+    test('Array 1,2,3', () {
       output.clear();
-      final bool res = encoder.writeArray([1, 2, 3]);
+      final res = encoder.writeArray([1, 2, 3]);
       expect(res, isTrue);
       expect(output.getDataAsList(), [0x83, 0x01, 0x02, 0x03]);
     });
 
-    test("Array 1,[2,3],[4,5]", () {
+    test('Array 1,[2,3],[4,5]', () {
       output.clear();
-      final bool res = encoder.writeArray([
+      final res = encoder.writeArray([
         1,
         [2, 3],
         [4, 5]
@@ -496,9 +488,9 @@ void main() {
           [0x83, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05]);
     });
 
-    test("Array 1..25", () {
+    test('Array 1..25', () {
       output.clear();
-      final bool res = encoder.writeArray([
+      final res = encoder.writeArray([
         1,
         2,
         3,
@@ -559,36 +551,36 @@ void main() {
       ]);
     });
 
-    test("Map empty", () {
+    test('Map empty', () {
       output.clear();
-      final bool res = encoder.writeMap({});
+      final res = encoder.writeMap({});
       expect(res, isTrue);
       expect(output.getDataAsList(), [0xa0]);
     });
 
-    test("Map {1:2,3:4}", () {
+    test('Map {1:2,3:4}', () {
       output.clear();
-      final bool res = encoder.writeMap({1: 2, 3: 4});
+      final res = encoder.writeMap({1: 2, 3: 4});
       expect(res, isTrue);
       expect(output.getDataAsList(), [0xa2, 0x01, 0x02, 0x03, 0x04]);
     });
 
-    test("Map {a:1,b:[2,3]}", () {
+    test('Map {a:1,b:[2,3]}', () {
       output.clear();
-      final bool res = encoder.writeMap({
-        "a": 1,
-        "b": [2, 3]
+      final res = encoder.writeMap({
+        'a': 1,
+        'b': [2, 3]
       });
       expect(res, isTrue);
       expect(output.getDataAsList(),
           [0xa2, 0x61, 0x61, 0x01, 0x061, 0x62, 0x82, 0x02, 0x03]);
     });
 
-    test("Map [a,{b:c}]", () {
+    test('Map [a,{b:c}]', () {
       output.clear();
-      final bool res = encoder.writeArray([
-        "a",
-        {"b": "c"}
+      final res = encoder.writeArray([
+        'a',
+        {'b': 'c'}
       ]);
       expect(res, isTrue);
       expect(output.getDataAsList(),
@@ -597,8 +589,8 @@ void main() {
 
     test('Map {"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"}', () {
       output.clear();
-      final bool res =
-          encoder.writeMap({"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"});
+      final res =
+          encoder.writeMap({'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E'});
       expect(res, isTrue);
       expect(output.getDataAsList(), [
         0xa5,
@@ -625,12 +617,12 @@ void main() {
       ]);
     });
 
-    test("Indefinite Bytestring 0102030405", () {
+    test('Indefinite Bytestring 0102030405', () {
       output.clear();
-      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      final data = typed.Uint8Buffer();
       data.addAll([0x01, 0x02]);
       encoder.writeBuff(data, true);
-      final typed.Uint8Buffer data1 = typed.Uint8Buffer();
+      final data1 = typed.Uint8Buffer();
       data1.addAll([0x03, 0x04, 0x05]);
       encoder.writeBuff(data1);
       encoder.writeBreak();
@@ -638,10 +630,10 @@ void main() {
           [0x5f, 0x42, 0x01, 0x02, 0x43, 0x03, 0x04, 0x05, 0xff]);
     });
 
-    test("Indefinite String strea,ming", () {
+    test('Indefinite String strea,ming', () {
       output.clear();
-      encoder.writeString("strea", true);
-      encoder.writeString("ming");
+      encoder.writeString('strea', true);
+      encoder.writeString('ming');
       encoder.writeBreak();
       expect(output.getDataAsList(), [
         0x7f,
@@ -660,23 +652,23 @@ void main() {
       ]);
     });
 
-    test("Indefinite Array empty", () {
+    test('Indefinite Array empty', () {
       output.clear();
-      final bool res = encoder.writeArray([], true);
+      final res = encoder.writeArray([], true);
       encoder.writeBreak();
       expect(res, isTrue);
       expect(output.getDataAsList(), [0x9f, 0xff]);
     });
 
-    test("Indefinite Array [_1, [2,3], [_4,5]", () {
+    test('Indefinite Array [_1, [2,3], [_4,5]', () {
       output.clear();
-      final bool res1 = encoder.writeArray([
+      final res1 = encoder.writeArray([
         1,
       ], true);
       expect(res1, isTrue);
-      final bool res2 = encoder.writeArray([2, 3]);
+      final res2 = encoder.writeArray([2, 3]);
       expect(res2, isTrue);
-      final bool res3 = encoder.writeArray([4, 5], true);
+      final res3 = encoder.writeArray([4, 5], true);
       expect(res3, isTrue);
       encoder.writeBreak();
       encoder.writeBreak();
@@ -684,35 +676,35 @@ void main() {
           [0x9f, 0x01, 0x82, 0x02, 0x03, 0x9f, 0x04, 0x05, 0xff, 0xff]);
     });
 
-    test("Indefinite Array [_1, [2,3], [4,5]", () {
+    test('Indefinite Array [_1, [2,3], [4,5]', () {
       output.clear();
-      final bool res1 = encoder.writeArray([1], true);
+      final res1 = encoder.writeArray([1], true);
       expect(res1, isTrue);
-      final bool res2 = encoder.writeArray([2, 3], false);
+      final res2 = encoder.writeArray([2, 3], false);
       expect(res2, isTrue);
-      final bool res3 = encoder.writeArray([4, 5], false);
+      final res3 = encoder.writeArray([4, 5], false);
       expect(res3, isTrue);
       encoder.writeBreak();
       expect(output.getDataAsList(),
           [0x9f, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05, 0xff]);
     });
 
-    test("Indefinite Array [1, [_2,3], [4,5]", () {
+    test('Indefinite Array [1, [_2,3], [4,5]', () {
       output.clear();
-      final bool res1 = encoder.writeArray([1], false, 3);
+      final res1 = encoder.writeArray([1], false, 3);
       expect(res1, isTrue);
-      final bool res2 = encoder.writeArray([2, 3], true);
+      final res2 = encoder.writeArray([2, 3], true);
       expect(res2, isTrue);
       encoder.writeBreak();
-      final bool res3 = encoder.writeArray([4, 5], false);
+      final res3 = encoder.writeArray([4, 5], false);
       expect(res3, isTrue);
       expect(output.getDataAsList(),
           [0x83, 0x01, 0x9f, 0x02, 0x03, 0xff, 0x82, 0x04, 0x05]);
     });
 
-    test("Indefinite Array [_1..25]", () {
+    test('Indefinite Array [_1..25]', () {
       output.clear();
-      final bool res = encoder.writeArray([
+      final res = encoder.writeArray([
         1,
         2,
         3,
@@ -774,14 +766,14 @@ void main() {
       ]);
     });
 
-    test("Indefinite Map {_a:1, b:[_2,3]}", () {
+    test('Indefinite Map {_a:1, b:[_2,3]}', () {
       output.clear();
       output.pause();
-      final bool res1 = encoder.writeArray([2, 3], true);
+      final res1 = encoder.writeArray([2, 3], true);
       expect(res1, isTrue);
-      final List<int> val = output.getDataAsList();
+      final val = output.getDataAsList();
       output.restart();
-      final bool res2 = encoder.writeMap({"a": 1, "b": val}, true);
+      final res2 = encoder.writeMap({'a': 1, 'b': val}, true);
       expect(res2, isTrue);
       encoder.writeBreak();
       encoder.writeBreak();
@@ -792,11 +784,11 @@ void main() {
     test('Indefinite Array [a, {_"b":"c"}', () {
       output.clear();
       output.pause();
-      final bool res1 = encoder.writeMap({"b": "c"}, true);
+      final res1 = encoder.writeMap({'b': 'c'}, true);
       expect(res1, isTrue);
-      final typed.Uint8Buffer val = output.getData();
+      final val = output.getData();
       output.restart();
-      final bool res2 = encoder.writeArray(["a"], false, 2);
+      final res2 = encoder.writeArray(['a'], false, 2);
       expect(res2, isTrue);
       encoder.writeRawBuffer(val);
       encoder.writeBreak();
@@ -806,7 +798,7 @@ void main() {
 
     test('Indefinite Map {_ "Fun": true, "Amt": -2}', () {
       output.clear();
-      final bool res1 = encoder.writeMap({"Fun": true, "Amt": -2}, true);
+      final res1 = encoder.writeMap({'Fun': true, 'Amt': -2}, true);
       expect(res1, isTrue);
       encoder.writeBreak();
       expect(output.getDataAsList(), [

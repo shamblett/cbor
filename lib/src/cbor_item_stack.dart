@@ -7,11 +7,6 @@
 
 part of cbor;
 
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
-
 /// A Dart item linked list entry for use by the stack
 class ItemEntry<DartItem> extends LinkedListEntry<ItemEntry<DartItem>> {
   /// Construction
@@ -31,26 +26,26 @@ class ItemStack {
 
   /// Push an item.
   void push(DartItem item) {
-    final ItemEntry<DartItem> entry = ItemEntry<DartItem>(item);
+    final entry = ItemEntry<DartItem>(item);
     _stack.add(entry);
   }
 
   /// Pop an item from the stack top.
   DartItem pop() {
-    final ItemEntry<DartItem> entry = _stack.removeLast();
+    final entry = _stack.removeLast();
     return entry.value;
   }
 
   /// Peek the top stack item.
   DartItem peek() {
-    final ItemEntry<DartItem> entry = _stack.last;
+    final entry = _stack.last;
     return entry.value;
   }
 
   /// Add an item to the entry at the top of the stack
   void addItemToTop(DartItem item) {
-    final ItemEntry<DartItem> top = _stack.removeLast();
-    final ItemEntry<DartItem> entry = ItemEntry<DartItem>(item);
+    final top = _stack.removeLast();
+    final entry = ItemEntry<DartItem>(item);
     top.insertAfter(entry);
     _stack.add(top);
   }

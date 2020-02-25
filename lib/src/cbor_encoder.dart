@@ -7,10 +7,8 @@
 
 part of cbor;
 
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
+/// Float encoding directives
+enum encodeFloatAs { half, single, double }
 
 /// The encoder class implements the CBOR decoder functionality as defined in
 /// RFC7049.
@@ -67,7 +65,7 @@ class Encoder {
   /// Primitive string writer.
   // ignore: avoid_positional_boolean_parameters
   void writeString(String str, [bool indefinite = false]) {
-    final typed.Uint8Buffer buff = strToByteString(str);
+    final buff = strToByteString(str);
     if (indefinite) {
       startIndefinite(majorTypeString);
     }
@@ -98,9 +96,9 @@ class Encoder {
     // Mark the output buffer, if we cannot encode
     // the whole array structure rewind so as to perform
     // no encoding.
-    bool res = true;
+    var res = true;
     _out.mark();
-    final bool ok = writeArrayImpl(value, indefinite, length);
+    final ok = writeArrayImpl(value, indefinite, length);
     if (!ok) {
       _out.resetToMark();
       res = false;
@@ -121,9 +119,9 @@ class Encoder {
     // Mark the output buffer, if we cannot encode
     // the whole map structure rewind so as to perform
     // no encoding.
-    bool res = true;
+    var res = true;
     _out.mark();
-    final bool ok = writeMapImpl(value, indefinite, length);
+    final ok = writeMapImpl(value, indefinite, length);
     if (!ok) {
       _out.resetToMark();
       res = false;
@@ -138,7 +136,7 @@ class Encoder {
 
   /// Special(major type 7) primitive.
   void writeSpecial(int special) {
-    int type = majorTypeSpecial;
+    var type = majorTypeSpecial;
     type <<= majorTypeShift;
     _out.putByte(type | special);
   }
@@ -207,7 +205,7 @@ class Encoder {
       _out.putByte(0x7e);
       _out.putByte(0x00);
     } else {
-      final typed.Uint8Buffer valBuff = _singleToHalf(value);
+      final valBuff = _singleToHalf(value);
       _out.putByte(valBuff[1]);
       _out.putByte(valBuff[0]);
     }
@@ -223,10 +221,10 @@ class Encoder {
       _out.putByte(0x00);
       _out.putByte(0x00);
     } else {
-      final typed.Float32Buffer fBuff = typed.Float32Buffer(1);
+      final fBuff = typed.Float32Buffer(1);
       fBuff[0] = value;
-      final ByteBuffer bBuff = fBuff.buffer;
-      final Uint8List uList = bBuff.asUint8List();
+      final bBuff = fBuff.buffer;
+      final uList = bBuff.asUint8List();
       _out.putByte(uList[3]);
       _out.putByte(uList[2]);
       _out.putByte(uList[1]);
@@ -248,10 +246,10 @@ class Encoder {
       _out.putByte(0x00);
       _out.putByte(0x00);
     } else {
-      final typed.Float64Buffer fBuff = typed.Float64Buffer(1);
+      final fBuff = typed.Float64Buffer(1);
       fBuff[0] = value;
-      final ByteBuffer bBuff = fBuff.buffer;
-      final Uint8List uList = bBuff.asUint8List();
+      final bBuff = fBuff.buffer;
+      final uList = bBuff.asUint8List();
       _out.putByte(uList[7]);
       _out.putByte(uList[6]);
       _out.putByte(uList[5]);
@@ -332,19 +330,19 @@ class Encoder {
   /// Lookup table based single to half precision conversion.
   /// Rounding is indeterminate.
   typed.Uint8Buffer _singleToHalf(double value) {
-    final int hBits = getHalfPrecisionInt(value);
-    final typed.Uint16Buffer hBuff = typed.Uint16Buffer(1);
+    final hBits = getHalfPrecisionInt(value);
+    final hBuff = typed.Uint16Buffer(1);
     hBuff[0] = hBits;
-    final ByteBuffer lBuff = hBuff.buffer;
-    final Uint8List hList = lBuff.asUint8List();
-    final typed.Uint8Buffer valBuff = typed.Uint8Buffer();
+    final lBuff = hBuff.buffer;
+    final hList = lBuff.asUint8List();
+    final valBuff = typed.Uint8Buffer();
     valBuff.addAll(hList);
     return valBuff;
   }
 
   /// Encoding helper for type encoding.
   void _writeTypeValue(int majorType, int value) {
-    int type = majorType;
+    var type = majorType;
     type <<= majorTypeShift;
     if (value < ai24) {
       // Value
@@ -356,28 +354,28 @@ class Encoder {
     } else if (value < two16) {
       // Uint16
       _out.putByte(type | ai25);
-      final typed.Uint16Buffer buff = typed.Uint16Buffer(1);
+      final buff = typed.Uint16Buffer(1);
       buff[0] = value;
-      final Uint8List ulist = Uint8List.view(buff.buffer);
-      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      final ulist = Uint8List.view(buff.buffer);
+      final data = typed.Uint8Buffer();
       data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
     } else if (value < two32) {
       // Uint32
       _out.putByte(type | ai26);
-      final typed.Uint32Buffer buff = typed.Uint32Buffer(1);
+      final buff = typed.Uint32Buffer(1);
       buff[0] = value;
-      final Uint8List ulist = Uint8List.view(buff.buffer);
-      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      final ulist = Uint8List.view(buff.buffer);
+      final data = typed.Uint8Buffer();
       data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
     } else if (value < two64) {
       // Uint64
       _out.putByte(type | ai27);
-      final typed.Uint64Buffer buff = typed.Uint64Buffer(1);
+      final buff = typed.Uint64Buffer(1);
       buff[0] = value;
-      final Uint8List ulist = Uint8List.view(buff.buffer);
-      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      final ulist = Uint8List.view(buff.buffer);
+      final data = typed.Uint8Buffer();
       data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
     } else {
@@ -388,8 +386,8 @@ class Encoder {
 
   /// String to byte string helper.
   typed.Uint8Buffer strToByteString(String str) {
-    final typed.Uint8Buffer buff = typed.Uint8Buffer();
-    const convertor.Utf8Encoder utf = convertor.Utf8Encoder();
+    final buff = typed.Uint8Buffer();
+    const utf = convertor.Utf8Encoder();
     final List<int> codes = utf.convert(str);
     buff.addAll(codes);
     return buff;
@@ -423,9 +421,9 @@ class Encoder {
       startIndefinite(majorTypeArray);
     }
 
-    bool ok = true;
+    var ok = true;
     for (final dynamic element in value) {
-      String valType = element.runtimeType.toString();
+      var valType = element.runtimeType.toString();
       if (valType.contains('List')) {
         valType = 'List';
       }
@@ -444,7 +442,7 @@ class Encoder {
           break;
         case 'List':
           if (!indefinite) {
-            final bool res = writeArrayImpl(element, indefinite);
+            final res = writeArrayImpl(element, indefinite);
             if (!res) {
               // Fail the whole encoding
               ok = false;
@@ -455,7 +453,7 @@ class Encoder {
           break;
         case 'Map':
           if (!indefinite) {
-            final bool res = writeMapImpl(element, indefinite);
+            final res = writeMapImpl(element, indefinite);
             if (!res) {
               // Fail the whole encoding
               ok = false;
@@ -498,7 +496,7 @@ class Encoder {
 
     // Check the keys are integers or strings.
     final dynamic keys = value.keys;
-    bool keysValid = true;
+    var keysValid = true;
     for (final dynamic element in keys) {
       if (!(element.runtimeType.toString() == 'int') &&
           !(element.runtimeType.toString() == 'String')) {
@@ -522,7 +520,7 @@ class Encoder {
       startIndefinite(majorTypeMap);
     }
 
-    bool ok = true;
+    var ok = true;
     // ignore: always_specify_types
     value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
@@ -532,7 +530,7 @@ class Encoder {
         writeString(key);
       }
       // Encode the value
-      String valType = val.runtimeType.toString();
+      var valType = val.runtimeType.toString();
       if (valType.contains('List')) {
         valType = 'List';
       }
@@ -551,7 +549,7 @@ class Encoder {
           break;
         case 'List':
           if (!indefinite) {
-            final bool res = writeArrayImpl(val, indefinite);
+            final res = writeArrayImpl(val, indefinite);
             if (!res) {
               // Fail the whole encoding
               ok = false;
@@ -562,7 +560,7 @@ class Encoder {
           break;
         case 'Map':
           if (!indefinite) {
-            final bool res = writeMapImpl(val, indefinite);
+            final res = writeMapImpl(val, indefinite);
             if (!res) {
               // Fail the whole encoding
               ok = false;

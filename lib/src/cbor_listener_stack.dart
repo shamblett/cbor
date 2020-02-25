@@ -7,11 +7,6 @@
 
 part of cbor;
 
-// ignore_for_file: public_member_api_docs
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-
 /// What we are waiting for next, if anything.
 enum whatsNext {
   aDateTimeString,
@@ -63,7 +58,7 @@ class ListenerStack extends Listener {
     if (value == null) {
       return;
     }
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.data = value;
     item.type = dartTypes.dtInt;
     item.complete = true;
@@ -79,7 +74,7 @@ class ListenerStack extends Listener {
     if (value == null) {
       return;
     }
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.data = value;
     item.type = dartTypes.dtBigInt;
     item.complete = true;
@@ -96,17 +91,17 @@ class ListenerStack extends Listener {
     switch (_next) {
       case whatsNext.aPositiveBignum:
         // Convert to a positive integer and append
-        final BigInt value = bignumToBigInt(data, '+');
+        final value = bignumToBigInt(data, '+');
         onBigInteger(value);
         break;
       case whatsNext.aNegativeBignum:
-        BigInt value = bignumToBigInt(data, '-');
+        var value = bignumToBigInt(data, '-');
         value = BigInt.from(-1) + value;
         onBigInteger(value.abs());
         break;
       case whatsNext.aMultipleB64Url:
         if (data != null) {
-          final DartItem item = DartItem();
+          final item = DartItem();
           item.data = data;
           item.type = dartTypes.dtBuffer;
           item.hint = dataHints.base64Url;
@@ -116,7 +111,7 @@ class ListenerStack extends Listener {
         break;
       case whatsNext.aMultipleB64:
         if (data != null) {
-          final DartItem item = DartItem();
+          final item = DartItem();
           item.data = data;
           item.type = dartTypes.dtBuffer;
           item.hint = dataHints.base64;
@@ -126,7 +121,7 @@ class ListenerStack extends Listener {
         break;
       case whatsNext.aMultipleB16:
         if (data != null) {
-          final DartItem item = DartItem();
+          final item = DartItem();
           item.data = data;
           item.type = dartTypes.dtBuffer;
           item.hint = dataHints.base16;
@@ -136,7 +131,7 @@ class ListenerStack extends Listener {
         break;
       case whatsNext.encodedCBOR:
         if (data != null) {
-          final DartItem item = DartItem();
+          final item = DartItem();
           item.data = data;
           item.type = dartTypes.dtBuffer;
           item.hint = dataHints.encodedCBOR;
@@ -146,7 +141,7 @@ class ListenerStack extends Listener {
         break;
       case whatsNext.aSelfDescribeCBOR:
         if (data != null) {
-          final DartItem item = DartItem();
+          final item = DartItem();
           item.data = data;
           item.type = dartTypes.dtBuffer;
           item.hint = dataHints.selfDescCBOR;
@@ -156,7 +151,7 @@ class ListenerStack extends Listener {
         break;
       case whatsNext.unassigned:
         if (data != null) {
-          final DartItem item = DartItem();
+          final item = DartItem();
           item.data = data;
           item.type = dartTypes.dtBuffer;
           item.complete = true;
@@ -171,7 +166,7 @@ class ListenerStack extends Listener {
         if (_waitingIndefBytes()) {
           _byteAssembly.addAll(data);
         } else {
-          final DartItem item = DartItem();
+          final item = DartItem();
           item.data = data;
           item.type = dartTypes.dtBuffer;
           item.complete = true;
@@ -189,7 +184,7 @@ class ListenerStack extends Listener {
     if (_waitingIndefString()) {
       _stringAssembly += str;
     } else {
-      final DartItem item = DartItem();
+      final item = DartItem();
       item.data = str;
       item.type = dartTypes.dtString;
       switch (_next) {
@@ -222,7 +217,7 @@ class ListenerStack extends Listener {
 
   @override
   void onArray(int size) {
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.type = dartTypes.dtList;
     item.data = <dynamic>[];
     item.targetSize = size;
@@ -234,7 +229,7 @@ class ListenerStack extends Listener {
 
   @override
   void onMap(int size) {
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.type = dartTypes.dtMap;
     item.data = <dynamic, dynamic>{};
     item.targetSize = size;
@@ -307,7 +302,7 @@ class ListenerStack extends Listener {
     if (code == null) {
       return;
     }
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.data = code;
     item.type = dartTypes.dtInt;
     item.complete = true;
@@ -320,7 +315,7 @@ class ListenerStack extends Listener {
     if (value == null) {
       return;
     }
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.data = value;
     item.type = dartTypes.dtDouble;
     item.complete = true;
@@ -333,7 +328,7 @@ class ListenerStack extends Listener {
     if (state == null) {
       return;
     }
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.data = state;
     item.type = dartTypes.dtBool;
     item.complete = true;
@@ -342,7 +337,7 @@ class ListenerStack extends Listener {
 
   @override
   void onNull() {
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.type = dartTypes.dtNull;
     item.complete = true;
     _append(item);
@@ -350,7 +345,7 @@ class ListenerStack extends Listener {
 
   @override
   void onUndefined() {
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.type = dartTypes.dtUndefined;
     item.complete = true;
     _append(item);
@@ -361,7 +356,7 @@ class ListenerStack extends Listener {
     if (error == null) {
       return;
     }
-    final DartItem item = DartItem();
+    final item = DartItem();
     item.data = error;
     item.type = dartTypes.dtString;
     item.hint = dataHints.error;
@@ -407,7 +402,7 @@ class ListenerStack extends Listener {
           onError('Unbalanced indefinite break');
           break;
         }
-        final String top = _indefiniteStack.removeLast();
+        final top = _indefiniteStack.removeLast();
         switch (top) {
           case indefBytes:
             onBytes(_byteAssembly, _byteAssembly.length);
@@ -442,7 +437,7 @@ class ListenerStack extends Listener {
       // Empty stack, straight add
       _stack.push(item);
     } else {
-      final DartItem entry = _stack.peek();
+      final entry = _stack.peek();
 
       /// If its complete push
       /// the item. if not complete append and check
@@ -487,7 +482,7 @@ class ListenerStack extends Listener {
               // Item can be ignored.
               item.ignore = true;
               // Recurse for nested maps
-              final DartItem item1 = _stack.pop();
+              final item1 = _stack.pop();
               _appendImpl(item1);
             } else {
               // If we are still awiating a value(netsed list
@@ -537,7 +532,7 @@ class ListenerStack extends Listener {
         // Item can be ignored.
         item.ignore = true;
         // Recurse for nested lists
-        final DartItem item1 = _stack.pop();
+        final item1 = _stack.pop();
         _appendImpl(item1);
       }
     }

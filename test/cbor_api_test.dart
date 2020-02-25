@@ -8,18 +8,10 @@ import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
-// ignore_for_file: prefer_single_quotes
-// ignore_for_file: always_specify_types
-// ignore_for_file: prefer_final_fields
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
-
 void main() {
   // Common
-  final cbor.Cbor inst = cbor.Cbor();
-  final List<int> data = <int>[
+  final inst = cbor.Cbor();
+  final data = <int>[
     0xB4,
     0x63,
     0x70,
@@ -198,77 +190,75 @@ void main() {
     0xF5
   ];
 
-  group("Decoder", () {
+  group('Decoder', () {
     test('From buffer -> ', () {
-      final typed.Uint8Buffer buff = typed.Uint8Buffer();
+      final buff = typed.Uint8Buffer();
       buff.addAll(data);
       inst.decodeFromBuffer(buff);
-      final List<dynamic> decode = inst.getDecodedData();
+      final decode = inst.getDecodedData();
       expect(decode[0], <dynamic, dynamic>{
-        "p16": 16,
-        "uni": "\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)",
-        "n1": -1,
-        "ascii": "hello",
-        "nil": null,
-        "empty_arr": [],
-        "p65535": 65535,
-        "bin": [0x31, 0x32, 0x55],
-        "n2G": -2147483648,
-        "p1": 1,
-        "n65535": -65535,
-        "n16": -16,
-        "zero": 0,
-        "arr": [1, 2, 3],
-        "obj": {"foo": "bar"},
-        "bfalse": false,
-        "p255": 255,
-        "p2G": 2147483648,
-        "n255": -255,
-        "btrue": true
+        'p16': 16,
+        'uni': '\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)',
+        'n1': -1,
+        'ascii': 'hello',
+        'nil': null,
+        'empty_arr': [],
+        'p65535': 65535,
+        'bin': [0x31, 0x32, 0x55],
+        'n2G': -2147483648,
+        'p1': 1,
+        'n65535': -65535,
+        'n16': -16,
+        'zero': 0,
+        'arr': [1, 2, 3],
+        'obj': {'foo': 'bar'},
+        'bfalse': false,
+        'p255': 255,
+        'p2G': 2147483648,
+        'n255': -255,
+        'btrue': true
       });
     });
 
     test('From list -> ', () {
       inst.decodeFromList(data);
-      final List<dynamic> decode = inst.getDecodedData();
+      final decode = inst.getDecodedData();
       expect(decode[0], {
-        "p16": 16,
-        "uni": "\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)",
-        "n1": -1,
-        "ascii": "hello",
-        "nil": null,
-        "empty_arr": [],
-        "p65535": 65535,
-        "bin": [0x31, 0x32, 0x55],
-        "n2G": -2147483648,
-        "p1": 1,
-        "n65535": -65535,
-        "n16": -16,
-        "zero": 0,
-        "arr": [1, 2, 3],
-        "obj": {"foo": "bar"},
-        "bfalse": false,
-        "p255": 255,
-        "p2G": 2147483648,
-        "n255": -255,
-        "btrue": true
+        'p16': 16,
+        'uni': '\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)',
+        'n1': -1,
+        'ascii': 'hello',
+        'nil': null,
+        'empty_arr': [],
+        'p65535': 65535,
+        'bin': [0x31, 0x32, 0x55],
+        'n2G': -2147483648,
+        'p1': 1,
+        'n65535': -65535,
+        'n16': -16,
+        'zero': 0,
+        'arr': [1, 2, 3],
+        'obj': {'foo': 'bar'},
+        'bfalse': false,
+        'p255': 255,
+        'p2G': 2147483648,
+        'n255': -255,
+        'btrue': true
       });
-      print("Pretty Print");
+      print('Pretty Print');
       print(inst.decodedPrettyPrint());
-      print("JSON");
-      final String jsonString = inst.decodedToJSON();
+      print('JSON');
+      final jsonString = inst.decodedToJSON();
       print(jsonString);
-      expect(
-          jsonString,
-          // ignore: lines_longer_than_80_chars
+      expect(jsonString,
           '{"p16":16,"uni":"通訊連接埠 (COM1)","n1":-1,"ascii":"hello","nil":null,"empty_arr":[],"p65535":65535,"bin":[49,50,85],"n2G":-2147483648,"p1":1,"n65535":-65535,"n16":-16,"zero":0,"arr":[1,2,3],"obj":{"foo":"bar"},"bfalse":false,"p255":255,"p2G":2147483648,"n255":-255,"btrue":true}');
     });
 
     test('Hints -> ', () {
       // Encoding
-      inst.encoder.writeDateTime("2013-03-21T20:04:00Z");
+      inst.encoder.writeDateTime('2013-03-21T20:04:00Z');
       inst.encoder.writeEpoch(1234567);
-      final typed.Uint8Buffer data = typed.Uint8Buffer();
+      final data = typed.Uint8Buffer();
       data.addAll([01, 02, 03, 89]);
       inst.encoder.writeBytes(data);
       data[3] = 90;
@@ -279,13 +269,13 @@ void main() {
       inst.encoder.writeBase64URL(data);
       data[3] = 93;
       inst.encoder.writeBase16(data);
-      inst.encoder.writeURI("example.com");
+      inst.encoder.writeURI('example.com');
 
       // Decoding
-      final cbor.Input dataIn = cbor.Input(inst.rawOutput.getData());
+      final dataIn = cbor.Input(inst.rawOutput.getData());
       inst.input = dataIn;
       inst.decodeFromInput();
-      final List<cbor.dataHints> hints = inst.getDecodedHints();
+      final hints = inst.getDecodedHints();
       expect(hints[0], cbor.dataHints.dateTimeString);
       expect(hints[1], cbor.dataHints.dateTimeEpoch);
       expect(hints[2], cbor.dataHints.none);
@@ -294,53 +284,47 @@ void main() {
       expect(hints[5], cbor.dataHints.base64Url);
       expect(hints[6], cbor.dataHints.base16);
       expect(hints[7], cbor.dataHints.uri);
-      print("Pretty Print");
+      print('Pretty Print');
       print(inst.decodedPrettyPrint(true));
-      print("JSON");
-      final String jsonString = inst.decodedToJSON();
+      print('JSON');
+      final jsonString = inst.decodedToJSON();
       print(jsonString);
-      expect(
-          jsonString,
-          // ignore: lines_longer_than_80_chars
+      expect(jsonString,
           '"2013-03-21T20:04:00Z",1234567,[1,2,3,89],[1,2,3,90],[1,2,3,91],[1,2,3,92],[1,2,3,93],"example.com"');
     });
 
     test('JSON -> ', () {
       // Encoding
       inst.clearEncoded();
-      final cbor.Encoder encoder = inst.encoder;
+      final encoder = inst.encoder;
       encoder.writeArray([9, 10, 11]);
       encoder.writeInt(123);
       encoder.writeInt(-457);
-      encoder.writeString("barrr");
+      encoder.writeString('barrr');
       encoder.writeInt(321);
       encoder.writeInt(322);
-      encoder.writeString("foo");
+      encoder.writeString('foo');
       encoder.writeBool(true);
       encoder.writeBool(false);
       encoder.writeNull();
       encoder.writeUndefined();
       encoder.writeMap({
-        "a": [1, 2, 3],
-        "2": true,
-        "3": "Hello"
+        'a': [1, 2, 3],
+        '2': true,
+        '3': 'Hello'
       });
       encoder.writeSingle(36.908);
-      // ignore: prefer_int_literals
       encoder.writeDouble(35.66e4);
-      // ignore: prefer_int_literals
       encoder.writeHalf(20.0);
-      encoder.writeDateTime("2013-03-21T20:04:00Z");
+      encoder.writeDateTime('2013-03-21T20:04:00Z');
       encoder.writeEpoch(1234567);
       encoder.writeSimple(10);
 
       // Decode ourselves
       inst.decodeFromInput();
-      final String json = inst.decodedToJSON();
+      final json = inst.decodedToJSON();
       print(json);
-      expect(
-          json,
-          // ignore: lines_longer_than_80_chars
+      expect(json,
           '[9,10,11],123,-457,"barrr",321,322,"foo",true,false,null,null,{"a":[1,2,3],"2":true,"3":"Hello"},36.90800094604492,356600.0,20.0,"2013-03-21T20:04:00Z",1234567,10');
     });
   });

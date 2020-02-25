@@ -7,8 +7,6 @@
 
 part of cbor;
 
-// ignore_for_file: public_member_api_docs
-
 /// The Dart types an item can have.
 enum dartTypes {
   dtInt,

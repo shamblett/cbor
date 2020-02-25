@@ -8,14 +8,6 @@
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:typed_data/typed_data.dart' as typed;
 
-// ignore_for_file: prefer_single_quotes
-// ignore_for_file: always_specify_types
-// ignore_for_file: prefer_final_fields
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
-
 class ListenerTest extends cbor.Listener {
   List<dynamic> lastValue = <dynamic>[];
   int lastTag = 0;
@@ -35,100 +27,100 @@ class ListenerTest extends cbor.Listener {
 
   @override
   void onInteger(int value) {
-    print("Integer $value");
+    print('Integer $value');
     lastValue.add(value);
   }
 
   @override
   void onBytes(typed.Uint8Buffer data, int size) {
-    print("Bytes with size: $size");
+    print('Bytes with size: $size');
     lastValue.add(data);
     lastByteCount = size;
-    print("To string - ${data.toString()}");
+    print('To string - ${data.toString()}');
   }
 
   @override
   void onString(String str) {
-    print("String $str");
+    print('String $str');
     lastValue.add(str);
   }
 
   @override
   void onArray(int size) {
-    print("Array size $size");
+    print('Array size $size');
     lastSize = size;
   }
 
   void onArrayElement(int value) {
-    print("No. Array elements $value");
+    print('No. Array elements $value');
     lastSize = value;
   }
 
   @override
   void onMap(int size) {
-    print("Map size $size");
+    print('Map size $size');
     lastSize = size;
   }
 
   @override
   void onTag(int tag) {
-    print("Tag $tag");
+    print('Tag $tag');
     lastValue.add(tag);
     lastTag = tag;
   }
 
   @override
   void onSpecial(int code) {
-    print("Code $code");
+    print('Code $code');
     lastValue.add(code);
   }
 
   @override
   void onSpecialFloat(double value) {
-    print("Float Value $value");
+    print('Float Value $value');
     lastValue.add(value);
   }
 
   @override
   void onBool(bool state) {
-    print("State $state");
+    print('State $state');
     lastValue.add(state);
   }
 
   @override
   void onNull() {
-    print("Null");
+    print('Null');
     lastValue.add(null);
   }
 
   @override
   void onUndefined() {
-    print("Undefined");
-    lastValue.add("Undefined");
+    print('Undefined');
+    lastValue.add('Undefined');
   }
 
   @override
   void onError(String error) {
-    print("Error $error");
+    print('Error $error');
     lastValue.add(error);
   }
 
   @override
   void onExtraInteger(int value, int sign) {
-    print("Extra Integer value $value, Sign $sign");
+    print('Extra Integer value $value, Sign $sign');
     lastValue.add(value);
   }
 
   @override
   void onExtraTag(int tag) {
-    print("Extra Tag $tag");
+    print('Extra Tag $tag');
     lastValue.add(tag);
     lastTag = tag;
   }
 
   @override
   void onIndefinite(String text) {
-    print("Indefinite $text");
+    print('Indefinite $text');
     indefiniteStart = true;
   }
 }
