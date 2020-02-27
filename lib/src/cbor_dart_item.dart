@@ -22,6 +22,13 @@ enum dartTypes {
   dtNone
 }
 
+/// Dart subtypes, used for map key/value handling
+enum dartSubTypes {
+  dtMapKey,
+  dtMapValue,
+  dtNone
+}
+
 /// If the type is dtBuffer or dtString a hint at what the
 /// data may contain.
 enum dataHints {
@@ -43,8 +50,7 @@ enum dataHints {
 }
 
 /// The CBOR Dart item class.
-/// Objects of this class are produced by the standard
-/// stack listener class by the decode process.
+/// Objects of this class are produced by by the decode process.
 class DartItem {
   /// The item data.
   dynamic data;
@@ -55,6 +61,9 @@ class DartItem {
 
   /// The item type, one of the major types.
   dartTypes type = dartTypes.dtNone;
+
+  /// The item subtype
+  dartSubTypes subType = dartSubTypes.dtNone;
 
   /// Is the type complete, i,e is its actual size
   /// equql to its target size.
@@ -74,15 +83,6 @@ class DartItem {
 
   /// Awaiting a map value for Map types.
   bool awaitingMapValue = false;
-
-  /// The last key value inserted into a map
-  dynamic lastMapKey;
-
-  /// Ignore indicator. Used to indicate the item
-  /// should be ignored during stack traversal, the
-  /// item has been used as a partial build area for
-  /// another stack item for instance.
-  bool ignore = false;
 
   /// Helper functions
 

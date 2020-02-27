@@ -7,117 +7,19 @@
 
 part of cbor;
 
-/// A Dart item linked list entry for use by the stack
-class ItemEntry<DartItem> extends LinkedListEntry<ItemEntry<DartItem>> {
-  /// Construction
-  ItemEntry(this.value);
-
-  /// The item
-  DartItem value;
-
-  @override
-  String toString() => '${super.toString()} : ${value.toString()}';
-}
-
 /// The decoded Dart item stack class.
 class ItemStack {
   /// The stack
-  final List<ItemEntry<DartItem>> _stack = <ItemEntry<DartItem>>[];
+  final _stack = stack.Stack<DartItem>();
 
   /// Push an item.
   void push(DartItem item) {
-    final entry = ItemEntry<DartItem>(item);
-    _stack.add(entry);
+    _stack.push(item);
   }
 
   /// Pop an item from the stack top.
-  DartItem pop() {
-    final entry = _stack.removeLast();
-    return entry.value;
-  }
+  DartItem pop() => _stack.pop();
 
   /// Peek the top stack item.
-  DartItem peek() {
-    final entry = _stack.last;
-    return entry.value;
-  }
-
-  /// Peek the top stack entry
-  ItemEntry<DartItem> peekEntry() => _stack.last;
-
-  /// Add an item to the entry at the top of the stack
-  void addItemToTop(DartItem item) {
-    final top = _stack.removeLast();
-    final entry = ItemEntry<DartItem>(item);
-    top.insertAfter(entry);
-    _stack.add(top);
-  }
-
-  /// Entry has multiple items
-  bool hasMultipleItems(ItemEntry<DartItem> entry) =>
-      entry.list?.isNotEmpty == null ? false : entry.list.isNotEmpty;
-
-  /// Size.
-  int size() => _stack.length;
-
-  /// Clear.
-  void clear() {
-    _stack.clear();
-  }
-
-  /// Stack walker, returns the stack from bottom to
-  /// top as a list of Dart types.
-  /// Returns null if the stack is empty.
-  List<dynamic> walk() {
-    if (_stack.isEmpty) {
-      return null;
-    }
-    return _stack
-        // ignore: always_specify_types
-        .where((e) => !e.value.ignore)
-        // ignore: always_specify_types
-        .map((e) => e.value.data)
-        .toList();
-  }
-
-  /// Gets item hints. Returns item hints for stack items.
-  /// If used with the walk stack the returned list can
-  /// be used on a per index basis.
-  List<dataHints> hints() {
-    if (_stack.isEmpty) {
-      return null;
-    }
-    return _stack
-        // ignore: always_specify_types
-        .where((e) => !e.value.ignore)
-        // ignore: always_specify_types
-        .map((e) => e.value.hint)
-        .toList()
-        .cast<dataHints>();
-  }
-
-  /// Check if any error entries are present in the stack.
-  /// Returns a list of error strings if any are found, null
-  /// if none are found.
-  List<String> errors() {
-    if (_stack.isEmpty) {
-      return null;
-    }
-    return _stack
-        // ignore: always_specify_types
-        .where((e) => e.value.hint == dataHints.error)
-        // ignore: always_specify_types
-        .map((e) => e.value.data)
-        .toList()
-        .cast<String>();
-  }
-
-  /// Quick check if the stack contains any errors.
-  bool hasErrors() {
-    if (errors() == null) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+  DartItem peek() => _stack.top();
 }
