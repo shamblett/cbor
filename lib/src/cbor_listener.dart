@@ -12,6 +12,9 @@ part of cbor;
 /// The methods are not documented at the API level, usage should
 /// be obvious from the naming.
 abstract class Listener {
+  /// Listeners must have an item stack
+  ItemStack itemStack = ItemStack();
+
   void onInteger(int value);
 
   void onBytes(typed.Uint8Buffer data, int size);

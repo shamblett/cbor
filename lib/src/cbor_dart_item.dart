@@ -23,11 +23,7 @@ enum dartTypes {
 }
 
 /// Dart subtypes, used for map key/value handling
-enum dartSubTypes {
-  dtMapKey,
-  dtMapValue,
-  dtNone
-}
+enum dartSubTypes { dtMapKey, dtMapValue, dtNone }
 
 /// If the type is dtBuffer or dtString a hint at what the
 /// data may contain.

@@ -234,7 +234,7 @@ void main() {
   group('Error handling', () {
     test('No input -> ', () {
       output.clear();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       final values = <int>[];
       final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
@@ -242,14 +242,14 @@ void main() {
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      expect(slistener.stack.hasErrors(), false);
-      final errors = slistener.stack.errors();
+      expect(slistener.itemStack.hasErrors(), false);
+      final errors = slistener.itemStack.errors();
       expect(errors, isNull);
     });
 
     test('Random bytes -> ', () {
       output.clear();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       final values = [0xcd, 0xfe, 0x00];
       final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
@@ -257,14 +257,14 @@ void main() {
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      expect(slistener.stack.hasErrors(), true);
-      final errors = slistener.stack.errors();
+      expect(slistener.itemStack.hasErrors(), true);
+      final errors = slistener.itemStack.errors();
       expect(errors[0], 'Decoder::invalid special type');
     });
 
     test('Premature termination -> ', () {
       output.clear();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       final values = [0x44, 0x01, 0x02, 0x03];
       final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
@@ -272,8 +272,8 @@ void main() {
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      expect(slistener.stack.hasErrors(), false);
-      final errors = slistener.stack.errors();
+      expect(slistener.itemStack.hasErrors(), false);
+      final errors = slistener.itemStack.errors();
       expect(errors, isNull);
     });
   });
@@ -281,7 +281,7 @@ void main() {
   group('Extra tags', () {
     test('Tag (33) Base64 URL', () {
       output.clear();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       final values = [
         0xd8,
         0x21,
@@ -315,16 +315,16 @@ void main() {
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], 'http://www.example.com');
-      final hints = slistener.stack.hints();
+      final hints = slistener.itemStack.hints();
       expect(hints[0], cbor.dataHints.base64Url);
     });
 
     test('Tag (34) Base64 String', () {
       output.clear();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       final values = [
         0xd8,
         0x22,
@@ -358,16 +358,16 @@ void main() {
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], 'http://www.example.com');
-      final hints = slistener.stack.hints();
+      final hints = slistener.itemStack.hints();
       expect(hints[0], cbor.dataHints.base64);
     });
 
     test('Tag (35) RegExp', () {
       output.clear();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       final values = [
         0xd8,
         0x23,
@@ -401,16 +401,16 @@ void main() {
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], 'http://www.example.com');
-      final hints = slistener.stack.hints();
+      final hints = slistener.itemStack.hints();
       expect(hints[0], cbor.dataHints.regex);
     });
 
     test('Tag (36) MIME', () {
       output.clear();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       final values = [
         0xd8,
         0x24,
@@ -444,16 +444,16 @@ void main() {
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], 'http://www.example.com');
-      final hints = slistener.stack.hints();
+      final hints = slistener.itemStack.hints();
       expect(hints[0], cbor.dataHints.mime);
     });
 
     test('Tag (55799) Self Describe CBOR', () {
       output.clear();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       final values = [0xd9, 0xd9, 0xf7, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46];
       final buffer = typed.Uint8Buffer();
       buffer.addAll(values);
@@ -461,10 +461,10 @@ void main() {
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, slistener);
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], [0x64, 0x49, 0x45, 0x54, 0x46]);
-      final hints = slistener.stack.hints();
+      final hints = slistener.itemStack.hints();
       expect(hints[0], cbor.dataHints.selfDescCBOR);
     });
   });
@@ -531,10 +531,10 @@ void main() {
       // Decoding
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, slistener);
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
-      final hints = slistener.stack.hints();
+      final slist = slistener.itemStack.walk();
+      final hints = slistener.itemStack.hints();
       expect(slist.length, 30);
       expect(slist[0], [9, 10, 11]);
       expect(slist[1], 123);
@@ -616,7 +616,7 @@ void main() {
             12: {1: 1}
           }
         ]);
-      }, skip:true);
+      }, skip: true);
       test('2', () {
         print('2 - invalid decoding of arrays');
         //        81             # array(1)
@@ -651,6 +651,6 @@ void main() {
           }
         ]);
       });
-    }, skip:true);
+    }, skip: true);
   });
 }

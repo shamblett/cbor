@@ -30,9 +30,9 @@ void main() {
       decoder.listener = slistener;
       input.reset();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 0);
+      expect(slist[0].data, 0);
     });
 
     test('1', () {
@@ -48,11 +48,11 @@ void main() {
       expect(listener.lastValue, [1]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1);
+      expect(slist[0].data, 1);
     });
 
     test('10', () {
@@ -68,11 +68,11 @@ void main() {
       expect(listener.lastValue, [10]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 10);
+      expect(slist[0].data, 10);
     });
 
     test('23', () {
@@ -88,11 +88,11 @@ void main() {
       expect(listener.lastValue, [23]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 23);
+      expect(slist[0].data, 23);
     });
 
     test('24', () {
@@ -108,11 +108,11 @@ void main() {
       expect(listener.lastValue, [24]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 24);
+      expect(slist[0].data, 24);
     });
 
     test('25', () {
@@ -128,11 +128,11 @@ void main() {
       expect(listener.lastValue, [25]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 25);
+      expect(slist[0].data, 25);
     });
 
     test('100', () {
@@ -148,11 +148,11 @@ void main() {
       expect(listener.lastValue, [100]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 100);
+      expect(slist[0].data, 100);
     });
 
     test('1000', () {
@@ -168,11 +168,11 @@ void main() {
       expect(listener.lastValue, [1000]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1000);
+      expect(slist[0].data, 1000);
     });
 
     test('1000000', () {
@@ -185,14 +185,14 @@ void main() {
       final input = cbor.Input(output.getData());
       final decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       expect(listener.lastValue, [1000000]);
       decoder.listener = slistener;
       input.reset();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1000000);
+      expect(slist[0].data, 1000000);
     });
 
     test('1000000000000', () {
@@ -208,11 +208,11 @@ void main() {
       expect(listener.lastValue, [1000000000000]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1000000000000);
+      expect(slist[0].data, 1000000000000);
     });
 
     test('18446744073709551615', () {
@@ -229,11 +229,11 @@ void main() {
       expect(BigInt.from(listener.lastValue[0]).compareTo(temp), 0);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(BigInt.from(slist[0]).compareTo(temp), 0);
+      expect(BigInt.from(slist[0].data).compareTo(temp), 0);
     });
 
     test('18446744073709551616', () {
@@ -266,12 +266,12 @@ void main() {
       expect(listener.lastByteCount, 9);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       final temp = BigInt.parse('18446744073709551616').toSigned(64);
-      expect(slist[0].toSigned(64).compareTo(temp), 0);
+      expect(slist[0].data.toSigned(64).compareTo(temp), 0);
     });
 
     test('-18446744073709551616', () {
@@ -288,9 +288,9 @@ void main() {
       expect(BigInt.from(listener.lastValue[0]).compareTo(temp), 0);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(BigInt.zero.compareTo(temp), 0);
     });
@@ -325,12 +325,12 @@ void main() {
       expect(listener.lastByteCount, 9);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       final temp = BigInt.parse('18446744073709551617').toSigned(64);
-      expect(slist[0].toSigned(64).compareTo(temp), 0);
+      expect(slist[0].data.toSigned(64).compareTo(temp), 0);
     });
 
     test('-1', () {
@@ -346,11 +346,11 @@ void main() {
       expect(listener.lastValue, [-1]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -1);
+      expect(slist[0].data, -1);
     });
 
     test('-10', () {
@@ -366,11 +366,11 @@ void main() {
       expect(listener.lastValue, [-10]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -10);
+      expect(slist[0].data, -10);
     });
 
     test('-100', () {
@@ -386,11 +386,11 @@ void main() {
       expect(listener.lastValue, [-100]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -100);
+      expect(slist[0].data, -100);
     });
 
     test('-1000', () {
@@ -406,11 +406,11 @@ void main() {
       expect(listener.lastValue, [-1000]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -1000);
+      expect(slist[0].data, -1000);
     });
 
     test('0.0', () {
@@ -426,11 +426,11 @@ void main() {
       expect(listener.lastValue, [0.0]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 0.0);
+      expect(slist[0].data, 0.0);
     });
 
     test('-0.0', () {
@@ -446,11 +446,11 @@ void main() {
       expect(listener.lastValue, [-0.0]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -0.0);
+      expect(slist[0].data, -0.0);
     });
 
     test('1.0', () {
@@ -466,11 +466,11 @@ void main() {
       expect(listener.lastValue, [1.0]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1.0);
+      expect(slist[0].data, 1.0);
     });
 
     test('1.1', () {
@@ -486,11 +486,11 @@ void main() {
       expect(listener.lastValue, [1.1]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1.1);
+      expect(slist[0].data, 1.1);
     });
 
     test('1.5', () {
@@ -506,11 +506,11 @@ void main() {
       expect(listener.lastValue, [1.5]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1.5);
+      expect(slist[0].data, 1.5);
     });
 
     test('65504.0', () {
@@ -526,11 +526,11 @@ void main() {
       expect(listener.lastValue, [65504.0]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 65504.0);
+      expect(slist[0].data, 65504.0);
     });
 
     test('100000.0', () {
@@ -546,11 +546,11 @@ void main() {
       expect(listener.lastValue, [100000.0]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 100000.0);
+      expect(slist[0].data, 100000.0);
     });
 
     test('3.4028234663852886e+38', () {
@@ -566,11 +566,11 @@ void main() {
       expect(listener.lastValue, [3.4028234663852886e+38]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 3.4028234663852886e+38);
+      expect(slist[0].data, 3.4028234663852886e+38);
     });
 
     test('1.0e+300', () {
@@ -586,11 +586,11 @@ void main() {
       expect(listener.lastValue, [1.0e+300]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1.0e+300);
+      expect(slist[0].data, 1.0e+300);
     });
 
     test('5.960464477539063e-8', () {
@@ -606,11 +606,11 @@ void main() {
       expect(listener.lastValue, [5.960464477539063e-8]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 5.960464477539063e-8);
+      expect(slist[0].data, 5.960464477539063e-8);
     });
 
     test('0.00006103515625', () {
@@ -626,11 +626,11 @@ void main() {
       expect(listener.lastValue, [0.00006103515625]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 0.00006103515625);
+      expect(slist[0].data, 0.00006103515625);
     });
 
     test('-4.0', () {
@@ -646,11 +646,11 @@ void main() {
       expect(listener.lastValue, [-4.0]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -4.0);
+      expect(slist[0].data, -4.0);
     });
 
     test('-4.1', () {
@@ -666,11 +666,11 @@ void main() {
       expect(listener.lastValue, [-4.1]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -4.1);
+      expect(slist[0].data, -4.1);
     });
 
     test('Infinity half', () {
@@ -686,11 +686,11 @@ void main() {
       expect(listener.lastValue, [double.infinity]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], double.infinity);
+      expect(slist[0].data, double.infinity);
     });
 
     test('NaN half', () {
@@ -706,11 +706,11 @@ void main() {
       expect(listener.lastValue[0], isNaN);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], isNaN);
+      expect(slist[0].data, isNaN);
     });
 
     test('-Infinity half', () {
@@ -726,11 +726,11 @@ void main() {
       expect(listener.lastValue, [-double.infinity]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -double.infinity);
+      expect(slist[0].data, -double.infinity);
     });
 
     test('Infinity single', () {
@@ -746,11 +746,11 @@ void main() {
       expect(listener.lastValue, [double.infinity]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], double.infinity);
+      expect(slist[0].data, double.infinity);
     });
 
     test('NaN single', () {
@@ -766,11 +766,11 @@ void main() {
       expect(listener.lastValue[0], isNaN);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], isNaN);
+      expect(slist[0].data, isNaN);
     });
 
     test('-Infinity single', () {
@@ -792,11 +792,11 @@ void main() {
       expect(listener.lastValue, [-double.infinity]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -double.infinity);
+      expect(slist[0].data, -double.infinity);
     });
 
     test('Infinity double', () {
@@ -812,11 +812,11 @@ void main() {
       expect(listener.lastValue, [double.infinity]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], double.infinity);
+      expect(slist[0].data, double.infinity);
     });
 
     test('NaN double', () {
@@ -832,11 +832,11 @@ void main() {
       expect(listener.lastValue[0], isNaN);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], isNaN);
+      expect(slist[0].data, isNaN);
     });
 
     test('-Infinity double', () {
@@ -852,11 +852,11 @@ void main() {
       expect(listener.lastValue, [-double.infinity]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], -double.infinity);
+      expect(slist[0].data, -double.infinity);
     });
 
     test('false', () {
@@ -872,11 +872,11 @@ void main() {
       expect(listener.lastValue, [false]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], false);
+      expect(slist[0].data, false);
     });
 
     test('true', () {
@@ -892,11 +892,11 @@ void main() {
       expect(listener.lastValue, [true]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], true);
+      expect(slist[0].data, true);
     });
 
     test('null', () {
@@ -912,11 +912,11 @@ void main() {
       expect(listener.lastValue[0], isNull);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], null);
+      expect(slist[0].data, null);
     });
 
     test('undefined', () {
@@ -932,11 +932,11 @@ void main() {
       expect(listener.lastValue, ['Undefined']);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], null);
+      expect(slist[0].data, null);
     });
 
     test('Simple(16)', () {
@@ -952,11 +952,11 @@ void main() {
       expect(listener.lastValue, [16]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 16);
+      expect(slist[0].data, 16);
     });
 
     test('Simple(24)', () {
@@ -972,11 +972,11 @@ void main() {
       expect(listener.lastValue, [24]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 24);
+      expect(slist[0].data, 24);
     });
 
     test('Simple(255)', () {
@@ -992,11 +992,11 @@ void main() {
       expect(listener.lastValue, [255]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 255);
+      expect(slist[0].data, 255);
     });
 
     test('Tag (0) Date Time', () {
@@ -1036,11 +1036,11 @@ void main() {
       expect(listener.lastTag, 0);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], '2013-03-21T20:04:00Z');
+      expect(slist[0].data, '2013-03-21T20:04:00Z');
     });
 
     test('Tag (1) Int', () {
@@ -1057,11 +1057,11 @@ void main() {
       expect(listener.lastTag, 1);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1363896240);
+      expect(slist[0].data, 1363896240);
     });
 
     test('Tag (1) Float', () {
@@ -1089,11 +1089,11 @@ void main() {
       expect(listener.lastTag, 1);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 1363896240.5);
+      expect(slist[0].data, 1363896240.5);
     });
 
     test('Tag (23) multiple', () {
@@ -1114,12 +1114,12 @@ void main() {
       expect(listener.lastByteCount, 4);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [1, 2, 3, 4]);
-      final item = slistener.stack.peek();
+      expect(slist[0].data, [1, 2, 3, 4]);
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.base16);
     });
 
@@ -1141,12 +1141,12 @@ void main() {
       expect(listener.lastTag, 24);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [100, 73, 69, 84, 70]);
-      final item = slistener.stack.peek();
+      expect(slist[0].data, [100, 73, 69, 84, 70]);
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.encodedCBOR);
     });
 
@@ -1190,12 +1190,12 @@ void main() {
       expect(listener.lastTag, 32);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 'http://www.example.com');
-      final item = slistener.stack.peek();
+      expect(slist[0].data, 'http://www.example.com');
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.uri);
     });
 
@@ -1212,12 +1212,12 @@ void main() {
       expect(listener.lastValue, [[]]);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], []);
-      final item = slistener.stack.peek();
+      expect(slist[0].data, []);
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
 
@@ -1237,12 +1237,12 @@ void main() {
       expect(listener.lastByteCount, 4);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [01, 02, 03, 04]);
-      final item = slistener.stack.peek();
+      expect(slist[0].data, [01, 02, 03, 04]);
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
 
@@ -1259,12 +1259,12 @@ void main() {
       expect(listener.lastValue, ['']);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], '');
-      final item = slistener.stack.peek();
+      expect(slist[0].data, '');
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
 
@@ -1281,12 +1281,12 @@ void main() {
       expect(listener.lastValue, ['a']);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 'a');
-      final item = slistener.stack.peek();
+      expect(slist[0].data, 'a');
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
 
@@ -1303,12 +1303,12 @@ void main() {
       expect(listener.lastValue, ['IETF']);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 'IETF');
-      final item = slistener.stack.peek();
+      expect(slist[0].data, 'IETF');
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
 
@@ -1325,12 +1325,12 @@ void main() {
       expect(listener.lastValue, ['\"\\']);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], '\"\\');
-      final item = slistener.stack.peek();
+      expect(slist[0].data, '\"\\');
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
 
@@ -1347,12 +1347,12 @@ void main() {
       expect(listener.lastValue, ['ü']);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 'ü');
-      final item = slistener.stack.peek();
+      expect(slist[0].data, 'ü');
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
 
@@ -1369,12 +1369,12 @@ void main() {
       expect(listener.lastValue, ['水']);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], '水');
-      final item = slistener.stack.peek();
+      expect(slist[0].data, '水');
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
 
@@ -1391,12 +1391,12 @@ void main() {
       expect(listener.lastValue, ['𐅑']);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], '𐅑');
-      final item = slistener.stack.peek();
+      expect(slist[0].data, '𐅑');
+      final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
 
@@ -1413,11 +1413,11 @@ void main() {
       expect(listener.lastSize, 0);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], []);
+      expect(slist[0].data, []);
     });
 
     test('Array 1,2,3', () {
@@ -1434,11 +1434,11 @@ void main() {
       expect(listener.lastSize, 3);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [1, 2, 3]);
+      expect(slist[0].data, [1, 2, 3]);
     });
 
     test('Array 1,2,3...25', () {
@@ -1511,11 +1511,11 @@ void main() {
       expect(listener.lastSize, 25);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [
+      expect(slist[0].data, [
         1,
         2,
         3,
@@ -1558,11 +1558,11 @@ void main() {
       expect(listener.lastSize, 2);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [
+      expect(slist[0].data, [
         1,
         [2, 3],
         [4, 5]
@@ -1583,11 +1583,11 @@ void main() {
       expect(listener.lastSize, 0);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], {});
+      expect(slist[0].data, {});
     });
 
     test('{1: 2, 3: 4}', () {
@@ -1604,11 +1604,11 @@ void main() {
       expect(listener.lastSize, 2);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], {1: 2, 3: 4});
+      expect(slist[0].data, {1: 2, 3: 4});
     });
 
     test('{"a": 1, "b": [2, 3]}', () {
@@ -1625,11 +1625,11 @@ void main() {
       expect(listener.lastSize, 2);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], {
+      expect(slist[0].data, {
         'a': 1,
         'b': [2, 3]
       });
@@ -1649,11 +1649,11 @@ void main() {
       expect(listener.lastSize, 1);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [
+      expect(slist[0].data, [
         'a',
         {'b': 'c'}
       ]);
@@ -1696,11 +1696,11 @@ void main() {
       expect(listener.lastSize, 5);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E'});
+      expect(slist[0].data, {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E'});
     });
 
     test("(_ h'0102', h'030405')", () {
@@ -1720,11 +1720,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [1, 2, 3, 4, 5]);
+      expect(slist[0].data, [1, 2, 3, 4, 5]);
     });
 
     test('(_ "strea", "ming")', () {
@@ -1755,11 +1755,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 'streaming');
+      expect(slist[0].data, 'streaming');
     });
 
     test('[_ ]', () {
@@ -1776,11 +1776,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], []);
+      expect(slist[0].data, []);
     });
 
     test('[_ 1, [2, 3], [_4, 5]]', () {
@@ -1808,11 +1808,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [
+      expect(slist[0].data, [
         1,
         [2, 3],
         [4, 5]
@@ -1833,11 +1833,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [
+      expect(slist[0].data, [
         1,
         [2, 3],
         [4, 5]
@@ -1858,11 +1858,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [
+      expect(slist[0].data, [
         1,
         [2, 3],
         [4, 5]
@@ -1883,11 +1883,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [
+      expect(slist[0].data, [
         1,
         [2, 3],
         [4, 5]
@@ -1964,11 +1964,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [
+      expect(slist[0].data, [
         1,
         2,
         3,
@@ -2023,11 +2023,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], {
+      expect(slist[0].data, {
         'a': 1,
         'b': [2, 3]
       });
@@ -2047,11 +2047,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [
+      expect(slist[0].data, [
         'a',
         {'b': 'c'}
       ]);
@@ -2084,11 +2084,11 @@ void main() {
       expect(listener.indefiniteStart, isTrue);
       decoder.listener = slistener;
       input.reset();
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], {'Fun': true, 'Amt': -2});
+      expect(slist[0].data, {'Fun': true, 'Amt': -2});
     });
   });
 }

@@ -32,11 +32,6 @@ enum whatsNext {
 /// The stack based listener class, produces a stack of DartItems
 /// from the decoder output.
 class ListenerStack extends Listener {
-  final ItemStack _stack = ItemStack();
-
-  /// Get the stack
-  ItemStack get stack => _stack;
-
   /// Used to indicate what the
   /// next decoded item should be.
   whatsNext _next = whatsNext.nothing;
@@ -413,9 +408,9 @@ class ListenerStack extends Listener {
           case indefMap:
           case indefArray:
             // Complete the stack top, pop and append
-            _stack.peek().targetSize = _stack.peek().data.length;
-            _stack.peek().complete = true;
-            _append(_stack.pop());
+            itemStack.peek().targetSize = itemStack.peek().data.length;
+            itemStack.peek().complete = true;
+            _append(itemStack.pop());
             break;
           default:
             onError('Unknown indefinite type on stop');
@@ -427,7 +422,7 @@ class ListenerStack extends Listener {
   }
 
   /// Main stack append method.
-  void _append(DartItem item) => _stack.push(item);
+  void _append(DartItem item) => itemStack.push(item);
 
   /// Helper functions.
 

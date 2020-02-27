@@ -28,10 +28,10 @@ void main() {
       final decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       decoder.listener = slistener;
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       input.reset();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], {
         'half': 0.0,
@@ -51,10 +51,10 @@ void main() {
       final decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       decoder.listener = slistener;
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       input.reset();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], 'Helloworld!');
     });
@@ -70,10 +70,10 @@ void main() {
       final decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       decoder.listener = slistener;
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       input.reset();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], 42);
     });
@@ -89,10 +89,10 @@ void main() {
       final decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       decoder.listener = slistener;
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       input.reset();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], {'a key': false, 'a secret key': '42', 0: -1});
     });
@@ -108,10 +108,10 @@ void main() {
       final decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       decoder.listener = slistener;
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       input.reset();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], [
         1,
@@ -134,13 +134,13 @@ void main() {
       final decoder = cbor.Decoder.withListener(input, listener);
       decoder.run();
       decoder.listener = slistener;
-      slistener.stack.clear();
+      slistener.itemStack.clear();
       input.reset();
       decoder.run();
-      final slist = slistener.stack.walk();
+      final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
       expect(slist[0], '2013-03-21T20:04:00Z');
-      expect(slistener.stack.peek().hint, cbor.dataHints.dateTimeString);
+      expect(slistener.itemStack.peek().hint, cbor.dataHints.dateTimeString);
     });
   });
 }

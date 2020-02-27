@@ -7,7 +7,7 @@
 
 part of cbor;
 
-extension ListUtilities<T> on stack.Stack<T> {
+extension StackExtensions<T> on stack.Stack<T> {
   /// Non destructive toList
   List<T> toList() {
     if (isEmpty) {
@@ -20,4 +20,7 @@ extension ListUtilities<T> on stack.Stack<T> {
     }
     return _list;
   }
+
+  /// Walk the stack
+  List<T> walk() => toList();
 }
