@@ -228,7 +228,6 @@ class ListenerStack extends Listener {
     item.type = dartTypes.dtMap;
     item.data = <dynamic, dynamic>{};
     item.targetSize = size;
-    item.awaitingMapKey = true;
     if (size == 0) {
       item.complete = true;
     }

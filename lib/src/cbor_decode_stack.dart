@@ -34,6 +34,29 @@ class DecodeStack {
 
   /// Build the decoded stack from the listener stack
   void build(ItemStack items) {
+    if (items.peek() == null) {
+      return;
+    }
+
+    // Walk the item stack, if an item is complete just stack it.
+    var item;
+    var finished = false;
+    while (!finished) {
+      item = items.pop();
+      if (item == null) {
+        finished = true;
+        continue;
+      }
+      if (item.type == dartTypes.dtList || item.type == dartTypes.dtMap) {
+        item = _processIterable(item, items);
+      }
+      if (item.complete) {
+        _stack.push(item);
+      } else {
+        print('Error - attempt to stack incomplete item : $item');
+        finished = true;
+      }
+    }
     built = true;
   }
 
@@ -43,5 +66,10 @@ class DecodeStack {
       return null;
     }
     return [];
+  }
+
+  /// Process an iterable, list or map
+  DartItem _processIterable(DartItem item, ItemStack items) {
+    return DartItem();
   }
 }

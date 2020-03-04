@@ -22,9 +22,6 @@ enum dartTypes {
   dtNone
 }
 
-/// Dart subtypes, used for map key/value handling
-enum dartSubTypes { dtMapKey, dtMapValue, dtNone }
-
 /// If the type is dtBuffer or dtString a hint at what the
 /// data may contain.
 enum dataHints {
@@ -58,9 +55,6 @@ class DartItem {
   /// The item type, one of the major types.
   dartTypes type = dartTypes.dtNone;
 
-  /// The item subtype
-  dartSubTypes subType = dartSubTypes.dtNone;
-
   /// Is the type complete, i,e is its actual size
   /// equql to its target size.
   bool complete = false;
@@ -73,33 +67,4 @@ class DartItem {
 
   /// Actual size
   int size() => data.length;
-
-  /// Awaiting a map key for Map types.
-  bool awaitingMapKey = false;
-
-  /// Awaiting a map value for Map types.
-  bool awaitingMapValue = false;
-
-  /// Helper functions
-
-  bool isIncompleteList() {
-    if ((type == dartTypes.dtList) && !complete) {
-      return true;
-    }
-    return false;
-  }
-
-  bool isIncompleteMap() {
-    if ((type == dartTypes.dtMap) && !complete) {
-      return true;
-    }
-    return false;
-  }
-
-  bool awaitingMapEntry() {
-    if (awaitingMapValue || awaitingMapKey) {
-      return true;
-    }
-    return false;
-  }
 }
