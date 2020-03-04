@@ -67,4 +67,7 @@ class DartItem {
 
   /// Actual size
   int size() => data.length;
+
+  /// Is an iterable(map or list etc. ) item
+  bool isIterable() => type == dartTypes.dtMap || type == dartTypes.dtList;
 }

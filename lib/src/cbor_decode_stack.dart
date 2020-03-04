@@ -38,7 +38,7 @@ class DecodeStack {
       return;
     }
 
-    // Walk the item stack, if an item is complete just stack it.
+    /// Walk the stack
     var item;
     var finished = false;
     while (!finished) {
@@ -47,13 +47,18 @@ class DecodeStack {
         finished = true;
         continue;
       }
-      if (item.type == dartTypes.dtList || item.type == dartTypes.dtMap) {
+
+      /// Iterable
+      if (item.isIterable()) {
         item = _processIterable(item, items);
       }
+
+      /// We should now have a complete item
       if (item.complete) {
         _stack.push(item);
       } else {
-        print('Error - attempt to stack incomplete item : $item');
+        print(
+            'Decode Stack build - Error - attempt to stack incomplete item : $item');
         finished = true;
       }
     }
@@ -70,6 +75,54 @@ class DecodeStack {
 
   /// Process an iterable, list or map
   DartItem _processIterable(DartItem item, ItemStack items) {
+    /// List
+    if (item.type == dartTypes.dtList) {
+      item.data = <dynamic>[];
+      for (var i = 0; i < item.size(); i++) {
+        var iItem = items.pop();
+        if (iItem.complete) {
+          item.data.add(iItem.data);
+        } else if (iItem.isIterable()) {
+          _processIterable(iItem, items);
+        } else {
+          print(
+              'Decode Stack _processIterable - List item is not iterable or complete');
+          return DartItem();
+        }
+        item.complete = true;
+        return item;
+      }
+    } else if (item.type == dartTypes.dtMap) {
+      item.data = <dynamic>{};
+      dynamic key;
+      dynamic value;
+      for (var i = 0; i < item.size(); i++) {
+        var iItem = items.pop();
+        if (iItem.complete) {
+          // Keys cannot be iterable
+          key = iItem.data;
+        } else {
+          print('Decode Stack _processIterable - item is incomplete map key');
+          return DartItem();
+        }
+        iItem = items.pop();
+        if (iItem.complete) {
+          value = iItem.data;
+        } else if (iItem.isIterable()) {
+          value = _processIterable(iItem, items);
+        } else {
+          print('Decode Stack _processIterable - item is incomplete map key');
+          return DartItem();
+        }
+        item.data[key] = value;
+      }
+      item.complete = true;
+      return item;
+    } else {
+      print(
+          'Decode Stack _processIterable - item is iterable but not list or map');
+      return DartItem();
+    }
     return DartItem();
   }
 }
