@@ -9,8 +9,19 @@ part of cbor;
 
 /// The decoded Dart item stack class.
 class ItemStack {
+  /// Construction
+  ItemStack();
+
+  /// From list
+  ItemStack.fromList(List<DartItem> items) {
+    items.forEach(_stack.push);
+  }
+
   /// The stack
-  var _stack = stack.Stack<DartItem>();
+  var _stack = Stack<DartItem>();
+
+  /// is Empty
+  bool isEmpty() => _stack.isEmpty;
 
   /// Push an item.
   void push(DartItem item) {
@@ -24,10 +35,13 @@ class ItemStack {
   DartItem peek() => _stack.top();
 
   /// Walk the stack
-  List<DartItem> walk() => _stack.walk();
+  List<DartItem> walk() => _stack.toList;
 
   /// Clear the stack;
   void clear() {
-    _stack = stack.Stack<DartItem>();
+    _stack = Stack<DartItem>();
   }
+
+  /// toList
+  List<DartItem> toList() => _stack.toList;
 }

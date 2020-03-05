@@ -82,7 +82,7 @@ class Cbor {
     final listener = _listener as ListenerStack;
     final decodeStack = DecodeStack();
     decodeStack.build(listener.itemStack);
-    return decodeStack.hints.toList();
+    return decodeStack.hints.toList;
   }
 
   /// Pretty print the decoded data

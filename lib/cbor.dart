@@ -7,12 +7,12 @@
 
 library cbor;
 
+import 'dart:collection';
 import 'dart:convert' as convertor;
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:typed_data/typed_data.dart' as typed;
-import 'package:stack/stack.dart' as stack;
 
 
 part 'src/cbor.dart';
@@ -20,7 +20,7 @@ part 'src/cbor.dart';
 part 'src/cbor_listener_stack.dart';
 part 'src/cbor_decode_stack.dart';
 part 'src/cbor_item_stack.dart';
-part 'src/cbor_stack_extensions.dart';
+part 'src/cbor_stack.dart';
 part 'src/cbor_numeric_support.dart';
 part 'src/cbor_constants.dart';
 part 'src/cbor_output.dart';

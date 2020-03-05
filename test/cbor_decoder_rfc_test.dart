@@ -1116,9 +1116,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [1, 2, 3, 4]);
+      expect(slist[0], [1, 2, 3, 4]);
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.base16);
     });

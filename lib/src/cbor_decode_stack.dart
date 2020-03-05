@@ -10,10 +10,10 @@ part of cbor;
 /// The stack of dart items assembled from the listener stack
 class DecodeStack {
   /// The stack
-  final _stack = stack.Stack<DartItem>();
+  final _stack = Stack<DartItem>();
 
   /// The hints stack
-  final hints = stack.Stack<dataHints>();
+  final hints = Stack<dataHints>();
 
   /// Stack is built
   bool built = false;
@@ -33,36 +33,34 @@ class DecodeStack {
   DartItem peek() => _stack.top();
 
   /// Build the decoded stack from the listener stack
-  void build(ItemStack items) {
-    if (items.peek() == null) {
+  void build(ItemStack inItems) {
+    if (inItems.peek() == null) {
       return;
     }
 
-    /// Walk the stack
-    var item;
-    var finished = false;
-    while (!finished) {
-      item = items.pop();
-      if (item == null) {
-        finished = true;
-        continue;
-      }
+    // Create a new reversed stack for decoding
+    var items = ItemStack.fromList(inItems.toList());
 
-      /// Iterable
+    // Walk the stack
+    built = true;
+    var item;
+    while (!items.isEmpty()) {
+      item = items.pop();
+
+      // Iterable
       if (item.isIterable()) {
         item = _processIterable(item, items);
       }
 
-      /// We should now have a complete item
+      // We should now have a complete item
       if (item.complete) {
         _stack.push(item);
       } else {
         print(
             'Decode Stack build - Error - attempt to stack incomplete item : $item');
-        finished = true;
+        built = false;
       }
     }
-    built = true;
   }
 
   /// Walk the built stack
@@ -70,7 +68,7 @@ class DecodeStack {
     if (!built) {
       return null;
     }
-    return [];
+    return _stack.toList.map((e) => e.data).toList();
   }
 
   /// Process an iterable, list or map
