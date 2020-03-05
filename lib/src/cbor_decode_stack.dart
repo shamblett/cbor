@@ -39,7 +39,7 @@ class DecodeStack {
     }
 
     // Create a new reversed stack for decoding
-    var items = ItemStack.fromList(inItems.toList());
+    var items = ItemStack.fromList(inItems.toList().reversed.toList());
 
     // Walk the stack
     built = true;
@@ -47,8 +47,8 @@ class DecodeStack {
     while (!items.isEmpty()) {
       item = items.pop();
 
-      // Iterable
-      if (item.isIterable()) {
+      // Iterable, only recurse if the item is not complete
+      if (item.isIterable() && !item.complete) {
         item = _processIterable(item, items);
       }
 
@@ -68,7 +68,7 @@ class DecodeStack {
     if (!built) {
       return null;
     }
-    return _stack.toList.map((e) => e.data).toList();
+    return _stack.toList;
   }
 
   /// Process an iterable, list or map
@@ -76,25 +76,25 @@ class DecodeStack {
     /// List
     if (item.type == dartTypes.dtList) {
       item.data = <dynamic>[];
-      for (var i = 0; i < item.size(); i++) {
+      for (var i = 0; i < item.targetSize; i++) {
         var iItem = items.pop();
         if (iItem.complete) {
           item.data.add(iItem.data);
         } else if (iItem.isIterable()) {
-          _processIterable(iItem, items);
+          item.data.add(_processIterable(iItem, items).data);
         } else {
           print(
               'Decode Stack _processIterable - List item is not iterable or complete');
           return DartItem();
         }
-        item.complete = true;
-        return item;
       }
+      item.complete = true;
+      return item;
     } else if (item.type == dartTypes.dtMap) {
       item.data = <dynamic>{};
       dynamic key;
       dynamic value;
-      for (var i = 0; i < item.size(); i++) {
+      for (var i = 0; i < item.targetSize; i++) {
         var iItem = items.pop();
         if (iItem.complete) {
           // Keys cannot be iterable
