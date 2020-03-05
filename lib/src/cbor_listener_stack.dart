@@ -456,13 +456,14 @@ class ListenerStack extends Listener {
     /// List
     if (item.type == dartTypes.dtList) {
       item.data = <dynamic>[];
-      var length = items.length;
       while (!items.isEmpty()) {
         var iItem = items.popBottom();
         if (iItem.complete) {
           item.data.add(iItem.data);
         } else if (iItem.isIterable()) {
-          item.data.add(_processIndefiniteIterable(iItem, items).data);
+          //if ( item.targetSize != indefiniteMaxSize && iItem.targetSize == indefiniteMaxSize ) {
+            item.data.add(_processIndefiniteIterable(iItem, items).data);
+          //}
         } else {
           print(
               'Decode Stack _processIterable - List item is not iterable or complete');
