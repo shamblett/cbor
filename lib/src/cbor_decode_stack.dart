@@ -91,7 +91,7 @@ class DecodeStack {
       item.complete = true;
       return item;
     } else if (item.type == dartTypes.dtMap) {
-      item.data = <dynamic>{};
+      item.data = <dynamic,dynamic>{};
       dynamic key;
       dynamic value;
       for (var i = 0; i < item.targetSize; i++) {
@@ -107,7 +107,7 @@ class DecodeStack {
         if (iItem.complete) {
           value = iItem.data;
         } else if (iItem.isIterable()) {
-          value = _processIterable(iItem, items);
+          value = _processIterable(iItem, items).data;
         } else {
           print('Decode Stack _processIterable - item is incomplete map key');
           return DartItem();
@@ -121,6 +121,5 @@ class DecodeStack {
           'Decode Stack _processIterable - item is iterable but not list or map');
       return DartItem();
     }
-    return DartItem();
   }
 }
