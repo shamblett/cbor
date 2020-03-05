@@ -11,32 +11,45 @@ part of cbor;
 class Stack<T> {
   final ListQueue<T> _list = ListQueue();
 
-  /// check if the stack is empty.
+  /// Check if the stack is empty.
   bool get isEmpty => _list.isEmpty;
 
-  /// check if the stack is not empty.
+  /// Check if the stack is not empty.
   bool get isNotEmpty => _list.isNotEmpty;
 
-  /// length
+  /// Length
   int get length => _list.length;
 
   /// toList
   List<T> get toList => _list.toList();
 
-  /// push element in top of the stack.
+  /// Push element in top of the stack.
   void push(T e) {
     _list.addLast(e);
   }
 
-  /// get the top of the stack and delete it.
+  /// Get the top of the stack and delete it.
   T pop() {
     var res = _list.last;
     _list.removeLast();
     return res;
   }
 
-  /// get the top of the stack without deleting it.
+  /// Get the bottom of the stack and delete it.
+  T popBottom() {
+    var res = _list.first;
+    _list.removeFirst();
+    return res;
+  }
+
+
+  /// Get the top of the stack without deleting it.
   T top() {
     return _list.last;
+  }
+
+  /// Get the bottom of the stack without deleting it.
+  T bottom() {
+    return _list.first;
   }
 }

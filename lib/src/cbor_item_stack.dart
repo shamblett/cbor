@@ -23,6 +23,9 @@ class ItemStack {
   /// is Empty
   bool isEmpty() => _stack.isEmpty;
 
+  /// Length
+  int get length => _stack.length;
+
   /// Push an item.
   void push(DartItem item) {
     _stack.push(item);
@@ -31,8 +34,14 @@ class ItemStack {
   /// Pop an item from the stack top.
   DartItem pop() => _stack.pop();
 
+  /// Pop an item from the stack bottom.
+  DartItem popBottom() => _stack.popBottom();
+
   /// Peek the top stack item.
   DartItem peek() => _stack.top();
+
+  /// Peek the bottom stack item.
+  DartItem peekBottom() => _stack.bottom();
 
   /// Walk the stack
   List<DartItem> walk() => _stack.toList;
