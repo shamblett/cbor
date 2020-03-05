@@ -1145,9 +1145,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [100, 73, 69, 84, 70]);
+      expect(slist[0], [100, 73, 69, 84, 70]);
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.encodedCBOR);
     });
@@ -1194,9 +1196,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, 'http://www.example.com');
+      expect(slist[0], 'http://www.example.com');
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.uri);
     });
@@ -1216,9 +1220,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, []);
+      expect(slist[0], []);
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
@@ -1241,9 +1247,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [01, 02, 03, 04]);
+      expect(slist[0], [01, 02, 03, 04]);
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
@@ -1263,9 +1271,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, '');
+      expect(slist[0], '');
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
@@ -1285,9 +1295,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, 'a');
+      expect(slist[0], 'a');
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
@@ -1307,9 +1319,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, 'IETF');
+      expect(slist[0], 'IETF');
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
@@ -1329,9 +1343,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, '\"\\');
+      expect(slist[0], '\"\\');
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
@@ -1351,9 +1367,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, 'ü');
+      expect(slist[0], 'ü');
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
@@ -1373,9 +1391,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, '水');
+      expect(slist[0], '水');
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
@@ -1395,9 +1415,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, '𐅑');
+      expect(slist[0], '𐅑');
       final item = slistener.itemStack.peek();
       expect(item.hint, cbor.dataHints.none);
     });
@@ -1417,9 +1439,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, []);
+      expect(slist[0], []);
     });
 
     test('Array 1,2,3', () {
@@ -1438,9 +1462,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [1, 2, 3]);
+      expect(slist[0], [1, 2, 3]);
     });
 
     test('Array 1,2,3...25', () {
@@ -1515,9 +1541,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [
+      expect(slist[0], [
         1,
         2,
         3,
@@ -1562,9 +1590,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [
+      expect(slist[0], [
         1,
         [2, 3],
         [4, 5]
@@ -1587,9 +1617,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, {});
+      expect(slist[0], {});
     });
 
     test('{1: 2, 3: 4}', () {
@@ -1608,9 +1640,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, {1: 2, 3: 4});
+      expect(slist[0], {1: 2, 3: 4});
     });
 
     test('{"a": 1, "b": [2, 3]}', () {
@@ -1629,9 +1663,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, {
+      expect(slist[0], {
         'a': 1,
         'b': [2, 3]
       });
@@ -1653,9 +1689,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [
+      expect(slist[0], [
         'a',
         {'b': 'c'}
       ]);
@@ -1700,9 +1738,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E'});
+      expect(slist[0], {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E'});
     });
 
     test("(_ h'0102', h'030405')", () {
@@ -1724,9 +1764,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [1, 2, 3, 4, 5]);
+      expect(slist[0], [1, 2, 3, 4, 5]);
     });
 
     test('(_ "strea", "ming")', () {
@@ -1759,9 +1801,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, 'streaming');
+      expect(slist[0], 'streaming');
     });
 
     test('[_ ]', () {
@@ -1780,9 +1824,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, []);
+      expect(slist[0], []);
     });
 
     test('[_ 1, [2, 3], [_4, 5]]', () {
@@ -1812,9 +1858,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [
+      expect(slist[0], [
         1,
         [2, 3],
         [4, 5]
@@ -1837,9 +1885,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [
+      expect(slist[0], [
         1,
         [2, 3],
         [4, 5]
@@ -1862,9 +1912,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [
+      expect(slist[0], [
         1,
         [2, 3],
         [4, 5]
@@ -1887,9 +1939,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [
+      expect(slist[0], [
         1,
         [2, 3],
         [4, 5]
@@ -1968,9 +2022,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [
+      expect(slist[0], [
         1,
         2,
         3,
@@ -2027,9 +2083,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, {
+      expect(slist[0], {
         'a': 1,
         'b': [2, 3]
       });
@@ -2051,9 +2109,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, [
+      expect(slist[0], [
         'a',
         {'b': 'c'}
       ]);
@@ -2088,9 +2148,11 @@ void main() {
       input.reset();
       slistener.itemStack.clear();
       decoder.run();
-      final slist = slistener.itemStack.walk();
+      final decodeStack = cbor.DecodeStack();
+      decodeStack.build(slistener.itemStack);
+      final slist = decodeStack.walk();
       expect(slist.length, 1);
-      expect(slist[0].data, {'Fun': true, 'Amt': -2});
+      expect(slist[0], {'Fun': true, 'Amt': -2});
     });
   });
 }
