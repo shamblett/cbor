@@ -42,7 +42,6 @@ class Stack<T> {
     return res;
   }
 
-
   /// Get the top of the stack without deleting it.
   T top() {
     return _list.last;

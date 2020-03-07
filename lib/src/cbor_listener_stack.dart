@@ -44,10 +44,16 @@ class ListenerStack extends Listener {
   /// Indefinite bytes buffer assembler.
   final typed.Uint8Buffer _byteAssembly = typed.Uint8Buffer();
 
+  /// Indefinite item stack, stack to use when
+  /// in an indefinite sequence.
+  final ItemStack _indefiniteItemStack = ItemStack();
+
   /// Indefinite String buffer assembler.
   String _stringAssembly;
 
-  int _iterableStopCount = 0;
+  /// Incremented on every indefinite start, decremented on stop
+  /// used to indicate and indefinite sequence in progress.
+  int _indefiniteStartCount = 0;
 
   @override
   void onInteger(int value) {
@@ -377,20 +383,22 @@ class ListenerStack extends Listener {
     // Process depending on indefinite type.
     switch (text) {
       case indefBytes:
+        _indefiniteStartCount++;
         _indefiniteStack.add(text);
         _byteAssembly.clear();
         break;
       case indefString:
+        _indefiniteStartCount++;
         _indefiniteStack.add(text);
         _stringAssembly = '';
         break;
       case indefMap:
-        _iterableStopCount++;
+        _indefiniteStartCount++;
         _indefiniteStack.add(text);
         onMap(indefiniteMaxSize);
         break;
       case indefArray:
-        _iterableStopCount++;
+        _indefiniteStartCount++;
         _indefiniteStack.add(text);
         onArray(indefiniteMaxSize);
         break;
@@ -410,24 +418,32 @@ class ListenerStack extends Listener {
             break;
           case indefMap:
           case indefArray:
-          // No more indefinite iterable stops
-          if ( --_iterableStopCount == 0 ) {
-            var inItems = ItemStack.fromList(itemStack.toList());
-            itemStack.clear();
-            _append(_processIndefiniteIterable(inItems.popBottom(), inItems));
-          }
+            {
+              // Add an indefinite iterable stop item
+              final item = DartItem();
+              item.type = dartTypes.dtIterableIndefiniteStop;
+              item.complete = true;
+              _append(item);
+            }
             break;
           default:
             onError('Unknown indefinite type on stop');
         }
+        _indefiniteStartCount--;
         break;
       default:
         onError('Unknown indefinite type on start');
     }
+    // If the indefinite sequence has stopped process it
+    if (_indefiniteStartCount == 0) {
+      _buildIndefiniteSequence();
+    }
   }
 
   /// Main stack append method.
-  void _append(DartItem item) => itemStack.push(item);
+  void _append(DartItem item) => _indefiniteStartCount == 0
+      ? itemStack.push(item)
+      : _indefiniteItemStack.push(item);
 
   /// Helper functions.
 
@@ -451,19 +467,49 @@ class ListenerStack extends Listener {
     return false;
   }
 
+  /// Build an indefinite sequence on to the item stack
+  void _buildIndefiniteSequence() {
+    if (_indefiniteItemStack.peek() == null) {
+      return;
+    }
+
+    // Walk the stack
+    var item;
+    while (!_indefiniteItemStack.isEmpty()) {
+      item = _indefiniteItemStack.popBottom();
+
+      // Iterable, only recurse if the item is not complete
+      if (item.isIterable() && !item.complete) {
+        item = _processIndefiniteIterable(item, _indefiniteItemStack);
+      }
+
+      // We should now have a complete item
+      if (item.complete) {
+        itemStack.push(item);
+      } else {
+        print(
+            'Listener Stack Indefinite Stack build - Error - attempt to stack incomplete item : $item');
+      }
+
+      _indefiniteItemStack.clear();
+    }
+  }
+
   /// Process an iterable, list or map
   DartItem _processIndefiniteIterable(DartItem item, ItemStack items) {
     /// List
     if (item.type == dartTypes.dtList) {
       item.data = <dynamic>[];
-      while (!items.isEmpty()) {
+      for (var i = 0; i < item.targetSize; i++) {
         var iItem = items.popBottom();
+        // Check for an indefinite stop
+        if (iItem.type == dartTypes.dtIterableIndefiniteStop) {
+          break;
+        }
         if (iItem.complete) {
           item.data.add(iItem.data);
         } else if (iItem.isIterable()) {
-          //if ( item.targetSize != indefiniteMaxSize && iItem.targetSize == indefiniteMaxSize ) {
-            item.data.add(_processIndefiniteIterable(iItem, items).data);
-          //}
+          item.data.add(_processIndefiniteIterable(iItem, items).data);
         } else {
           print(
               'Decode Stack _processIterable - List item is not iterable or complete');
@@ -473,11 +519,14 @@ class ListenerStack extends Listener {
       item.complete = true;
       return item;
     } else if (item.type == dartTypes.dtMap) {
-      item.data = <dynamic,dynamic>{};
+      item.data = <dynamic, dynamic>{};
       dynamic key;
       dynamic value;
       for (var i = 0; i < item.targetSize; i++) {
         var iItem = items.popBottom();
+        if (iItem.type == dartTypes.dtIterableIndefiniteStop) {
+          break;
+        }
         if (iItem.complete) {
           // Keys cannot be iterable
           key = iItem.data;

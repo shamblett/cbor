@@ -19,6 +19,7 @@ enum dartTypes {
   dtString,
   dtBool,
   dtUndefined,
+  dtIterableIndefiniteStop,
   dtNone
 }
 
