@@ -51,4 +51,7 @@ class Stack<T> {
   T bottom() {
     return _list.first;
   }
+
+  /// Clear the stack
+  void clear() => _list.clear();
 }

@@ -272,9 +272,12 @@ void main() {
       inst.encoder.writeURI('example.com');
 
       // Decoding
+      inst.clearDecodeStack();
       final dataIn = cbor.Input(inst.rawOutput.getData());
       inst.input = dataIn;
       inst.decodeFromInput();
+      final decodedData = inst.getDecodedData();
+      expect(decodedData.length, 8);
       final hints = inst.getDecodedHints();
       expect(hints[0], cbor.dataHints.dateTimeString);
       expect(hints[1], cbor.dataHints.dateTimeEpoch);
@@ -295,7 +298,8 @@ void main() {
 
     test('JSON -> ', () {
       // Encoding
-      inst.clearEncoded();
+      inst.clearEncodedOutput();
+      inst.clearDecodeStack();
       final encoder = inst.encoder;
       encoder.writeArray([9, 10, 11]);
       encoder.writeInt(123);

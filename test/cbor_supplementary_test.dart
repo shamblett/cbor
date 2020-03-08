@@ -317,9 +317,7 @@ void main() {
       decoder.run();
       final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 'http://www.example.com');
-      final hints = slistener.itemStack.hints();
-      expect(hints[0], cbor.dataHints.base64Url);
+      expect(slist[0].data, 'http://www.example.com');
     });
 
     test('Tag (34) Base64 String', () {
@@ -360,9 +358,7 @@ void main() {
       decoder.run();
       final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 'http://www.example.com');
-      final hints = slistener.itemStack.hints();
-      expect(hints[0], cbor.dataHints.base64);
+      expect(slist[0].data, 'http://www.example.com');
     });
 
     test('Tag (35) RegExp', () {
@@ -403,9 +399,7 @@ void main() {
       decoder.run();
       final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 'http://www.example.com');
-      final hints = slistener.itemStack.hints();
-      expect(hints[0], cbor.dataHints.regex);
+      expect(slist[0].data, 'http://www.example.com');
     });
 
     test('Tag (36) MIME', () {
@@ -446,9 +440,7 @@ void main() {
       decoder.run();
       final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], 'http://www.example.com');
-      final hints = slistener.itemStack.hints();
-      expect(hints[0], cbor.dataHints.mime);
+      expect(slist[0].data, 'http://www.example.com');
     });
 
     test('Tag (55799) Self Describe CBOR', () {
@@ -463,16 +455,14 @@ void main() {
       decoder.run();
       final slist = slistener.itemStack.walk();
       expect(slist.length, 1);
-      expect(slist[0], [0x64, 0x49, 0x45, 0x54, 0x46]);
-      final hints = slistener.itemStack.hints();
-      expect(hints[0], cbor.dataHints.selfDescCBOR);
+      expect(slist[0].data, [0x64, 0x49, 0x45, 0x54, 0x46]);
     });
   });
 
   group('Dog Food', () {
     test('Encode/Decode confidence -> ', () {
+      var inst = cbor.Cbor();
       // Encoding
-      cbor.init();
       final output = cbor.OutputStandard();
       final encoder = cbor.Encoder(output);
       encoder.writeArray([9, 10, 11]);
@@ -530,11 +520,9 @@ void main() {
 
       // Decoding
       final input = cbor.Input(output.getData());
-      final decoder = cbor.Decoder.withListener(input, slistener);
-      slistener.itemStack.clear();
-      decoder.run();
-      final slist = slistener.itemStack.walk();
-      final hints = slistener.itemStack.hints();
+      inst.decodeFromInput();
+      var slist = inst.getDecodedData();
+      expect(slist, isNotNull);
       expect(slist.length, 30);
       expect(slist[0], [9, 10, 11]);
       expect(slist[1], 123);
@@ -556,21 +544,14 @@ void main() {
       expect(slist[13], 35.66e4);
       expect(slist[14], 20.0);
       expect(slist[15], '2013-03-21T20:04:00Z');
-      expect(hints[15], cbor.dataHints.dateTimeString);
       expect(slist[16], 1234567);
-      expect(hints[16], cbor.dataHints.dateTimeEpoch);
       expect(slist[17], 10);
       expect(slist[18], [01, 02, 03, 89]);
       expect(slist[19], [01, 02, 03, 90]);
-      expect(hints[19], cbor.dataHints.base64);
       expect(slist[20], [01, 02, 03, 91]);
-      expect(hints[20], cbor.dataHints.encodedCBOR);
       expect(slist[21], [01, 02, 03, 92]);
-      expect(hints[21], cbor.dataHints.base64Url);
       expect(slist[22], [01, 02, 03, 93]);
-      expect(hints[22], cbor.dataHints.base16);
       expect(slist[23], 'example.com');
-      expect(hints[23], cbor.dataHints.uri);
       expect(slist[24], greaterThanOrEqualTo(19876.66));
       expect(slist[25], 6);
       expect(slist[26], 'Streaming');
@@ -609,14 +590,14 @@ void main() {
         inst.decodeFromList(bytes);
         print(inst.decodedPrettyPrint());
         final decoded = inst.getDecodedData();
-        expect(decoded, [
+        expect(decoded[0], [
           {
             1: {1: 1},
             3: {1: 1},
             12: {1: 1}
           }
         ]);
-      }, skip: true);
+      });
       test('2', () {
         print('2 - invalid decoding of arrays');
         //        81             # array(1)
@@ -641,7 +622,7 @@ void main() {
         inst.decodeFromList(bytes);
         print(inst.decodedPrettyPrint());
         final decoded = inst.getDecodedData();
-        expect(decoded, [
+        expect(decoded[0], [
           {
             1: {1: 2},
             3: {
@@ -651,6 +632,6 @@ void main() {
           }
         ]);
       });
-    }, skip: true);
+    });
   });
 }

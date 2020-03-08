@@ -34,6 +34,10 @@ class DecodeStack {
 
   /// Build the decoded stack from the listener stack
   void build(ItemStack inItems) {
+    // If already built do nothing
+    if (built || inItems.isEmpty()) {
+      return;
+    }
     if (inItems.peek() == null) {
       return;
     }
@@ -55,6 +59,7 @@ class DecodeStack {
       // We should now have a complete item
       if (item.complete) {
         _stack.push(item);
+        hints.push(item.hint);
       } else {
         print(
             'Decode Stack build - Error - attempt to stack incomplete item : $item');
@@ -63,12 +68,23 @@ class DecodeStack {
     }
   }
 
-  /// Walk the built stack
+  /// Walk the built stack and return the [DartItem] values
   List<dynamic> walk() {
     if (!built) {
       return null;
     }
-    return _stack.toList;
+    var retList = <dynamic>[];
+    for (var entry in _stack.toList) {
+      retList.add(entry.data);
+    }
+    return retList;
+  }
+
+  /// Clear the decode stack
+  void clear() {
+    _stack.clear();
+    hints.clear();
+    built = false;
   }
 
   /// Process an iterable, list or map

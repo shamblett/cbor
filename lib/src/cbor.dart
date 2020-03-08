@@ -22,6 +22,7 @@ class Cbor {
   Input _input;
   Decoder _decoder;
   Listener _listener;
+  final _decodeStack = DecodeStack();
 
   /// Input
   Input get input => _input;
@@ -48,6 +49,7 @@ class Cbor {
   void decodeFromBuffer(typed.Uint8Buffer buffer) {
     _output.clear();
     _input = Input(buffer);
+    _listener.itemStack.clear();
     _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
@@ -58,6 +60,7 @@ class Cbor {
     final buffer = typed.Uint8Buffer();
     buffer.addAll(ints);
     _input = Input(buffer);
+    _listener.itemStack.clear();
     _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
@@ -66,23 +69,24 @@ class Cbor {
   /// just encoded.
   void decodeFromInput() {
     _input = Input(_output.getData());
+    _listener.itemStack.clear();
     _decoder = Decoder.withListener(_input, _listener);
     _decoder.run();
   }
 
-  /// Get the decoded data as a list
+  /// Get the decoded data as a list.
   List<dynamic> getDecodedData() {
-    final decodeStack = DecodeStack();
-    decodeStack.build(listener.itemStack);
-    return decodeStack.walk();
+    _decodeStack.build(listener.itemStack);
+    return _decodeStack.walk();
   }
 
-  /// Get the decoded hints
+  /// Clear the decode stack
+  void clearDecodeStack() => _decodeStack.clear();
+
+  /// Get the decoded hints. Note you must call [getDecodedData()] before
+  /// getting the hints.
   List<dataHints> getDecodedHints() {
-    final listener = _listener as ListenerStack;
-    final decodeStack = DecodeStack();
-    decodeStack.build(listener.itemStack);
-    return decodeStack.hints.toList;
+    return _decodeStack.hints.toList;
   }
 
   /// Pretty print the decoded data
@@ -129,7 +133,7 @@ class Cbor {
   Encoder get encoder => _encoder;
 
   /// Clear the encoded output
-  void clearEncoded() {
+  void clearEncodedOutput() {
     _output.clear();
   }
 }
