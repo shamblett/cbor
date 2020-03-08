@@ -14,7 +14,6 @@ import 'dart:typed_data';
 
 import 'package:typed_data/typed_data.dart' as typed;
 
-
 part 'src/cbor.dart';
 
 part 'src/cbor_listener_stack.dart';

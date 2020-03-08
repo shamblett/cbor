@@ -463,8 +463,7 @@ void main() {
     test('Encode/Decode confidence -> ', () {
       var inst = cbor.Cbor();
       // Encoding
-      final output = cbor.OutputStandard();
-      final encoder = cbor.Encoder(output);
+      final encoder = inst.encoder;
       encoder.writeArray([9, 10, 11]);
       encoder.writeInt(123);
       encoder.writeInt(-457);
@@ -482,9 +481,7 @@ void main() {
         3: 'Hello'
       });
       encoder.writeSingle(36.908);
-      // ignore: prefer_int_literals
       encoder.writeDouble(35.66e4);
-      // ignore: prefer_int_literals
       encoder.writeHalf(20.0);
       encoder.writeDateTime('2013-03-21T20:04:00Z');
       encoder.writeEpoch(1234567);
