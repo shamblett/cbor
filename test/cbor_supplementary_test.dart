@@ -516,7 +516,6 @@ void main() {
       encoder.writeBreak();
 
       // Decoding
-      final input = cbor.Input(output.getData());
       inst.decodeFromInput();
       var slist = inst.getDecodedData();
       expect(slist, isNotNull);

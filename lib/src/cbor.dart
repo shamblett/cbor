@@ -90,7 +90,6 @@ class Cbor {
   }
 
   /// Pretty print the decoded data
-  // ignore: avoid_positional_boolean_parameters
   String decodedPrettyPrint([bool withHints = false]) {
     var ret = '';
     final values = getDecodedData();
@@ -100,7 +99,6 @@ class Cbor {
     }
     final length = values.length;
     for (var i = 0; i < length; i++) {
-      // ignore: use_string_buffers
       ret += 'Entry $i   : Value is => ${values[i].toString()}\n';
       if (withHints) {
         ret += '          : Hint is => ${hints[i].toString()}\n';

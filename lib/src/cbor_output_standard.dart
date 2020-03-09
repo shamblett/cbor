@@ -14,6 +14,8 @@ class OutputStandard extends Output {
   OutputStandard() {
     _buffer = typed.Uint8Buffer();
     _pauseBuffer = typed.Uint8Buffer();
+    _paused = false;
+    _markPos = 0;
   }
 
   @override

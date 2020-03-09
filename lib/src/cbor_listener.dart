@@ -31,7 +31,6 @@ abstract class Listener {
 
   void onSpecialFloat(double value);
 
-  // ignore: avoid_positional_boolean_parameters
   void onBool(bool state);
 
   void onNull();

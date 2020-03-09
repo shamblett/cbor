@@ -513,6 +513,5 @@ class Decoder {
   }
 
   /// Listener.
-  // ignore: avoid_setters_without_getters
   set listener(Listener listenerInstance) => _listener = listenerInstance;
 }

@@ -40,9 +40,7 @@ final int two8 = pow(2, 8);
 final int two16 = pow(2, 16);
 final int two32 = pow(2, 32);
 final int two64 = pow(2, 64);
-// ignore: prefer_int_literals
 const double halfLimitUpper = 65504.0;
-// ignore: prefer_int_literals
 const double halfLimitLower = -65504.0;
 const double singleLimitUpper = 3.4028234663852886e38;
 const double singleLimitLower = -3.4028234663852886e38;

@@ -14,8 +14,6 @@ import 'package:typed_data/typed_data.dart' as typed;
 void main() {
   // Common
   final inst = cbor.Cbor();
-  final listener = cbor.ListenerDebug();
-  final slistener = cbor.ListenerStack();
 
   group('File based decoding', () {
     test('Floats -> ', () {

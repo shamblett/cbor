@@ -105,21 +105,18 @@ void main() {
 
     test('0.0', () {
       output.clear();
-      // ignore: prefer_int_literals
       encoder.writeHalf(0.0);
       expect(output.getDataAsList(), [0xf9, 0x00, 0x00]);
     });
 
     test('-0.0', () {
       output.clear();
-      // ignore: prefer_int_literals
       encoder.writeHalf(-0.0);
       expect(output.getDataAsList(), [0xf9, 0x80, 0x00]);
     });
 
     test('1.0', () {
       output.clear();
-      // ignore: prefer_int_literals
       encoder.writeHalf(1.0);
       expect(output.getDataAsList(), [0xf9, 0x3c, 0x00]);
     });
@@ -132,22 +129,18 @@ void main() {
 
     test('65504.0', () {
       output.clear();
-      // ignore: prefer_int_literals
       encoder.writeHalf(65504.0);
       expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
       output.clear();
-      // ignore: prefer_int_literals
       encoder.writeFloat(65504.0);
       expect(output.getDataAsList(), [0xf9, 0x7b, 0xff]);
     });
 
     test('100000.0', () {
       output.clear();
-      // ignore: prefer_int_literals
       encoder.writeSingle(100000.0);
       expect(output.getDataAsList(), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
       output.clear();
-      // ignore: prefer_int_literals
       encoder.writeFloat(100000.0);
       expect(output.getDataAsList(), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
     });
@@ -186,7 +179,6 @@ void main() {
 
     test('-4.0', () {
       output.clear();
-      // ignore: prefer_int_literals
       encoder.writeHalf(-4.0);
       expect(output.getDataAsList(), [0xf9, 0xc4, 0x00]);
     });

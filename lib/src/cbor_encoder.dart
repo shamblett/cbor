@@ -31,7 +31,6 @@ class Encoder {
   }
 
   /// Booleans.
-  // ignore: avoid_positional_boolean_parameters
   void writeBool(bool value) {
     if (value) {
       _out.putByte(0xf5);
@@ -63,7 +62,6 @@ class Encoder {
   }
 
   /// Primitive string writer.
-  // ignore: avoid_positional_boolean_parameters
   void writeString(String str, [bool indefinite = false]) {
     final buff = strToByteString(str);
     if (indefinite) {
@@ -74,7 +72,6 @@ class Encoder {
   }
 
   /// Bytestring primitive.
-  // ignore: avoid_positional_boolean_parameters
   void writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
     if (indefinite) {
       startIndefinite(majorTypeBytes);
@@ -89,10 +86,7 @@ class Encoder {
   /// If you supply a length this will be used and not calculated from the
   /// array size, unless you are encoding certain indefinite sequences you
   /// do not need to do this.
-  bool writeArray(List<dynamic> value,
-      // ignore: avoid_positional_boolean_parameters
-      [bool indefinite = false,
-      int length]) {
+  bool writeArray(List<dynamic> value, [bool indefinite = false, int length]) {
     // Mark the output buffer, if we cannot encode
     // the whole array structure rewind so as to perform
     // no encoding.
@@ -113,9 +107,7 @@ class Encoder {
   /// Valid map values are integer, string, bool, float(any size), array
   /// map or buffer. Returns true if the encoding has been successful.
   bool writeMap(Map<dynamic, dynamic> value,
-      // ignore: avoid_positional_boolean_parameters
-      [bool indefinite = false,
-      int length]) {
+      [bool indefinite = false, int length]) {
     // Mark the output buffer, if we cannot encode
     // the whole map structure rewind so as to perform
     // no encoding.
@@ -397,9 +389,7 @@ class Encoder {
   /// If the array cannot be fully encoded no encoding occurs,
   /// ie false is returned.
   bool writeArrayImpl(List<dynamic> value,
-      // ignore: avoid_positional_boolean_parameters
-      [bool indefinite = false,
-      int length]) {
+      [bool indefinite = false, int length]) {
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {
@@ -483,9 +473,7 @@ class Encoder {
   /// If the map cannot be fully encoded no encoding occurs,
   /// ie false is returned.
   bool writeMapImpl(Map<dynamic, dynamic> value,
-      // ignore: avoid_positional_boolean_parameters
-      [bool indefinite = false,
-      int length]) {
+      [bool indefinite = false, int length]) {
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {
@@ -521,7 +509,6 @@ class Encoder {
     }
 
     var ok = true;
-    // ignore: always_specify_types
     value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
       if (key.runtimeType.toString() == 'int') {
