@@ -89,6 +89,6 @@ class ListenerDebug extends Listener {
 
   @override
   void onIndefinite(String text) {
-    print('Indefinate Item $text');
+    print('Indefinite Item $text');
   }
 }

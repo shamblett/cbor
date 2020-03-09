@@ -487,7 +487,7 @@ class ListenerStack extends Listener {
       if (item.complete) {
         itemStack.push(item);
       } else {
-        print(
+        CborException(
             'Listener Stack Indefinite Stack build - Error - attempt to stack incomplete item : $item');
       }
 
@@ -511,9 +511,8 @@ class ListenerStack extends Listener {
         } else if (iItem.isIterable()) {
           item.data.add(_processIndefiniteIterable(iItem, items).data);
         } else {
-          print(
-              'Decode Stack _processIterable - List item is not iterable or complete');
-          return DartItem();
+          throw CborException(
+              'Listener Stack _processIndefiniteIterable - List item is not iterable or complete ${iItem}');
         }
       }
       item.complete = true;
@@ -531,8 +530,8 @@ class ListenerStack extends Listener {
           // Keys cannot be iterable
           key = iItem.data;
         } else {
-          print('Decode Stack _processIterable - item is incomplete map key');
-          return DartItem();
+          throw CborException(
+              'Listener Stack _processIndefiniteIterable - item is incomplete map key ${iItem}');
         }
         iItem = items.popBottom();
         if (iItem.complete) {
@@ -540,17 +539,16 @@ class ListenerStack extends Listener {
         } else if (iItem.isIterable()) {
           value = _processIndefiniteIterable(iItem, items).data;
         } else {
-          print('Decode Stack _processIterable - item is incomplete map key');
-          return DartItem();
+          throw CborException(
+              'Listener Stack _processIndefiniteIterable - item is incomplete map key ${iItem}');
         }
         item.data[key] = value;
       }
       item.complete = true;
       return item;
     } else {
-      print(
-          'Decode Stack _processIterable - item is iterable but not list or map');
-      return DartItem();
+      throw CborException(
+          'Listener Stack _processIndefiniteIterable - item is iterable but not list or map ${item}');
     }
   }
 }

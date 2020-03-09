@@ -372,7 +372,7 @@ class Encoder {
       _out.putBytes(data);
     } else {
       // Bignum - not supported, use tags
-      print('Bignums not supported');
+      throw CborException('Bignums not supported');
     }
   }
 

@@ -61,9 +61,9 @@ class DecodeStack {
         _stack.push(item);
         hints.push(item.hint);
       } else {
-        print(
-            'Decode Stack build - Error - attempt to stack incomplete item : $item');
         built = false;
+        throw CborException(
+            'Decode Stack build - Error - attempt to stack incomplete item : $item');
       }
     }
   }
@@ -99,9 +99,8 @@ class DecodeStack {
         } else if (iItem.isIterable()) {
           item.data.add(_processIterable(iItem, items).data);
         } else {
-          print(
-              'Decode Stack _processIterable - List item is not iterable or complete');
-          return DartItem();
+          throw CborException(
+              'Decode Stack _processIterable - List item is not iterable or complete ${iItem}');
         }
       }
       item.complete = true;
@@ -116,8 +115,8 @@ class DecodeStack {
           // Keys cannot be iterable
           key = iItem.data;
         } else {
-          print('Decode Stack _processIterable - item is incomplete map key');
-          return DartItem();
+          throw CborException(
+              'Decode Stack _processIterable - item is incomplete map key ${iItem}');
         }
         iItem = items.pop();
         if (iItem.complete) {
@@ -125,17 +124,16 @@ class DecodeStack {
         } else if (iItem.isIterable()) {
           value = _processIterable(iItem, items).data;
         } else {
-          print('Decode Stack _processIterable - item is incomplete map key');
-          return DartItem();
+          throw CborException(
+              'Decode Stack _processIterable - item is incomplete map value ${iItem}');
         }
         item.data[key] = value;
       }
       item.complete = true;
       return item;
     } else {
-      print(
-          'Decode Stack _processIterable - item is iterable but not list or map');
-      return DartItem();
+      throw CborException(
+          'Decode Stack _processIterable - item is iterable but not list or map ${item}');
     }
   }
 }
