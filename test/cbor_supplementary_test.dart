@@ -563,8 +563,8 @@ void main() {
   });
   group('Issues', () {
     group('Issue 9', () {
-      test('1', () {
-        print('1 - invalid decoding of arrays');
+      test('9-1', () {
+        print('9-1 - invalid decoding of arrays');
         //        81          # array(1)
         //        A3       # map(3)
         //        01    # unsigned(1)
@@ -594,8 +594,8 @@ void main() {
           }
         ]);
       });
-      test('2', () {
-        print('2 - invalid decoding of arrays');
+      test('9-2', () {
+        print('9-2 - invalid decoding of arrays');
         //        81             # array(1)
         //        A3          # map(3)
         //        01       # unsigned(1)
@@ -629,5 +629,32 @@ void main() {
         ]);
       });
     });
+    group('Issue 10', ()
+    {
+      test('10-1', () {
+        final inst = cbor.Cbor();
+        final encoder = inst.encoder;
+
+        encoder.writeArrayImpl([], true, 1);
+        // [{1 : 123456789}]
+        encoder.writeMapImpl({1:null}, true, 1);
+        encoder.writeInt(1);
+        encoder.writeTag(2); // BigInt
+        encoder.writeInt(BigInt.from(123456789).toInt());
+        encoder.writeBreak();
+        encoder.writeBreak();
+
+        final buff = inst.output.getData();
+        List<int> encodedBytes = buff.buffer.asUint8List();
+
+        inst.decodeFromList(encodedBytes);
+
+        final decodedData = inst.getDecodedData();
+        final hexDump = hex.encode(encodedBytes);
+        expect(hexDump,'9fbf01f601c21a075bcd15ffff');
+        expect(decodedData, [[{1: 123456789}]]);
+      });
+    });
+
   });
 }
