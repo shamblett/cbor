@@ -3,20 +3,15 @@
 
 import 'package:cbor/cbor.dart' as cbor;
 
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
-
 /// A more complex encoding sequence followed by a self decode and a JSON
 /// output.
 int main() {
   // Get our cbor instance, always do this,it correctly
   // initialises the decoder.
-  final cbor.Cbor inst = cbor.Cbor();
+  final inst = cbor.Cbor();
 
   // Get our encoder
-  final cbor.Encoder encoder = inst.encoder;
+  final encoder = inst.encoder;
 
   // Encode some values
   encoder.writeArray(<int>[1, 2, 3]);

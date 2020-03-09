@@ -4,21 +4,16 @@
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:typed_data/typed_data.dart';
 
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
-
 /// A payload based decode.
 int main() {
   // Get our cbor instance, always do this,it correctly
   // initialises the decoder.
-  final cbor.Cbor inst = cbor.Cbor();
+  final inst = cbor.Cbor();
 
   // Assume we have received a CBOR encoded byte buffer from the network.
   // The byte sequence below gives :-
   // {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E'}
-  final List<int> payload = <int>[
+  final payload = <int>[
     0xa5,
     0x61,
     0x61,
@@ -42,15 +37,17 @@ int main() {
     0x45
   ];
 
-  final Uint8Buffer payloadBuffer = Uint8Buffer();
+  final payloadBuffer = Uint8Buffer();
   payloadBuffer.addAll(payload);
 
   // Decode from the buffer, you can also decode from the
   // int list if you prefer.
   inst.decodeFromBuffer(payloadBuffer);
 
-  // Pretty print, note you must decode first before using
-  // prettyprint or JSON, these are only transformers.
+  // Pretty print, note that these methods use [GetDecodedData] and will
+  // thus build the payload buffer.
+  // If you do not want to pretty print or use Json just get the list of
+  // decoded data directly by calling [GetDecodedData()]
   print(inst.decodedPrettyPrint());
 
   // JSON, maps can only have string keys to decode to JSON

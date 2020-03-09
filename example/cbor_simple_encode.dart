@@ -2,22 +2,16 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'package:cbor/cbor.dart' as cbor;
-import 'package:typed_data/typed_data.dart';
-
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: unnecessary_final
-// ignore_for_file: cascade_invocations
-// ignore_for_file: avoid_print
 
 /// A simple encoding sequence followed by a self decode and a pretty print
 /// and JSON output.
 int main() {
   // Get our cbor instance, always do this,it correctly
   // initialises the decoder.
-  final cbor.Cbor inst = cbor.Cbor();
+  final inst = cbor.Cbor();
 
   // Get our encoder
-  final cbor.Encoder encoder = inst.encoder;
+  final encoder = inst.encoder;
 
   // Encode some values
   encoder.writeArray(<int>[1, 2, 3]);
@@ -30,7 +24,7 @@ int main() {
   encoder.writeString('hello');
 
   // You can now get the encoded output.
-  final Uint8Buffer buff = inst.output.getData();
+  final buff = inst.output.getData();
 
   // and do what you want with it
   buff.toString();
@@ -38,7 +32,7 @@ int main() {
   // Or, we can decode ourselves
   inst.decodeFromInput();
 
-  // Then prettyprint it
+  // Then pretty print it
   print(inst.decodedPrettyPrint());
 
   return 0;
