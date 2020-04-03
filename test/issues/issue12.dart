@@ -11,14 +11,22 @@ import 'package:test/test.dart';
 
 void main() {
     test('1', () {
-      var cleanedToken = 'p0F2AkF0Gl2AX-JDdHRsCkNyZXOkRGNoYW6gQ2dycKBDdXNyoWl1LTMzNTIwNTUPQ3NwY6Fpcy0xNzA3OTgzGB9DcGF0pERjaGFuoENncnCgQ3VzcqBDc3BjoERtZXRhoENzaWdYINqGs2EyEMHPZrp6znVqTBzXNBAD_31hUH3JuUSWE2A6';
+      // {'v': 2, 't': 1568766012, 'ttl': 1440, 'res': {'chan': {}, 'grp': {}, 'usr': {"user1": 1, "user2": 1}, 'spc': {}}, 'pat': {'chan': {}, 'grp': {}, 'usr': {}, 'spc': {}}, 'meta': {}, 'sig': h'D1D3EFDDA29F2A319C3CD05F187B892DAB4FA147845203866613C6BB49553F6D'}
+      var token = 'p0F2AkF0Gl2BeDxDdHRsGQWgQ3Jlc6REY2hhbqBDZ3JwoEN1c3KiZXVzZXIxAWV1c2VyMgFDc3BjoENwYXSkRGNoYW6gQ2dycKBDdXNyoENzcGOgRG1ldGGgQ3NpZ1gg0dPv3aKfKjGcPNBfGHuJLatPoUeEUgOGZhPGu0lVP20=';
+      var padding = '';
+      if (token.length % 4 == 3) {
+        padding = '=';
+      } else if (token.length % 4 == 2) {
+        padding = '==';
+      }
+      var cleanedToken = token.replaceAll('_', '/').replaceAll('-', '+') + padding;
       var payload = base64Decode(cleanedToken);
       print(payload);
       final inst = cbor.Cbor();
       inst.decodeFromList(payload);
       var decoded = inst.getDecodedData();
       print(decoded);
-      // 161, 105, 117, 45, 51, 51, 53, 50, 48, 53, 53, 15
+      print(inst.decodedToJSON());
     });
     test('2', () {
       final inst = cbor.Cbor();
