@@ -7,19 +7,33 @@
 
 part of cbor;
 
+/// Builder hook function type. The bool parameter
+/// is set to true if the encoded entity can be used as a
+/// map key.
+typedef BuilderHook = void Function(bool);
+
 /// Float encoding directives
 enum encodeFloatAs { half, single, double }
 
 /// The encoder class implements the CBOR encoder functionality as defined in
-/// RFC7049.
+/// RFC7049. This class is intended for single CBOR entity encoding, indefinite
+/// sequences and simple lists and maps
+///
+/// For specific more complex encoding such as for specialised lists and maps that
+/// contain raw byte sequences, tag values etc. use the builder classes.
 class Encoder {
   /// Construction
   Encoder(Output out) {
     _out = out;
+    _builderHook = nullBuilderHook;
   }
 
   /// The output buffer
+  @protected
   Output _out;
+
+  @protected
+  BuilderHook _builderHook;
 
   /// Indefinite sequence indicator, incremented on start
   /// decremented on stop.
@@ -37,6 +51,7 @@ class Encoder {
     } else {
       _out.putByte(0xf4);
     }
+    _builderHook(false);
   }
 
   /// Positive and negative integers.
@@ -46,12 +61,14 @@ class Encoder {
     } else {
       _writeTypeValue(0, value);
     }
+    _builderHook(true);
   }
 
   /// Primitive byte writer.
   void writeBytes(typed.Uint8Buffer data) {
     _writeTypeValue(majorTypeBytes, data.length);
     _out.putBytes(data);
+    _builderHook(false);
   }
 
   /// Raw byte buffer writer.
@@ -59,6 +76,7 @@ class Encoder {
   /// output stream as is.
   void writeRawBuffer(typed.Uint8Buffer buff) {
     _out.putBytes(buff);
+    _builderHook(false);
   }
 
   /// Primitive string writer.
@@ -69,6 +87,7 @@ class Encoder {
     }
     _writeTypeValue(majorTypeString, buff.length);
     _out.putBytes(buff);
+    _builderHook(true);
   }
 
   /// Byte string primitive.
@@ -78,6 +97,7 @@ class Encoder {
     }
     _writeTypeValue(majorTypeBytes, data.length);
     _out.putBytes(data);
+    _builderHook(false);
   }
 
   /// Array primitive.
@@ -124,6 +144,7 @@ class Encoder {
   /// Tag primitive.
   void writeTag(int tag) {
     _writeTypeValue(majorTypeTag, tag);
+    _builderHook(false);
   }
 
   /// Special(major type 7) primitive.
@@ -131,28 +152,33 @@ class Encoder {
     var type = majorTypeSpecial;
     type <<= majorTypeShift;
     _out.putByte(type | special);
+    _builderHook(false);
   }
 
   /// Null writer.
   void writeNull() {
     _out.putByte(0xf6);
+    _builderHook(false);
   }
 
   /// Undefined writer.
   void writeUndefined() {
     _out.putByte(0xf7);
+    _builderHook(false);
   }
 
   /// Indefinite item break primitive.
   void writeBreak() {
     writeSpecial(aiBreak);
     _indefSequenceCount--;
+    _builderHook(false);
   }
 
   /// Indefinite item start.
   void startIndefinite(int majorType) {
     _out.putByte((majorType << 5) + aiBreak);
     _indefSequenceCount++;
+    _builderHook(false);
   }
 
   /// Simple values, negative values, values over 255 or less
@@ -172,6 +198,7 @@ class Encoder {
     } else {
       writeInt(value);
     }
+    _builderHook(true);
   }
 
   /// Generalised float encoder, picks the smallest encoding
@@ -187,6 +214,7 @@ class Encoder {
     } else {
       writeDouble(value);
     }
+    _builderHook(false);
   }
 
   /// Half precision float.
@@ -201,6 +229,7 @@ class Encoder {
       _out.putByte(valBuff[1]);
       _out.putByte(valBuff[0]);
     }
+    _builderHook(false);
   }
 
   /// Single precision float.
@@ -222,6 +251,7 @@ class Encoder {
       _out.putByte(uList[1]);
       _out.putByte(uList[0]);
     }
+    _builderHook(false);
   }
 
   /// Double precision float.
@@ -251,6 +281,7 @@ class Encoder {
       _out.putByte(uList[1]);
       _out.putByte(uList[0]);
     }
+    _builderHook(false);
   }
 
   /// Tag based Date/Time encoding.
@@ -258,6 +289,7 @@ class Encoder {
   void writeDateTime(String dt) {
     writeTag(tagDateTimeStandard);
     writeString(dt);
+    _builderHook(false);
   }
 
   /// Tag based epoch encoding. Format can be a positive
@@ -276,6 +308,7 @@ class Encoder {
         writeDouble(epoch);
       }
     }
+    _builderHook(false);
   }
 
   /// Tag based Base64 byte string encoding. The encoder does not
@@ -285,12 +318,14 @@ class Encoder {
   void writeBase64(typed.Uint8Buffer data) {
     writeTag(tagExpectedBase64);
     writeBytes(data);
+    _builderHook(false);
   }
 
   /// Cbor data item encoder, refer to tyhe RFC for details.
   void writeCborDi(typed.Uint8Buffer data) {
     writeTag(tagEncodedCborDataItem);
     writeBytes(data);
+    _builderHook(false);
   }
 
   /// Tag based Base64 URL byte string encoding. The encoder does not
@@ -300,6 +335,7 @@ class Encoder {
   void writeBase64URL(typed.Uint8Buffer data) {
     writeTag(tagExpectedBase64Url);
     writeBytes(data);
+    _builderHook(false);
   }
 
   /// Tag based Base16 byte string encoding. The encoder does not
@@ -309,12 +345,14 @@ class Encoder {
   void writeBase16(typed.Uint8Buffer data) {
     writeTag(tagExpectedBase16);
     writeBytes(data);
+    _builderHook(false);
   }
 
   /// Tag based URI writer
   void writeURI(String uri) {
     writeTag(tagUri);
     writeString(uri);
+    _builderHook(false);
   }
 
   /// Tag based Regex writer.
@@ -323,6 +361,7 @@ class Encoder {
   void writeRegEx(String regex) {
     writeTag(tagRegularExpression);
     writeString(regex);
+    _builderHook(false);
   }
 
   /// Tag based MIME message writer.
@@ -331,6 +370,7 @@ class Encoder {
   void writeMimeMessage(String message) {
     writeTag(tagMimeMessage);
     writeString(message);
+    _builderHook(false);
   }
 
   /// Helper functions
@@ -588,4 +628,8 @@ class Encoder {
     });
     return ok;
   }
+
+  // Builder hook dummy
+  void nullBuilderHook(bool validAsMapKey){}
+
 }

@@ -9,6 +9,7 @@ environment:
 dependencies:
  typed_data: '^1.1.6'
  convert: '^2.1.1'
+ meta: '^1.1.8'
 
 dev_dependencies:
  test: '^1.11.0'
