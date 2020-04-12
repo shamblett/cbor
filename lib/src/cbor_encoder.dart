@@ -10,7 +10,7 @@ part of cbor;
 /// Float encoding directives
 enum encodeFloatAs { half, single, double }
 
-/// The encoder class implements the CBOR decoder functionality as defined in
+/// The encoder class implements the CBOR encoder functionality as defined in
 /// RFC7049.
 class Encoder {
   /// Construction
@@ -71,7 +71,7 @@ class Encoder {
     _out.putBytes(buff);
   }
 
-  /// Bytestring primitive.
+  /// Byte string primitive.
   void writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
     if (indefinite) {
       startIndefinite(majorTypeBytes);
@@ -256,7 +256,7 @@ class Encoder {
   /// Tag based Date/Time encoding.
   /// Standard format as described in RFC339 et al.
   void writeDateTime(String dt) {
-    writeTag(0);
+    writeTag(tagDateTimeStandard);
     writeString(dt);
   }
 
@@ -264,7 +264,7 @@ class Encoder {
   /// or negative integer or a floating point number for
   /// which you can chose the encoding.
   void writeEpoch(num epoch, [encodeFloatAs floatType = encodeFloatAs.single]) {
-    writeTag(1);
+    writeTag(tagDateTimeEpoch);
     if (epoch.runtimeType == int) {
       writeInt(epoch);
     } else {
@@ -283,13 +283,13 @@ class Encoder {
   /// it just indicates to the decoder that the following byte
   /// string maybe base encoded.
   void writeBase64(typed.Uint8Buffer data) {
-    writeTag(22);
+    writeTag(tagExpectedBase64);
     writeBytes(data);
   }
 
   /// Cbor data item encoder, refer to tyhe RFC for details.
   void writeCborDi(typed.Uint8Buffer data) {
-    writeTag(24);
+    writeTag(tagEncodedCborDataItem);
     writeBytes(data);
   }
 
@@ -298,7 +298,7 @@ class Encoder {
   /// it just indicates to the decoder that the following byte
   /// string maybe base encoded.
   void writeBase64URL(typed.Uint8Buffer data) {
-    writeTag(21);
+    writeTag(tagExpectedBase64Url);
     writeBytes(data);
   }
 
@@ -307,13 +307,13 @@ class Encoder {
   /// it just indicates to the decoder that the following byte
   /// string maybe base encoded.
   void writeBase16(typed.Uint8Buffer data) {
-    writeTag(23);
+    writeTag(tagExpectedBase16);
     writeBytes(data);
   }
 
   /// Tag based URI writer
   void writeURI(String uri) {
-    writeTag(32);
+    writeTag(tagUri);
     writeString(uri);
   }
 
