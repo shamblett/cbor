@@ -317,6 +317,22 @@ class Encoder {
     writeString(uri);
   }
 
+  /// Tag based Regex writer.
+  /// Note this method does not attempt to validate the
+  /// RegEx expression supplied.
+  void writeRegEx(String regex) {
+    writeTag(tagRegularExpression);
+    writeString(regex);
+  }
+
+  /// Tag based MIME message writer.
+  /// Note this method does not attempt to validate the
+  /// MIME message supplied.
+  void writeMimeMessage(String message) {
+    writeTag(tagMimeMessage);
+    writeString(message);
+  }
+
   /// Helper functions
 
   /// Lookup table based single to half precision conversion.
