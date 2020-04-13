@@ -14,21 +14,38 @@ part of cbor;
 /// The output of the build process is the CBOR encoded byte list.
 /// This can be simply appended to any existing encoding sequence.
 class ListBuilder extends Encoder {
-  /// Construction
+  /// Construction, supply your own output.
   ListBuilder(Output out) : super(out) {
     _builderHook = _hook;
+  }
+
+  /// Get a list builder with its own output
+  static ListBuilder builder() {
+    Output out = OutputStandard();
+    return ListBuilder(out);
   }
 
   // The list items
   final List<typed.Uint8Buffer> _items = <typed.Uint8Buffer>[];
 
-  // The raw list
-  final typed.Uint8Buffer _rawList = typed.Uint8Buffer();
+  /// The built list
+  typed.Uint8Buffer _built = typed.Uint8Buffer();
 
   // Get the built list
   typed.Uint8Buffer getData() {
-    // Build the items into a CBOR list and return it.
-    return _rawList;
+    if (_built.isEmpty) {
+      writeArray(_items);
+      _built = _out._buffer;
+      _out.clear();
+    }
+    return _built;
+  }
+
+  /// Clear
+  @override
+  void clear() {
+    _out.clear();
+    _items.clear();
   }
 
   // The builder hook. List builder
