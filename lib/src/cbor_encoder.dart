@@ -46,58 +46,82 @@ class Encoder {
 
   /// Booleans.
   void writeBool(bool value) {
+    _writeBool(value);
+    _builderHook(false);
+  }
+
+  void _writeBool(bool value) {
     if (value) {
       _out.putByte(0xf5);
     } else {
       _out.putByte(0xf4);
     }
-    _builderHook(false);
   }
 
   /// Positive and negative integers.
   void writeInt(int value) {
+    _writeInt(value);
+    _builderHook(true);
+  }
+
+  void _writeInt(int value) {
     if (value < 0) {
       _writeTypeValue(1, -(value + 1));
     } else {
       _writeTypeValue(0, value);
     }
-    _builderHook(true);
   }
 
   /// Primitive byte writer.
   void writeBytes(typed.Uint8Buffer data) {
+    _writeBytes(data);
+    _builderHook(false);
+  }
+
+  void _writeBytes(typed.Uint8Buffer data) {
     _writeTypeValue(majorTypeBytes, data.length);
     _out.putBytes(data);
-    _builderHook(false);
   }
 
   /// Raw byte buffer writer.
   /// No encoding is added to the buffer, it goes into the
   /// output stream as is.
   void writeRawBuffer(typed.Uint8Buffer buff) {
-    _out.putBytes(buff);
+    _writeRawBuffer(buff);
     _builderHook(false);
+  }
+
+  void _writeRawBuffer(typed.Uint8Buffer buff) {
+    _out.putBytes(buff);
   }
 
   /// Primitive string writer.
   void writeString(String str, [bool indefinite = false]) {
+    _writeString(str, indefinite);
+    _builderHook(true);
+  }
+
+  void _writeString(String str, [bool indefinite = false]) {
     final buff = strToByteString(str);
     if (indefinite) {
       startIndefinite(majorTypeString);
     }
     _writeTypeValue(majorTypeString, buff.length);
     _out.putBytes(buff);
-    _builderHook(true);
   }
 
   /// Byte string primitive.
   void writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
+    _writeBuff(data, indefinite);
+    _builderHook(false);
+  }
+
+  void _writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
     if (indefinite) {
       startIndefinite(majorTypeBytes);
     }
     _writeTypeValue(majorTypeBytes, data.length);
     _out.putBytes(data);
-    _builderHook(false);
   }
 
   /// Array primitive.
@@ -117,6 +141,7 @@ class Encoder {
       _out.resetToMark();
       res = false;
     }
+    _builderHook(false);
     return res;
   }
 
@@ -138,27 +163,40 @@ class Encoder {
       _out.resetToMark();
       res = false;
     }
+    _builderHook(false);
     return res;
   }
 
   /// Tag primitive.
   void writeTag(int tag) {
-    _writeTypeValue(majorTypeTag, tag);
+    _writeTag(tag);
     _builderHook(false);
+  }
+
+  void _writeTag(int tag) {
+    _writeTypeValue(majorTypeTag, tag);
   }
 
   /// Special(major type 7) primitive.
   void writeSpecial(int special) {
+    _writeSpecial(special);
+    _builderHook(false);
+  }
+
+  void _writeSpecial(int special) {
     var type = majorTypeSpecial;
     type <<= majorTypeShift;
     _out.putByte(type | special);
-    _builderHook(false);
   }
 
   /// Null writer.
   void writeNull() {
-    _out.putByte(0xf6);
+    _writeNull();
     _builderHook(false);
+  }
+
+  void _writeNull() {
+    _out.putByte(0xf6);
   }
 
   /// Undefined writer.
@@ -169,7 +207,7 @@ class Encoder {
 
   /// Indefinite item break primitive.
   void writeBreak() {
-    writeSpecial(aiBreak);
+    _writeSpecial(aiBreak);
     _indefSequenceCount--;
     _builderHook(false);
   }
@@ -187,16 +225,16 @@ class Encoder {
     if (!value.isNegative) {
       if ((value <= simpleLimitUpper) && (value >= simpleLimitLower)) {
         if (value <= ai23) {
-          writeSpecial(value);
+          _writeSpecial(value);
         } else {
-          writeSpecial(ai24);
+          _writeSpecial(ai24);
           _out.putByte(value);
         }
       } else {
-        writeInt(value);
+        _writeInt(value);
       }
     } else {
-      writeInt(value);
+      _writeInt(value);
     }
     _builderHook(true);
   }
@@ -207,18 +245,27 @@ class Encoder {
   /// Note this can lead to encodings you may not expect in corner cases,
   /// if you want specific sized encodings don't use this.
   void writeFloat(double value) {
-    if (canBeAHalf(value)) {
-      writeHalf(value);
-    } else if (canBeASingle(value)) {
-      writeSingle(value);
-    } else {
-      writeDouble(value);
-    }
+    _writeFloat(value);
     _builderHook(false);
+  }
+
+  void _writeFloat(double value) {
+    if (canBeAHalf(value)) {
+      _writeHalf(value);
+    } else if (canBeASingle(value)) {
+      _writeSingle(value);
+    } else {
+      _writeDouble(value);
+    }
   }
 
   /// Half precision float.
   void writeHalf(double value) {
+    _writeHalf(value);
+    _builderHook(false);
+  }
+
+  void _writeHalf(double value) {
     writeSpecial(ai25);
     // Special encodings
     if (value.isNaN) {
@@ -234,6 +281,11 @@ class Encoder {
 
   /// Single precision float.
   void writeSingle(double value) {
+    _writeSingle(value);
+    _builderHook(false);
+  }
+
+  void _writeSingle(double value) {
     writeSpecial(ai26);
     // Special encodings
     if (value.isNaN) {
@@ -251,11 +303,15 @@ class Encoder {
       _out.putByte(uList[1]);
       _out.putByte(uList[0]);
     }
-    _builderHook(false);
   }
 
   /// Double precision float.
   void writeDouble(double value) {
+    _writeDouble(value);
+    _builderHook(false);
+  }
+
+  void _writeDouble(double value) {
     writeSpecial(ai27);
     // Special encodings
     if (value.isNaN) {
@@ -281,14 +337,13 @@ class Encoder {
       _out.putByte(uList[1]);
       _out.putByte(uList[0]);
     }
-    _builderHook(false);
   }
 
   /// Tag based Date/Time encoding.
   /// Standard format as described in RFC339 et al.
   void writeDateTime(String dt) {
-    writeTag(tagDateTimeStandard);
-    writeString(dt);
+    _writeTag(tagDateTimeStandard);
+    _writeString(dt);
     _builderHook(false);
   }
 
@@ -296,16 +351,16 @@ class Encoder {
   /// or negative integer or a floating point number for
   /// which you can chose the encoding.
   void writeEpoch(num epoch, [encodeFloatAs floatType = encodeFloatAs.single]) {
-    writeTag(tagDateTimeEpoch);
+    _writeTag(tagDateTimeEpoch);
     if (epoch.runtimeType == int) {
-      writeInt(epoch);
+      _writeInt(epoch);
     } else {
       if (floatType == encodeFloatAs.half) {
-        writeHalf(epoch);
+        _writeHalf(epoch);
       } else if (floatType == encodeFloatAs.single) {
-        writeSingle(epoch);
+        _writeSingle(epoch);
       } else {
-        writeDouble(epoch);
+        _writeDouble(epoch);
       }
     }
     _builderHook(false);
@@ -316,15 +371,15 @@ class Encoder {
   /// it just indicates to the decoder that the following byte
   /// string maybe base encoded.
   void writeBase64(typed.Uint8Buffer data) {
-    writeTag(tagExpectedBase64);
-    writeBytes(data);
+    _writeTag(tagExpectedBase64);
+    _writeBytes(data);
     _builderHook(false);
   }
 
   /// Cbor data item encoder, refer to tyhe RFC for details.
   void writeCborDi(typed.Uint8Buffer data) {
-    writeTag(tagEncodedCborDataItem);
-    writeBytes(data);
+    _writeTag(tagEncodedCborDataItem);
+    _writeBytes(data);
     _builderHook(false);
   }
 
@@ -333,8 +388,8 @@ class Encoder {
   /// it just indicates to the decoder that the following byte
   /// string maybe base encoded.
   void writeBase64URL(typed.Uint8Buffer data) {
-    writeTag(tagExpectedBase64Url);
-    writeBytes(data);
+    _writeTag(tagExpectedBase64Url);
+    _writeBytes(data);
     _builderHook(false);
   }
 
@@ -343,15 +398,15 @@ class Encoder {
   /// it just indicates to the decoder that the following byte
   /// string maybe base encoded.
   void writeBase16(typed.Uint8Buffer data) {
-    writeTag(tagExpectedBase16);
-    writeBytes(data);
+    _writeTag(tagExpectedBase16);
+    _writeBytes(data);
     _builderHook(false);
   }
 
   /// Tag based URI writer
   void writeURI(String uri) {
-    writeTag(tagUri);
-    writeString(uri);
+    _writeTag(tagUri);
+    _writeString(uri);
     _builderHook(false);
   }
 
@@ -359,8 +414,8 @@ class Encoder {
   /// Note this method does not attempt to validate the
   /// RegEx expression supplied.
   void writeRegEx(String regex) {
-    writeTag(tagRegularExpression);
-    writeString(regex);
+    _writeTag(tagRegularExpression);
+    _writeString(regex);
     _builderHook(false);
   }
 
@@ -368,8 +423,8 @@ class Encoder {
   /// Note this method does not attempt to validate the
   /// MIME message supplied.
   void writeMimeMessage(String message) {
-    writeTag(tagMimeMessage);
-    writeString(message);
+    _writeTag(tagMimeMessage);
+    _writeString(message);
     _builderHook(false);
   }
 
@@ -478,13 +533,13 @@ class Encoder {
       }
       switch (valType) {
         case 'int':
-          writeInt(element);
+          _writeInt(element);
           break;
         case 'String':
-          writeString(element);
+          _writeString(element);
           break;
         case 'double':
-          writeFloat(element);
+          _writeFloat(element);
           break;
         case 'List':
           if (!indefinite) {
@@ -509,13 +564,13 @@ class Encoder {
           }
           break;
         case 'bool':
-          writeBool(element);
+          _writeBool(element);
           break;
         case 'Null':
-          writeNull();
+          _writeNull();
           break;
         case 'Uint8Buffer':
-          writeRawBuffer(element);
+          _writeRawBuffer(element);
           break;
         default:
           print('writeArrayImpl::RT is ${element.runtimeType.toString()}');
@@ -568,9 +623,9 @@ class Encoder {
     value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
       if (key.runtimeType.toString() == 'int') {
-        writeInt(key);
+        _writeInt(key);
       } else {
-        writeString(key);
+        _writeString(key);
       }
       // Encode the value
       var valType = val.runtimeType.toString();
@@ -582,13 +637,13 @@ class Encoder {
       }
       switch (valType) {
         case 'int':
-          writeInt(val);
+          _writeInt(val);
           break;
         case 'String':
-          writeString(val);
+          _writeString(val);
           break;
         case 'double':
-          writeFloat(val);
+          _writeFloat(val);
           break;
         case 'List':
           if (!indefinite) {
@@ -613,13 +668,13 @@ class Encoder {
           }
           break;
         case 'bool':
-          writeBool(val);
+          _writeBool(val);
           break;
         case 'Null':
-          writeNull();
+          _writeNull();
           break;
         case 'Uint8Buffer':
-          writeRawBuffer(val);
+          _writeRawBuffer(val);
           break;
         default:
           print('writeMapImpl::RT is ${val.runtimeType.toString()}');
@@ -630,6 +685,5 @@ class Encoder {
   }
 
   // Builder hook dummy
-  void nullBuilderHook(bool validAsMapKey){}
-
+  void nullBuilderHook(bool validAsMapKey) {}
 }

@@ -34,9 +34,8 @@ class ListBuilder extends Encoder {
   // Get the built list
   typed.Uint8Buffer getData() {
     if (_built.isEmpty) {
-      writeArray(_items);
+      writeArrayImpl(_items);
       _built = _out._buffer;
-      _out.clear();
     }
     return _built;
   }

@@ -19,7 +19,7 @@ void main() {
       final builderRes = builder.getData();
       final inst = cbor.Cbor();
       final encoder = inst.encoder;
-      encoder.writeBuff(builderRes);
+      encoder.writeRawBuffer(builderRes);
       inst.decodeFromInput();
       print(inst.decodedPrettyPrint(true));
     });
