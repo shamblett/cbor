@@ -83,6 +83,11 @@ class Encoder {
     _out.putBytes(data);
   }
 
+  /// Add the output of a builder to the encoding stream.
+  void addBuilderOutput(typed.Uint8Buffer buffer) {
+    _writeRawBuffer(buffer);
+  }
+
   /// Raw byte buffer writer.
   /// No encoding is added to the buffer, it goes into the
   /// output stream as is.
@@ -266,7 +271,7 @@ class Encoder {
   }
 
   void _writeHalf(double value) {
-    writeSpecial(ai25);
+    _writeSpecial(ai25);
     // Special encodings
     if (value.isNaN) {
       _out.putByte(0x7e);
@@ -276,7 +281,6 @@ class Encoder {
       _out.putByte(valBuff[1]);
       _out.putByte(valBuff[0]);
     }
-    _builderHook(false);
   }
 
   /// Single precision float.
@@ -286,7 +290,7 @@ class Encoder {
   }
 
   void _writeSingle(double value) {
-    writeSpecial(ai26);
+    _writeSpecial(ai26);
     // Special encodings
     if (value.isNaN) {
       _out.putByte(0x7f);
@@ -312,7 +316,7 @@ class Encoder {
   }
 
   void _writeDouble(double value) {
-    writeSpecial(ai27);
+    _writeSpecial(ai27);
     // Special encodings
     if (value.isNaN) {
       _out.putByte(0x7f);

@@ -16,6 +16,7 @@ part of cbor;
 class ListBuilder extends Encoder {
   /// Construction, supply your own output.
   ListBuilder(Output out) : super(out) {
+    init();
     _builderHook = _hook;
   }
 
