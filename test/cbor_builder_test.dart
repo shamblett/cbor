@@ -11,7 +11,7 @@ import 'package:typed_data/typed_data.dart' as typed;
 
 void main() {
   group('List', () {
-    test('Simple + Mixed Tag Values  -> ', () {
+    test('List - Simple + Mixed Tag Values  -> ', () {
       final builder = cbor.ListBuilder.builder();
       builder.writeInt(2);
       builder.writeDateTime('2020/04/20');
@@ -42,7 +42,7 @@ void main() {
         {'a': 'avalue'}
       ]);
     });
-    test('Mixed tag + indefinte sequence -> ', () {
+    test('List - Mixed tag + indefinte sequence -> ', () {
       final builder = cbor.ListBuilder.builder();
       builder.writeNull();
       final b64 = typed.Uint8Buffer();
@@ -69,6 +69,28 @@ void main() {
         23
       ]);
       print(inst.decodedPrettyPrint(true));
+    });
+  });
+  group('Map', () {
+    test('Map - Simple + Mixed Tag Values  -> ', () {
+      final builder = cbor.MapBuilder.builder();
+      builder.writeInt(1);
+      builder.writeDateTime('2020/04/20');
+      builder.writeInt(2);
+      builder.writeURI('a/uri/it/is');
+      builder.writeInt(3);
+      builder.writeArray([3, 4, 5]);
+      final builderRes = builder.getData();
+      final inst = cbor.Cbor();
+      final encoder = inst.encoder;
+      encoder.addBuilderOutput(builderRes);
+      inst.decodeFromInput();
+      print(inst.decodedPrettyPrint(true));
+      expect(inst.getDecodedData()[0], {
+        1: '2020/04/20',
+        2: 'a/uri/it/is',
+        3: [3, 4, 5]
+      });
     });
   });
 }

@@ -50,7 +50,7 @@ class ListBuilder extends Encoder {
 
   // The builder hook. List builder
   // doesn't care about the map key parameter.
-  void _hook(bool validAsMapKey) {
+  void _hook(bool validAsMapKey, dynamic keyValue) {
     _items.add(_out.getData());
     _out.clear();
   }

@@ -10,7 +10,7 @@ part of cbor;
 /// Builder hook function type. The bool parameter
 /// is set to true if the encoded entity can be used as a
 /// map key.
-typedef BuilderHook = void Function(bool);
+typedef BuilderHook = void Function(bool, dynamic);
 
 /// Float encoding directives
 enum encodeFloatAs { half, single, double }
@@ -61,7 +61,7 @@ class Encoder {
   /// Positive and negative integers.
   void writeInt(int value) {
     _writeInt(value);
-    _builderHookImpl(true);
+    _builderHookImpl(true, value);
   }
 
   void _writeInt(int value) {
@@ -103,7 +103,7 @@ class Encoder {
   /// Primitive string writer.
   void writeString(String str, [bool indefinite = false]) {
     _writeString(str, indefinite);
-    _builderHookImpl(true);
+    _builderHookImpl(true, str);
   }
 
   void _writeString(String str, [bool indefinite = false]) {
@@ -685,12 +685,12 @@ class Encoder {
     return ok;
   }
 
-  void _builderHookImpl(bool validAsMapKey) {
+  void _builderHookImpl(bool validAsMapKey, [dynamic keyValue]) {
     if (_indefSequenceCount == 0) {
-      _builderHook(validAsMapKey);
+      _builderHook(validAsMapKey, keyValue);
     }
   }
 
   // Builder hook dummy
-  void nullBuilderHook(bool validAsMapKey) {}
+  void nullBuilderHook(bool validAsMapKey, dynamic keyValue) {}
 }
