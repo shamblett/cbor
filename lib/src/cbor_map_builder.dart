@@ -59,7 +59,7 @@ class MapBuilder extends Encoder {
       for (var i = 0; i < _keyItems.length; i++) {
         _builtMap[_keyItems[i]] = _valueItems[i];
       }
-      writeMapImpl(_builtMap);
+      _writeMapImpl(_builtMap);
       _built = _out._buffer;
     }
     return _built;

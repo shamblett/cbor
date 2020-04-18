@@ -141,7 +141,7 @@ class Encoder {
     // no encoding.
     var res = true;
     _out.mark();
-    final ok = writeArrayImpl(value, indefinite, length);
+    final ok = _writeArrayImpl(value, indefinite, length);
     if (!ok) {
       _out.resetToMark();
       res = false;
@@ -163,7 +163,7 @@ class Encoder {
     // no encoding.
     var res = true;
     _out.mark();
-    final ok = writeMapImpl(value, indefinite, length);
+    final ok = _writeMapImpl(value, indefinite, length);
     if (!ok) {
       _out.resetToMark();
       res = false;
@@ -500,7 +500,12 @@ class Encoder {
   /// Array write implementation method.
   /// If the array cannot be fully encoded no encoding occurs,
   /// ie false is returned.
+  @Deprecated('This will be removed - use a List Builder')
   bool writeArrayImpl(List<dynamic> value,
+          [bool indefinite = false, int length]) =>
+      _writeArrayImpl(value, indefinite, length);
+
+  bool _writeArrayImpl(List<dynamic> value,
       [bool indefinite = false, int length]) {
     // Check for empty
     if (value.isEmpty) {
@@ -544,7 +549,7 @@ class Encoder {
           break;
         case 'List':
           if (!indefinite) {
-            final res = writeArrayImpl(element, indefinite);
+            final res = _writeArrayImpl(element, indefinite);
             if (!res) {
               // Fail the whole encoding
               ok = false;
@@ -555,7 +560,7 @@ class Encoder {
           break;
         case 'Map':
           if (!indefinite) {
-            final res = writeMapImpl(element, indefinite);
+            final res = _writeMapImpl(element, indefinite);
             if (!res) {
               // Fail the whole encoding
               ok = false;
@@ -584,7 +589,12 @@ class Encoder {
   /// Map write implementation method.
   /// If the map cannot be fully encoded no encoding occurs,
   /// ie false is returned.
+  @Deprecated('This will be removed - use a Map Builder')
   bool writeMapImpl(Map<dynamic, dynamic> value,
+          [bool indefinite = false, int length]) =>
+      _writeMapImpl(value, indefinite, length);
+
+  bool _writeMapImpl(Map<dynamic, dynamic> value,
       [bool indefinite = false, int length]) {
     // Check for empty
     if (value.isEmpty) {
@@ -648,7 +658,7 @@ class Encoder {
           break;
         case 'List':
           if (!indefinite) {
-            final res = writeArrayImpl(val, indefinite);
+            final res = _writeArrayImpl(val, indefinite);
             if (!res) {
               // Fail the whole encoding
               ok = false;
@@ -659,7 +669,7 @@ class Encoder {
           break;
         case 'Map':
           if (!indefinite) {
-            final res = writeMapImpl(val, indefinite);
+            final res = _writeMapImpl(val, indefinite);
             if (!res) {
               // Fail the whole encoding
               ok = false;

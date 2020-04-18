@@ -72,6 +72,36 @@ void main() {
     });
   });
   group('Map', () {
+    test('Map - Invalid Key -> ', () {
+      final builder = cbor.MapBuilder.builder();
+      void build() {
+        builder.writeFloat(2.0);
+      }
+
+      expect(
+          build,
+          throwsA(predicate((e) =>
+              e is cbor.CborException &&
+              e.toString() ==
+                  'CborException: Map Builder - key expected but type is not valid for a map key')));
+    });
+
+    test('Map - Invalid Length -> ', () {
+      final builder = cbor.MapBuilder.builder();
+      builder.writeInt(2);
+      var thrown = false;
+      try {
+        builder.getData();
+      } on cbor.CborException catch (e) {
+        thrown = true;
+        expect(
+            e.toString(),
+            'CborException: Map Builder - invalid item list lengths, cannot build map,'
+            'there are 1 keys and 0 values');
+      }
+      expect(thrown, isTrue);
+    });
+
     test('Map - Simple + Mixed Tag Values  -> ', () {
       final builder = cbor.MapBuilder.builder();
       builder.writeInt(1);
