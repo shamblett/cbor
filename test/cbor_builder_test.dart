@@ -42,6 +42,33 @@ void main() {
         {'a': 'avalue'}
       ]);
     });
-    test('Simple + Nested built lists-> ', () {});
+    test('Mixed tag + indefinte sequence -> ', () {
+      final builder = cbor.ListBuilder.builder();
+      builder.writeNull();
+      final b64 = typed.Uint8Buffer();
+      b64.addAll([1, 2, 3]);
+      builder.writeBase64(b64);
+      builder.writeBase16(b64);
+      final b64Url = typed.Uint8Buffer();
+      b64Url.addAll('a/url'.codeUnits);
+      builder.writeBase64URL(b64Url);
+      builder.startIndefinite(cbor.majorTypeString);
+      builder.writeString('Indef String');
+      builder.writeInt(23);
+      builder.writeBreak();
+      final builderRes = builder.getData();
+      final inst = cbor.Cbor();
+      final encoder = inst.encoder;
+      encoder.addBuilderOutput(builderRes);
+      inst.decodeFromInput();
+      expect(inst.getDecodedData()[0], [
+        null,
+        [1, 2, 3],
+        [1, 2, 3],
+        [97, 47, 117, 114, 108],
+        23
+      ]);
+      print(inst.decodedPrettyPrint(true));
+    });
   });
 }

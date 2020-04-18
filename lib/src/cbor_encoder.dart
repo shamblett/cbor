@@ -47,7 +47,7 @@ class Encoder {
   /// Booleans.
   void writeBool(bool value) {
     _writeBool(value);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   void _writeBool(bool value) {
@@ -61,7 +61,7 @@ class Encoder {
   /// Positive and negative integers.
   void writeInt(int value) {
     _writeInt(value);
-    _builderHook(true);
+    _builderHookImpl(true);
   }
 
   void _writeInt(int value) {
@@ -75,7 +75,7 @@ class Encoder {
   /// Primitive byte writer.
   void writeBytes(typed.Uint8Buffer data) {
     _writeBytes(data);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   void _writeBytes(typed.Uint8Buffer data) {
@@ -93,7 +93,7 @@ class Encoder {
   /// output stream as is.
   void writeRawBuffer(typed.Uint8Buffer buff) {
     _writeRawBuffer(buff);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   void _writeRawBuffer(typed.Uint8Buffer buff) {
@@ -103,7 +103,7 @@ class Encoder {
   /// Primitive string writer.
   void writeString(String str, [bool indefinite = false]) {
     _writeString(str, indefinite);
-    _builderHook(true);
+    _builderHookImpl(true);
   }
 
   void _writeString(String str, [bool indefinite = false]) {
@@ -118,7 +118,7 @@ class Encoder {
   /// Byte string primitive.
   void writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
     _writeBuff(data, indefinite);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   void _writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
@@ -146,7 +146,7 @@ class Encoder {
       _out.resetToMark();
       res = false;
     }
-    _builderHook(false);
+    _builderHookImpl(false);
     return res;
   }
 
@@ -168,14 +168,13 @@ class Encoder {
       _out.resetToMark();
       res = false;
     }
-    _builderHook(false);
+    _builderHookImpl(false);
     return res;
   }
 
   /// Tag primitive.
   void writeTag(int tag) {
     _writeTag(tag);
-    _builderHook(false);
   }
 
   void _writeTag(int tag) {
@@ -185,7 +184,6 @@ class Encoder {
   /// Special(major type 7) primitive.
   void writeSpecial(int special) {
     _writeSpecial(special);
-    _builderHook(false);
   }
 
   void _writeSpecial(int special) {
@@ -197,7 +195,7 @@ class Encoder {
   /// Null writer.
   void writeNull() {
     _writeNull();
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   void _writeNull() {
@@ -207,21 +205,20 @@ class Encoder {
   /// Undefined writer.
   void writeUndefined() {
     _out.putByte(0xf7);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Indefinite item break primitive.
   void writeBreak() {
     _writeSpecial(aiBreak);
     _indefSequenceCount--;
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Indefinite item start.
   void startIndefinite(int majorType) {
     _out.putByte((majorType << 5) + aiBreak);
     _indefSequenceCount++;
-    _builderHook(false);
   }
 
   /// Simple values, negative values, values over 255 or less
@@ -241,7 +238,7 @@ class Encoder {
     } else {
       _writeInt(value);
     }
-    _builderHook(true);
+    _builderHookImpl(true);
   }
 
   /// Generalised float encoder, picks the smallest encoding
@@ -251,7 +248,7 @@ class Encoder {
   /// if you want specific sized encodings don't use this.
   void writeFloat(double value) {
     _writeFloat(value);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   void _writeFloat(double value) {
@@ -267,7 +264,7 @@ class Encoder {
   /// Half precision float.
   void writeHalf(double value) {
     _writeHalf(value);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   void _writeHalf(double value) {
@@ -286,7 +283,7 @@ class Encoder {
   /// Single precision float.
   void writeSingle(double value) {
     _writeSingle(value);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   void _writeSingle(double value) {
@@ -312,7 +309,7 @@ class Encoder {
   /// Double precision float.
   void writeDouble(double value) {
     _writeDouble(value);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   void _writeDouble(double value) {
@@ -348,7 +345,7 @@ class Encoder {
   void writeDateTime(String dt) {
     _writeTag(tagDateTimeStandard);
     _writeString(dt);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Tag based epoch encoding. Format can be a positive
@@ -367,7 +364,7 @@ class Encoder {
         _writeDouble(epoch);
       }
     }
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Tag based Base64 byte string encoding. The encoder does not
@@ -377,14 +374,14 @@ class Encoder {
   void writeBase64(typed.Uint8Buffer data) {
     _writeTag(tagExpectedBase64);
     _writeBytes(data);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
-  /// Cbor data item encoder, refer to tyhe RFC for details.
+  /// Cbor data item encoder, refer to the RFC for details.
   void writeCborDi(typed.Uint8Buffer data) {
     _writeTag(tagEncodedCborDataItem);
     _writeBytes(data);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Tag based Base64 URL byte string encoding. The encoder does not
@@ -394,7 +391,7 @@ class Encoder {
   void writeBase64URL(typed.Uint8Buffer data) {
     _writeTag(tagExpectedBase64Url);
     _writeBytes(data);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Tag based Base16 byte string encoding. The encoder does not
@@ -404,14 +401,14 @@ class Encoder {
   void writeBase16(typed.Uint8Buffer data) {
     _writeTag(tagExpectedBase16);
     _writeBytes(data);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Tag based URI writer
   void writeURI(String uri) {
     _writeTag(tagUri);
     _writeString(uri);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Tag based Regex writer.
@@ -420,7 +417,7 @@ class Encoder {
   void writeRegEx(String regex) {
     _writeTag(tagRegularExpression);
     _writeString(regex);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Tag based MIME message writer.
@@ -429,7 +426,7 @@ class Encoder {
   void writeMimeMessage(String message) {
     _writeTag(tagMimeMessage);
     _writeString(message);
-    _builderHook(false);
+    _builderHookImpl(false);
   }
 
   /// Helper functions
@@ -686,6 +683,12 @@ class Encoder {
       }
     });
     return ok;
+  }
+
+  void _builderHookImpl(bool validAsMapKey) {
+    if (_indefSequenceCount == 0) {
+      _builderHook(validAsMapKey);
+    }
   }
 
   // Builder hook dummy
