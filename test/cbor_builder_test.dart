@@ -42,7 +42,7 @@ void main() {
         {'a': 'avalue'}
       ]);
     });
-    test('List - Mixed tag + indefinte sequence -> ', () {
+    test('List - Mixed Tag + Indefinte Sequence -> ', () {
       final builder = cbor.ListBuilder.builder();
       builder.writeNull();
       final b64 = typed.Uint8Buffer();
@@ -89,17 +89,14 @@ void main() {
     test('Map - Invalid Length -> ', () {
       final builder = cbor.MapBuilder.builder();
       builder.writeInt(2);
-      var thrown = false;
-      try {
-        builder.getData();
-      } on cbor.CborException catch (e) {
-        thrown = true;
-        expect(
-            e.toString(),
-            'CborException: Map Builder - invalid item list lengths, cannot build map,'
-            'there are 1 keys and 0 values');
-      }
-      expect(thrown, isTrue);
+      expect(
+          () => builder.getData(),
+          throwsA(allOf(
+              isA<cbor.CborException>(),
+              predicate((e) =>
+                  e.toString() ==
+                  'CborException: Map Builder - unmatched key/value pairs, cannot build map,'
+                      'there are 1 keys and 0 values'))));
     });
 
     test('Map - Simple + Mixed Tag Values  -> ', () {
@@ -109,18 +106,91 @@ void main() {
       builder.writeInt(2);
       builder.writeURI('a/uri/it/is');
       builder.writeInt(3);
-      builder.writeArray([3, 4, 5]);
+      builder.writeArray([4, 5, 6]);
       final builderRes = builder.getData();
       final inst = cbor.Cbor();
       final encoder = inst.encoder;
       encoder.addBuilderOutput(builderRes);
+      encoder.writeFloat(4.0);
+      encoder.writeMap({'a': 'first', 'b': 'second'});
+      inst.decodeFromInput();
+      print(inst.decodedPrettyPrint(true));
+      expect(inst.getDecodedData(), [
+        {
+          1: '2020/04/20',
+          2: 'a/uri/it/is',
+          3: [4, 5, 6]
+        },
+        4.0,
+        {'a': 'first', 'b': 'second'}
+      ]);
+    });
+    test('Map - Mixed Tag Values + Indefinite Sequence -> ', () {
+      final builder = cbor.MapBuilder.builder();
+      builder.writeInt(4);
+      builder.writeDateTime('2020/04/20');
+      builder.writeInt(5);
+      builder.writeURI('a/uri/it/is');
+      builder.writeInt(6);
+      builder.startIndefinite(cbor.majorTypeArray);
+      builder.writeArray([7, 8, 9]);
+      builder.writeBreak();
+      final builderRes = builder.getData();
+      final inst = cbor.Cbor();
+      final encoder = inst.encoder;
+      encoder.addBuilderOutput(builderRes);
+      encoder.writeFloat(5.0);
+      encoder.writeMap({'a': 'first', 'b': 'second'});
+      inst.decodeFromInput();
+      print(inst.decodedPrettyPrint(true));
+      expect(inst.getDecodedData(), [
+        {
+          4: '2020/04/20',
+          5: 'a/uri/it/is',
+          6: [
+            [7, 8, 9]
+          ]
+        },
+        5.0,
+        {'a': 'first', 'b': 'second'}
+      ]);
+    });
+  });
+  group('Mixed building', () {
+    test('Map - Built List Values-> ', () {
+      final builder = cbor.MapBuilder.builder();
+      builder.writeInt(7);
+      final listBuilder = cbor.ListBuilder.builder();
+      listBuilder.writeInt(2);
+      listBuilder.writeDateTime('2020/04/20');
+      builder.addBuilderOutput(listBuilder.getData());
+      final inst = cbor.Cbor();
+      final encoder = inst.encoder;
+      encoder.addBuilderOutput(builder.getData());
       inst.decodeFromInput();
       print(inst.decodedPrettyPrint(true));
       expect(inst.getDecodedData()[0], {
-        1: '2020/04/20',
-        2: 'a/uri/it/is',
-        3: [3, 4, 5]
+        7: [2, '2020/04/20']
       });
+    });
+    test('List - Built Map Entries -> ', () {
+      final mapBuilder = cbor.MapBuilder.builder();
+      mapBuilder.writeInt(7);
+      mapBuilder.writeDateTime('2020/05/21');
+      final listBuilder = cbor.ListBuilder.builder();
+      listBuilder.writeInt(2);
+      listBuilder.writeDateTime('2020/04/20');
+      listBuilder.addBuilderOutput(mapBuilder.getData());
+      final inst = cbor.Cbor();
+      final encoder = inst.encoder;
+      encoder.addBuilderOutput(listBuilder.getData());
+      inst.decodeFromInput();
+      print(inst.decodedPrettyPrint(true));
+      expect(inst.getDecodedData()[0], [
+        2,
+        '2020/04/20',
+        {7: '2020/05/21'}
+      ]);
     });
   });
 }

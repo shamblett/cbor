@@ -49,7 +49,7 @@ class MapBuilder extends Encoder {
     // Check the length of the item lists
     if (_keyItems.length != _valueItems.length) {
       throw CborException(
-          'Map Builder - invalid item list lengths, cannot build map,'
+          'Map Builder - unmatched key/value pairs, cannot build map,'
           'there are ${_keyItems.length} keys and ${_valueItems.length} values');
     }
     for (var i = 0; i < _keyItems.length; i++) {
