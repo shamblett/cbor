@@ -13,6 +13,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:typed_data/typed_data.dart' as typed;
+import 'package:meta/meta.dart';
 
 part 'src/cbor.dart';
 
@@ -25,6 +26,8 @@ part 'src/cbor_constants.dart';
 part 'src/cbor_output.dart';
 part 'src/cbor_input.dart';
 part 'src/cbor_decoder.dart';
+part 'src/cbor_list_builder.dart';
+part 'src/cbor_map_builder.dart';
 part 'src/cbor_encoder.dart';
 part 'src/cbor_listener_debug.dart';
 part 'src/cbor_listener.dart';

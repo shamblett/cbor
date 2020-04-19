@@ -1095,3 +1095,21 @@ const String indefBytes = 'bytes';
 const String indefString = 'string';
 const String indefArray = 'array';
 const String indefMap = 'map';
+
+/// Tag constants
+const int tagDateTimeStandard = 0;
+const int tagDateTimeEpoch = 1;
+const int tagPositiveBignum = 2;
+const int tagNegativeBignum = 3;
+const int tagDecimalFraction = 4;
+const int tagBigFloat = 5;
+const int tagExpectedBase64Url = 21;
+const int tagExpectedBase64 = 22;
+const int tagExpectedBase16 = 23;
+const int tagEncodedCborDataItem = 24;
+const int tagUri = 32;
+const int tagBase64Url = 33;
+const int tagBase64 = 34;
+const int tagRegularExpression = 35;
+const int tagMimeMessage = 36;
+const int tagSelfDescribedCbor = 55799;

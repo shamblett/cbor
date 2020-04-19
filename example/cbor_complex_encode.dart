@@ -1,5 +1,10 @@
-// Copyright (c) 2017, steve. All rights reserved. Use of this source code
-// is governed by a BSD-style license that can be found in the LICENSE file.
+/*
+ * Package : Cbor
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 19/04/2020
+ * Copyright :  S.Hamblett
+ */
+
 
 import 'package:cbor/cbor.dart' as cbor;
 

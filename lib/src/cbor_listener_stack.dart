@@ -246,52 +246,52 @@ class ListenerStack extends Listener {
   void onTag(int tag) {
     // Switch on the tag type
     switch (tag) {
-      case 0: // Date time string
+      case tagDateTimeStandard: // Date time string
         _next = whatsNext.aDateTimeString;
         break;
-      case 1: // Date/Time epoch
+      case tagDateTimeEpoch: // Date/Time epoch
         _next = whatsNext.aDateTimeEpoch;
         break;
-      case 2: // Positive bignum
+      case tagPositiveBignum: // Positive bignum
         _next = whatsNext.aPositiveBignum;
         break;
-      case 3: // Negative bignum
+      case tagNegativeBignum: // Negative bignum
         _next = whatsNext.aNegativeBignum;
         break;
-      case 4: // Decimal fraction
+      case tagDecimalFraction: // Decimal fraction
         _next = whatsNext.aDecimalFraction;
         break;
-      case 5: // Bigfloat
+      case tagBigFloat: // Bigfloat
         _next = whatsNext.aBigFloat;
         break;
-      case 21: // B64 URL
+      case tagExpectedBase64Url: // B64 URL
         _next = whatsNext.aMultipleB64Url;
         break;
-      case 22: // B64
+      case tagExpectedBase64: // B64
         _next = whatsNext.aMultipleB64;
         break;
-      case 23: // B16
+      case tagExpectedBase16: // B16
         _next = whatsNext.aMultipleB16;
         break;
-      case 24: // Encoded CBOR item
+      case tagEncodedCborDataItem: // Encoded CBOR item
         _next = whatsNext.encodedCBOR;
         break;
-      case 32: // URI
+      case tagUri: // URI
         _next = whatsNext.aStringUri;
         break;
-      case 33: // String B64 URL
+      case tagBase64Url: // String B64 URL
         _next = whatsNext.aStringB64Url;
         break;
-      case 34: // String B64
+      case tagBase64: // String B64
         _next = whatsNext.aStringB64;
         break;
-      case 35: // Regular Expression
+      case tagRegularExpression: // Regular Expression
         _next = whatsNext.aRegExp;
         break;
-      case 36: // MIME message
+      case tagMimeMessage: // MIME message
         _next = whatsNext.aMIMEMessage;
         break;
-      case 55799: // Self describe CBOR sequence
+      case tagSelfDescribedCbor: // Self describe CBOR sequence
         _next = whatsNext.aSelfDescribeCBOR;
         break;
       default: // Unassigned values

@@ -397,6 +397,41 @@ void main() {
       ]);
     });
 
+    test('Regex', () {
+      output.clear();
+      encoder.writeRegEx('^[123]/g');
+      expect(output.getDataAsList(), [
+        0xd8,
+        0x23,
+        0x68,
+        0x5e,
+        0x5b,
+        0x31,
+        0x32,
+        0x33,
+        0x5d,
+        0x2f,
+        0x67,
+      ]);
+    });
+
+    test('Mime Message', () {
+      output.clear();
+      const mimeMessage = 'MIME-Version: 1.0'
+          'X-Mailer: MailBee.NET 8.0.4.428'
+          'Subject: This is the subject of a sample message'
+          'To: user@example.com'
+          'Content-Type: multipart/alternative'
+          'boundary="XXXXboundary text"'
+          'This is the body text of a sample message.'
+          '--XXXXboundary text--';
+      final checkList = <int>[];
+      checkList.addAll([0xd8, 0x24, 0x78, 0xf2]);
+      checkList.addAll(mimeMessage.codeUnits);
+      encoder.writeMimeMessage(mimeMessage);
+      expect(output.getDataAsList(), checkList);
+    });
+
     test('Empty single quote string', () {
       output.clear();
       final buff = typed.Uint8Buffer();
