@@ -29,16 +29,10 @@ class ListBuilder extends Encoder {
   // The list items
   final List<typed.Uint8Buffer> _items = <typed.Uint8Buffer>[];
 
-  /// The built list
-  typed.Uint8Buffer _built = typed.Uint8Buffer();
-
-  // Get the built list
+  // Build and return the list
   typed.Uint8Buffer getData() {
-    if (_built.isEmpty) {
-      _writeArrayImpl(_items);
-      _built = _out._buffer;
-    }
-    return _built;
+    _writeArrayImpl(_items);
+    return _out._buffer;
   }
 
   /// Clear

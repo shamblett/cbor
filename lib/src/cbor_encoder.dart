@@ -86,6 +86,7 @@ class Encoder {
   /// Add the output of a builder to the encoding stream.
   void addBuilderOutput(typed.Uint8Buffer buffer) {
     _writeRawBuffer(buffer);
+    _builderHookImpl(false);
   }
 
   /// Raw byte buffer writer.

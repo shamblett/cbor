@@ -41,28 +41,22 @@ class MapBuilder extends Encoder {
   final Map<dynamic, typed.Uint8Buffer> _builtMap =
       <dynamic, typed.Uint8Buffer>{};
 
-  // The built map
-  typed.Uint8Buffer _built = typed.Uint8Buffer();
-
   // Key or value expected
   bool _expectingKey = true;
 
-  // Get the built map
+  // Build and return the map
   typed.Uint8Buffer getData() {
-    if (_built.isEmpty) {
-      // Check the length of the item lists
-      if (_keyItems.length != _valueItems.length) {
-        throw CborException(
-            'Map Builder - invalid item list lengths, cannot build map,'
-            'there are ${_keyItems.length} keys and ${_valueItems.length} values');
-      }
-      for (var i = 0; i < _keyItems.length; i++) {
-        _builtMap[_keyItems[i]] = _valueItems[i];
-      }
-      _writeMapImpl(_builtMap);
-      _built = _out._buffer;
+    // Check the length of the item lists
+    if (_keyItems.length != _valueItems.length) {
+      throw CborException(
+          'Map Builder - invalid item list lengths, cannot build map,'
+          'there are ${_keyItems.length} keys and ${_valueItems.length} values');
     }
-    return _built;
+    for (var i = 0; i < _keyItems.length; i++) {
+      _builtMap[_keyItems[i]] = _valueItems[i];
+    }
+    _writeMapImpl(_builtMap);
+    return _out._buffer;
   }
 
   /// Clear
