@@ -72,6 +72,20 @@ class Encoder {
     }
   }
 
+  void writeBignum(BigInt value) {
+    _writeBignum(value);
+    _builderHookImpl(false, value);
+  }
+
+  void _writeBignum(BigInt value) {
+    if (value.isNegative) {
+      _writeTag(tagNegativeBignum);
+    } else {
+      _writeTag(tagPositiveBignum);
+    }
+    //_writeBytes(value.)
+  }
+
   /// Primitive byte writer.
   void writeBytes(typed.Uint8Buffer data) {
     _writeBytes(data);

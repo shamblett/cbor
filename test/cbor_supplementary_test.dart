@@ -629,45 +629,5 @@ void main() {
         ]);
       });
     });
-    group('Issue 10', ()
-    {
-      test('10-1', () {
-        final inst = cbor.Cbor();
-        final encoder = inst.encoder;
-
-        // [{1 : 123456789}]
-        //encoder.writeArray([{1:123456789}]);
-        encoder.writeMap({1:11,2:22,3:[{1:123,4:true,9:"text"}]});
-        //encoder.writeMapImpl({});
-        //encoder.writeInt(1);
-        //encoder.writeTag(2); // BigInt
-        //encoder.writeInt(BigInt.from(123456789).toInt());
-        //encoder.writeBreak();
-        //encoder.writeBreak();
-        // 9F                   # array(*)
-        // BF                # map(*)
-        // 01             # unsigned(1)
-        // F6             # primitive(22)
-        // 01             # unsigned(1)
-        // C2             # tag(2)
-        // 1A 075BCD15 # unsigned(123456789)
-        // FF             # primitive(*)
-        // FF                # primitive(*)
-
-        final buff = inst.output.getData();
-        List<int> encodedBytes = buff.buffer.asUint8List();
-
-        inst.decodeFromList(encodedBytes);
-
-        final decodedData = inst.getDecodedData();
-        final hexDump = hex.encode(encodedBytes);
-        //expect(hexDump,'9fbf01f601c21a075bcd15ffff');
-        //expect(hexDump, '81a1011a075bcd15');
-        expect(hexDump, 'a3010b02160381a301187b04f5096474657874');
-        //expect(decodedData, [[{1: 123456789}]]);
-        expect(decodedData, [{1:11,2:22,3:[{1:123,4:true,9:"text"}]}]);
-      });
-    });
-
   });
 }
