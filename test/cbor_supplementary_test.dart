@@ -561,10 +561,24 @@ void main() {
     });
   });
   group('Bignum', () {
-    group('Big Integer', () {
+    test('Big Num', () {
+      var inst = cbor.Cbor();
+      final encoder = inst.encoder;
+      final big = BigInt.from(1579254859548);
+      encoder.writeBignum(big);
+      inst.decodeFromInput();
+      final res = inst.getDecodedData();
+      expect(res[0], BigInt.from(1579254859548));
+      print(inst.decodedPrettyPrint(true));
+    });
+    test('Big Integer', () {
       var inst = cbor.Cbor();
       final encoder = inst.encoder;
       encoder.writeInt(1579254859548);
+      inst.decodeFromInput();
+      final res = inst.getDecodedData();
+      expect(res[0], BigInt.from(1579254859548));
+      print(inst.decodedPrettyPrint(true));
     });
   });
 }

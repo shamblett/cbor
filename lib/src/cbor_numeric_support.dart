@@ -86,3 +86,23 @@ BigInt bignumToBigInt(typed.Uint8Buffer buff, String sign) {
   }
   return BigInt.tryParse(res.toString());
 }
+
+/// Convert a hex string to a [ByteBuffer] of bytes.
+ByteBuffer hexToBytes(String input) {
+  if (input == null) {
+    return null;
+  }
+  final s = input.replaceAll(' ', '').replaceAll(':', '').replaceAll('\n', '');
+  if (s.length % 2 != 0) {
+    throw ArgumentError.value(input);
+  }
+  final result = Uint8List(s.length ~/ 2);
+  for (var i = 0; i < s.length; i += 2) {
+    var value = int.tryParse(s.substring(i, i + 2), radix: 16);
+    if (value == null) {
+      throw ArgumentError.value(input, 'input');
+    }
+    result[i ~/ 2] = value;
+  }
+  return Uint8List.fromList(result).buffer;
+}

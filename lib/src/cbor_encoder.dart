@@ -59,6 +59,8 @@ class Encoder {
   }
 
   /// Positive and negative integers.
+  /// If the value is too large to be encoded as an integer
+  /// it is automatically converted to and encoded as a big num
   void writeInt(int value) {
     _writeInt(value);
     _builderHookImpl(true, value);
@@ -83,7 +85,15 @@ class Encoder {
     } else {
       _writeTag(tagPositiveBignum);
     }
-    //_writeBytes(value.)
+    var str = value.toRadixString(16);
+    if (str.length.isOdd) {
+      str = '0$str';
+    }
+    final bytes = hexToBytes(str);
+    final data = typed.Uint8Buffer();
+    data.addAll(bytes.asUint8List());
+    _writeTypeValue(majorTypeBytes, data.length);
+    _out.putBytes(data);
   }
 
   /// Primitive byte writer.
@@ -498,8 +508,8 @@ class Encoder {
       data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
     } else {
-      // Bignum - not supported, use tags
-      throw CborException('Bignums not supported');
+      // Bignum - encoded as a tag value
+      _writeBignum(BigInt.from(value));
     }
   }
 
