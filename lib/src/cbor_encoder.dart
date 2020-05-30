@@ -665,7 +665,7 @@ class Encoder {
       }
       // Encode the value
       var valType = val.runtimeType.toString();
-      if (valType.contains('List')) {
+      if (valType.contains('List') && valType != 'Uint8List') {
         valType = 'List';
       }
       if (valType.contains('Map')) {
@@ -711,6 +711,9 @@ class Encoder {
           break;
         case 'Uint8Buffer':
           _writeRawBuffer(val);
+          break;
+        case 'Uint8List':
+          _writeBytes(typed.Uint8Buffer()..addAll(val));
           break;
         default:
           print('writeMapImpl::RT is ${val.runtimeType.toString()}');
