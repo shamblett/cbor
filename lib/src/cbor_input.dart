@@ -16,8 +16,8 @@ class Input {
     _offset = 0;
   }
 
-  typed.Uint8Buffer _data;
-  int _offset;
+  late typed.Uint8Buffer _data;
+  late int _offset;
 
   /// Does the input have the numbe of bytes.
   bool hasBytes(int count) => _data.lengthInBytes - _offset >= count;

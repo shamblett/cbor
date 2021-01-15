@@ -1119,10 +1119,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [1, 2, 3, 4]);
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.base16);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.base16);
     });
 
     test('Tag (24) multiple', () {
@@ -1148,10 +1150,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [100, 73, 69, 84, 70]);
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.encodedCBOR);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.encodedCBOR);
     });
 
     test('Tag (32) URI', () {
@@ -1199,10 +1203,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], 'http://www.example.com');
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.uri);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.uri);
     });
 
     test('Empty single quotes', () {
@@ -1223,10 +1229,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], []);
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.none);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.none);
     });
 
     test('4 bytes', () {
@@ -1250,10 +1258,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [01, 02, 03, 04]);
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.none);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.none);
     });
 
     test('Empty double quotes', () {
@@ -1274,10 +1284,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], '');
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.none);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.none);
     });
 
     test('a', () {
@@ -1298,10 +1310,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], 'a');
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.none);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.none);
     });
 
     test('IETF', () {
@@ -1322,10 +1336,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], 'IETF');
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.none);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.none);
     });
 
     test('Quoted backslash', () {
@@ -1346,10 +1362,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], '\"\\');
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.none);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.none);
     });
 
     test('Unicode ü', () {
@@ -1370,10 +1388,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], 'ü');
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.none);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.none);
     });
 
     test('Unicode 水', () {
@@ -1394,10 +1414,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], '水');
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.none);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.none);
     });
 
     test('Unicode 𐅑', () {
@@ -1418,10 +1440,12 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], '𐅑');
       final item = slistener.itemStack.peek();
-      expect(item.hint, cbor.dataHints.none);
+      expect(item, isNotNull);
+      expect(item!.hint, cbor.dataHints.none);
     });
 
     test('Array empty', () {
@@ -1442,7 +1466,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], []);
     });
 
@@ -1465,7 +1490,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [1, 2, 3]);
     });
 
@@ -1544,7 +1570,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         1,
         2,
@@ -1593,7 +1620,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         1,
         [2, 3],
@@ -1620,7 +1648,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], {});
     });
 
@@ -1643,7 +1672,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], {1: 2, 3: 4});
     });
 
@@ -1666,7 +1696,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], {
         'a': 1,
         'b': [2, 3]
@@ -1692,7 +1723,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         'a',
         {'b': 'c'}
@@ -1741,7 +1773,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E'});
     });
 
@@ -1767,7 +1800,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [1, 2, 3, 4, 5]);
     });
 
@@ -1804,7 +1838,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], 'streaming');
     });
 
@@ -1827,7 +1862,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], []);
     });
 
@@ -1861,7 +1897,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         1,
         [2, 3],
@@ -1888,7 +1925,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         1,
         [2, 3],
@@ -1915,7 +1953,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         1,
         [2, 3],
@@ -1942,7 +1981,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         1,
         [2, 3],
@@ -2025,7 +2065,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         1,
         2,
@@ -2086,7 +2127,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], {
         'a': 1,
         'b': [2, 3]
@@ -2112,7 +2154,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         'a',
         {'b': 'c'}
@@ -2151,7 +2194,8 @@ void main() {
       final decodeStack = cbor.DecodeStack();
       decodeStack.build(slistener.itemStack);
       final slist = decodeStack.walk();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], {'Fun': true, 'Amt': -2});
     });
   });

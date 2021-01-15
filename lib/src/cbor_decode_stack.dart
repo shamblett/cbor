@@ -69,7 +69,7 @@ class DecodeStack {
   }
 
   /// Walk the built stack and return the [DartItem] values
-  List<dynamic> walk() {
+  List<dynamic>? walk() {
     if (!built) {
       return null;
     }

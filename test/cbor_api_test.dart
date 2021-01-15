@@ -196,7 +196,9 @@ void main() {
       buff.addAll(data);
       inst.decodeFromBuffer(buff);
       final decode = inst.getDecodedData();
-      expect(decode[0], <dynamic, dynamic>{
+
+      expect(decode, isNotNull);
+      expect(decode![0], <dynamic, dynamic>{
         'p16': 16,
         'uni': '\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)',
         'n1': -1,
@@ -223,7 +225,8 @@ void main() {
     test('From list -> ', () {
       inst.decodeFromList(data);
       final decode = inst.getDecodedData();
-      expect(decode[0], {
+      expect(decode, isNotNull);
+      expect(decode![0], {
         'p16': 16,
         'uni': '\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)',
         'n1': -1,
@@ -277,7 +280,8 @@ void main() {
       inst.input = dataIn;
       inst.decodeFromInput();
       final decodedData = inst.getDecodedData();
-      expect(decodedData.length, 8);
+      expect(decodedData, isNotNull);
+      expect(decodedData!.length, 8);
       final hints = inst.getDecodedHints();
       expect(hints[0], cbor.dataHints.dateTimeString);
       expect(hints[1], cbor.dataHints.dateTimeEpoch);
