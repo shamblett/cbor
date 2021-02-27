@@ -30,10 +30,10 @@ class Encoder {
 
   /// The output buffer
   @protected
-  Output _out;
+  late Output _out;
 
   @protected
-  BuilderHook _builderHook;
+  late BuilderHook _builderHook;
 
   /// Indefinite sequence indicator, incremented on start
   /// decremented on stop.
@@ -91,7 +91,7 @@ class Encoder {
     }
     final bytes = hexToBytes(str);
     final data = typed.Uint8Buffer();
-    data.addAll(bytes.asUint8List());
+    data.addAll(bytes!.asUint8List());
     _writeTypeValue(majorTypeBytes, data.length);
     _out.putBytes(data);
   }
@@ -160,7 +160,7 @@ class Encoder {
   /// If you supply a length this will be used and not calculated from the
   /// array size, unless you are encoding certain indefinite sequences you
   /// do not need to do this.
-  bool writeArray(List<dynamic> value, [bool indefinite = false, int length]) {
+  bool writeArray(List<dynamic> value, [bool indefinite = false, int? length]) {
     // Mark the output buffer, if we cannot encode
     // the whole array structure rewind so as to perform
     // no encoding.
@@ -182,7 +182,7 @@ class Encoder {
   /// Valid map values are integer, string, bool, float(any size), array
   /// map or buffer. Returns true if the encoding has been successful.
   bool writeMap(Map<dynamic, dynamic> value,
-      [bool indefinite = false, int length]) {
+      [bool indefinite = false, int? length]) {
     // Mark the output buffer, if we cannot encode
     // the whole map structure rewind so as to perform
     // no encoding.
@@ -378,15 +378,15 @@ class Encoder {
   /// which you can chose the encoding.
   void writeEpoch(num epoch, [encodeFloatAs floatType = encodeFloatAs.single]) {
     _writeTag(tagDateTimeEpoch);
-    if (epoch.runtimeType == int) {
+    if (epoch is int) {
       _writeInt(epoch);
     } else {
       if (floatType == encodeFloatAs.half) {
-        _writeHalf(epoch);
+        _writeHalf(epoch.toDouble());
       } else if (floatType == encodeFloatAs.single) {
-        _writeSingle(epoch);
+        _writeSingle(epoch.toDouble());
       } else {
-        _writeDouble(epoch);
+        _writeDouble(epoch.toDouble());
       }
     }
     _builderHookImpl(false);
@@ -527,11 +527,11 @@ class Encoder {
   /// ie false is returned.
   @Deprecated('This will be removed - use a List Builder')
   bool writeArrayImpl(List<dynamic> value,
-          [bool indefinite = false, int length]) =>
+          [bool indefinite = false, int? length]) =>
       _writeArrayImpl(value, indefinite, length);
 
   bool _writeArrayImpl(List<dynamic> value,
-      [bool indefinite = false, int length]) {
+      [bool indefinite = false, int? length]) {
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {
@@ -616,11 +616,11 @@ class Encoder {
   /// ie false is returned.
   @Deprecated('This will be removed - use a Map Builder')
   bool writeMapImpl(Map<dynamic, dynamic> value,
-          [bool indefinite = false, int length]) =>
+          [bool indefinite = false, int? length]) =>
       _writeMapImpl(value, indefinite, length);
 
   bool _writeMapImpl(Map<dynamic, dynamic> value,
-      [bool indefinite = false, int length]) {
+      [bool indefinite = false, int? length]) {
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {

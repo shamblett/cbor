@@ -23,6 +23,8 @@ abstract class Output {
   /// Position of the last mark operation
   int _markPos;
 
+  Output(this._buffer, this._pauseBuffer, this._paused, this._markPos);
+
   /// Get the current output buffer
   typed.Uint8Buffer getData() {
     final ret = typed.Uint8Buffer();

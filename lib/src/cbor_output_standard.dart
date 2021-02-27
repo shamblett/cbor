@@ -11,12 +11,7 @@ part of cbor;
 class OutputStandard extends Output {
   /// Construction
   @override
-  OutputStandard() {
-    _buffer = typed.Uint8Buffer();
-    _pauseBuffer = typed.Uint8Buffer();
-    _paused = false;
-    _markPos = 0;
-  }
+  OutputStandard() : super(typed.Uint8Buffer(), typed.Uint8Buffer(), false, 0);
 
   @override
   void clear() {

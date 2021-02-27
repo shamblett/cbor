@@ -24,7 +24,8 @@ void main() {
       buff.addAll(data.readAsBytesSync());
       inst.decodeFromBuffer(buff);
       final slist = inst.getDecodedData();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], {
         'half': 0.0,
         'single': 3.4028234663852886e+38,
@@ -41,7 +42,8 @@ void main() {
       inst.clearDecodeStack();
       inst.decodeFromBuffer(buff);
       final slist = inst.getDecodedData();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], 'Helloworld!');
     });
 
@@ -54,7 +56,8 @@ void main() {
       inst.clearDecodeStack();
       inst.decodeFromBuffer(buff);
       final slist = inst.getDecodedData();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], 42);
     });
 
@@ -67,7 +70,8 @@ void main() {
       inst.clearDecodeStack();
       inst.decodeFromBuffer(buff);
       final slist = inst.getDecodedData();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], {'a key': false, 'a secret key': '42', 0: -1});
     });
 
@@ -80,7 +84,8 @@ void main() {
       inst.clearDecodeStack();
       inst.decodeFromBuffer(buff);
       final slist = inst.getDecodedData();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], [
         1,
         2,
@@ -100,7 +105,8 @@ void main() {
       inst.clearDecodeStack();
       inst.decodeFromBuffer(buff);
       final slist = inst.getDecodedData();
-      expect(slist.length, 1);
+      expect(slist, isNotNull);
+      expect(slist!.length, 1);
       expect(slist[0], '2013-03-21T20:04:00Z');
       expect(inst.getDecodedHints()[0], cbor.dataHints.dateTimeString);
     });
