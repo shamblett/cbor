@@ -556,7 +556,7 @@ class Encoder {
     var ok = true;
     for (final dynamic element in value) {
       var valType = element.runtimeType.toString();
-      if (valType.contains('List')) {
+      if (valType.contains('List') && valType != 'Uint8List') {
         valType = 'List';
       }
       if (valType.contains('Map')) {
@@ -602,6 +602,9 @@ class Encoder {
           break;
         case 'Uint8Buffer':
           _writeRawBuffer(element);
+          break;
+        case 'Uint8List':
+          _writeBytes(typed.Uint8Buffer()..addAll(element));
           break;
         default:
           print('writeArrayImpl::RT is ${element.runtimeType.toString()}');
