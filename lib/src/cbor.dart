@@ -10,7 +10,7 @@ part of cbor;
 /// The CBOR package main API.
 class Cbor {
   // Decoder
-  Input? input;
+  late Input input;
   late Decoder decoder;
 
   // Encoder
@@ -36,7 +36,7 @@ class Cbor {
     output.clear();
     input = Input(buffer);
     listener.itemStack.clear();
-    decoder = Decoder.withListener(input!, listener);
+    decoder = Decoder.withListener(input, listener);
     decoder.run();
   }
 
@@ -47,7 +47,7 @@ class Cbor {
     buffer.addAll(ints);
     input = Input(buffer);
     listener.itemStack.clear();
-    decoder = Decoder.withListener(input!, listener);
+    decoder = Decoder.withListener(input, listener);
     decoder.run();
   }
 
@@ -56,7 +56,7 @@ class Cbor {
   void decodeFromInput() {
     input = Input(output.getData());
     listener.itemStack.clear();
-    decoder = Decoder.withListener(input!, listener);
+    decoder = Decoder.withListener(input, listener);
     decoder.run();
   }
 

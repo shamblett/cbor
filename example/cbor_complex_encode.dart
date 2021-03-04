@@ -5,7 +5,6 @@
  * Copyright :  S.Hamblett
  */
 
-
 import 'package:cbor/cbor.dart' as cbor;
 
 /// A more complex encoding sequence followed by a self decode and a JSON

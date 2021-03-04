@@ -32,7 +32,7 @@ void main() {
     inst.decodeFromList(bytes);
     print(inst.decodedPrettyPrint());
     final decoded = inst.getDecodedData();
-    expect(decoded[0], [
+    expect(decoded![0], [
       {
         1: {1: 1},
         3: {1: 1},
@@ -64,7 +64,7 @@ void main() {
     inst.decodeFromList(bytes);
     print(inst.decodedPrettyPrint());
     final decoded = inst.getDecodedData();
-    expect(decoded[0], [
+    expect(decoded![0], [
       {
         1: {1: 2},
         3: {

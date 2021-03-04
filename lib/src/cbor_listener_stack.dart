@@ -512,7 +512,7 @@ class ListenerStack extends Listener {
           item.data.add(_processIndefiniteIterable(iItem, items).data);
         } else {
           throw CborException(
-              'Listener Stack _processIndefiniteIterable - List item is not iterable or complete ${iItem}');
+              'Listener Stack _processIndefiniteIterable - List item is not iterable or complete $iItem');
         }
       }
       item.complete = true;
@@ -531,7 +531,7 @@ class ListenerStack extends Listener {
           key = iItem.data;
         } else {
           throw CborException(
-              'Listener Stack _processIndefiniteIterable - item is incomplete map key ${iItem}');
+              'Listener Stack _processIndefiniteIterable - item is incomplete map key $iItem');
         }
         iItem = items.popBottom();
         if (iItem.complete) {
@@ -540,7 +540,7 @@ class ListenerStack extends Listener {
           value = _processIndefiniteIterable(iItem, items).data;
         } else {
           throw CborException(
-              'Listener Stack _processIndefiniteIterable - item is incomplete map key ${iItem}');
+              'Listener Stack _processIndefiniteIterable - item is incomplete map key $iItem');
         }
         item.data[key] = value;
       }
@@ -548,7 +548,7 @@ class ListenerStack extends Listener {
       return item;
     } else {
       throw CborException(
-          'Listener Stack _processIndefiniteIterable - item is iterable but not list or map ${item}');
+          'Listener Stack _processIndefiniteIterable - item is iterable but not list or map $item');
     }
   }
 }

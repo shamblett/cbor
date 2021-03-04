@@ -12,18 +12,18 @@ part of cbor;
 /// to provide full CBOR encoding.
 abstract class Output {
   /// The encoded output buffer
-  typed.Uint8Buffer _buffer;
+  final _buffer;
 
   /// The paused buffer
-  typed.Uint8Buffer _pauseBuffer;
+  final _pauseBuffer;
 
   /// Pause indicator
-  bool _paused;
+  bool _paused = false;
 
   /// Position of the last mark operation
-  int _markPos;
+  int _markPos = 0;
 
-  Output(this._buffer, this._pauseBuffer, this._paused, this._markPos);
+  Output(this._buffer, this._pauseBuffer);
 
   /// Get the current output buffer
   typed.Uint8Buffer getData() {

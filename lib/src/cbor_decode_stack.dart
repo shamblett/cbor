@@ -100,7 +100,7 @@ class DecodeStack {
           item.data.add(_processIterable(iItem, items).data);
         } else {
           throw CborException(
-              'Decode Stack _processIterable - List item is not iterable or complete ${iItem}');
+              'Decode Stack _processIterable - List item is not iterable or complete $iItem');
         }
       }
       item.complete = true;
@@ -116,7 +116,7 @@ class DecodeStack {
           key = iItem.data;
         } else {
           throw CborException(
-              'Decode Stack _processIterable - item is incomplete map key ${iItem}');
+              'Decode Stack _processIterable - item is incomplete map key $iItem');
         }
         iItem = items.pop();
         if (iItem.complete) {
@@ -125,7 +125,7 @@ class DecodeStack {
           value = _processIterable(iItem, items).data;
         } else {
           throw CborException(
-              'Decode Stack _processIterable - item is incomplete map value ${iItem}');
+              'Decode Stack _processIterable - item is incomplete map value $iItem');
         }
         item.data[key] = value;
       }
@@ -133,7 +133,7 @@ class DecodeStack {
       return item;
     } else {
       throw CborException(
-          'Decode Stack _processIterable - item is iterable but not list or map ${item}');
+          'Decode Stack _processIterable - item is iterable but not list or map $item');
     }
   }
 }
