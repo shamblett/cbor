@@ -258,7 +258,8 @@ void main() {
       decoder.run();
       expect(slistener.itemStack.hasErrors(), true);
       final errors = slistener.itemStack.errors();
-      expect(errors[0], 'Decoder::invalid special type');
+      expect(errors, isNotNull);
+      expect(errors![0], 'Decoder::invalid special type');
     });
 
     test('Premature termination -> ', () {
@@ -518,7 +519,7 @@ void main() {
       inst.decodeFromInput();
       var slist = inst.getDecodedData();
       expect(slist, isNotNull);
-      expect(slist.length, 30);
+      expect(slist!.length, 30);
       expect(slist[0], [9, 10, 11]);
       expect(slist[1], 123);
       expect(slist[2], -457);
@@ -568,7 +569,8 @@ void main() {
       encoder.writeBignum(big);
       inst.decodeFromInput();
       final res = inst.getDecodedData();
-      expect(res[0], BigInt.from(1579254859548));
+      expect(res, isNotNull);
+      expect(res![0], BigInt.from(1579254859548));
       print(inst.decodedPrettyPrint(true));
     });
     test('Big Integer', () {
@@ -577,7 +579,8 @@ void main() {
       encoder.writeInt(1579254859548);
       inst.decodeFromInput();
       final res = inst.getDecodedData();
-      expect(res[0], BigInt.from(1579254859548));
+      expect(res, isNotNull);
+      expect(res![0], BigInt.from(1579254859548));
       print(inst.decodedPrettyPrint(true));
     });
   });

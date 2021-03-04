@@ -36,6 +36,11 @@ const int eightByte = 8;
 /// Different listener classes can be supplied for different purposes,
 /// such as test, debug as well as the standard stack listener.
 class Decoder {
+  late Listener _listener;
+  late Input _input;
+  late DecoderState _state;
+  late int _currentLength;
+
   /// Default
   Decoder(Input input) {
     _input = input;
@@ -48,11 +53,6 @@ class Decoder {
     _state = DecoderState.type;
     _listener = listener;
   }
-
-  Listener _listener;
-  Input _input;
-  DecoderState _state;
-  int _currentLength;
 
   /// Decoder entry point.
   void run() {

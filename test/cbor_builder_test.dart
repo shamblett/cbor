@@ -61,7 +61,9 @@ void main() {
       final encoder = inst.encoder;
       encoder.addBuilderOutput(builderRes);
       inst.decodeFromInput();
-      expect(inst.getDecodedData()[0], [
+      final decodedData = inst.getDecodedData();
+      expect(decodedData, isNotNull);
+      expect(decodedData![0], [
         null,
         [1, 2, 3],
         [1, 2, 3],
@@ -169,7 +171,9 @@ void main() {
       encoder.addBuilderOutput(builder.getData());
       inst.decodeFromInput();
       print(inst.decodedPrettyPrint(true));
-      expect(inst.getDecodedData()[0], {
+      final decodedData = inst.getDecodedData();
+      expect(decodedData, isNotNull);
+      expect(decodedData![0], {
         7: [2, '2020/04/20']
       });
     });
@@ -186,7 +190,9 @@ void main() {
       encoder.addBuilderOutput(listBuilder.getData());
       inst.decodeFromInput();
       print(inst.decodedPrettyPrint(true));
-      expect(inst.getDecodedData()[0], [
+      final decodedData = inst.getDecodedData();
+      expect(decodedData, isNotNull);
+      expect(decodedData![0], [
         2,
         '2020/04/20',
         {7: '2020/05/21'}

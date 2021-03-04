@@ -38,7 +38,7 @@ class ItemStack {
   DartItem popBottom() => _stack.popBottom();
 
   /// Peek the top stack item.
-  DartItem peek() => _stack.top();
+  DartItem? peek() => _stack.top();
 
   /// Peek the bottom stack item.
   DartItem peekBottom() => _stack.bottom();
@@ -57,7 +57,7 @@ class ItemStack {
   /// Check if any error entries are present in the stack.
   /// Returns a list of error strings if any are found, null
   /// if none are found.
-  List<String> errors() {
+  List<String>? errors() {
     if (_stack.isEmpty) {
       return null;
     }

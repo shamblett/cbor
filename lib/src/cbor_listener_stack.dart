@@ -49,14 +49,14 @@ class ListenerStack extends Listener {
   final ItemStack _indefiniteItemStack = ItemStack();
 
   /// Indefinite String buffer assembler.
-  String _stringAssembly;
+  late String _stringAssembly;
 
   /// Incremented on every indefinite start, decremented on stop
   /// used to indicate and indefinite sequence in progress.
   int _indefiniteStartCount = 0;
 
   @override
-  void onInteger(int value) {
+  void onInteger(int? value) {
     // Do not add nulls
     if (value == null) {
       return;
@@ -72,7 +72,7 @@ class ListenerStack extends Listener {
     _append(item);
   }
 
-  void onBigInteger(BigInt value) {
+  void onBigInteger(BigInt? value) {
     // Do not add nulls
     if (value == null) {
       return;
@@ -89,17 +89,17 @@ class ListenerStack extends Listener {
   }
 
   @override
-  void onBytes(typed.Uint8Buffer data, int size) {
+  void onBytes(typed.Uint8Buffer? data, int size) {
     // Check if we are expecting something, ie whats next
     switch (_next) {
       case whatsNext.aPositiveBignum:
         // Convert to a positive integer and append
-        final value = bignumToBigInt(data, '+');
+        final value = bignumToBigInt(data!, '+');
         onBigInteger(value);
         break;
       case whatsNext.aNegativeBignum:
-        var value = bignumToBigInt(data, '-');
-        value = BigInt.from(-1) + value;
+        var value = bignumToBigInt(data!, '-');
+        value = BigInt.from(-1) + value!;
         onBigInteger(value.abs());
         break;
       case whatsNext.aMultipleB64Url:
@@ -180,7 +180,7 @@ class ListenerStack extends Listener {
   }
 
   @override
-  void onString(String str) {
+  void onString(String? str) {
     if (str == null) {
       return;
     }
@@ -300,7 +300,7 @@ class ListenerStack extends Listener {
   }
 
   @override
-  void onSpecial(int code) {
+  void onSpecial(int? code) {
     if (code == null) {
       return;
     }
@@ -312,7 +312,7 @@ class ListenerStack extends Listener {
   }
 
   @override
-  void onSpecialFloat(double value) {
+  void onSpecialFloat(double? value) {
     // Do not add nulls
     if (value == null) {
       return;
@@ -325,7 +325,7 @@ class ListenerStack extends Listener {
   }
 
   @override
-  void onBool(bool state) {
+  void onBool(bool? state) {
     // Do not add nulls
     if (state == null) {
       return;
@@ -354,7 +354,7 @@ class ListenerStack extends Listener {
   }
 
   @override
-  void onError(String error) {
+  void onError(String? error) {
     if (error == null) {
       return;
     }

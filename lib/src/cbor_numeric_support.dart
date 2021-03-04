@@ -73,7 +73,7 @@ bool canBeASingle(double value) {
 
 /// Bignum byte buffer to BigInt. Returns null
 /// if the conversion fails.
-BigInt bignumToBigInt(typed.Uint8Buffer buff, String sign) {
+BigInt? bignumToBigInt(typed.Uint8Buffer buff, String sign) {
   // Convert to a signed hex string.
   final res = StringBuffer();
   res.write('${sign}0x');
@@ -88,7 +88,7 @@ BigInt bignumToBigInt(typed.Uint8Buffer buff, String sign) {
 }
 
 /// Convert a hex string to a [ByteBuffer] of bytes.
-ByteBuffer hexToBytes(String input) {
+ByteBuffer? hexToBytes(String? input) {
   if (input == null) {
     return null;
   }
