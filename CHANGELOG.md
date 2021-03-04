@@ -1,3 +1,6 @@
+### 4.0.0
+Issues 18 and 14(NNBD)
+
 ### 3.2.0
 Issue 13
 
