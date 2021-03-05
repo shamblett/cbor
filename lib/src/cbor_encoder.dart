@@ -116,6 +116,8 @@ class Encoder {
   /// Raw byte buffer writer.
   /// No encoding is added to the buffer, it goes into the
   /// output stream as is.
+  @Deprecated(
+      'Please encode this buffer type as a list, this method will be removed in future versions')
   void writeRawBuffer(typed.Uint8Buffer buff) {
     _writeRawBuffer(buff);
     _builderHookImpl(false);
