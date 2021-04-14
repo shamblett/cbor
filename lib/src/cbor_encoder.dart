@@ -557,24 +557,24 @@ class Encoder {
 
     var ok = true;
     for (final dynamic element in value) {
-      var valType = element.runtimeType.toString();
-      if (valType.contains('List') && valType != 'Uint8List') {
-        valType = 'List';
+      var valType = element.runtimeType;
+      if (element is List && element is! Uint8List) {
+        valType = List;
       }
-      if (valType.contains('Map')) {
-        valType = 'Map';
+      if (element is Map) {
+        valType = Map;
       }
       switch (valType) {
-        case 'int':
+        case int:
           _writeInt(element);
           break;
-        case 'String':
+        case String:
           _writeString(element);
           break;
-        case 'double':
+        case double:
           _writeFloat(element);
           break;
-        case 'List':
+        case List:
           if (!indefinite) {
             final res = _writeArrayImpl(element, indefinite);
             if (!res) {
@@ -585,7 +585,7 @@ class Encoder {
             element.forEach(_out.putByte);
           }
           break;
-        case 'Map':
+        case Map:
           if (!indefinite) {
             final res = _writeMapImpl(element, indefinite);
             if (!res) {
@@ -596,16 +596,16 @@ class Encoder {
             element.forEach(_out.putByte);
           }
           break;
-        case 'bool':
+        case bool:
           _writeBool(element);
           break;
-        case 'Null':
+        case Null:
           _writeNull();
           break;
-        case 'Uint8Buffer':
+        case typed.Uint8Buffer:
           _writeRawBuffer(element);
           break;
-        case 'Uint8List':
+        case Uint8List:
           _writeBytes(typed.Uint8Buffer()..addAll(element));
           break;
         default:
@@ -638,8 +638,7 @@ class Encoder {
     final dynamic keys = value.keys;
     var keysValid = true;
     for (final dynamic element in keys) {
-      if (!(element.runtimeType.toString() == 'int') &&
-          !(element.runtimeType.toString() == 'String')) {
+      if (element is! int && element is! String) {
         keysValid = false;
         break;
       }
@@ -663,30 +662,30 @@ class Encoder {
     var ok = true;
     value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
-      if (key.runtimeType.toString() == 'int') {
+      if (key is int) {
         _writeInt(key);
       } else {
         _writeString(key);
       }
       // Encode the value
-      var valType = val.runtimeType.toString();
-      if (valType.contains('List') && valType != 'Uint8List') {
-        valType = 'List';
+      var valType = val.runtimeType;
+      if (val is List && val is! Uint8List) {
+        valType = List;
       }
-      if (valType.contains('Map')) {
-        valType = 'Map';
+      if (val is Map) {
+        valType = Map;
       }
       switch (valType) {
-        case 'int':
+        case int:
           _writeInt(val);
           break;
-        case 'String':
+        case String:
           _writeString(val);
           break;
-        case 'double':
+        case double:
           _writeFloat(val);
           break;
-        case 'List':
+        case List:
           if (!indefinite) {
             final res = _writeArrayImpl(val, indefinite);
             if (!res) {
@@ -697,7 +696,7 @@ class Encoder {
             val.forEach(_out.putByte);
           }
           break;
-        case 'Map':
+        case Map:
           if (!indefinite) {
             final res = _writeMapImpl(val, indefinite);
             if (!res) {
@@ -708,16 +707,16 @@ class Encoder {
             val.forEach(_out.putByte);
           }
           break;
-        case 'bool':
+        case bool:
           _writeBool(val);
           break;
-        case 'Null':
+        case Null:
           _writeNull();
           break;
-        case 'Uint8Buffer':
+        case typed.Uint8Buffer:
           _writeRawBuffer(val);
           break;
-        case 'Uint8List':
+        case Uint8List:
           _writeBytes(typed.Uint8Buffer()..addAll(val));
           break;
         default:
