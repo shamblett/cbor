@@ -558,10 +558,10 @@ class Encoder {
     var ok = true;
     for (final dynamic element in value) {
       var valType = element.runtimeType;
-      if (element is List && element is! Uint8List) {
+      if ((valType is List) && (valType is! Uint8List)) {
         valType = List;
       }
-      if (element is Map) {
+      if (valType is Map) {
         valType = Map;
       }
       switch (valType) {
@@ -638,7 +638,8 @@ class Encoder {
     final dynamic keys = value.keys;
     var keysValid = true;
     for (final dynamic element in keys) {
-      if (element is! int && element is! String) {
+      final elementType = element.runtimeType;
+      if ((elementType is! int) && (elementType is! String)) {
         keysValid = false;
         break;
       }
@@ -662,17 +663,18 @@ class Encoder {
     var ok = true;
     value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
-      if (key is int) {
+      final keyType = key.runtimeType;
+      if (keyType is int) {
         _writeInt(key);
       } else {
         _writeString(key);
       }
       // Encode the value
       var valType = val.runtimeType;
-      if (val is List && val is! Uint8List) {
+      if ((valType is List) && (valType is! Uint8List)) {
         valType = List;
       }
-      if (val is Map) {
+      if (valType is Map) {
         valType = Map;
       }
       switch (valType) {
