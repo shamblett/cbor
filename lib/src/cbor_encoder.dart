@@ -635,10 +635,19 @@ class Encoder {
     }
 
     // Check the keys are integers or strings.
-    final dynamic keys = value.keys;
-    var keysValid = true;
+    final keys = value.keys;
+    var keysValid = false;
     for (final element in keys) {
-      if ((element.runtimeType != int) || (element.runtimeType != String)) {
+      var isOk = false;
+      if (element is int) {
+        isOk = true;
+      }
+      if (element is String) {
+        isOk = true;
+      }
+      if (isOk) {
+        keysValid = true;
+      } else {
         keysValid = false;
         break;
       }
@@ -646,6 +655,7 @@ class Encoder {
     if (!keysValid) {
       return false;
     }
+
     // Build the encoded map.
     if (!indefinite) {
       if (_indefSequenceCount == 0) {
@@ -662,18 +672,17 @@ class Encoder {
     var ok = true;
     value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
-      final keyType = key.runtimeType;
-      if (keyType is String) {
+      if (key is String) {
         _writeString(key);
       } else {
         _writeInt(key);
       }
       // Encode the value
       var valType = val.runtimeType;
-      if (valType is List) {
+      if (val is List) {
         valType = List;
       }
-      if (valType is Map) {
+      if (val is Map) {
         valType = Map;
       }
       switch (valType) {
