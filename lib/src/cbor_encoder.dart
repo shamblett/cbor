@@ -557,60 +557,43 @@ class Encoder {
 
     var ok = true;
     for (final dynamic element in value) {
-      var valType = element.runtimeType.toString();
-      if (valType.contains('List') && valType != 'Uint8List') {
-        valType = 'List';
-      }
-      if (valType.contains('Map')) {
-        valType = 'Map';
-      }
-      switch (valType) {
-        case 'int':
-          _writeInt(element);
-          break;
-        case 'String':
-          _writeString(element);
-          break;
-        case 'double':
-          _writeFloat(element);
-          break;
-        case 'List':
-          if (!indefinite) {
-            final res = _writeArrayImpl(element, indefinite);
-            if (!res) {
-              // Fail the whole encoding
-              ok = false;
-            }
-          } else {
-            element.forEach(_out.putByte);
+      if (element is int) {
+        _writeInt(element);
+      } else if (element is String) {
+        _writeString(element);
+      } else if (element is double) {
+        _writeFloat(element);
+      } else if (element is List) {
+        if (!indefinite) {
+          final res = _writeArrayImpl(element, indefinite);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
           }
-          break;
-        case 'Map':
-          if (!indefinite) {
-            final res = _writeMapImpl(element, indefinite);
-            if (!res) {
-              // Fail the whole encoding
-              ok = false;
-            }
-          } else {
-            element.forEach(_out.putByte);
+        } else {
+          element.forEach(_out.putByte as dynamic);
+        }
+      } else if (element is Map) {
+        if (!indefinite) {
+          final res = _writeMapImpl(element, indefinite);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
           }
-          break;
-        case 'bool':
-          _writeBool(element);
-          break;
-        case 'Null':
-          _writeNull();
-          break;
-        case 'Uint8Buffer':
-          _writeRawBuffer(element);
-          break;
-        case 'Uint8List':
-          _writeBytes(typed.Uint8Buffer()..addAll(element));
-          break;
-        default:
-          print('writeArrayImpl::RT is ${element.runtimeType.toString()}');
-          ok = false;
+        } else {
+          element.forEach(_out.putByte as dynamic);
+        }
+      } else if (element is bool) {
+        _writeBool(element);
+      } else if (element == Null) {
+        _writeNull();
+      } else if (element is typed.Uint8Buffer) {
+        _writeRawBuffer(element);
+      } else if (element is Uint8List) {
+        _writeBytes(typed.Uint8Buffer()..addAll(element));
+      } else {
+        print('writeArrayImpl::RT is ${element.runtimeType.toString()}');
+        ok = false;
       }
     }
     return ok;
