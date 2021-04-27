@@ -557,24 +557,24 @@ class Encoder {
 
     var ok = true;
     for (final dynamic element in value) {
-      var valType = element.runtimeType;
-      if (element is List) {
-        valType = List;
+      var valType = element.runtimeType.toString();
+      if (valType.contains('List') && valType != 'Uint8List') {
+        valType = 'List';
       }
-      if (element is Map) {
-        valType = Map;
+      if (valType.contains('Map')) {
+        valType = 'Map';
       }
       switch (valType) {
-        case int:
+        case 'int':
           _writeInt(element);
           break;
-        case String:
+        case 'String':
           _writeString(element);
           break;
-        case double:
+        case 'double':
           _writeFloat(element);
           break;
-        case List:
+        case 'List':
           if (!indefinite) {
             final res = _writeArrayImpl(element, indefinite);
             if (!res) {
@@ -585,7 +585,7 @@ class Encoder {
             element.forEach(_out.putByte);
           }
           break;
-        case Map:
+        case 'Map':
           if (!indefinite) {
             final res = _writeMapImpl(element, indefinite);
             if (!res) {
@@ -596,16 +596,16 @@ class Encoder {
             element.forEach(_out.putByte);
           }
           break;
-        case bool:
+        case 'bool':
           _writeBool(element);
           break;
-        case Null:
+        case 'Null':
           _writeNull();
           break;
-        case typed.Uint8Buffer:
+        case 'Uint8Buffer':
           _writeRawBuffer(element);
           break;
-        case Uint8List:
+        case 'Uint8List':
           _writeBytes(typed.Uint8Buffer()..addAll(element));
           break;
         default:
@@ -635,19 +635,11 @@ class Encoder {
     }
 
     // Check the keys are integers or strings.
-    final keys = value.keys;
-    var keysValid = false;
-    for (final element in keys) {
-      var isOk = false;
-      if (element is int) {
-        isOk = true;
-      }
-      if (element is String) {
-        isOk = true;
-      }
-      if (isOk) {
-        keysValid = true;
-      } else {
+    final dynamic keys = value.keys;
+    var keysValid = true;
+    for (final dynamic element in keys) {
+      if (!(element.runtimeType.toString() == 'int') &&
+          !(element.runtimeType.toString() == 'String')) {
         keysValid = false;
         break;
       }
@@ -655,7 +647,6 @@ class Encoder {
     if (!keysValid) {
       return false;
     }
-
     // Build the encoded map.
     if (!indefinite) {
       if (_indefSequenceCount == 0) {
@@ -672,30 +663,30 @@ class Encoder {
     var ok = true;
     value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
-      if (key is String) {
-        _writeString(key);
-      } else {
+      if (key.runtimeType.toString() == 'int') {
         _writeInt(key);
+      } else {
+        _writeString(key);
       }
       // Encode the value
-      var valType = val.runtimeType;
-      if (val is List) {
-        valType = List;
+      var valType = val.runtimeType.toString();
+      if (valType.contains('List') && valType != 'Uint8List') {
+        valType = 'List';
       }
-      if (val is Map) {
-        valType = Map;
+      if (valType.contains('Map')) {
+        valType = 'Map';
       }
       switch (valType) {
-        case int:
+        case 'int':
           _writeInt(val);
           break;
-        case String:
+        case 'String':
           _writeString(val);
           break;
-        case double:
+        case 'double':
           _writeFloat(val);
           break;
-        case List:
+        case 'List':
           if (!indefinite) {
             final res = _writeArrayImpl(val, indefinite);
             if (!res) {
@@ -706,7 +697,7 @@ class Encoder {
             val.forEach(_out.putByte);
           }
           break;
-        case Map:
+        case 'Map':
           if (!indefinite) {
             final res = _writeMapImpl(val, indefinite);
             if (!res) {
@@ -717,16 +708,16 @@ class Encoder {
             val.forEach(_out.putByte);
           }
           break;
-        case bool:
+        case 'bool':
           _writeBool(val);
           break;
-        case Null:
+        case 'Null':
           _writeNull();
           break;
-        case typed.Uint8Buffer:
+        case 'Uint8Buffer':
           _writeRawBuffer(val);
           break;
-        case Uint8List:
+        case 'Uint8List':
           _writeBytes(typed.Uint8Buffer()..addAll(val));
           break;
         default:
