@@ -555,6 +555,9 @@ class Encoder {
       startIndefinite(majorTypeArray);
     }
 
+    // Process the element types. Note that the sequence
+    // is hierarchical, base types such as List and Map must be
+    // tested for later than super types such as Uint8Buffer.
     var ok = true;
     for (final dynamic element in value) {
       if (element is int) {
@@ -563,6 +566,14 @@ class Encoder {
         _writeString(element);
       } else if (element is double) {
         _writeFloat(element);
+      } else if (element is typed.Uint8Buffer) {
+        _writeRawBuffer(element);
+      } else if (element is Uint8List) {
+        _writeBytes(typed.Uint8Buffer()..addAll(element));
+      } else if (element is bool) {
+        _writeBool(element);
+      } else if (element == Null) {
+        _writeNull();
       } else if (element is List) {
         if (!indefinite) {
           final res = _writeArrayImpl(element, indefinite);
@@ -583,14 +594,6 @@ class Encoder {
         } else {
           element.forEach(_out.putByte as dynamic);
         }
-      } else if (element is bool) {
-        _writeBool(element);
-      } else if (element == Null) {
-        _writeNull();
-      } else if (element is typed.Uint8Buffer) {
-        _writeRawBuffer(element);
-      } else if (element is Uint8List) {
-        _writeBytes(typed.Uint8Buffer()..addAll(element));
       } else {
         print('writeArrayImpl::RT is ${element.runtimeType.toString()}');
         ok = false;
