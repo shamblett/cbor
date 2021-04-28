@@ -624,8 +624,8 @@ class Encoder {
     final dynamic keys = value.keys;
     var keysValid = true;
     for (final dynamic element in keys) {
-      if (!(element.runtimeType.toString() == 'int') &&
-          !(element.runtimeType.toString() == 'String')) {
+      if (!(element is int) &&
+          !(element is String)) {
         keysValid = false;
         break;
       }
@@ -649,7 +649,7 @@ class Encoder {
     var ok = true;
     value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
-      if (key.runtimeType.toString() == 'int') {
+      if (key is int) {
         _writeInt(key);
       } else {
         _writeString(key);
