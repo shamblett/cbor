@@ -582,7 +582,9 @@ class Encoder {
             ok = false;
           }
         } else {
-          element.forEach(_out.putByte as dynamic);
+          for (final byte in element) {
+            _out.putByte(byte);
+          }
         }
       } else if (element is Map) {
         if (!indefinite) {
@@ -592,7 +594,9 @@ class Encoder {
             ok = false;
           }
         } else {
-          element.forEach(_out.putByte as dynamic);
+          for (final byte in element.values) {
+            _out.putByte(byte);
+          }
         }
       } else {
         print('writeArrayImpl::RT is ${element.runtimeType.toString()}');
@@ -671,7 +675,9 @@ class Encoder {
               ok = false;
             }
           } else {
-            val.forEach(_out.putByte as dynamic);
+            for (final byte in val) {
+              _out.putByte(byte);
+            }
           }
         } else if (val is Map) {
           if (!indefinite) {
@@ -681,7 +687,9 @@ class Encoder {
               ok = false;
             }
           } else {
-            val.forEach(_out.putByte as dynamic);
+            for (final byte in val) {
+              _out.putByte(byte);
+            }
           }
         } else {
           print('writeMapImpl::Iterable RT is ${val.runtimeType.toString()}');
