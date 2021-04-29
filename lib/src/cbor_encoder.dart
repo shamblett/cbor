@@ -572,7 +572,7 @@ class Encoder {
         _writeBytes(typed.Uint8Buffer()..addAll(element));
       } else if (element is bool) {
         _writeBool(element);
-      } else if (element == Null) {
+      } else if (element == null) {
         _writeNull();
       } else if (element is List) {
         if (!indefinite) {
@@ -679,21 +679,18 @@ class Encoder {
               _out.putByte(byte);
             }
           }
-        } else if (val is Map) {
-          if (!indefinite) {
-            final res = _writeMapImpl(val as Map, indefinite);
-            if (!res) {
-              // Fail the whole encoding
-              ok = false;
-            }
-          } else {
-            for (final byte in val) {
-              _out.putByte(byte);
-            }
+        }
+      } else if (val is Map) {
+        if (!indefinite) {
+          final res = _writeMapImpl(val as Map, indefinite);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
           }
         } else {
-          print('writeMapImpl::Iterable RT is ${val.runtimeType.toString()}');
-          ok = false;
+          for (final byte in val.values) {
+            _out.putByte(byte);
+          }
         }
       } else {
         if (val is int) {
@@ -704,7 +701,7 @@ class Encoder {
           _writeFloat(val);
         } else if (val is bool) {
           _writeBool(val);
-        } else if (val == Null) {
+        } else if (val == null) {
           _writeNull();
         } else {
           print(
