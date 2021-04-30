@@ -18,7 +18,7 @@ abstract class Output {
   final _pauseBuffer;
 
   /// Pause indicator
-  late bool _paused = false;
+  bool _paused = false;
 
   /// Position of the last mark operation
   int _markPos = 0;
