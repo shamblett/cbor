@@ -682,7 +682,8 @@ class Encoder {
         }
       } else if (val is Map) {
         if (!indefinite) {
-          final res = _writeMapImpl(val as Map, indefinite);
+          var valMap = val;
+          final res = _writeMapImpl(valMap, indefinite);
           if (!res) {
             // Fail the whole encoding
             ok = false;
