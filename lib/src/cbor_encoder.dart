@@ -555,62 +555,52 @@ class Encoder {
       startIndefinite(majorTypeArray);
     }
 
+    // Process the element types. Note that the sequence
+    // is hierarchical, base types such as List and Map must be
+    // tested for later than super types such as Uint8Buffer.
     var ok = true;
     for (final dynamic element in value) {
-      var valType = element.runtimeType.toString();
-      if (valType.contains('List') && valType != 'Uint8List') {
-        valType = 'List';
-      }
-      if (valType.contains('Map')) {
-        valType = 'Map';
-      }
-      switch (valType) {
-        case 'int':
-          _writeInt(element);
-          break;
-        case 'String':
-          _writeString(element);
-          break;
-        case 'double':
-          _writeFloat(element);
-          break;
-        case 'List':
-          if (!indefinite) {
-            final res = _writeArrayImpl(element, indefinite);
-            if (!res) {
-              // Fail the whole encoding
-              ok = false;
-            }
-          } else {
-            element.forEach(_out.putByte);
+      if (element is int) {
+        _writeInt(element);
+      } else if (element is String) {
+        _writeString(element);
+      } else if (element is double) {
+        _writeFloat(element);
+      } else if (element is typed.Uint8Buffer) {
+        _writeRawBuffer(element);
+      } else if (element is Uint8List) {
+        _writeBytes(typed.Uint8Buffer()..addAll(element));
+      } else if (element is bool) {
+        _writeBool(element);
+      } else if (element == null) {
+        _writeNull();
+      } else if (element is List) {
+        if (!indefinite) {
+          final res = _writeArrayImpl(element, indefinite);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
           }
-          break;
-        case 'Map':
-          if (!indefinite) {
-            final res = _writeMapImpl(element, indefinite);
-            if (!res) {
-              // Fail the whole encoding
-              ok = false;
-            }
-          } else {
-            element.forEach(_out.putByte);
+        } else {
+          for (final byte in element) {
+            _out.putByte(byte);
           }
-          break;
-        case 'bool':
-          _writeBool(element);
-          break;
-        case 'Null':
-          _writeNull();
-          break;
-        case 'Uint8Buffer':
-          _writeRawBuffer(element);
-          break;
-        case 'Uint8List':
-          _writeBytes(typed.Uint8Buffer()..addAll(element));
-          break;
-        default:
-          print('writeArrayImpl::RT is ${element.runtimeType.toString()}');
-          ok = false;
+        }
+      } else if (element is Map) {
+        if (!indefinite) {
+          final res = _writeMapImpl(element, indefinite);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
+          }
+        } else {
+          for (final byte in element.values) {
+            _out.putByte(byte);
+          }
+        }
+      } else {
+        print('writeArrayImpl::RT is ${element.runtimeType.toString()}');
+        ok = false;
       }
     }
     return ok;
@@ -638,8 +628,7 @@ class Encoder {
     final dynamic keys = value.keys;
     var keysValid = true;
     for (final dynamic element in keys) {
-      if (!(element.runtimeType.toString() == 'int') &&
-          !(element.runtimeType.toString() == 'String')) {
+      if (!(element is int) && !(element is String)) {
         keysValid = false;
         break;
       }
@@ -663,30 +652,22 @@ class Encoder {
     var ok = true;
     value.forEach((key, val) {
       // Encode the key, can now only be ints or strings.
-      if (key.runtimeType.toString() == 'int') {
+      if (key is int) {
         _writeInt(key);
       } else {
         _writeString(key);
       }
-      // Encode the value
-      var valType = val.runtimeType.toString();
-      if (valType.contains('List') && valType != 'Uint8List') {
-        valType = 'List';
-      }
-      if (valType.contains('Map')) {
-        valType = 'Map';
-      }
-      switch (valType) {
-        case 'int':
-          _writeInt(val);
-          break;
-        case 'String':
-          _writeString(val);
-          break;
-        case 'double':
-          _writeFloat(val);
-          break;
-        case 'List':
+      // Encode the value.
+      // Process the element types. Note that the sequence
+      // is hierarchical, base types such as List and Map must be
+      // tested for later than super types such as Uint8Buffer.
+      // Split iterables and non iterables.
+      if (val is Iterable) {
+        if (val is typed.Uint8Buffer) {
+          _writeRawBuffer(val);
+        } else if (val is Uint8List) {
+          _writeBytes(typed.Uint8Buffer()..addAll(val));
+        } else if (val is List) {
           if (!indefinite) {
             final res = _writeArrayImpl(val, indefinite);
             if (!res) {
@@ -694,35 +675,40 @@ class Encoder {
               ok = false;
             }
           } else {
-            val.forEach(_out.putByte);
-          }
-          break;
-        case 'Map':
-          if (!indefinite) {
-            final res = _writeMapImpl(val, indefinite);
-            if (!res) {
-              // Fail the whole encoding
-              ok = false;
+            for (final byte in val) {
+              _out.putByte(byte);
             }
-          } else {
-            val.forEach(_out.putByte);
           }
-          break;
-        case 'bool':
+        }
+      } else if (val is Map) {
+        if (!indefinite) {
+          var valMap = val;
+          final res = _writeMapImpl(valMap, indefinite);
+          if (!res) {
+            // Fail the whole encoding
+            ok = false;
+          }
+        } else {
+          for (final byte in val.values) {
+            _out.putByte(byte);
+          }
+        }
+      } else {
+        if (val is int) {
+          _writeInt(val);
+        } else if (val is String) {
+          _writeString(val);
+        } else if (val is double) {
+          _writeFloat(val);
+        } else if (val is bool) {
           _writeBool(val);
-          break;
-        case 'Null':
+        } else if (val == null) {
           _writeNull();
-          break;
-        case 'Uint8Buffer':
-          _writeRawBuffer(val);
-          break;
-        case 'Uint8List':
-          _writeBytes(typed.Uint8Buffer()..addAll(val));
-          break;
-        default:
-          print('writeMapImpl::RT is ${val.runtimeType.toString()}');
+        } else {
+          print(
+              'writeMapImpl::Non Iterable RT is ${val.runtimeType.toString()}');
           ok = false;
+        }
       }
     });
     return ok;
