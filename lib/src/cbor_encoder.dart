@@ -478,11 +478,11 @@ class Encoder {
     if (value < ai24) {
       // Value
       _out.putByte(type | value);
-    } else if (value < two8) {
+    } else if (isInRange(value, two8Lower, two8Upper)) {
       // Uint8
       _out.putByte(type | ai24);
       _out.putByte(value);
-    } else if (value < two16) {
+    } else if (isInRange(value, two16Lower, two16Upper)) {
       // Uint16
       _out.putByte(type | ai25);
       final buff = typed.Uint16Buffer(1);
@@ -491,7 +491,7 @@ class Encoder {
       final data = typed.Uint8Buffer();
       data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
-    } else if (value < two32) {
+    } else if (isInRange(value, two32Lower, two32Upper)) {
       // Uint32
       _out.putByte(type | ai26);
       final buff = typed.Uint32Buffer(1);
@@ -500,7 +500,7 @@ class Encoder {
       final data = typed.Uint8Buffer();
       data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
-    } else if (value < two64) {
+    } else if (isInRange(value, two64Lower, two64Upper)) {
       // Uint64
       _out.putByte(type | ai27);
       final buff = typed.Uint64Buffer(1);
@@ -722,6 +722,4 @@ class Encoder {
 
   // Builder hook dummy
   void nullBuilderHook(bool validAsMapKey, dynamic keyValue) {}
-
-  /// Check if an integer is in the supplied range
 }
