@@ -722,4 +722,6 @@ class Encoder {
 
   // Builder hook dummy
   void nullBuilderHook(bool validAsMapKey, dynamic keyValue) {}
+
+  /// Check if an integer is in the supplied range
 }
