@@ -565,12 +565,12 @@ void main() {
     test('Big Num', () {
       var inst = cbor.Cbor();
       final encoder = inst.encoder;
-      final big = BigInt.from(1579254859548);
+      final big = BigInt.from(9223372036854775807 + 10);
       encoder.writeBignum(big);
       inst.decodeFromInput();
       final res = inst.getDecodedData();
       expect(res, isNotNull);
-      expect(res![0], BigInt.from(1579254859548));
+      expect(res![0], BigInt.from(9223372036854775807 + 10));
       print(inst.decodedPrettyPrint(true));
     });
     test('Big Integer', () {
@@ -580,7 +580,7 @@ void main() {
       inst.decodeFromInput();
       final res = inst.getDecodedData();
       expect(res, isNotNull);
-      expect(res![0], BigInt.from(1579254859548));
+      expect(res![0], 1579254859548);
       print(inst.decodedPrettyPrint(true));
     });
   });

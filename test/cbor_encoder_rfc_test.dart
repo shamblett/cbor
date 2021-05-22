@@ -426,7 +426,7 @@ void main() {
           'This is the body text of a sample message.'
           '--XXXXboundary text--';
       final checkList = <int>[];
-      checkList.addAll([0xd8, 0x24, 0x78, 0xf2]);
+      checkList.addAll([0xd8, 0x24, 0x79, 0x00, 0xf2]);
       checkList.addAll(mimeMessage.codeUnits);
       encoder.writeMimeMessage(mimeMessage);
       expect(output.getDataAsList(), checkList);
