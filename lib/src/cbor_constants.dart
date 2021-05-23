@@ -36,15 +36,9 @@ const int ai27 = 27;
 const int aiBreak = 31;
 
 /// Numerical constants
-const int two8Upper = 127;
-const int two8Lower = -128;
-const int two16Upper = 32767;
-const int two16Lower = -32768;
+final int two8 = pow(2, 8).toInt();
+final int two16 = pow(2, 16).toInt();
 final int two32 = pow(2, 32).toInt();
-const int two32Upper = 2147483647;
-const int two32Lower = -2147483648;
-const int two64Upper = 9223372036854775807;
-const int two64Lower = -9223372036854775808;
 const double halfLimitUpper = 65504.0;
 const double halfLimitLower = -65504.0;
 const double singleLimitUpper = 3.4028234663852886e38;

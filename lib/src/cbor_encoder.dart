@@ -478,11 +478,11 @@ class Encoder {
     if (value < ai24) {
       // Value
       _out.putByte(type | value);
-    } else if (isInRange(value, two8Lower, two8Upper)) {
+    } else if (value < two8) {
       // Uint8
       _out.putByte(type | ai24);
       _out.putByte(value);
-    } else if (isInRange(value, two16Lower, two16Upper)) {
+    } else if (value < two16) {
       // Uint16
       _out.putByte(type | ai25);
       final buff = typed.Uint16Buffer(1);
@@ -491,7 +491,7 @@ class Encoder {
       final data = typed.Uint8Buffer();
       data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
-    } else if (isInRange(value, two32Lower, two32Upper)) {
+    } else if (value < two32) {
       // Uint32
       _out.putByte(type | ai26);
       final buff = typed.Uint32Buffer(1);
@@ -500,18 +500,23 @@ class Encoder {
       final data = typed.Uint8Buffer();
       data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
-    } else if (isInRange(value, two64Lower, two64Upper)) {
-      // Uint64
-      _out.putByte(type | ai27);
-      final buff = typed.Uint64Buffer(1);
-      buff[0] = value;
-      final ulist = Uint8List.view(buff.buffer);
-      final data = typed.Uint8Buffer();
-      data.addAll(ulist.toList().reversed);
-      _out.putBytes(data);
     } else {
-      // Bignum - encoded as a tag value
-      _writeBignum(BigInt.from(value));
+      // Encode to a bignum, if the value can be represented as
+      // an integer it must be greater than 2*32 so encode as 64 bit.
+      final bignum = BigInt.from(value);
+      if (bignum.isValidInt) {
+        // Uint64
+        _out.putByte(type | ai27);
+        final buff = typed.Uint64Buffer(1);
+        buff[0] = value;
+        final ulist = Uint8List.view(buff.buffer);
+        final data = typed.Uint8Buffer();
+        data.addAll(ulist.toList().reversed);
+        _out.putBytes(data);
+      } else {
+        // Bignum - encoded as a tag value
+        _writeBignum(BigInt.from(value));
+      }
     }
   }
 
