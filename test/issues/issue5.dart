@@ -11,7 +11,7 @@ import 'package:test/test.dart';
 void main() {
   test('Two 64', () {
     print('Two pow 64 is ${two64}');
-   // expect(normalList is List, isTrue);
+    // expect(normalList is List, isTrue);
   });
   test('Two 32', () {
     print('Two pow 32 is $two32');

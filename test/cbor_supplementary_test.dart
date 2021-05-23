@@ -562,18 +562,29 @@ void main() {
     });
   });
   group('Bignum', () {
-    test('Big Num', () {
+    test('Big Num Positive', () {
       var inst = cbor.Cbor();
       final encoder = inst.encoder;
-      final big = BigInt.from(9223372036854775807 + 10);
+      final big = BigInt.from(922337203685477580767.0);
       encoder.writeBignum(big);
       inst.decodeFromInput();
       final res = inst.getDecodedData();
       expect(res, isNotNull);
-      expect(res![0], BigInt.from(9223372036854775807 + 10));
+      expect(res![0], big);
       print(inst.decodedPrettyPrint(true));
     });
-    test('Big Integer', () {
+    test('Big Num Negative', () {
+      var inst = cbor.Cbor();
+      final encoder = inst.encoder;
+      final big = BigInt.from(-922337203685477580767.0);
+      encoder.writeBignum(big);
+      inst.decodeFromInput();
+      final res = inst.getDecodedData();
+      expect(res, isNotNull);
+      expect(res![0], -big + BigInt.one);
+      print(inst.decodedPrettyPrint(true));
+    });
+    test('Big Integer(64 bit) Positive', () {
       var inst = cbor.Cbor();
       final encoder = inst.encoder;
       encoder.writeInt(1579254859548);
@@ -581,6 +592,16 @@ void main() {
       final res = inst.getDecodedData();
       expect(res, isNotNull);
       expect(res![0], 1579254859548);
+      print(inst.decodedPrettyPrint(true));
+    });
+    test('Big Integer(64 bit) Negative', () {
+      var inst = cbor.Cbor();
+      final encoder = inst.encoder;
+      encoder.writeInt(-1579254859548);
+      inst.decodeFromInput();
+      final res = inst.getDecodedData();
+      expect(res, isNotNull);
+      expect(res![0], -1579254859548);
       print(inst.decodedPrettyPrint(true));
     });
   });

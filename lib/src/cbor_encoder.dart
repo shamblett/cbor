@@ -85,6 +85,7 @@ class Encoder {
     } else {
       _writeTag(tagPositiveBignum);
     }
+    value = value.abs();
     var str = value.toRadixString(16);
     if (str.length.isOdd) {
       str = '0$str';
