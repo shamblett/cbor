@@ -14,7 +14,7 @@ void main() {
     expect(normalList is List, isTrue);
   });
   test('MapTypes', () {
-    final normalMap = <String,int>{};
+    final normalMap = <String, int>{};
     print("Normal map runtime type is ${normalMap.runtimeType}");
     expect(normalMap is Map, isTrue);
   });

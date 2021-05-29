@@ -85,6 +85,7 @@ class Encoder {
     } else {
       _writeTag(tagPositiveBignum);
     }
+    value = value.abs();
     var str = value.toRadixString(16);
     if (str.length.isOdd) {
       str = '0$str';
@@ -500,18 +501,23 @@ class Encoder {
       final data = typed.Uint8Buffer();
       data.addAll(ulist.toList().reversed);
       _out.putBytes(data);
-    } else if (value < two64) {
-      // Uint64
-      _out.putByte(type | ai27);
-      final buff = typed.Uint64Buffer(1);
-      buff[0] = value;
-      final ulist = Uint8List.view(buff.buffer);
-      final data = typed.Uint8Buffer();
-      data.addAll(ulist.toList().reversed);
-      _out.putBytes(data);
     } else {
-      // Bignum - encoded as a tag value
-      _writeBignum(BigInt.from(value));
+      // Encode to a bignum, if the value can be represented as
+      // an integer it must be greater than 2*32 so encode as 64 bit.
+      final bignum = BigInt.from(value);
+      if (bignum.isValidInt) {
+        // Uint64
+        _out.putByte(type | ai27);
+        final buff = typed.Uint64Buffer(1);
+        buff[0] = value;
+        final ulist = Uint8List.view(buff.buffer);
+        final data = typed.Uint8Buffer();
+        data.addAll(ulist.toList().reversed);
+        _out.putBytes(data);
+      } else {
+        // Bignum - encoded as a tag value
+        _writeBignum(BigInt.from(value));
+      }
     }
   }
 

@@ -106,3 +106,8 @@ ByteBuffer? hexToBytes(String? input) {
   }
   return Uint8List.fromList(result).buffer;
 }
+
+/// Checks if an integer value is within a specified bounded range
+/// Returns true if the range check succeeds.
+bool isInRange(int value, int lowerBound, int upperBound) =>
+    value >= lowerBound && value <= upperBound;

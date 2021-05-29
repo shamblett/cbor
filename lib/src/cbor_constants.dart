@@ -39,7 +39,6 @@ const int aiBreak = 31;
 final int two8 = pow(2, 8).toInt();
 final int two16 = pow(2, 16).toInt();
 final int two32 = pow(2, 32).toInt();
-final int two64 = pow(2, 64).toInt();
 const double halfLimitUpper = 65504.0;
 const double halfLimitLower = -65504.0;
 const double singleLimitUpper = 3.4028234663852886e38;
