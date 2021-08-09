@@ -8,6 +8,17 @@
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:test/test.dart';
 import 'package:typed_data/typed_data.dart' as typed;
+import 'package:typed_data/typed_data.dart'; // as typed;
+import 'dart:convert';
+import 'package:hex/hex.dart';
+
+Uint8Buffer uint8BufferFromString(String string) {
+  if (string.isEmpty) return Uint8Buffer(0);
+  final list = utf8.encoder.convert(string);
+  final result = Uint8Buffer();
+  result.addAll(list);
+  return result;
+}
 
 void main() {
   group('List', () {
@@ -74,6 +85,30 @@ void main() {
     });
   });
   group('Map', () {
+    test('Map - byte string keys  -> ', () {
+      final builder = cbor.MapBuilder.builder();
+      final hexDude = uint8BufferFromString('dude');
+      builder.writeBuff(hexDude);
+      builder.writeInt(2);
+      final builderRes = builder.getData();
+      final hex = HEX.encode(builderRes);
+      print(hex);
+      final inst = cbor.Cbor();
+      final encoder = inst.encoder;
+      encoder.addBuilderOutput(builderRes);
+      inst.decodeFromInput();
+      print(inst.decodedPrettyPrint(true));
+      final mapInList = inst.getDecodedData();
+      expect(mapInList, isNotNull);
+      expect(mapInList![0], isMap);
+      final map = mapInList[0] as Map<dynamic, dynamic>;
+      expect(map.keys.first, hexDude);
+      expect(map.values.first, 2);
+      // expect(map![0], {
+      //   hexDude: 2,
+      // });
+    });
+
     test('Map - Invalid Key -> ', () {
       final builder = cbor.MapBuilder.builder();
       void build() {
@@ -83,9 +118,7 @@ void main() {
       expect(
           build,
           throwsA(predicate((e) =>
-              e is cbor.CborException &&
-              e.toString() ==
-                  'CborException: Map Builder - key expected but type is not valid for a map key')));
+              e is cbor.CborException && e.toString() == 'CborException: Map Builder - key expected but type is not valid for a map key')));
     });
 
     test('Map - Invalid Length -> ', () {
