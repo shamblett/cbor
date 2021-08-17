@@ -23,14 +23,10 @@ enum encodeFloatAs { half, single, double }
 /// contain raw byte sequences, tag values etc. use the builder classes.
 class Encoder {
   /// Construction
-  Encoder(Output out, {this.allowByteArrayKeys = true}) {
+  Encoder(Output out) {
     _out = out;
     _builderHook = nullBuilderHook;
   }
-
-  /// The output buffer
-  @protected
-  final bool allowByteArrayKeys;
 
   /// The output buffer
   @protected
@@ -149,11 +145,7 @@ class Encoder {
   /// Byte string primitive.
   void writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
     _writeBuff(data, indefinite);
-    if (allowByteArrayKeys) {
-      _builderHookImpl(true, data);
-    } else {
-      _builderHookImpl(false);
-    }
+    _builderHookImpl(true, data);
   }
 
   void _writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
@@ -634,7 +626,7 @@ class Encoder {
     final dynamic keys = value.keys;
     var keysValid = true;
     for (final dynamic element in keys) {
-      if (!(element is int) && !(element is String) && (!allowByteArrayKeys || !(element is typed.Uint8Buffer))) {
+      if (!(element is int) && !(element is String) && !(element is typed.Uint8Buffer)) {
         keysValid = false;
         break;
       }
