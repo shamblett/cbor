@@ -117,8 +117,7 @@ class Encoder {
   /// Raw byte buffer writer.
   /// No encoding is added to the buffer, it goes into the
   /// output stream as is.
-  @Deprecated(
-      'Please encode this buffer type as a list, this method will be removed in future versions')
+  @Deprecated('Please encode this buffer type as a list, this method will be removed in future versions')
   void writeRawBuffer(typed.Uint8Buffer buff) {
     _writeRawBuffer(buff);
     _builderHookImpl(false);
@@ -146,7 +145,7 @@ class Encoder {
   /// Byte string primitive.
   void writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
     _writeBuff(data, indefinite);
-    _builderHookImpl(false);
+    _builderHookImpl(true, data);
   }
 
   void _writeBuff(typed.Uint8Buffer data, [bool indefinite = false]) {
@@ -184,8 +183,7 @@ class Encoder {
   /// here.
   /// Valid map values are integer, string, bool, float(any size), array
   /// map or buffer. Returns true if the encoding has been successful.
-  bool writeMap(Map<dynamic, dynamic> value,
-      [bool indefinite = false, int? length]) {
+  bool writeMap(Map<dynamic, dynamic> value, [bool indefinite = false, int? length]) {
     // Mark the output buffer, if we cannot encode
     // the whole map structure rewind so as to perform
     // no encoding.
@@ -534,12 +532,9 @@ class Encoder {
   /// If the array cannot be fully encoded no encoding occurs,
   /// ie false is returned.
   @Deprecated('This will be removed - use a List Builder')
-  bool writeArrayImpl(List<dynamic> value,
-          [bool indefinite = false, int? length]) =>
-      _writeArrayImpl(value, indefinite, length);
+  bool writeArrayImpl(List<dynamic> value, [bool indefinite = false, int? length]) => _writeArrayImpl(value, indefinite, length);
 
-  bool _writeArrayImpl(List<dynamic> value,
-      [bool indefinite = false, int? length]) {
+  bool _writeArrayImpl(List<dynamic> value, [bool indefinite = false, int? length]) {
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {
@@ -616,12 +611,9 @@ class Encoder {
   /// If the map cannot be fully encoded no encoding occurs,
   /// ie false is returned.
   @Deprecated('This will be removed - use a Map Builder')
-  bool writeMapImpl(Map<dynamic, dynamic> value,
-          [bool indefinite = false, int? length]) =>
-      _writeMapImpl(value, indefinite, length);
+  bool writeMapImpl(Map<dynamic, dynamic> value, [bool indefinite = false, int? length]) => _writeMapImpl(value, indefinite, length);
 
-  bool _writeMapImpl(Map<dynamic, dynamic> value,
-      [bool indefinite = false, int? length]) {
+  bool _writeMapImpl(Map<dynamic, dynamic> value, [bool indefinite = false, int? length]) {
     // Check for empty
     if (value.isEmpty) {
       if (!indefinite) {
@@ -634,7 +626,7 @@ class Encoder {
     final dynamic keys = value.keys;
     var keysValid = true;
     for (final dynamic element in keys) {
-      if (!(element is int) && !(element is String)) {
+      if (!(element is int) && !(element is String) && !(element is typed.Uint8Buffer)) {
         keysValid = false;
         break;
       }
@@ -657,11 +649,13 @@ class Encoder {
 
     var ok = true;
     value.forEach((key, val) {
-      // Encode the key, can now only be ints or strings.
+      // Encode the key, can now only be ints or strings,... and byte strings.
       if (key is int) {
         _writeInt(key);
-      } else {
+      } else if (key is String) {
         _writeString(key);
+      } else {
+        _writeBuff(key);
       }
       // Encode the value.
       // Process the element types. Note that the sequence
@@ -711,8 +705,7 @@ class Encoder {
         } else if (val == null) {
           _writeNull();
         } else {
-          print(
-              'writeMapImpl::Non Iterable RT is ${val.runtimeType.toString()}');
+          print('writeMapImpl::Non Iterable RT is ${val.runtimeType.toString()}');
           ok = false;
         }
       }

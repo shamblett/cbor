@@ -1,3 +1,6 @@
+### 4.1.0
+Issue 2 - Byte string keys added
+
 ### 4.0.2
 Issue 5
 
