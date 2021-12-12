@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
+import 'package:cbor/src/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:ieee754/ieee754.dart';
 import 'package:typed_data/typed_buffers.dart';
@@ -29,6 +30,14 @@ class BuilderReader {
   final bool strict;
   final Reader _reader = Reader();
   List<int> _tags = [];
+
+  Utf8Codec get utf8 {
+    if (strict) {
+      return const Utf8Codec(allowMalformed: false);
+    } else {
+      return const Utf8Codec(allowMalformed: true);
+    }
+  }
 
   int get remaniningBytes => _reader.length;
 
@@ -87,13 +96,13 @@ class BuilderReader {
         case 7:
           switch (header.additionalInfo) {
             case 20:
-              return _ValueBuilder(CborBool(false, _clearTags()));
+              return _ValueBuilder(_createBool(false, _clearTags()));
             case 21:
-              return _ValueBuilder(CborBool(true, _clearTags()));
+              return _ValueBuilder(_createBool(true, _clearTags()));
             case 22:
-              return _ValueBuilder(CborNull(_clearTags()));
+              return _ValueBuilder(_createNull(_clearTags()));
             case 23:
-              return _ValueBuilder(CborUndefined(_clearTags()));
+              return _ValueBuilder(_createUndefined(_clearTags()));
 
             case 25:
               return _ValueBuilder(_createFloat(
@@ -117,6 +126,10 @@ class BuilderReader {
 
             case 31:
               if (allowBreak) {
+                if (_clearTags().isNotEmpty && strict) {
+                  throw FormatException('Incorrect type for tag');
+                }
+
                 return _ValueBuilder(const _Break());
               } else if (strict) {
                 throw FormatException('Unexpected CBOR break.');
@@ -126,7 +139,13 @@ class BuilderReader {
 
             default:
               if (header.additionalInfo <= 24) {
-                return _ValueBuilder(CborSimpleValue(header.info.toInt()));
+                final tags = _clearTags();
+
+                if (tags.isNotEmpty && strict) {
+                  throw FormatException('Incorrect type for tag');
+                }
+                return _ValueBuilder(
+                    CborSimpleValue(header.info.toInt(), tags));
               } else if (strict) {
                 throw FormatException('Bad CBOR value.');
               } else {
@@ -137,26 +156,55 @@ class BuilderReader {
     }
   }
 
-  CborString _createString(List<int> utf8Bytes, List<int> tags) {
+  CborString _createString(String string, List<int> tags) {
+    if (strict) {
+      for (final hint in tags) {
+        if (!_canApply<String>(hint)) {
+          throw FormatException('Incorrect type for tag');
+        }
+      }
+    }
+
+    final CborString cbor;
     switch (tags.lastOrNull) {
       case CborHint.dateTimeString:
-        return CborDateTimeString.fromUtf8(utf8Bytes, tags);
+        cbor = CborDateTimeString.fromString(string, tags);
+        break;
       case CborHint.uri:
-        return CborUri.fromUtf8(utf8Bytes, tags);
+        cbor = CborUri.fromString(string, tags);
+        break;
       case CborHint.base64Url:
-        return CborBase64Url.fromUtf8(utf8Bytes, tags);
+        cbor = CborBase64Url.fromString(string, tags);
+        break;
       case CborHint.base64:
-        return CborBase64.fromUtf8(utf8Bytes, tags);
+        cbor = CborBase64.fromString(string, tags);
+        break;
       case CborHint.regex:
-        return CborRegex.fromUtf8(utf8Bytes, tags);
+        cbor = CborRegex.fromString(string, tags);
+        break;
       case CborHint.mime:
-        return CborMime.fromUtf8(utf8Bytes, tags);
+        cbor = CborMime.fromString(string, tags);
+        break;
       default:
-        return CborString.fromUtf8(utf8Bytes, tags);
+        cbor = CborString(string, tags);
+        break;
     }
+    if (strict) {
+      cbor.verify();
+    }
+
+    return cbor;
   }
 
   CborBytes _createBytes(List<int> bytes, List<int> tags) {
+    if (strict) {
+      for (final hint in tags) {
+        if (!_canApply<List<int>>(hint)) {
+          throw FormatException('Incorrect type for tag');
+        }
+      }
+    }
+
     switch (tags.lastOrNull) {
       case CborHint.positiveBignum:
         return CborBigInt.fromBytes(bytes, tags);
@@ -168,30 +216,50 @@ class BuilderReader {
   }
 
   CborInt _createInt(Info value, List<int> tags) {
-    switch (tags.lastOrNull) {
-      case CborHint.epochDateTime:
-        return CborDateTimeInt.fromSecondsSinceEpoch(value.toInt(), tags);
-      default:
-        if (value.bitLength() < 53) {
-          return CborSmallInt(value.toInt());
-        } else {
-          return CborInt(value.toBigInt());
+    if (strict) {
+      for (final hint in tags) {
+        if (!_canApply<int>(hint)) {
+          throw FormatException('Incorrect type for tag');
         }
+      }
+    }
+
+    if (tags.lastOrNull == CborHint.epochDateTime) {
+      return CborDateTimeInt.fromSecondsSinceEpoch(value.toInt(), tags);
+    } else if (value.bitLength() < 53) {
+      return CborSmallInt(value.toInt());
+    } else {
+      return CborInt(value.toBigInt());
     }
   }
 
   CborFloat _createFloat(double value, List<int> tags) {
-    switch (tags.lastOrNull) {
-      case CborHint.epochDateTime:
-        return CborDateTimeFloat.fromSecondsSinceEpoch(value, tags);
-      default:
-        return CborFloat(value, tags);
+    if (strict) {
+      for (final hint in tags) {
+        if (!_canApply<double>(hint)) {
+          throw FormatException('Incorrect type for tag');
+        }
+      }
+    }
+
+    if (tags.lastOrNull == CborHint.epochDateTime) {
+      return CborDateTimeFloat.fromSecondsSinceEpoch(value, tags);
+    } else {
+      return CborFloat(value, tags);
     }
   }
 
   CborList _createList(List<CborValue> items, List<int> tags) {
+    if (strict) {
+      for (final hint in tags) {
+        if (!_canApply(hint, items)) {
+          throw FormatException('Incorrect type for tag');
+        }
+      }
+    }
+
     switch (tags.lastOrNull) {
-      case 4:
+      case CborHint.decimalFraction:
         if (items.length != 2) {
           break;
         }
@@ -207,7 +275,7 @@ class BuilderReader {
 
         return CborDecimalFraction(exponent, mantissa, tags);
 
-      case 5:
+      case CborHint.bigFloat:
         if (items.length != 2) {
           break;
         }
@@ -222,11 +290,76 @@ class BuilderReader {
         }
 
         return CborBigFloat(exponent, mantissa, tags);
-
-      default:
     }
 
     return CborList(items, tags);
+  }
+
+  CborBool _createBool(bool value, List<int> tags) {
+    if (strict) {
+      for (final hint in tags) {
+        if (!_canApply<bool>(hint)) {
+          throw FormatException('Incorrect type for tag');
+        }
+      }
+    }
+
+    return CborBool(value, tags);
+  }
+
+  CborUndefined _createUndefined(List<int> tags) {
+    if (strict) {
+      for (final hint in tags) {
+        if (!_canApply<Null>(hint)) {
+          throw FormatException('Incorrect type for tag');
+        }
+      }
+    }
+
+    return CborUndefined(tags);
+  }
+
+  CborNull _createNull(List<int> tags) {
+    if (strict) {
+      for (final hint in tags) {
+        if (!_canApply<Null>(hint)) {
+          throw FormatException('Incorrect type for tag');
+        }
+      }
+    }
+
+    return CborNull(tags);
+  }
+}
+
+bool _canApply<T>(int tag, [T? value]) {
+  switch (tag) {
+    case CborHint.uri:
+    case CborHint.base64Url:
+    case CborHint.base64:
+    case CborHint.regex:
+    case CborHint.mime:
+    case CborHint.dateTimeString:
+      return isSubtype<T, String>();
+
+    case CborHint.epochDateTime:
+      return isSubtype<T, num>();
+
+    case CborHint.positiveBignum:
+    case CborHint.negativeBignum:
+    case CborHint.encodedCborData:
+      return isSubtype<T, List<int>>();
+
+    case CborHint.decimalFraction:
+    case CborHint.bigFloat:
+      return value is List<CborValue> &&
+          value.length == 2 &&
+          value[0] is CborInt &&
+          value[1] is CborInt &&
+          value[0] is! CborBigInt;
+
+    default:
+      return true;
   }
 }
 
@@ -301,25 +434,34 @@ class _IndefiniteBytesBuilder implements Builder {
 }
 
 class _StringBuilder implements Builder {
-  _StringBuilder(this.d, this.tags, this.size) : bytes = Uint8List(size);
+  _StringBuilder(this.d, this.tags, this.size) {
+    sink = d.utf8.decoder.startChunkedConversion(
+      StringConversionSink.withCallback((accumulated) {
+        data.write(accumulated);
+      }),
+    );
+  }
 
   final BuilderReader d;
   final List<int> tags;
   final int size;
-  final Uint8List bytes;
+  final StringBuffer data = StringBuffer();
+  late final ByteConversionSink sink;
   int current = 0;
 
   @override
   CborValue? poll() {
     final add = d._reader.readBytes(size - current);
-    bytes.setRange(current, add.length, add);
+    sink.add(add);
     current += add.length;
 
     if (current != size) {
       return null;
     }
 
-    return d._createString(bytes, tags);
+    sink.close();
+
+    return d._createString(data.toString(), tags);
   }
 }
 
@@ -327,7 +469,7 @@ class _IndefiniteStringBuilder implements Builder {
   _IndefiniteStringBuilder(this.d, this.tags);
 
   final BuilderReader d;
-  final Uint8Buffer bytes = Uint8Buffer();
+  final StringBuffer data = StringBuffer();
   final List<int> tags;
   Builder? next;
 
@@ -341,7 +483,7 @@ class _IndefiniteStringBuilder implements Builder {
       }
 
       if (value is _Break) {
-        return d._createString(bytes, tags);
+        return d._createString(data.toString(), tags);
       }
 
       if (value is! CborString || (next is! _StringBuilder && d.strict)) {
@@ -352,7 +494,7 @@ class _IndefiniteStringBuilder implements Builder {
 
       next = null;
 
-      bytes.addAll(utf8.encode(value.toString()));
+      data.write(value.toString());
     }
   }
 }
@@ -433,6 +575,16 @@ class _MapBuilder extends _ItemsBuilder {
 
   @override
   CborValue? finish() {
+    if (d.strict) {
+      var keySet = <CborValue>{};
+
+      for (var i = 0; i < size; i++) {
+        if (!keySet.add(items[i * 2])) {
+          throw FormatException('Duplicate key.');
+        }
+      }
+    }
+
     return CborMap.fromEntries(
       Iterable.generate(size)
           .map((index) => MapEntry(items[index * 2], items[index * 2 + 1])),

@@ -8,15 +8,16 @@
 import 'dart:convert';
 
 import 'package:cbor/cbor.dart';
+import 'package:meta/meta.dart';
 
 /// A CBOR string encoded in UTF-8.
 class CborString implements CborValue {
   const CborString(this._string, [this.hints = const []]);
 
-  CborString.fromUtf8(List<int> bytes, [this.hints = const []])
-      : _string = (const Utf8Codec(allowMalformed: true)).decode(bytes);
-
   final String _string;
+
+  @internal
+  void verify() {}
 
   @override
   String toString() => _string;
@@ -32,32 +33,33 @@ class CborString implements CborValue {
 /// A CBOR string which encodes a datetime.
 class CborDateTimeString extends CborString implements CborDateTime {
   CborDateTimeString(
-    DateTime datetime, [
+    DateTime value, [
     Iterable<int> hints = const [CborHint.dateTimeString],
-  ]) : super(datetime.toIso8601String(), hints);
+  ])  : _datetime = value,
+        super(value.toIso8601String(), hints);
 
-  CborDateTimeString.fromUtf8(
-    List<int> bytes, [
-    Iterable<int> hints = const [CborHint.dateTimeString],
-  ]) : super.fromUtf8(bytes, hints);
-
-  const CborDateTimeString.fromString(
+  CborDateTimeString.fromString(
     String str, [
     Iterable<int> hints = const [CborHint.dateTimeString],
   ]) : super(str, hints);
 
+  DateTime? _datetime;
+
   @override
-  DateTime toDateTime() => DateTime.parse(toString());
+  void verify() {
+    _datetime ??= DateTime.parse(toString());
+  }
+
+  @override
+  DateTime toDateTime() {
+    verify();
+    return _datetime!;
+  }
 }
 
 /// A CBOR string containing URI.
 class CborUri extends CborString {
-  CborUri.fromUtf8(
-    List<int> data, [
-    Iterable<int> hints = const [CborHint.uri],
-  ]) : super.fromUtf8(data, hints);
-
-  const CborUri.fromString(
+  CborUri.fromString(
     String value, [
     Iterable<int> hints = const [CborHint.uri],
   ]) : super(value, hints);
@@ -65,20 +67,26 @@ class CborUri extends CborString {
   CborUri(
     Uri value, [
     Iterable<int> hints = const [CborHint.uri],
-  ]) : super(value.toString(), hints);
+  ])  : _value = value,
+        super(value.toString(), hints);
+
+  Uri? _value;
+
+  @override
+  void verify() {
+    _value ??= Uri.parse(toString());
+  }
 
   /// Parse the URI, may throw [FormatException] if the URI is not valid.
-  Uri parse() => Uri.parse(toString());
+  Uri parse() {
+    verify();
+    return _value!;
+  }
 }
 
 /// A CBOR string containing a base 64 value.
 class CborBase64 extends CborString {
-  CborBase64.fromUtf8(
-    List<int> bytes, [
-    Iterable<int> hints = const [CborHint.base64],
-  ]) : super.fromUtf8(bytes, hints);
-
-  const CborBase64.fromString(
+  CborBase64.fromString(
     String value, [
     Iterable<int> hints = const [CborHint.base64],
   ]) : super(value, hints);
@@ -86,22 +94,26 @@ class CborBase64 extends CborString {
   CborBase64.encode(
     List<int> bytes, [
     Iterable<int> hints = const [CborHint.base64],
-  ]) : super(base64.encode(bytes), hints);
+  ])  : _value = bytes,
+        super(base64.encode(bytes), hints);
+
+  List<int>? _value;
+
+  @override
+  void verify() {
+    _value ??= base64.decode(toString());
+  }
 
   /// Use [Base64Codec] to decode.
   List<int> decode() {
-    return base64.decode(toString());
+    verify();
+    return _value!;
   }
 }
 
 /// A CBOR string containing a base 64 url safe value.
 class CborBase64Url extends CborString {
-  CborBase64Url.fromUtf8(
-    List<int> bytes, [
-    Iterable<int> hints = const [CborHint.base64Url],
-  ]) : super.fromUtf8(bytes, hints);
-
-  const CborBase64Url.fromString(
+  CborBase64Url.fromString(
     String value, [
     Iterable<int> hints = const [CborHint.base64Url],
   ]) : super(value, hints);
@@ -109,11 +121,20 @@ class CborBase64Url extends CborString {
   CborBase64Url.encode(
     List<int> bytes, [
     Iterable<int> hints = const [CborHint.base64Url],
-  ]) : super(base64Url.encode(bytes), hints);
+  ])  : _value = bytes,
+        super(base64Url.encode(bytes), hints);
+
+  List<int>? _value;
+
+  @override
+  void verify() {
+    _value ??= base64Url.decode(toString());
+  }
 
   /// Use [Base64Codec.urlSafe] to decode.
   List<int> decode() {
-    return base64Url.decode(toString());
+    verify();
+    return _value!;
   }
 }
 
@@ -121,12 +142,7 @@ class CborBase64Url extends CborString {
 ///
 /// Does not provide any additional functionality currently.
 class CborRegex extends CborString {
-  CborRegex.fromUtf8(
-    List<int> bytes, [
-    Iterable<int> hints = const [CborHint.regex],
-  ]) : super.fromUtf8(bytes, hints);
-
-  CborRegex(
+  CborRegex.fromString(
     String data, [
     Iterable<int> hints = const [CborHint.regex],
   ]) : super(data, hints);
@@ -136,13 +152,8 @@ class CborRegex extends CborString {
 ///
 /// Does not provide any additional functionality currently.
 class CborMime extends CborString {
-  CborMime.fromUtf8(
-    List<int> bytes, [
-    Iterable<int> hints = const [CborHint.regex],
-  ]) : super.fromUtf8(bytes, hints);
-
-  CborMime(
+  CborMime.fromString(
     String data, [
-    Iterable<int> hints = const [CborHint.regex],
+    Iterable<int> hints = const [CborHint.mime],
   ]) : super(data, hints);
 }
