@@ -7,20 +7,28 @@
 
 import 'package:cbor/cbor.dart';
 
+import '../encoder/sink.dart';
+import '../utils/info.dart';
+import 'value.dart';
+
 /// A CBOR integer or big number.
 ///
 /// Because CBOR integers can be up to 64-bit, which JS cannot represent,
 /// they are converted to [BigInt].
 ///
 /// If the incoming value has less than 53 bits, it is [CborSmallInt].
-abstract class CborInt implements CborValue {
-  factory CborInt(BigInt value, [Iterable<int> hints = const []]) {
+abstract class CborInt with CborValueMixin implements CborValue {
+  factory CborInt(BigInt value, [List<int>? tags]) {
     if (value.bitLength < 53) {
-      return CborSmallInt(value.toInt(), hints);
-    } else if (value.bitLength <= 64) {
-      return _LargeInt(value, hints);
+      return CborSmallInt(value.toInt(), tags ?? const []);
+    }
+
+    final bitLength = value.isNegative ? (~value).bitLength : value.bitLength;
+
+    if (bitLength <= 64) {
+      return _LargeInt(value, tags ?? const []);
     } else {
-      return CborBigInt(value, hints);
+      return CborBigInt(value, tags);
     }
   }
 
@@ -34,8 +42,8 @@ abstract class CborInt implements CborValue {
 }
 
 /// A CBOR integer which can be represented losslessly as [int].
-class CborSmallInt implements CborInt {
-  const CborSmallInt(this.value, [this.hints = const []]);
+class CborSmallInt with CborValueMixin implements CborInt {
+  const CborSmallInt(this.value, [this.tags = const []]);
 
   final int value;
 
@@ -51,11 +59,22 @@ class CborSmallInt implements CborInt {
   @override
   int toInt() => value;
   @override
-  final Iterable<int> hints;
+  final List<int> tags;
+
+  @override
+  void encode(EncodeSink sink) {
+    sink.addTags(tags);
+
+    if (!value.isNegative) {
+      sink.addHeaderInfo(0, Info.int(value));
+    } else {
+      sink.addHeaderInfo(1, Info.int(~value));
+    }
+  }
 }
 
-class _LargeInt implements CborInt {
-  _LargeInt(this.value, this.hints);
+class _LargeInt with CborValueMixin implements CborInt {
+  _LargeInt(this.value, this.tags);
 
   final BigInt value;
 
@@ -71,23 +90,34 @@ class _LargeInt implements CborInt {
   @override
   int toInt() => value.toInt();
   @override
-  final Iterable<int> hints;
+  final List<int> tags;
+
+  @override
+  void encode(EncodeSink sink) {
+    sink.addTags(tags);
+
+    if (!value.isNegative) {
+      sink.addHeaderInfo(0, Info.bigInt(value));
+    } else {
+      sink.addHeaderInfo(1, Info.bigInt(~value));
+    }
+  }
 }
 
 /// A CBOR datetieme encoded as seconds since epoch.
 class CborDateTimeInt extends CborSmallInt implements CborDateTime {
   CborDateTimeInt(
     DateTime value, [
-    Iterable<int> hints = const [CborHint.epochDateTime],
+    List<int> tags = const [CborTag.epochDateTime],
   ]) : super(
           (value.millisecondsSinceEpoch / 1000).round(),
-          hints,
+          tags,
         );
 
   const CborDateTimeInt.fromSecondsSinceEpoch(
     int value, [
-    Iterable<int> hints = const [CborHint.epochDateTime],
-  ]) : super(value, hints);
+    List<int> tags = const [CborTag.epochDateTime],
+  ]) : super(value, tags);
 
   @override
   DateTime toDateTime() =>

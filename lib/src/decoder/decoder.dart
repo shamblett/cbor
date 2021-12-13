@@ -27,34 +27,26 @@ import 'package:cbor/cbor.dart';
 
 import 'builder.dart';
 
-// TODO
-//
-// For strict mode, reject
-//
-// too many tags / incompatible tags
-
 /// A CBOR decoder.
 ///
 /// The CBOR decoder will always throw [FormatException] when:
 ///
 /// * An invalid value for additional info is provided, or
 /// * The CBOR is incomplete, or
-/// * A string is not UTF-8.
-///
-/// This will happen regardless of being in [strict] mode because without
-/// knowing the additional info, one cannot know the length of the item, and
-/// therefore cannot parse the input from this point forwards.
+/// * An indefinite length byte string contains any item other than a byte string, or
+/// * An indefinite length string contains any item other than a string.
 ///
 /// If the CBOR decoder is using [strict] mode, it will throw [FormatException]
 /// when:
 ///
+/// * A string is not UTF-8, or
+/// * A tag is found with the incorrect type, or
 /// * A CBOR `break` is encountered outside a indefinite length item, or
 /// * An indefinite byte string or string contains any item other than
 ///   a definite length byte string or string, respectively, or
+/// * Incompatible tags are used, or
 /// * When taking a tag in consideration, the format of a value is incorrect
-///   (for example, a [CborDateTimeString] is not in date time format), or
-/// * A tag is found with the incorrect type, or
-/// * A value with major type `7` and invalid additional info is provided.
+///   (for example, a [CborDateTimeString] is not in date time format).
 ///
 /// When not in [strict] mode, these errors will be ignored.
 class CborDecoder extends Converter<List<int>, CborValue> {
@@ -66,26 +58,6 @@ class CborDecoder extends Converter<List<int>, CborValue> {
 
   /// If `true`, we are in strict mode. Check [CborDecoder] for its meaning.
   final bool strict;
-
-  @override
-  Stream<CborValue> bind(Stream<List<int>> input) async* {
-    final reader = BuilderReader(strict);
-    Builder? builder;
-
-    await for (final data in input) {
-      reader.add(data);
-      builder ??= reader.read();
-      final value = builder?.poll();
-      if (value != null) {
-        builder = null;
-        yield value;
-      }
-    }
-
-    if (reader.remaniningBytes != 0) {
-      throw FormatException('Incomplete CBOR value');
-    }
-  }
 
   /// Converts [input] and returns the result of the conversion.
   ///

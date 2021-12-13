@@ -8,7 +8,6 @@
 /// The information encoded by additional info and the following bytes.
 abstract class Info {
   const factory Info.int(int Info) = _InfoInt;
-  const factory Info.indefiniteLength() = _InfoIndefiniteLength;
 
   factory Info.bigInt(BigInt Info) = _InfoBigInt;
 
@@ -18,7 +17,9 @@ abstract class Info {
 
   int toInt();
   BigInt toBigInt();
-  int bitLength();
+  int get bitLength;
+
+  static const Info indefiniteLength = _InfoIndefiniteLength();
 }
 
 class _InfoIndefiniteLength implements Info {
@@ -31,7 +32,7 @@ class _InfoIndefiniteLength implements Info {
   final bool isIndefiniteLength = true;
 
   @override
-  int bitLength() => 0;
+  final int bitLength = 0;
   @override
   int toInt() => 0;
   @override
@@ -50,7 +51,7 @@ class _InfoInt implements Info {
   final bool isIndefiniteLength = false;
 
   @override
-  int bitLength() => value.bitLength;
+  int get bitLength => value.bitLength;
   @override
   int toInt() => value;
   @override
@@ -69,7 +70,7 @@ class _InfoBigInt implements Info {
   final bool isIndefiniteLength = false;
 
   @override
-  int bitLength() => value.bitLength;
+  int get bitLength => value.bitLength;
   @override
   int toInt() => value.toInt();
   @override

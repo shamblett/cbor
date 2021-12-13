@@ -38,7 +38,7 @@ class Header {
           return Info.bigInt(i);
 
         case 31:
-          return Info.indefiniteLength();
+          return Info.indefiniteLength;
 
         default:
           throw Error();
@@ -50,7 +50,9 @@ class Header {
 class Reader {
   final typed.Uint8Buffer _bytes = typed.Uint8Buffer();
   int _read = 0;
+  int _offset = 0;
 
+  int get offset => _offset;
   int get length => _bytes.length - _read;
 
   void add(List<int> input) => _bytes.addAll(input);
@@ -104,7 +106,7 @@ class Reader {
           dataBytes = readExactBytes(8)!;
           break;
         default:
-          throw FormatException('Invalid CBOR additional info');
+          throw FormatException('Invalid CBOR additional info', null, offset);
       }
     }
     return Header(majorType, additionalInfo, dataBytes);
@@ -141,6 +143,7 @@ class Reader {
     if (_read + c <= _bytes.length) {
       final bytes = _bytes.buffer.asUint8List().sublist(_read, c + _read);
       _read += c;
+      _offset += c;
 
       if (length < _bytes.length ~/ 4) {
         _bytes.removeRange(0, _read);

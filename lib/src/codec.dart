@@ -24,5 +24,15 @@ class CborCodec extends Codec<CborValue, List<int>> {
   final CborDecoder decoder;
 
   @override
-  Converter<CborValue, List<int>> get encoder => throw UnimplementedError();
+  final CborEncoder encoder = const CborEncoder();
+}
+
+/// Alias for [cbor.encode].
+List<int> cborEncode(CborValue value) {
+  return cbor.encode(value);
+}
+
+/// Alias for [cbor.decode].
+CborValue cborDecode(List<int> value) {
+  return cbor.decode(value);
 }

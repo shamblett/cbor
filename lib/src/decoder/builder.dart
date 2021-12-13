@@ -9,19 +9,18 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
-import 'package:cbor/src/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:ieee754/ieee754.dart';
 import 'package:typed_data/typed_buffers.dart';
 
 import '../utils/info.dart';
+import '../utils/utils.dart';
+import '../value/value.dart';
 import 'reader.dart';
 
-class _Break implements CborValue {
-  const _Break();
-
-  @override
-  final Iterable<int> hints = const [];
+class _IncompatibleTagException extends FormatException {
+  _IncompatibleTagException(int offset)
+      : super('Incompatible tags', null, offset);
 }
 
 class BuilderReader {
@@ -47,46 +46,54 @@ class BuilderReader {
 
   List<int> _clearTags() {
     final tags = _tags;
-    _tags = const [];
+    _tags = [];
     return tags;
   }
 
   Builder? read([bool allowBreak = false]) {
-    Header? header;
+    while (true) {
+      final offset = _reader.offset;
+      final header = _reader.readHeader();
 
-    while ((header = _reader.readHeader()) != null) {
-      switch (header!.majorType) {
+      if (header == null) {
+        return null;
+      }
+
+      switch (header.majorType) {
         case 0: // uint
-          return _ValueBuilder(_createInt(header.info, _clearTags()));
+          return _ValueBuilder(_createInt(offset, header.info, _clearTags()));
         case 1: // negative
-          return _ValueBuilder(_createInt(~header.info, _clearTags()));
+          return _ValueBuilder(_createInt(offset, ~header.info, _clearTags()));
 
         case 2: // bytes
           if (header.info.isIndefiniteLength) {
-            return _IndefiniteBytesBuilder(this, _clearTags());
+            return _IndefiniteBytesBuilder(offset, this, _clearTags());
           } else {
-            return _BytesBuilder(this, _clearTags(), header.info.toInt());
+            return _BytesBuilder(
+                offset, this, _clearTags(), header.info.toInt());
           }
 
         case 3: // string
           if (header.info.isIndefiniteLength) {
-            return _IndefiniteStringBuilder(this, _clearTags());
+            return _IndefiniteStringBuilder(offset, this, _clearTags());
           } else {
-            return _StringBuilder(this, _clearTags(), header.info.toInt());
+            return _StringBuilder(
+                offset, this, _clearTags(), header.info.toInt());
           }
 
         case 4: // array
           if (header.info.isIndefiniteLength) {
-            return _IndefiniteListBuilder(this, _clearTags());
+            return _IndefiniteListBuilder(offset, this, _clearTags());
           } else {
-            return _ListBuilder(this, header.info.toInt(), _clearTags());
+            return _ListBuilder(
+                offset, this, header.info.toInt(), _clearTags());
           }
 
         case 5: // map
           if (header.info.isIndefiniteLength) {
-            return _IndefiniteMapBuilder(this, _clearTags());
+            return _IndefiniteMapBuilder(offset, this, _clearTags());
           } else {
-            return _MapBuilder(this, header.info.toInt(), _clearTags());
+            return _MapBuilder(offset, this, header.info.toInt(), _clearTags());
           }
 
         case 6: // tags
@@ -96,22 +103,24 @@ class BuilderReader {
         case 7:
           switch (header.additionalInfo) {
             case 20:
-              return _ValueBuilder(_createBool(false, _clearTags()));
+              return _ValueBuilder(_createBool(offset, false, _clearTags()));
             case 21:
-              return _ValueBuilder(_createBool(true, _clearTags()));
+              return _ValueBuilder(_createBool(offset, true, _clearTags()));
             case 22:
-              return _ValueBuilder(_createNull(_clearTags()));
+              return _ValueBuilder(_createNull(offset, _clearTags()));
             case 23:
-              return _ValueBuilder(_createUndefined(_clearTags()));
+              return _ValueBuilder(_createUndefined(offset, _clearTags()));
 
             case 25:
               return _ValueBuilder(_createFloat(
+                offset,
                 FloatParts.fromFloat16Bytes(header.dataBytes).toDouble(),
                 _clearTags(),
               ));
 
             case 26:
               return _ValueBuilder(_createFloat(
+                offset,
                 ByteData.view(Uint8List.fromList(header.dataBytes).buffer)
                     .getFloat32(0),
                 _clearTags(),
@@ -119,6 +128,7 @@ class BuilderReader {
 
             case 27:
               return _ValueBuilder(_createFloat(
+                offset,
                 ByteData.view(Uint8List.fromList(header.dataBytes).buffer)
                     .getFloat64(0),
                 _clearTags(),
@@ -127,12 +137,12 @@ class BuilderReader {
             case 31:
               if (allowBreak) {
                 if (_clearTags().isNotEmpty && strict) {
-                  throw FormatException('Incorrect type for tag');
+                  throw FormatException('Incorrect type for tag', null, offset);
                 }
 
-                return _ValueBuilder(const _Break());
+                return _ValueBuilder(const Break());
               } else if (strict) {
-                throw FormatException('Unexpected CBOR break.');
+                throw FormatException('Unexpected CBOR break.', null, offset);
               } else {
                 break;
               }
@@ -142,12 +152,12 @@ class BuilderReader {
                 final tags = _clearTags();
 
                 if (tags.isNotEmpty && strict) {
-                  throw FormatException('Incorrect type for tag');
+                  throw FormatException('Incorrect type for tag', null, offset);
                 }
                 return _ValueBuilder(
                     CborSimpleValue(header.info.toInt(), tags));
               } else if (strict) {
-                throw FormatException('Bad CBOR value.');
+                throw FormatException('Bad CBOR value.', null, offset);
               } else {
                 break;
               }
@@ -156,33 +166,25 @@ class BuilderReader {
     }
   }
 
-  CborString _createString(String string, List<int> tags) {
-    if (strict) {
-      for (final hint in tags) {
-        if (!_canApply<String>(hint)) {
-          throw FormatException('Incorrect type for tag');
-        }
-      }
-    }
-
+  CborString _createString(int offset, String string, List<int> tags) {
     final CborString cbor;
-    switch (tags.lastOrNull) {
-      case CborHint.dateTimeString:
+    switch (_parseTags<String>(tags, offset)) {
+      case CborTag.dateTimeString:
         cbor = CborDateTimeString.fromString(string, tags);
         break;
-      case CborHint.uri:
+      case CborTag.uri:
         cbor = CborUri.fromString(string, tags);
         break;
-      case CborHint.base64Url:
+      case CborTag.base64Url:
         cbor = CborBase64Url.fromString(string, tags);
         break;
-      case CborHint.base64:
+      case CborTag.base64:
         cbor = CborBase64.fromString(string, tags);
         break;
-      case CborHint.regex:
+      case CborTag.regex:
         cbor = CborRegex.fromString(string, tags);
         break;
-      case CborHint.mime:
+      case CborTag.mime:
         cbor = CborMime.fromString(string, tags);
         break;
       default:
@@ -196,70 +198,38 @@ class BuilderReader {
     return cbor;
   }
 
-  CborBytes _createBytes(List<int> bytes, List<int> tags) {
-    if (strict) {
-      for (final hint in tags) {
-        if (!_canApply<List<int>>(hint)) {
-          throw FormatException('Incorrect type for tag');
-        }
-      }
-    }
-
-    switch (tags.lastOrNull) {
-      case CborHint.positiveBignum:
+  CborBytes _createBytes(int offset, List<int> bytes, List<int> tags) {
+    switch (_parseTags<List<int>>(tags, offset)) {
+      case CborTag.positiveBignum:
         return CborBigInt.fromBytes(bytes, tags);
-      case CborHint.negativeBignum:
+      case CborTag.negativeBignum:
         return CborBigInt.fromNegativeBytes(bytes, tags);
       default:
         return CborBytes(bytes, tags);
     }
   }
 
-  CborInt _createInt(Info value, List<int> tags) {
-    if (strict) {
-      for (final hint in tags) {
-        if (!_canApply<int>(hint)) {
-          throw FormatException('Incorrect type for tag');
-        }
-      }
-    }
-
-    if (tags.lastOrNull == CborHint.epochDateTime) {
+  CborInt _createInt(int offset, Info value, List<int> tags) {
+    if (_parseTags<int>(tags, offset) == CborTag.epochDateTime) {
       return CborDateTimeInt.fromSecondsSinceEpoch(value.toInt(), tags);
-    } else if (value.bitLength() < 53) {
+    } else if (value.bitLength < 53) {
       return CborSmallInt(value.toInt());
     } else {
       return CborInt(value.toBigInt());
     }
   }
 
-  CborFloat _createFloat(double value, List<int> tags) {
-    if (strict) {
-      for (final hint in tags) {
-        if (!_canApply<double>(hint)) {
-          throw FormatException('Incorrect type for tag');
-        }
-      }
-    }
-
-    if (tags.lastOrNull == CborHint.epochDateTime) {
+  CborFloat _createFloat(int offset, double value, List<int> tags) {
+    if (_parseTags<double>(tags, offset) == CborTag.epochDateTime) {
       return CborDateTimeFloat.fromSecondsSinceEpoch(value, tags);
     } else {
       return CborFloat(value, tags);
     }
   }
 
-  CborList _createList(List<CborValue> items, List<int> tags) {
-    if (strict) {
-      for (final hint in tags) {
-        if (!_canApply(hint, items)) {
-          throw FormatException('Incorrect type for tag');
-        }
-      }
-    }
-
-    switch (tags.lastOrNull) {
-      case CborHint.decimalFraction:
+  CborList _createList(int offset, List<CborValue> items, List<int> tags) {
+    switch (_parseTags<List<CborValue>>(tags, offset, items)) {
+      case CborTag.decimalFraction:
         if (items.length != 2) {
           break;
         }
@@ -275,7 +245,7 @@ class BuilderReader {
 
         return CborDecimalFraction(exponent, mantissa, tags);
 
-      case CborHint.bigFloat:
+      case CborTag.bigFloat:
         if (items.length != 2) {
           break;
         }
@@ -295,71 +265,90 @@ class BuilderReader {
     return CborList(items, tags);
   }
 
-  CborBool _createBool(bool value, List<int> tags) {
-    if (strict) {
-      for (final hint in tags) {
-        if (!_canApply<bool>(hint)) {
-          throw FormatException('Incorrect type for tag');
-        }
-      }
-    }
-
+  CborBool _createBool(int offset, bool value, List<int> tags) {
+    _parseTags<bool>(tags, offset);
     return CborBool(value, tags);
   }
 
-  CborUndefined _createUndefined(List<int> tags) {
-    if (strict) {
-      for (final hint in tags) {
-        if (!_canApply<Null>(hint)) {
-          throw FormatException('Incorrect type for tag');
-        }
-      }
-    }
-
+  CborUndefined _createUndefined(int offset, List<int> tags) {
+    _parseTags<Null>(tags, offset);
     return CborUndefined(tags);
   }
 
-  CborNull _createNull(List<int> tags) {
-    if (strict) {
-      for (final hint in tags) {
-        if (!_canApply<Null>(hint)) {
-          throw FormatException('Incorrect type for tag');
+  CborNull _createNull(int offset, List<int> tags) {
+    _parseTags<Null>(tags, offset);
+    return CborNull(tags);
+  }
+
+  int _parseTags<T>(List<int> tags, int offset, [T? value]) {
+    var subtype = -1;
+
+    var expectConversion = -1;
+    for (final h in tags.reversed) {
+      if (isHintSubtype(h)) {
+        if (subtype != -1) {
+          if (strict) {
+            throw _IncompatibleTagException(offset);
+          }
+        } else {
+          subtype = h;
+        }
+      }
+
+      if (strict) {
+        if (isExpectConversion(h)) {
+          if (expectConversion != -1) {
+            throw _IncompatibleTagException(offset);
+          } else {
+            expectConversion = h;
+          }
+        }
+
+        switch (h) {
+          case CborTag.uri:
+          case CborTag.base64Url:
+          case CborTag.base64:
+          case CborTag.regex:
+          case CborTag.mime:
+          case CborTag.dateTimeString:
+            if (!isSubtype<T, String>()) {
+              throw _IncompatibleTagException(offset);
+            }
+
+            break;
+
+          case CborTag.epochDateTime:
+            if (!isSubtype<T, num>()) {
+              throw _IncompatibleTagException(offset);
+            }
+
+            break;
+
+          case CborTag.positiveBignum:
+          case CborTag.negativeBignum:
+          case CborTag.encodedCborData:
+            if (!isSubtype<T, List<int>>()) {
+              throw _IncompatibleTagException(offset);
+            }
+
+            break;
+
+          case CborTag.decimalFraction:
+          case CborTag.bigFloat:
+            if (value is! List<CborValue> ||
+                value.length != 2 ||
+                value[0] is! CborInt ||
+                value[1] is! CborInt ||
+                value[0] is CborBigInt) {
+              throw _IncompatibleTagException(offset);
+            }
+
+            break;
         }
       }
     }
 
-    return CborNull(tags);
-  }
-}
-
-bool _canApply<T>(int tag, [T? value]) {
-  switch (tag) {
-    case CborHint.uri:
-    case CborHint.base64Url:
-    case CborHint.base64:
-    case CborHint.regex:
-    case CborHint.mime:
-    case CborHint.dateTimeString:
-      return isSubtype<T, String>();
-
-    case CborHint.epochDateTime:
-      return isSubtype<T, num>();
-
-    case CborHint.positiveBignum:
-    case CborHint.negativeBignum:
-    case CborHint.encodedCborData:
-      return isSubtype<T, List<int>>();
-
-    case CborHint.decimalFraction:
-    case CborHint.bigFloat:
-      return value is List<CborValue> &&
-          value.length == 2 &&
-          value[0] is CborInt &&
-          value[1] is CborInt &&
-          value[0] is! CborBigInt;
-
-    default:
-      return true;
+    return subtype;
   }
 }
 
@@ -377,9 +366,11 @@ class _ValueBuilder implements Builder {
 }
 
 class _BytesBuilder implements Builder {
-  _BytesBuilder(this.d, this.tags, this.size) : bytes = Uint8List(size);
+  _BytesBuilder(this.offset, this.d, this.tags, this.size)
+      : bytes = Uint8List(size);
 
   final BuilderReader d;
+  final int offset;
   final List<int> tags;
   final int size;
   final Uint8List bytes;
@@ -395,17 +386,18 @@ class _BytesBuilder implements Builder {
       return null;
     }
 
-    return d._createBytes(bytes, tags);
+    return d._createBytes(offset, bytes, tags);
   }
 }
 
 class _IndefiniteBytesBuilder implements Builder {
-  _IndefiniteBytesBuilder(this.d, this.tags);
+  _IndefiniteBytesBuilder(this.offset, this.d, this.tags);
 
   final BuilderReader d;
   final Uint8Buffer bytes = Uint8Buffer();
   final List<int> tags;
   Builder? next;
+  final int offset;
 
   @override
   CborValue? poll() {
@@ -416,14 +408,16 @@ class _IndefiniteBytesBuilder implements Builder {
         return null;
       }
 
-      if (value is _Break) {
-        return d._createBytes(bytes, tags);
+      if (value is Break) {
+        return d._createBytes(offset, bytes, tags);
       }
 
       if (value is! CborBytes || (next is! _BytesBuilder && d.strict)) {
         throw FormatException(
             'An indefinite byte string must only contain definite '
-            'length byte strings.');
+            'length byte strings.',
+            null,
+            offset);
       }
 
       next = null;
@@ -434,7 +428,7 @@ class _IndefiniteBytesBuilder implements Builder {
 }
 
 class _StringBuilder implements Builder {
-  _StringBuilder(this.d, this.tags, this.size) {
+  _StringBuilder(this.offset, this.d, this.tags, this.size) {
     sink = d.utf8.decoder.startChunkedConversion(
       StringConversionSink.withCallback((accumulated) {
         data.write(accumulated);
@@ -448,6 +442,7 @@ class _StringBuilder implements Builder {
   final StringBuffer data = StringBuffer();
   late final ByteConversionSink sink;
   int current = 0;
+  final int offset;
 
   @override
   CborValue? poll() {
@@ -461,17 +456,18 @@ class _StringBuilder implements Builder {
 
     sink.close();
 
-    return d._createString(data.toString(), tags);
+    return d._createString(offset, data.toString(), tags);
   }
 }
 
 class _IndefiniteStringBuilder implements Builder {
-  _IndefiniteStringBuilder(this.d, this.tags);
+  _IndefiniteStringBuilder(this.offset, this.d, this.tags);
 
   final BuilderReader d;
   final StringBuffer data = StringBuffer();
   final List<int> tags;
   Builder? next;
+  final int offset;
 
   @override
   CborValue? poll() {
@@ -482,14 +478,16 @@ class _IndefiniteStringBuilder implements Builder {
         return null;
       }
 
-      if (value is _Break) {
-        return d._createString(data.toString(), tags);
+      if (value is Break) {
+        return d._createString(offset, data.toString(), tags);
       }
 
       if (value is! CborString || (next is! _StringBuilder && d.strict)) {
         throw FormatException(
             'An indefinite length string must only contain definite '
-            'length strings.');
+            'length strings.',
+            null,
+            offset);
       }
 
       next = null;
@@ -530,9 +528,11 @@ abstract class _ItemsBuilder implements Builder {
 }
 
 class _ListBuilder extends _ItemsBuilder {
-  _ListBuilder(BuilderReader d, this.size, List<int> tags) : super(d, tags);
+  _ListBuilder(this.offset, BuilderReader d, this.size, List<int> tags)
+      : super(d, tags);
 
   final int size;
+  final int offset;
 
   @override
   final bool allowBreak = false;
@@ -542,30 +542,34 @@ class _ListBuilder extends _ItemsBuilder {
 
   @override
   CborValue? finish() {
-    return d._createList(items, tags);
+    return d._createList(offset, items, tags);
   }
 }
 
 class _IndefiniteListBuilder extends _ItemsBuilder {
-  _IndefiniteListBuilder(BuilderReader d, List<int> tags) : super(d, tags);
+  _IndefiniteListBuilder(this.offset, BuilderReader d, List<int> tags)
+      : super(d, tags);
 
   @override
   final bool allowBreak = true;
+  final int offset;
 
   @override
-  bool get isDone => items.lastOrNull is _Break;
+  bool get isDone => items.lastOrNull is Break;
 
   @override
   CborValue? finish() {
     items.removeLast();
-    return d._createList(items, tags);
+    return d._createList(offset, items, tags);
   }
 }
 
 class _MapBuilder extends _ItemsBuilder {
-  _MapBuilder(BuilderReader d, this.size, List<int> tags) : super(d, tags);
+  _MapBuilder(this.offset, BuilderReader d, this.size, List<int> tags)
+      : super(d, tags);
 
   final int size;
+  final int offset;
 
   @override
   final bool allowBreak = false;
@@ -580,7 +584,7 @@ class _MapBuilder extends _ItemsBuilder {
 
       for (var i = 0; i < size; i++) {
         if (!keySet.add(items[i * 2])) {
-          throw FormatException('Duplicate key.');
+          throw FormatException('Duplicate key.', null, offset);
         }
       }
     }
@@ -594,16 +598,22 @@ class _MapBuilder extends _ItemsBuilder {
 }
 
 class _IndefiniteMapBuilder extends _ItemsBuilder {
-  _IndefiniteMapBuilder(BuilderReader d, List<int> tags) : super(d, tags);
+  _IndefiniteMapBuilder(this.offset, BuilderReader d, List<int> tags)
+      : super(d, tags);
 
   @override
   final bool allowBreak = true;
+  final int offset;
 
   @override
-  bool get isDone => items.lastOrNull is _Break;
+  bool get isDone => items.lastOrNull is Break;
 
   @override
   CborValue? finish() {
+    if (d.strict && (items.length - 1) % 2 != 0) {
+      throw FormatException('Map has more keys than values', null, offset);
+    }
+
     return CborMap.fromEntries(
       Iterable.generate((items.length - 1) ~/ 2)
           .map((index) => MapEntry(items[index * 2], items[index * 2 + 1])),
