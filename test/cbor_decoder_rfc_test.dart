@@ -626,7 +626,7 @@ void main() {
       }
     });
 
-    test('{_ "a":1, "b": [_ 2,3]}', () {
+    test('{_ "a":1, "b": [_ 2, 3]}', () {
       final decoded = cbor.decode(
           [0xbf, 0x61, 0x61, 0x01, 0x61, 0x62, 0x9f, 0x02, 0x03, 0xff, 0xff]);
       expect(decoded, {
