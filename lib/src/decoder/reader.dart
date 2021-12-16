@@ -8,6 +8,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:cbor/cbor.dart';
 import 'package:typed_data/typed_buffers.dart' as typed;
 
 import '../utils/info.dart';
@@ -106,7 +107,7 @@ class Reader {
           dataBytes = readExactBytes(8)!;
           break;
         default:
-          throw FormatException('Invalid CBOR additional info', null, offset);
+          throw CborDecodeException('Invalid CBOR additional info', offset);
       }
     }
     return Header(majorType, additionalInfo, dataBytes);

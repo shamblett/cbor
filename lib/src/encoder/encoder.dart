@@ -5,6 +5,12 @@ import 'package:typed_data/typed_buffers.dart';
 
 import 'sink.dart';
 
+/// A CBOR encoder.
+///
+/// If cyclic references are found while encoding, a [CborCyclicError] will
+/// be thrown.
+///
+/// Other than that, usage of the encoder is not expected to produce exceptions.
 class CborEncoder extends Converter<CborValue, List<int>> {
   const CborEncoder();
 

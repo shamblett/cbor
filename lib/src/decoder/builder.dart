@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
+import 'package:cbor/src/error.dart';
 import 'package:collection/collection.dart';
 import 'package:ieee754/ieee754.dart';
 import 'package:typed_data/typed_buffers.dart';
@@ -18,9 +19,8 @@ import '../utils/utils.dart';
 import '../value/value.dart';
 import 'reader.dart';
 
-class _IncompatibleTagException extends FormatException {
-  _IncompatibleTagException(int offset)
-      : super('Incompatible tags', null, offset);
+class _IncompatibleTagException extends CborDecodeException {
+  _IncompatibleTagException(int offset) : super('Incompatible tags', offset);
 }
 
 class BuilderReader {
@@ -137,12 +137,12 @@ class BuilderReader {
             case 31:
               if (allowBreak) {
                 if (_clearTags().isNotEmpty && strict) {
-                  throw FormatException('Incorrect type for tag', null, offset);
+                  throw CborDecodeException('Type accepts no tags', offset);
                 }
 
                 return _ValueBuilder(const Break());
               } else if (strict) {
-                throw FormatException('Unexpected CBOR break.', null, offset);
+                throw CborDecodeException('Unexpected CBOR break', offset);
               } else {
                 break;
               }
@@ -152,12 +152,12 @@ class BuilderReader {
                 final tags = _clearTags();
 
                 if (tags.isNotEmpty && strict) {
-                  throw FormatException('Incorrect type for tag', null, offset);
+                  throw CborDecodeException('Type accepts no tags', offset);
                 }
                 return _ValueBuilder(
                     CborSimpleValue(header.info.toInt(), tags));
               } else if (strict) {
-                throw FormatException('Bad CBOR value.', null, offset);
+                throw CborDecodeException('Bad CBOR value.', offset);
               } else {
                 break;
               }
@@ -192,7 +192,11 @@ class BuilderReader {
         break;
     }
     if (strict) {
-      cbor.verify();
+      try {
+        cbor.verify();
+      } on FormatException catch (ex) {
+        throw CborFormatException(ex, offset);
+      }
     }
 
     return cbor;
@@ -413,10 +417,9 @@ class _IndefiniteBytesBuilder implements Builder {
       }
 
       if (value is! CborBytes || (next is! _BytesBuilder && d.strict)) {
-        throw FormatException(
+        throw CborDecodeException(
             'An indefinite byte string must only contain definite '
             'length byte strings.',
-            null,
             offset);
       }
 
@@ -483,10 +486,9 @@ class _IndefiniteStringBuilder implements Builder {
       }
 
       if (value is! CborString || (next is! _StringBuilder && d.strict)) {
-        throw FormatException(
+        throw CborDecodeException(
             'An indefinite length string must only contain definite '
             'length strings.',
-            null,
             offset);
       }
 
@@ -584,7 +586,7 @@ class _MapBuilder extends _ItemsBuilder {
 
       for (var i = 0; i < size; i++) {
         if (!keySet.add(items[i * 2])) {
-          throw FormatException('Duplicate key.', null, offset);
+          throw CborDecodeException('Duplicate key.', offset);
         }
       }
     }
@@ -611,7 +613,7 @@ class _IndefiniteMapBuilder extends _ItemsBuilder {
   @override
   CborValue? finish() {
     if (d.strict && (items.length - 1) % 2 != 0) {
-      throw FormatException('Map has more keys than values', null, offset);
+      throw CborDecodeException('Map has more keys than values', offset);
     }
 
     return CborMap.fromEntries(

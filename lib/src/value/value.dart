@@ -115,10 +115,12 @@ class CborEncodeIndefiniteLengthMap implements CborValue {
 
     sink.addHeaderInfo(5, Info.indefiniteLength);
 
+    sink.addToCycleCheck(inner);
     for (final e in inner.entries) {
       e.key.encode(sink);
       e.value.encode(sink);
     }
+    sink.removeFromCycleCheck(inner);
 
     (const Break()).encode(sink);
   }
@@ -144,10 +146,12 @@ class CborEncodeDefiniteLengthMap implements CborValue {
 
     sink.addHeaderInfo(5, Info.int(inner.length));
 
+    sink.addToCycleCheck(inner);
     for (final e in inner.entries) {
       e.key.encode(sink);
       e.value.encode(sink);
     }
+    sink.removeFromCycleCheck(inner);
   }
 
   @override

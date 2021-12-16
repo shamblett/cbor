@@ -29,14 +29,14 @@ import 'builder.dart';
 
 /// A CBOR decoder.
 ///
-/// The CBOR decoder will always throw [FormatException] when:
+/// The CBOR decoder will always throw [CborDecodeException] when:
 ///
 /// * An invalid value for additional info is provided, or
 /// * The CBOR is incomplete, or
 /// * An indefinite length byte string contains any item other than a byte string, or
 /// * An indefinite length string contains any item other than a string.
 ///
-/// If the CBOR decoder is using [strict] mode, it will throw [FormatException]
+/// If the CBOR decoder is using [strict] mode, it will throw [CborDecodeException]
 /// when:
 ///
 /// * A string is not UTF-8, or
@@ -61,7 +61,7 @@ class CborDecoder extends Converter<List<int>, CborValue> {
 
   /// Converts [input] and returns the result of the conversion.
   ///
-  /// Will throw [FormatException] if input contains anything other than a
+  /// Will throw [CborDecodeException] if input contains anything other than a
   /// single CBOR value.
   @override
   CborValue convert(List<int> input) {
@@ -71,11 +71,11 @@ class CborDecoder extends Converter<List<int>, CborValue> {
     final value = reader.read()?.poll();
 
     if (value == null) {
-      throw FormatException('Expected at least one CBOR value.');
+      throw CborDecodeException('Expected at least one CBOR value.');
     }
 
     if (reader.remaniningBytes != 0) {
-      throw FormatException('Expected at most one CBOR value.');
+      throw CborDecodeException('Expected at most one CBOR value.');
     }
 
     return value;
@@ -111,7 +111,7 @@ class _ChunkedConversion extends Sink<List<int>> {
   @override
   void close() {
     if (reader.remaniningBytes != 0) {
-      throw FormatException('Incomplete CBOR value');
+      throw CborDecodeException('Incomplete CBOR value');
     }
   }
 }

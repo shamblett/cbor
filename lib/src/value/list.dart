@@ -47,9 +47,12 @@ class CborEncodeIndefiniteLengthList implements CborValue {
 
     sink.addHeaderInfo(4, Info.indefiniteLength);
 
+    sink.addToCycleCheck(inner);
     for (final x in inner) {
       x.encode(sink);
     }
+
+    sink.removeFromCycleCheck(inner);
 
     (const Break()).encode(sink);
   }
@@ -75,9 +78,11 @@ class CborEncodeDefiniteLengthList implements CborValue {
 
     sink.addHeaderInfo(4, Info.int(inner.length));
 
+    sink.addToCycleCheck(inner);
     for (final x in inner) {
       x.encode(sink);
     }
+    sink.removeFromCycleCheck(inner);
   }
 
   @override

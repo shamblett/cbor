@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:cbor/cbor.dart';
 import 'package:typed_data/typed_buffers.dart';
 
 import '../utils/info.dart';
@@ -7,9 +8,21 @@ import '../utils/info.dart';
 abstract class EncodeSink extends Sink<List<int>> {
   EncodeSink();
 
+  final Set<Object> _references = {};
+
   factory EncodeSink.withBuffer(Uint8Buffer b) => _BufferEncodeSink(b);
 
   factory EncodeSink.withSink(Sink<List<int>> x) => _EncodeSink(x);
+
+  void addToCycleCheck(Object object) {
+    if (!_references.add(object)) {
+      throw CborCyclicError(object);
+    }
+  }
+
+  void removeFromCycleCheck(Object it) {
+    _references.remove(it);
+  }
 
   @override
   void close() {}
