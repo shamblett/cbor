@@ -110,6 +110,8 @@ class _ChunkedConversion extends Sink<List<int>> {
 
   @override
   void close() {
+    sink.close();
+
     if (reader.remaniningBytes != 0) {
       throw CborDecodeException('Incomplete CBOR value');
     }
