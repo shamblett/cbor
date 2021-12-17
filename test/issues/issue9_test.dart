@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 import 'package:convert/convert.dart';
-import 'package:cbor/cbor.dart' as cbor;
+import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -28,18 +28,25 @@ void main() {
 
     const hexString = '81a301a1010103a101010ca10101';
     final bytes = hex.decode(hexString);
-    final inst = cbor.Cbor();
-    inst.decodeFromList(bytes);
-    print(inst.decodedPrettyPrint());
-    final decoded = inst.getDecodedData();
-    expect(decoded![0], [
-      {
-        1: {1: 1},
-        3: {1: 1},
-        12: {1: 1}
-      }
-    ]);
+    final decoded = cbor.decode(bytes);
+    expect(
+      decoded,
+      CborList([
+        CborMap({
+          CborSmallInt(1): CborMap({
+            CborSmallInt(1): CborSmallInt(1),
+          }),
+          CborSmallInt(3): CborMap({
+            CborSmallInt(1): CborSmallInt(1),
+          }),
+          CborSmallInt(12): CborMap({
+            CborSmallInt(1): CborSmallInt(1),
+          }),
+        })
+      ]),
+    );
   });
+
   test('9-2', () {
     print('9-2 - invalid decoding of arrays');
     //        81             # array(1)
@@ -60,18 +67,22 @@ void main() {
 
     const hexString = '81A301A1010203A10181010CA10102';
     final bytes = hex.decode(hexString);
-    final inst = cbor.Cbor();
-    inst.decodeFromList(bytes);
-    print(inst.decodedPrettyPrint());
-    final decoded = inst.getDecodedData();
-    expect(decoded![0], [
-      {
-        1: {1: 2},
-        3: {
-          1: [1]
-        },
-        12: {1: 2}
-      }
-    ]);
+    final decoded = cbor.decode(bytes);
+    expect(
+      decoded,
+      CborList([
+        CborMap({
+          CborSmallInt(1): CborMap({
+            CborSmallInt(1): CborSmallInt(2),
+          }),
+          CborSmallInt(3): CborMap({
+            CborSmallInt(1): CborList([CborSmallInt(1)]),
+          }),
+          CborSmallInt(12): CborMap({
+            CborSmallInt(1): CborSmallInt(2),
+          }),
+        })
+      ]),
+    );
   });
 }
