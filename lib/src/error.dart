@@ -25,11 +25,8 @@ class CborFormatException extends CborDecodeException {
   final FormatException formatException;
 }
 
-/// An error raised when encoding.
-abstract class CborEncodeError extends Error {}
-
 /// Raised when object could not be codified due to cyclic references.
-class CborCyclicError extends CborEncodeError {
+class CborCyclicError {
   CborCyclicError(this.cause);
 
   final Object cause;

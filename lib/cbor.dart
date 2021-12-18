@@ -11,4 +11,4 @@ export 'src/codec.dart';
 export 'src/decoder/decoder.dart';
 export 'src/encoder/encoder.dart';
 export 'src/error.dart';
-export 'src/value/value.dart' hide Break, CborValueMixin;
+export 'src/value/value.dart';

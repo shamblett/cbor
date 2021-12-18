@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
 import '../utils/info.dart';
-import 'value.dart';
+import 'internal.dart';
 
 /// A CBOR simple value without any
 /// additional content.
@@ -21,6 +21,15 @@ class CborSimpleValue with CborValueMixin implements CborValue {
   @override
   final List<int> tags;
 
+  /// <nodoc>
+  @internal
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return simpleValue;
+  }
+
+  /// <nodoc>
+  @internal
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
@@ -32,11 +41,25 @@ class CborSimpleValue with CborValueMixin implements CborValue {
 /// A CBOR null value.
 class CborNull extends CborSimpleValue {
   const CborNull([List<int> tags = const []]) : super(22, tags);
+
+  /// <nodoc>
+  @internal
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return null;
+  }
 }
 
 /// A CBOR undefined value.
 class CborUndefined extends CborSimpleValue {
   const CborUndefined([List<int> tags = const []]) : super(23, tags);
+
+  /// <nodoc>
+  @internal
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return null;
+  }
 }
 
 /// A CBOR boolean value.
@@ -44,21 +67,12 @@ class CborBool extends CborSimpleValue {
   const CborBool(this.value, [List<int> tags = const []])
       : super(!value ? 20 : 21, tags);
 
-  final bool value;
-}
-
-/// This is for internal usage and should not be returned to the user
-///
-/// <nodoc>
-@internal
-class Break extends CborSimpleValue {
-  const Break() : super(31);
-
+  /// <nodoc>
+  @internal
   @override
-  final List<int> tags = const [];
-
-  @override
-  void encode(EncodeSink sink) {
-    sink.addHeaderInfo(7, Info.indefiniteLength);
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return value;
   }
+
+  final bool value;
 }

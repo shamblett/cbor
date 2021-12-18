@@ -7,9 +7,10 @@
 
 import 'package:cbor/cbor.dart';
 import 'package:ieee754/ieee754.dart';
+import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
-import 'value.dart';
+import 'internal.dart';
 
 /// A CBOR float.
 ///
@@ -28,7 +29,9 @@ class CborFloat with CborValueMixin implements CborValue {
   @override
   final List<int> tags;
 
+  /// <nodoc>
   @override
+  @internal
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
@@ -48,6 +51,13 @@ class CborFloat with CborValueMixin implements CborValue {
       sink.add(parts.toFloat64Bytes());
     }
   }
+
+  /// <nodoc>
+  @internal
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return value;
+  }
 }
 
 /// A CBOR date time encoded as seconds since epoch in a float.
@@ -61,6 +71,17 @@ class CborDateTimeFloat extends CborFloat implements CborDateTime {
     DateTime value, [
     List<int> tags = const [CborTag.epochDateTime],
   ]) : super(value.millisecondsSinceEpoch / 1000, tags);
+
+  /// <nodoc>
+  @internal
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    if (o.parseDateTime) {
+      return toDateTime();
+    } else {
+      return value;
+    }
+  }
 
   @override
   DateTime toDateTime() {

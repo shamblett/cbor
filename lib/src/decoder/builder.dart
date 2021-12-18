@@ -16,7 +16,7 @@ import 'package:typed_data/typed_buffers.dart';
 
 import '../utils/info.dart';
 import '../utils/utils.dart';
-import '../value/value.dart';
+import '../value/internal.dart';
 import 'reader.dart';
 
 class _IncompatibleTagException extends CborDecodeException {

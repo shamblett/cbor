@@ -6,10 +6,11 @@
  */
 
 import 'package:cbor/cbor.dart';
+import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
 import '../utils/info.dart';
-import 'value.dart';
+import 'internal.dart';
 
 /// A CBOR integer or big number.
 ///
@@ -61,7 +62,16 @@ class CborSmallInt with CborValueMixin implements CborInt {
   @override
   final List<int> tags;
 
+  /// <nodoc>
+  @internal
   @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return value;
+  }
+
+  /// <nodoc>
+  @override
+  @internal
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
@@ -92,6 +102,15 @@ class _LargeInt with CborValueMixin implements CborInt {
   @override
   final List<int> tags;
 
+  /// <nodoc>
+  @internal
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return value;
+  }
+
+  /// <nodoc>
+  @internal
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
@@ -118,6 +137,17 @@ class CborDateTimeInt extends CborSmallInt implements CborDateTime {
     int value, [
     List<int> tags = const [CborTag.epochDateTime],
   ]) : super(value, tags);
+
+  /// <nodoc>
+  @internal
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    if (o.parseDateTime) {
+      return toDateTime();
+    } else {
+      return value;
+    }
+  }
 
   @override
   DateTime toDateTime() =>
