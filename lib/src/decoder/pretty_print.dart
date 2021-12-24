@@ -136,7 +136,7 @@ class _PrettyPrint extends Sink<RawValue> {
             writer.write(
                 '(${FloatParts.fromFloat64Bytes(x.header.dataBytes).toDouble()})');
             break;
-          case 32:
+          case 31:
             writer.write('(break)');
             nested.removeLast();
             break;

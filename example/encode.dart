@@ -20,6 +20,13 @@ int main() {
       2: 'two',
     },
     'hello',
+
+    // Indefinite length string
+    CborEncodeIndefiniteLengthString([
+      'hello',
+      ' ',
+      'world',
+    ]),
   ]));
 
   final _ = cbor.decode(value);
