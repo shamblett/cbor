@@ -7,6 +7,25 @@
 
 import 'package:cbor/cbor.dart';
 
+extension IterableExt<T> on Iterable<T> {
+  Iterable<List<T>> chunks(int length) sync* {
+    final iterator = this.iterator;
+
+    while (true) {
+      final chunk = <T>[];
+      for (var i = 0; i < length; i++) {
+        if (!iterator.moveNext()) {
+          return;
+        }
+
+        chunk.add(iterator.current);
+      }
+
+      yield chunk;
+    }
+  }
+}
+
 /// Returns whether T is a subtype of U.
 bool isSubtype<T, U>() => _Helper<T>() is _Helper<U>;
 
