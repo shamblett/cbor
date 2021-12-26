@@ -36,9 +36,13 @@ class CborFloat with CborValueMixin implements CborValue {
     sink.addTags(tags);
 
     if (value.isNaN) {
-      // https://datatracker.ietf.org/doc/html/rfc7049#page-27
+      // Any bit pattern can be returned from `toFloat16Bytes()` as long as
+      // it is NaN, so it's a good idea to make sure this is consistent.
       //
-      // If NaN is an allowed value, it must always be represented as 0xf97e00
+      // This value seems to be ideal as it is the value used in canonical
+      // format
+      //
+      // https://datatracker.ietf.org/doc/html/rfc7049#page-27
       sink.add([0xf9, 0x7e, 0x00]);
 
       return;
