@@ -35,6 +35,15 @@ class CborFloat with CborValueMixin implements CborValue {
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
+    if (value.isNaN) {
+      // https://datatracker.ietf.org/doc/html/rfc7049#page-27
+      //
+      // If NaN is an allowed value, it must always be represented as 0xf97e00
+      sink.add([0xf9, 0x7e, 0x00]);
+
+      return;
+    }
+
     final parts = FloatParts.fromDouble(value);
 
     if (parts.isFloat16Lossless) {
