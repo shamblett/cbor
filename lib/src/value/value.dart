@@ -48,10 +48,11 @@ class CborTag {
 @sealed
 abstract class CborValue {
   factory CborValue._fromObject(
-    Object? object,
-    bool dateTimeEpoch,
-    Set<Object> cycleCheck,
-  ) {
+    Object? object, {
+    required bool dateTimeEpoch,
+    required Object? Function(dynamic object) toEncodable,
+    Set<Object>? cycleCheck,
+  }) {
     if (object == null) {
       return CborNull();
     } else if (object is CborValue) {
@@ -81,25 +82,43 @@ abstract class CborValue {
     } else if (object is Uri) {
       return CborUri(object);
     } else if (object is Iterable) {
+      cycleCheck ??= {};
+
       if (!cycleCheck.add(object)) {
         throw CborCyclicError(object);
       }
 
-      final value = CborList.of(object
-          .map((v) => CborValue._fromObject(v, dateTimeEpoch, cycleCheck)));
+      final value = CborList.of(object.map((v) => CborValue._fromObject(
+            v,
+            dateTimeEpoch: dateTimeEpoch,
+            toEncodable: toEncodable,
+            cycleCheck: cycleCheck,
+          )));
 
       cycleCheck.remove(object);
 
       return value;
     } else if (object is Map) {
+      cycleCheck ??= {};
+
       if (!cycleCheck.add(object)) {
         throw CborCyclicError(object);
       }
 
       final value = CborMap.fromEntries(object.entries.map(
         (entry) => MapEntry(
-          CborValue._fromObject(entry.key, dateTimeEpoch, cycleCheck),
-          CborValue._fromObject(entry.value, dateTimeEpoch, cycleCheck),
+          CborValue._fromObject(
+            entry.key,
+            dateTimeEpoch: dateTimeEpoch,
+            toEncodable: toEncodable,
+            cycleCheck: cycleCheck,
+          ),
+          CborValue._fromObject(
+            entry.value,
+            dateTimeEpoch: dateTimeEpoch,
+            toEncodable: toEncodable,
+            cycleCheck: cycleCheck,
+          ),
         ),
       ));
 
@@ -107,7 +126,12 @@ abstract class CborValue {
 
       return value;
     } else {
-      throw TypeError();
+      return CborValue._fromObject(
+        toEncodable(object),
+        dateTimeEpoch: dateTimeEpoch,
+        toEncodable: toEncodable,
+        cycleCheck: cycleCheck,
+      );
     }
   }
 
@@ -136,11 +160,27 @@ abstract class CborValue {
   /// [CborDateTimeString], and otherwise into [CborDateTimeInt] or
   /// [CborDateTimeFloat] depending on the sub-second resolution.
   ///
+  /// The [toEncodable] function is used during encoding. It is invoked for
+  /// values that are not directly encodable to a [CborValue]. The
+  /// function must return an object that is directly encodable. The elements of
+  /// a returned list and values of a returned map do not need to be directly
+  /// encodable, and if they aren't, `toEncodable` will be used on them as well.
+  /// Please notice that it is possible to cause an infinite recursive regress
+  /// in this way, by effectively creating an infinite data structure through
+  /// repeated call to `toEncodable`.
+  ///
+  /// If [toEncodable] is omitted, it defaults to a function that returns the
+  /// result of calling `.toCbor()` on the unencodable object.
   factory CborValue(
     Object? object, {
     bool dateTimeEpoch = false,
+    Object? Function(dynamic object)? toEncodable,
   }) =>
-      CborValue._fromObject(object, dateTimeEpoch, {});
+      CborValue._fromObject(
+        object,
+        dateTimeEpoch: dateTimeEpoch,
+        toEncodable: toEncodable ?? (object) => object.toCbor(),
+      );
 
   /// Additional tags provided to the value.
   List<int> get tags;
