@@ -19,9 +19,9 @@ import 'internal.dart';
 ///
 /// If the incoming value has less than 53 bits, it is [CborSmallInt].
 abstract class CborInt with CborValueMixin implements CborValue {
-  factory CborInt(BigInt value, [List<int>? tags]) {
+  factory CborInt(BigInt value, {List<int>? tags}) {
     if (value.bitLength < 53) {
-      return CborSmallInt(value.toInt(), tags ?? const []);
+      return CborSmallInt(value.toInt(), tags: tags ?? const []);
     }
 
     final bitLength = value.isNegative ? (~value).bitLength : value.bitLength;
@@ -44,7 +44,7 @@ abstract class CborInt with CborValueMixin implements CborValue {
 
 /// A CBOR integer which can be represented losslessly as [int].
 class CborSmallInt with CborValueMixin implements CborInt {
-  const CborSmallInt(this.value, [this.tags = const []]);
+  const CborSmallInt(this.value, {this.tags = const []});
 
   final int value;
 
@@ -126,17 +126,17 @@ class _LargeInt with CborValueMixin implements CborInt {
 /// A CBOR datetieme encoded as seconds since epoch.
 class CborDateTimeInt extends CborSmallInt implements CborDateTime {
   CborDateTimeInt(
-    DateTime value, [
+    DateTime value, {
     List<int> tags = const [CborTag.epochDateTime],
-  ]) : super(
+  }) : super(
           (value.millisecondsSinceEpoch / 1000).round(),
-          tags,
+          tags: tags,
         );
 
   const CborDateTimeInt.fromSecondsSinceEpoch(
-    int value, [
+    int value, {
     List<int> tags = const [CborTag.epochDateTime],
-  ]) : super(value, tags);
+  }) : super(value, tags: tags);
 
   /// <nodoc>
   @internal

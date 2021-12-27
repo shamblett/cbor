@@ -16,7 +16,7 @@ import 'internal.dart';
 
 /// A CBOR string encoded in UTF-8.
 class CborString with CborValueMixin implements CborValue {
-  const CborString(this._string, [this.tags = const []]);
+  const CborString(this._string, {this.tags = const []});
 
   final String _string;
 
@@ -55,7 +55,7 @@ class CborString with CborValueMixin implements CborValue {
 class CborEncodeIndefiniteLengthString
     with CborValueMixin
     implements CborValue {
-  CborEncodeIndefiniteLengthString(this.items, [this.tags = const []]);
+  CborEncodeIndefiniteLengthString(this.items, {this.tags = const []});
 
   final List<String> items;
   @override
@@ -122,15 +122,15 @@ class CborEncodeDefiniteLengthString with CborValueMixin implements CborValue {
 /// A CBOR string which encodes a datetime.
 class CborDateTimeString extends CborString implements CborDateTime {
   CborDateTimeString(
-    DateTime value, [
+    DateTime value, {
     List<int> tags = const [CborTag.dateTimeString],
-  ])  : _datetime = value,
-        super(value.toIso8601String(), tags);
+  })  : _datetime = value,
+        super(value.toIso8601String(), tags: tags);
 
   CborDateTimeString.fromString(
-    String str, [
+    String str, {
     List<int> tags = const [CborTag.dateTimeString],
-  ]) : super(str, tags);
+  }) : super(str, tags: tags);
 
   DateTime? _datetime;
 
@@ -162,15 +162,15 @@ class CborDateTimeString extends CborString implements CborDateTime {
 /// A CBOR string containing URI.
 class CborUri extends CborString {
   CborUri.fromString(
-    String value, [
+    String value, {
     List<int> tags = const [CborTag.uri],
-  ]) : super(value, tags);
+  }) : super(value, tags: tags);
 
   CborUri(
-    Uri value, [
+    Uri value, {
     List<int> tags = const [CborTag.uri],
-  ])  : _value = value,
-        super(value.toString(), tags);
+  })  : _value = value,
+        super(value.toString(), tags: tags);
 
   Uri? _value;
 
@@ -202,15 +202,15 @@ class CborUri extends CborString {
 /// A CBOR string containing a base 64 value.
 class CborBase64 extends CborString {
   CborBase64.fromString(
-    String value, [
+    String value, {
     List<int> tags = const [CborTag.base64],
-  ]) : super(value, tags);
+  }) : super(value, tags: tags);
 
   CborBase64.encode(
-    List<int> bytes, [
+    List<int> bytes, {
     List<int> tags = const [CborTag.base64],
-  ])  : _value = bytes,
-        super(base64.encode(bytes), tags);
+  })  : _value = bytes,
+        super(base64.encode(bytes), tags: tags);
 
   List<int>? _value;
 
@@ -242,15 +242,15 @@ class CborBase64 extends CborString {
 /// A CBOR string containing a base 64 url safe value.
 class CborBase64Url extends CborString {
   CborBase64Url.fromString(
-    String value, [
+    String value, {
     List<int> tags = const [CborTag.base64Url],
-  ]) : super(value, tags);
+  }) : super(value, tags: tags);
 
   CborBase64Url.encode(
-    List<int> bytes, [
+    List<int> bytes, {
     List<int> tags = const [CborTag.base64Url],
-  ])  : _value = bytes,
-        super(base64Url.encode(bytes), tags);
+  })  : _value = bytes,
+        super(base64Url.encode(bytes), tags: tags);
 
   List<int>? _value;
 
@@ -284,9 +284,9 @@ class CborBase64Url extends CborString {
 /// Does not provide any additional functionality currently.
 class CborRegex extends CborString {
   CborRegex.fromString(
-    String data, [
+    String data, {
     List<int> tags = const [CborTag.regex],
-  ]) : super(data, tags);
+  }) : super(data, tags: tags);
 }
 
 /// A CBOR string containing a regular expression.
@@ -294,7 +294,7 @@ class CborRegex extends CborString {
 /// Does not provide any additional functionality currently.
 class CborMime extends CborString {
   CborMime.fromString(
-    String data, [
+    String data, {
     List<int> tags = const [CborTag.mime],
-  ]) : super(data, tags);
+  }) : super(data, tags: tags);
 }

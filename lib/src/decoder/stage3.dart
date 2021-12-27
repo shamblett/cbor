@@ -103,7 +103,7 @@ class CborSink extends Sink<RawValueTagged> {
               }
 
               builder = _ValueBuilder(
-                  CborSimpleValue(data.header.info.toInt(), data.tags));
+                  CborSimpleValue(data.header.info.toInt(), tags: data.tags));
             } else if (_strict) {
               throw CborDecodeException('Bad CBOR value.', data.offset);
             } else {
@@ -156,25 +156,25 @@ CborString _createString(bool strict, String data, int offset, List<int> tags) {
   final CborString cbor;
   switch (_parseTags<CborString>(strict, offset, tags)) {
     case CborTag.dateTimeString:
-      cbor = CborDateTimeString.fromString(data, tags);
+      cbor = CborDateTimeString.fromString(data, tags: tags);
       break;
     case CborTag.uri:
-      cbor = CborUri.fromString(data, tags);
+      cbor = CborUri.fromString(data, tags: tags);
       break;
     case CborTag.base64Url:
-      cbor = CborBase64Url.fromString(data, tags);
+      cbor = CborBase64Url.fromString(data, tags: tags);
       break;
     case CborTag.base64:
-      cbor = CborBase64.fromString(data, tags);
+      cbor = CborBase64.fromString(data, tags: tags);
       break;
     case CborTag.regex:
-      cbor = CborRegex.fromString(data, tags);
+      cbor = CborRegex.fromString(data, tags: tags);
       break;
     case CborTag.mime:
-      cbor = CborMime.fromString(data, tags);
+      cbor = CborMime.fromString(data, tags: tags);
       break;
     default:
-      cbor = CborString(data, tags);
+      cbor = CborString(data, tags: tags);
       break;
   }
   if (strict) {
@@ -192,11 +192,11 @@ CborBytes _createBytes(
     bool strict, List<int> data, int offset, List<int> tags) {
   switch (_parseTags<CborBytes>(strict, offset, tags)) {
     case CborTag.positiveBignum:
-      return CborBigInt.fromBytes(data, tags);
+      return CborBigInt.fromBytes(data, tags: tags);
     case CborTag.negativeBignum:
-      return CborBigInt.fromNegativeBytes(data, tags);
+      return CborBigInt.fromNegativeBytes(data, tags: tags);
     default:
-      return CborBytes(data, tags);
+      return CborBytes(data, tags: tags);
   }
 }
 
@@ -209,7 +209,7 @@ CborInt _createInt(bool strict, RawValueTagged raw) {
 
   if (_parseTags<CborInt>(strict, raw.offset, raw.tags) ==
       CborTag.epochDateTime) {
-    return CborDateTimeInt.fromSecondsSinceEpoch(data.toInt(), raw.tags);
+    return CborDateTimeInt.fromSecondsSinceEpoch(data.toInt(), tags: raw.tags);
   } else if (data.bitLength < 53) {
     return CborSmallInt(data.toInt());
   } else {
@@ -236,9 +236,9 @@ CborFloat _createFloat(bool strict, RawValueTagged raw) {
 
   if (_parseTags<CborFloat>(strict, raw.offset, raw.tags) ==
       CborTag.epochDateTime) {
-    return CborDateTimeFloat.fromSecondsSinceEpoch(value, raw.tags);
+    return CborDateTimeFloat.fromSecondsSinceEpoch(value, tags: raw.tags);
   } else {
-    return CborFloat(value, raw.tags);
+    return CborFloat(value, tags: raw.tags);
   }
 }
 
@@ -258,7 +258,11 @@ CborList _createList(bool strict, RawValueTagged raw, List<CborValue> items) {
         break;
       }
 
-      return CborDecimalFraction(exponent, mantissa, raw.tags);
+      return CborDecimalFraction(
+        exponent: exponent,
+        mantissa: mantissa,
+        tags: raw.tags,
+      );
 
     case CborTag.bigFloat:
       if (items.length != 2) {
@@ -274,10 +278,14 @@ CborList _createList(bool strict, RawValueTagged raw, List<CborValue> items) {
         break;
       }
 
-      return CborBigFloat(exponent, mantissa, raw.tags);
+      return CborBigFloat(
+        exponent: exponent,
+        mantissa: mantissa,
+        tags: raw.tags,
+      );
   }
 
-  return CborList(items, raw.tags);
+  return CborList(items, tags: raw.tags);
 }
 
 CborMap _createMap(bool strict, RawValueTagged raw, List<CborValue> items) {
@@ -287,25 +295,25 @@ CborMap _createMap(bool strict, RawValueTagged raw, List<CborValue> items) {
     throw CborDecodeException('Map has more keys than values', raw.offset);
   }
 
-  return CborMap.fromEntries(
-      items.chunks(2).map((x) => MapEntry(x[0], x[1])), raw.tags);
+  return CborMap.fromEntries(items.chunks(2).map((x) => MapEntry(x[0], x[1])),
+      tags: raw.tags);
 }
 
 CborBool _createBool(bool strict, RawValueTagged raw) {
   final value = raw.header.additionalInfo != 20;
 
   _parseTags<CborBool>(strict, raw.offset, raw.tags);
-  return CborBool(value, raw.tags);
+  return CborBool(value, tags: raw.tags);
 }
 
 CborUndefined _createUndefined(bool strict, RawValueTagged raw) {
   _parseTags<CborUndefined>(strict, raw.offset, raw.tags);
-  return CborUndefined(raw.tags);
+  return CborUndefined(tags: raw.tags);
 }
 
 CborNull _createNull(bool strict, RawValueTagged raw) {
   _parseTags<CborNull>(strict, raw.offset, raw.tags);
-  return CborNull(raw.tags);
+  return CborNull(tags: raw.tags);
 }
 
 int _parseTags<T>(bool strict, int offset, List<int> tags,

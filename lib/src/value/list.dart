@@ -16,34 +16,33 @@ import 'internal.dart';
 /// A CBOR array.
 abstract class CborList implements List<CborValue>, CborValue {
   /// Create a new [CborList] from a view of the given list.
-  const factory CborList([List<CborValue> items, List<int> tags]) = _CborList;
+  const factory CborList(List<CborValue> items, {List<int> tags}) = _CborList;
 
   /// Create a new [CborList] from values.
   ///
   /// The resulting list is growable.
-  factory CborList.of(Iterable<CborValue> elements, [List<int> tags]) =
+  factory CborList.of(Iterable<CborValue> elements, {List<int> tags}) =
       _CborList.of;
 
   /// Create a new [CborList] from generator.
   ///
   /// The resulting list is growable.
   factory CborList.generate(int len, CborValue Function(int index) f,
-      [List<int> tags]) = _CborList.generate;
+      {List<int> tags}) = _CborList.generate;
 }
 
 class _CborList extends DelegatingList<CborValue>
     with CborValueMixin
     implements CborList {
-  const _CborList([List<CborValue> items = const [], this.tags = const []])
-      : super(items);
+  const _CborList(List<CborValue> items, {this.tags = const []}) : super(items);
 
-  _CborList.of(Iterable<CborValue> elements, [this.tags = const []])
+  _CborList.of(Iterable<CborValue> elements, {this.tags = const []})
       : super(List.of(elements));
   _CborList.generate(
     int len,
-    CborValue Function(int index) f, [
+    CborValue Function(int index) f, {
     this.tags = const [],
-  ]) : super(List.generate(len, f));
+  }) : super(List.generate(len, f));
 
   /// <nodoc>
   @internal
@@ -155,8 +154,11 @@ class CborEncodeDefiniteLengthList with CborValueMixin implements CborValue {
 
 /// A CBOR fraction (m * (10 ** e)).
 abstract class CborDecimalFraction extends CborList {
-  factory CborDecimalFraction(CborInt exponent, CborInt mantissa,
-      [List<int> tags]) = _CborDecimalFraction;
+  factory CborDecimalFraction({
+    required CborInt exponent,
+    required CborInt mantissa,
+    List<int> tags,
+  }) = _CborDecimalFraction;
 
   CborInt get exponent;
 
@@ -166,11 +168,11 @@ abstract class CborDecimalFraction extends CborList {
 class _CborDecimalFraction extends DelegatingList<CborValue>
     with CborValueMixin
     implements CborDecimalFraction {
-  _CborDecimalFraction(
-    this.exponent,
-    this.mantissa, [
+  _CborDecimalFraction({
+    required this.exponent,
+    required this.mantissa,
     this.tags = const [CborTag.decimalFraction],
-  ]) : super(List.of([exponent, mantissa], growable: false));
+  }) : super(List.of([exponent, mantissa], growable: false));
 
   @override
   final CborInt exponent;
@@ -200,11 +202,11 @@ class _CborDecimalFraction extends DelegatingList<CborValue>
 
 /// A CBOR fraction (m * (2 ** e)).
 abstract class CborBigFloat extends CborList {
-  factory CborBigFloat(
-    CborInt exponent,
-    CborInt mantissa, [
+  factory CborBigFloat({
+    required CborInt exponent,
+    required CborInt mantissa,
     List<int> tags,
-  ]) = _CborBigFloat;
+  }) = _CborBigFloat;
 
   CborInt get exponent;
   CborInt get mantissa;
@@ -213,11 +215,11 @@ abstract class CborBigFloat extends CborList {
 class _CborBigFloat extends DelegatingList<CborValue>
     with CborValueMixin
     implements CborBigFloat {
-  _CborBigFloat(
-    this.exponent,
-    this.mantissa, [
+  _CborBigFloat({
+    required this.exponent,
+    required this.mantissa,
     this.tags = const [CborTag.bigFloat],
-  ]) : super(List.of([exponent, mantissa], growable: false));
+  }) : super(List.of([exponent, mantissa], growable: false));
 
   @override
   final CborInt exponent;
