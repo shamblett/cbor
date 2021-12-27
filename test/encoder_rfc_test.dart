@@ -245,6 +245,35 @@ void main() {
       ]);
     });
 
+    test('Tag (0) Date Time, parsed', () {
+      final encoded =
+          cbor.encode(CborDateTimeString(DateTime.utc(2013, 3, 21, 20, 4, 0)));
+      expect(encoded, [
+        0xc0,
+        0x74,
+        0x32,
+        0x30,
+        0x31,
+        0x33,
+        0x2d,
+        0x30,
+        0x33,
+        0x2d,
+        0x32,
+        0x31,
+        0x54,
+        0x32,
+        0x30,
+        0x3a,
+        0x30,
+        0x34,
+        0x3a,
+        0x30,
+        0x30,
+        0x5a
+      ]);
+    });
+
     test('Tag (1) Int', () {
       final encoded =
           cbor.encode(CborDateTimeInt.fromSecondsSinceEpoch(1363896240));
