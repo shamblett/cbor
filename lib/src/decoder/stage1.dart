@@ -5,6 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
@@ -140,7 +141,7 @@ class _Builder {
   }
 }
 
-class RawSink extends Sink<List<int>> {
+class RawSink extends ByteConversionSinkBase {
   RawSink(this._sink);
 
   final Reader _reader = Reader();
@@ -149,14 +150,14 @@ class RawSink extends Sink<List<int>> {
   _Builder? _next;
 
   @override
-  void add(List<int> data) {
-    _reader.add(data);
+  void addSlice(List<int> chunk, int start, int end, bool isLast) {
+    _reader.add(chunk, start, end);
 
     while (true) {
       if (_next != null) {
         final value = _next?.poll();
         if (value == null) {
-          return;
+          break;
         }
 
         _next = null;
@@ -168,7 +169,7 @@ class RawSink extends Sink<List<int>> {
       final header = _readHeader(_reader);
 
       if (header == null) {
-        return;
+        break;
       }
 
       if (header.additionalInfo != 31) {
@@ -180,6 +181,15 @@ class RawSink extends Sink<List<int>> {
 
       _sink.add(RawValue(header, start: offset, end: _reader.offset));
     }
+
+    if (isLast) {
+      close();
+    }
+  }
+
+  @override
+  void add(List<int> chunk) {
+    addSlice(chunk, 0, chunk.length, false);
   }
 
   @override
