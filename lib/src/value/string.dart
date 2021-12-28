@@ -16,7 +16,7 @@ import 'internal.dart';
 
 /// A CBOR string encoded in UTF-8.
 class CborString with CborValueMixin implements CborValue {
-  const CborString(this._string, [this.tags = const []]);
+  const CborString(this._string, {this.tags = const []});
 
   final String _string;
 
@@ -55,7 +55,7 @@ class CborString with CborValueMixin implements CborValue {
 class CborEncodeIndefiniteLengthString
     with CborValueMixin
     implements CborValue {
-  CborEncodeIndefiniteLengthString(this.items, [this.tags = const []]);
+  CborEncodeIndefiniteLengthString(this.items, {this.tags = const []});
 
   final List<String> items;
   @override
@@ -121,16 +121,23 @@ class CborEncodeDefiniteLengthString with CborValueMixin implements CborValue {
 
 /// A CBOR string which encodes a datetime.
 class CborDateTimeString extends CborString implements CborDateTime {
+  /// Create a date time string.
+  ///
+  /// If [timeZoneOffset] is not provided, the timezone for [value] is used.
+  ///
+  /// This will ommit second fraction if zero, and trim it depending on the
+  /// resolution.
   CborDateTimeString(
-    DateTime value, [
+    DateTime value, {
+    Duration? timeZoneOffset,
     List<int> tags = const [CborTag.dateTimeString],
-  ])  : _datetime = value,
-        super(value.toIso8601String(), tags);
+  })  : _datetime = value,
+        super(_toInternetIso8601String(value, timeZoneOffset), tags: tags);
 
   CborDateTimeString.fromString(
-    String str, [
+    String str, {
     List<int> tags = const [CborTag.dateTimeString],
-  ]) : super(str, tags);
+  }) : super(str, tags: tags);
 
   DateTime? _datetime;
 
@@ -157,20 +164,71 @@ class CborDateTimeString extends CborString implements CborDateTime {
     verify();
     return _datetime!;
   }
+
+  /// Will ommit milliseconds if it is 0.
+  ///
+  /// Will trim second fraction.
+  ///
+  /// Will add time zone.
+  static String _toInternetIso8601String(DateTime x, Duration? timeZoneOffset) {
+    if (timeZoneOffset == null) {
+      timeZoneOffset = x.timeZoneOffset;
+      x = x.toUtc();
+    }
+
+    final String y;
+    if (x.year.abs() < 9999) {
+      final ySign = x.year < 0 ? '-' : '';
+      y = ySign + x.year.abs().toString().padLeft(4, '0');
+    } else {
+      final ySign = x.year < 0 ? '-' : '+';
+      y = ySign + x.year.abs().toString().padLeft(6, '0');
+    }
+
+    final m = x.month.toString().padLeft(2, '0');
+    final d = x.day.toString().padLeft(2, '0');
+    final h = x.hour.toString().padLeft(2, '0');
+    final min = x.minute.toString().padLeft(2, '0');
+    final sec = x.second.toString().padLeft(2, '0');
+
+    final String secFraction;
+    if (x.millisecond == 0) {
+      secFraction = '';
+    } else {
+      final ms = x.millisecond.toString().padLeft(3, '0');
+      final us =
+          x.microsecond != 0 ? x.microsecond.toString().padLeft(3, '0') : '';
+      secFraction = '.$ms$us'.replaceAll(RegExp('0*\$'), '');
+    }
+
+    final String timeZone;
+    if (timeZoneOffset.inMinutes == 0) {
+      timeZone = 'Z';
+    } else {
+      final timeZoneTotalMin = timeZoneOffset.inMinutes.abs();
+      final timeZoneSign = !timeZoneOffset.isNegative ? '+' : '-';
+      final timeZoneHour = (timeZoneTotalMin ~/ 60).toString().padLeft(2, '0');
+      final timeZoneMin = (timeZoneTotalMin % 60).toString().padLeft(2, '0');
+
+      timeZone = '$timeZoneSign$timeZoneHour:$timeZoneMin';
+    }
+
+    return '$y-$m-${d}T$h:$min:$sec$secFraction$timeZone';
+  }
 }
 
 /// A CBOR string containing URI.
 class CborUri extends CborString {
   CborUri.fromString(
-    String value, [
+    String value, {
     List<int> tags = const [CborTag.uri],
-  ]) : super(value, tags);
+  }) : super(value, tags: tags);
 
   CborUri(
-    Uri value, [
+    Uri value, {
     List<int> tags = const [CborTag.uri],
-  ])  : _value = value,
-        super(value.toString(), tags);
+  })  : _value = value,
+        super(value.toString(), tags: tags);
 
   Uri? _value;
 
@@ -202,15 +260,15 @@ class CborUri extends CborString {
 /// A CBOR string containing a base 64 value.
 class CborBase64 extends CborString {
   CborBase64.fromString(
-    String value, [
+    String value, {
     List<int> tags = const [CborTag.base64],
-  ]) : super(value, tags);
+  }) : super(value, tags: tags);
 
   CborBase64.encode(
-    List<int> bytes, [
+    List<int> bytes, {
     List<int> tags = const [CborTag.base64],
-  ])  : _value = bytes,
-        super(base64.encode(bytes), tags);
+  })  : _value = bytes,
+        super(base64.encode(bytes), tags: tags);
 
   List<int>? _value;
 
@@ -242,15 +300,15 @@ class CborBase64 extends CborString {
 /// A CBOR string containing a base 64 url safe value.
 class CborBase64Url extends CborString {
   CborBase64Url.fromString(
-    String value, [
+    String value, {
     List<int> tags = const [CborTag.base64Url],
-  ]) : super(value, tags);
+  }) : super(value, tags: tags);
 
   CborBase64Url.encode(
-    List<int> bytes, [
+    List<int> bytes, {
     List<int> tags = const [CborTag.base64Url],
-  ])  : _value = bytes,
-        super(base64Url.encode(bytes), tags);
+  })  : _value = bytes,
+        super(base64Url.encode(bytes), tags: tags);
 
   List<int>? _value;
 
@@ -284,9 +342,9 @@ class CborBase64Url extends CborString {
 /// Does not provide any additional functionality currently.
 class CborRegex extends CborString {
   CborRegex.fromString(
-    String data, [
+    String data, {
     List<int> tags = const [CborTag.regex],
-  ]) : super(data, tags);
+  }) : super(data, tags: tags);
 }
 
 /// A CBOR string containing a regular expression.
@@ -294,7 +352,7 @@ class CborRegex extends CborString {
 /// Does not provide any additional functionality currently.
 class CborMime extends CborString {
   CborMime.fromString(
-    String data, [
+    String data, {
     List<int> tags = const [CborTag.mime],
-  ]) : super(data, tags);
+  }) : super(data, tags: tags);
 }

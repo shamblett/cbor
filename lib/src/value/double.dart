@@ -16,7 +16,7 @@ import 'internal.dart';
 ///
 /// Encoded to the least precision which can represent the value losslessly.
 class CborFloat with CborValueMixin implements CborValue {
-  const CborFloat(this.value, [this.tags = const []]);
+  const CborFloat(this.value, {this.tags = const []});
 
   final double value;
 
@@ -76,14 +76,14 @@ class CborFloat with CborValueMixin implements CborValue {
 /// A CBOR date time encoded as seconds since epoch in a float.
 class CborDateTimeFloat extends CborFloat implements CborDateTime {
   const CborDateTimeFloat.fromSecondsSinceEpoch(
-    double amount, [
+    double amount, {
     List<int> tags = const [CborTag.epochDateTime],
-  ]) : super(amount, tags);
+  }) : super(amount, tags: tags);
 
   CborDateTimeFloat(
-    DateTime value, [
+    DateTime value, {
     List<int> tags = const [CborTag.epochDateTime],
-  ]) : super(value.millisecondsSinceEpoch / 1000, tags);
+  }) : super(value.millisecondsSinceEpoch / 1000, tags: tags);
 
   /// <nodoc>
   @internal
