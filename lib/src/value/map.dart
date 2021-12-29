@@ -9,39 +9,38 @@ import 'internal.dart';
 /// A CBOR map.
 abstract class CborMap implements Map<CborValue, CborValue>, CborValue {
   /// Create a new [CborMap] from a view of the given map.
-  const factory CborMap([Map<CborValue, CborValue> items, List<int> tags]) =
+  const factory CborMap(Map<CborValue, CborValue> items, {List<int> tags}) =
       _CborMap;
 
   /// Create a new [CborMap] as a copy of the given map.
-  factory CborMap.of(Map<CborValue, CborValue> items, [List<int> tags]) =
+  factory CborMap.of(Map<CborValue, CborValue> items, {List<int> tags}) =
       _CborMap.of;
 
   /// Create a new [CborMap] from entries.
   factory CborMap.fromEntries(Iterable<MapEntry<CborValue, CborValue>> entries,
-      [List<int> tags]) = _CborMap.fromEntries;
+      {List<int> tags}) = _CborMap.fromEntries;
 
   /// Create a new [CborMap] from key and value.
   factory CborMap.fromIterables(
       Iterable<CborValue> key, Iterable<CborValue> values,
-      [List<int> tags]) = _CborMap.fromIterables;
+      {List<int> tags}) = _CborMap.fromIterables;
 }
 
 class _CborMap extends DelegatingMap<CborValue, CborValue>
     with CborValueMixin
     implements CborMap {
-  const _CborMap(
-      [Map<CborValue, CborValue> items = const {}, this.tags = const []])
+  const _CborMap(Map<CborValue, CborValue> items, {this.tags = const []})
       : super(items);
-  _CborMap.of(Map<CborValue, CborValue> items, [this.tags = const []])
+  _CborMap.of(Map<CborValue, CborValue> items, {this.tags = const []})
       : super(Map.of(items));
   _CborMap.fromEntries(Iterable<MapEntry<CborValue, CborValue>> entries,
-      [this.tags = const []])
+      {this.tags = const []})
       : super(Map.fromEntries(entries));
   _CborMap.fromIterables(
     Iterable<CborValue> keys,
-    Iterable<CborValue> values, [
+    Iterable<CborValue> values, {
     this.tags = const [],
-  ]) : super(Map.fromIterables(keys, values));
+  }) : super(Map.fromIterables(keys, values));
 
   /// <nodoc>
   @internal

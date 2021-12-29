@@ -8,7 +8,7 @@ import 'internal.dart';
 /// A CBOR simple value without any
 /// additional content.
 class CborSimpleValue with CborValueMixin implements CborValue {
-  const CborSimpleValue(this.simpleValue, [this.tags = const []]);
+  const CborSimpleValue(this.simpleValue, {this.tags = const []});
 
   final int simpleValue;
   @override
@@ -40,7 +40,7 @@ class CborSimpleValue with CborValueMixin implements CborValue {
 
 /// A CBOR null value.
 class CborNull extends CborSimpleValue {
-  const CborNull([List<int> tags = const []]) : super(22, tags);
+  const CborNull({List<int> tags = const []}) : super(22, tags: tags);
 
   /// <nodoc>
   @internal
@@ -52,7 +52,7 @@ class CborNull extends CborSimpleValue {
 
 /// A CBOR undefined value.
 class CborUndefined extends CborSimpleValue {
-  const CborUndefined([List<int> tags = const []]) : super(23, tags);
+  const CborUndefined({List<int> tags = const []}) : super(23, tags: tags);
 
   /// <nodoc>
   @internal
@@ -64,8 +64,8 @@ class CborUndefined extends CborSimpleValue {
 
 /// A CBOR boolean value.
 class CborBool extends CborSimpleValue {
-  const CborBool(this.value, [List<int> tags = const []])
-      : super(!value ? 20 : 21, tags);
+  const CborBool(this.value, {List<int> tags = const []})
+      : super(!value ? 20 : 21, tags: tags);
 
   /// <nodoc>
   @internal

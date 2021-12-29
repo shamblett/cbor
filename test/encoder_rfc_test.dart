@@ -245,6 +245,35 @@ void main() {
       ]);
     });
 
+    test('Tag (0) Date Time, parsed', () {
+      final encoded =
+          cbor.encode(CborDateTimeString(DateTime.utc(2013, 3, 21, 20, 4, 0)));
+      expect(encoded, [
+        0xc0,
+        0x74,
+        0x32,
+        0x30,
+        0x31,
+        0x33,
+        0x2d,
+        0x30,
+        0x33,
+        0x2d,
+        0x32,
+        0x31,
+        0x54,
+        0x32,
+        0x30,
+        0x3a,
+        0x30,
+        0x34,
+        0x3a,
+        0x30,
+        0x30,
+        0x5a
+      ]);
+    });
+
     test('Tag (1) Int', () {
       final encoded =
           cbor.encode(CborDateTimeInt.fromSecondsSinceEpoch(1363896240));
@@ -261,13 +290,13 @@ void main() {
 
     test('Tag (23) bytes', () {
       final encoded = cbor.encode(
-          CborBytes([1, 2, 3, 4], [CborTag.expectedConversionToBase16]));
+          CborBytes([1, 2, 3, 4], tags: [CborTag.expectedConversionToBase16]));
       expect(encoded, [0xd7, 0x44, 0x01, 0x02, 0x03, 0x04]);
     });
 
     test('Tag (24) bytes', () {
-      final encoded = cbor
-          .encode(CborBytes([100, 73, 69, 84, 70], [CborTag.encodedCborData]));
+      final encoded = cbor.encode(
+          CborBytes([100, 73, 69, 84, 70], tags: [CborTag.encodedCborData]));
       expect(encoded, [0xd8, 0x18, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46]);
     });
 
@@ -378,7 +407,7 @@ void main() {
     });
 
     test('Array empty', () {
-      final encoded = cbor.encode(CborList());
+      final encoded = cbor.encode(CborList([]));
       expect(encoded, [0x80]);
     });
 
@@ -443,7 +472,7 @@ void main() {
     });
 
     test('{}', () {
-      final encoded = cbor.encode(CborMap());
+      final encoded = cbor.encode(CborMap({}));
       expect(encoded, [0xa0]);
     });
 
@@ -535,7 +564,7 @@ void main() {
     });
 
     test('[_ ]', () {
-      final encoded = cbor.encode(CborEncodeIndefiniteLengthList(CborList()));
+      final encoded = cbor.encode(CborEncodeIndefiniteLengthList(CborList([])));
       expect(encoded, [0x9f, 0xff]);
     });
 

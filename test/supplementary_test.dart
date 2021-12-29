@@ -19,7 +19,7 @@ void main() {
         CborString('n1'): CborSmallInt(-1),
         CborString('ascii'): CborString('hello'),
         CborString('nil'): CborNull(),
-        CborString('empty_arr'): CborList(),
+        CborString('empty_arr'): CborList([]),
         CborString('p65535'): CborSmallInt(65535),
         CborString('bin'): CborBytes([0x31, 0x32, 0x55]),
         CborString('n2G'): CborSmallInt(-2147483648),
