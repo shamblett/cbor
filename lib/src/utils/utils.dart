@@ -26,6 +26,27 @@ extension IterableExt<T> on Iterable<T> {
   }
 }
 
+extension SinkExt<T> on Sink<T> {
+  Sink<U> map<U>(T Function(U) conversion) => _MapSink<T, U>(conversion, this);
+}
+
+class _MapSink<T, U> extends Sink<U> {
+  _MapSink(this.map, this.sink);
+
+  final T Function(U) map;
+  final Sink<T> sink;
+
+  @override
+  void add(U data) {
+    sink.add(map(data));
+  }
+
+  @override
+  void close() {
+    sink.close();
+  }
+}
+
 /// Returns whether T is a subtype of U.
 bool isSubtype<T, U>() => _Helper<T>() is _Helper<U>;
 

@@ -15,16 +15,28 @@ class CborCodec extends Codec<CborValue, List<int>> {
   ///
   /// Currently strict mode is on by default, but this may change in the
   /// future. If you want to rely on this, explicitly add the argument.
-  const CborCodec({bool strict = true})
-      : decoder = strict
-            ? const CborDecoder(strict: true)
-            : const CborDecoder(strict: false);
+  const CborCodec({bool strict = true}) : _strict = strict;
+
+  final bool _strict;
 
   @override
-  final CborDecoder decoder;
+  CborDecoder get decoder {
+    if (_strict) {
+      return const CborDecoder(strict: true);
+    } else {
+      return const CborDecoder(strict: false);
+    }
+  }
 
   @override
   final CborEncoder encoder = const CborEncoder();
+
+  @override
+  CborValue decode(List<int> input, {bool? strict}) {
+    strict ??= _strict;
+
+    return CborDecoder(strict: strict).convert(input);
+  }
 }
 
 /// Alias for [cbor.encode].
