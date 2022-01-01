@@ -106,12 +106,12 @@ class _CborEncodeIndefiniteLengthListImpl
 
   @override
   Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
-    throw UnimplementedError();
+    return inner.toJsonInternal(cyclicCheck, o);
   }
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    throw UnimplementedError();
+    return inner.toObjectInternal(cyclicCheck, o);
   }
 
   @override
@@ -151,12 +151,12 @@ class _CborEncodeDefiniteLengthListImpl
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    throw UnimplementedError();
+    return inner.toObjectInternal(cyclicCheck, o);
   }
 
   @override
   Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
-    throw UnimplementedError();
+    return inner.toJsonInternal(cyclicCheck, o);
   }
 
   @override

@@ -82,12 +82,14 @@ class _CborEncodeIndefiniteLengthBytesImpl
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    throw UnimplementedError();
+    return CborBytes(items.flattened.toList(), tags: tags)
+        .toObjectInternal(cyclicCheck, o);
   }
 
   @override
   Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
-    throw UnimplementedError();
+    return CborBytes(items.flattened.toList(), tags: tags)
+        .toJsonInternal(cyclicCheck, o);
   }
 
   @override
@@ -121,12 +123,12 @@ class _CborEncodeDefiniteLengthBytesImpl
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    throw UnimplementedError();
+    return inner.toObjectInternal(cyclicCheck, o);
   }
 
   @override
   Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
-    throw UnimplementedError();
+    return inner.toJsonInternal(cyclicCheck, o);
   }
 
   @override

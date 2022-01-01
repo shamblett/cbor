@@ -78,7 +78,8 @@ class _CborEncodeIndefiniteLengthStringImpl
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    throw UnimplementedError();
+    return CborString(items.join(), tags: tags)
+        .toObjectInternal(cyclicCheck, o);
   }
 
   @override
@@ -96,7 +97,7 @@ class _CborEncodeIndefiniteLengthStringImpl
 
   @override
   Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
-    throw UnimplementedError();
+    return CborString(items.join(), tags: tags).toJsonInternal(cyclicCheck, o);
   }
 }
 
@@ -117,7 +118,12 @@ class _CborEncodeDefiniteLengthStringImpl
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    throw UnimplementedError();
+    return inner.toObjectInternal(cyclicCheck, o);
+  }
+
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    return inner.toJsonInternal(cyclicCheck, o);
   }
 
   @override
@@ -133,11 +139,6 @@ class _CborEncodeDefiniteLengthStringImpl
 
   @override
   List<int> get tags => inner.tags;
-
-  @override
-  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
-    throw UnimplementedError();
-  }
 }
 
 /// A CBOR string which encodes a datetime.
