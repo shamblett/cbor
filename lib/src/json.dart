@@ -4,7 +4,13 @@ import 'package:cbor/cbor.dart';
 
 import 'utils/utils.dart';
 
+/// Encodes CBOR into JSON.
+///
+/// If the keys for a map are not strings, they are encoded recursively
+/// as JSON, and the string is used.
 class CborJsonEncoder extends Converter<CborValue, String> {
+  /// [substituteValue] will be used for values that cannot be encoded, such
+  /// as [double.infinity], [double.nan], [CborUndefined].
   const CborJsonEncoder({
     Object? substituteValue,
   }) : _substituteValue = substituteValue;

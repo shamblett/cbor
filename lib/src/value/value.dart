@@ -223,6 +223,12 @@ abstract class CborValue {
   });
 
   /// Transform this into a JSON encodable value.
+  ///
+  /// [substituteValue] will be used for values that cannot be encoded, such
+  /// as [double.infinity], [double.nan], [CborUndefined].
+  ///
+  /// If the keys for a map are not strings, they are encoded recursively
+  /// as JSON, and the string is used.
   Object? toJson({
     Object? substituteValue,
   });
