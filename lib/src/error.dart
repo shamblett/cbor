@@ -1,3 +1,10 @@
+/*
+ * Package : Cbor
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 12/12/2016
+ * Copyright :  S.Hamblett
+ */
+
 /// An exception raised when decoding.
 class CborDecodeException implements Exception {
   const CborDecodeException(this.message, [this.offset]);

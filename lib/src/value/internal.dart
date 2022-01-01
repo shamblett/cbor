@@ -12,7 +12,6 @@ import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
 import '../utils/info.dart';
-import '../utils/utils.dart';
 
 class ToObjectOptions {
   ToObjectOptions({

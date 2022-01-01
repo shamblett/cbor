@@ -6,7 +6,6 @@
  */
 
 import 'package:cbor/cbor.dart';
-import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
 import '../utils/info.dart';

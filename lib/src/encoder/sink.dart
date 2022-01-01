@@ -1,3 +1,10 @@
+/*
+ * Package : Cbor
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 12/12/2016
+ * Copyright :  S.Hamblett
+ */
+
 import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';

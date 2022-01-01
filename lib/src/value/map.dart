@@ -1,8 +1,14 @@
+/*
+ * Package : Cbor
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 12/12/2016
+ * Copyright :  S.Hamblett
+ */
+
 import 'dart:convert';
 
 import 'package:cbor/cbor.dart';
 import 'package:collection/collection.dart';
-import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
 import '../utils/info.dart';
