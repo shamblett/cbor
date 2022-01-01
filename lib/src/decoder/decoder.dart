@@ -28,6 +28,12 @@ import 'stage3.dart';
 
 /// A CBOR decoder.
 ///
+/// There is a strict mode for decoding that aims to catch any ill-formed input,
+/// but one can opt-out and the decoder will try to ignore errors.
+///
+/// Still, if the input is too ill-formed, the decoder will throw, so make sure
+/// to always wrap your decoding with `try` if you are taking user input.
+///
 /// The CBOR decoder will always throw [CborDecodeException] when:
 ///
 /// * An invalid value for additional info is provided, or
@@ -43,9 +49,12 @@ import 'stage3.dart';
 /// * A CBOR `break` is encountered outside a indefinite length item, or
 /// * Incompatible tags are used, or
 /// * When taking a tag in consideration, the format of a value is incorrect
-///   (for example, a [CborDateTimeString] is not in date time format).
+///   (for example, a [CborDateTimeString] is not in date time format). (1)
 ///
 /// When not in [strict] mode, these errors will be ignored.
+///
+/// (1) Currently some checks are still not implemented, and the strict mode
+/// may pass incorrect data that will fail in future patches.
 class CborDecoder extends Converter<List<int>, CborValue> {
   /// Create a CBOR decoder.
   ///

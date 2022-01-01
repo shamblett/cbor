@@ -39,12 +39,12 @@ class CborCodec extends Codec<CborValue, List<int>> {
   }
 }
 
-/// Alias for [cbor.encode].
+/// Alias for `cbor.encode`.
 List<int> cborEncode(CborValue value) {
   return cbor.encode(value);
 }
 
-/// Alias for [cbor.decode].
+/// Alias for `cbor.decode`.
 CborValue cborDecode(List<int> value) {
   return cbor.decode(value);
 }
