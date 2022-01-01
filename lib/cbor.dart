@@ -12,5 +12,6 @@ export 'src/decoder/decoder.dart';
 export 'src/decoder/pretty_print.dart';
 export 'src/encoder/encoder.dart';
 export 'src/error.dart';
+export 'src/json.dart';
 export 'src/simple.dart';
 export 'src/value/value.dart';

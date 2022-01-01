@@ -18,9 +18,9 @@ import 'internal.dart';
 /// they are converted to [BigInt].
 ///
 /// If the incoming value has less than 53 bits, it is [CborSmallInt].
-abstract class CborInt with CborValueMixin implements CborValue {
+abstract class CborInt extends CborValue {
   factory CborInt(BigInt value, {List<int>? tags}) {
-    if (value.bitLength < 53) {
+    if (value.isValidInt) {
       return CborSmallInt(value.toInt(), tags: tags ?? const []);
     }
 
@@ -43,9 +43,16 @@ abstract class CborInt with CborValueMixin implements CborValue {
 }
 
 /// A CBOR integer which can be represented losslessly as [int].
-class CborSmallInt with CborValueMixin implements CborInt {
-  const CborSmallInt(this.value, {this.tags = const []});
+abstract class CborSmallInt extends CborInt {
+  const factory CborSmallInt(int value, {List<int> tags}) = _CborSmallIntImpl;
 
+  int get value;
+}
+
+class _CborSmallIntImpl with CborValueMixin implements CborSmallInt {
+  const _CborSmallIntImpl(this.value, {this.tags = const []});
+
+  @override
   final int value;
 
   @override
@@ -62,16 +69,21 @@ class CborSmallInt with CborValueMixin implements CborInt {
   @override
   final List<int> tags;
 
-  /// <nodoc>
-  @internal
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
     return value;
   }
 
-  /// <nodoc>
   @override
-  @internal
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    if (value.bitLength < 53) {
+      return value;
+    } else {
+      return CborBigInt(BigInt.from(value)).toJsonInternal(cyclicCheck, o);
+    }
+  }
+
+  @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
@@ -102,15 +114,16 @@ class _LargeInt with CborValueMixin implements CborInt {
   @override
   final List<int> tags;
 
-  /// <nodoc>
-  @internal
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
     return value;
   }
 
-  /// <nodoc>
-  @internal
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    return CborBigInt(value).toJsonInternal(cyclicCheck, o);
+  }
+
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
@@ -124,8 +137,18 @@ class _LargeInt with CborValueMixin implements CborInt {
 }
 
 /// A CBOR datetieme encoded as seconds since epoch.
-class CborDateTimeInt extends CborSmallInt implements CborDateTime {
-  CborDateTimeInt(
+abstract class CborDateTimeInt extends CborSmallInt implements CborDateTime {
+  factory CborDateTimeInt(DateTime value, {List<int> tags}) =
+      _CborDateTimeIntImpl;
+
+  const factory CborDateTimeInt.fromSecondsSinceEpoch(int value,
+      {List<int> tags}) = _CborDateTimeIntImpl.fromSecondsSinceEpoch;
+}
+
+/// A CBOR datetieme encoded as seconds since epoch.
+class _CborDateTimeIntImpl extends _CborSmallIntImpl
+    implements CborDateTimeInt {
+  _CborDateTimeIntImpl(
     DateTime value, {
     List<int> tags = const [CborTag.epochDateTime],
   }) : super(
@@ -133,13 +156,11 @@ class CborDateTimeInt extends CborSmallInt implements CborDateTime {
           tags: tags,
         );
 
-  const CborDateTimeInt.fromSecondsSinceEpoch(
+  const _CborDateTimeIntImpl.fromSecondsSinceEpoch(
     int value, {
     List<int> tags = const [CborTag.epochDateTime],
   }) : super(value, tags: tags);
 
-  /// <nodoc>
-  @internal
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
     if (o.parseDateTime) {

@@ -7,7 +7,6 @@
 
 import 'package:cbor/cbor.dart';
 import 'package:ieee754/ieee754.dart';
-import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
 import 'internal.dart';
@@ -15,11 +14,17 @@ import 'internal.dart';
 /// A CBOR float.
 ///
 /// Encoded to the least precision which can represent the value losslessly.
-class CborFloat with CborValueMixin implements CborValue {
-  const CborFloat(this.value, {this.tags = const []});
+abstract class CborFloat extends CborValue {
+  const factory CborFloat(double value, {List<int> tags}) = _CborFloatImpl;
 
+  double get value;
+}
+
+class _CborFloatImpl with CborValueMixin implements CborFloat {
+  const _CborFloatImpl(this.value, {this.tags = const []});
+
+  @override
   final double value;
-
   @override
   String toString() => value.toString();
   @override
@@ -29,9 +34,7 @@ class CborFloat with CborValueMixin implements CborValue {
   @override
   final List<int> tags;
 
-  /// <nodoc>
   @override
-  @internal
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
@@ -65,28 +68,42 @@ class CborFloat with CborValueMixin implements CborValue {
     }
   }
 
-  /// <nodoc>
-  @internal
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
     return value;
   }
+
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    if (value.isFinite) {
+      return value;
+    } else {
+      return o.substituteValue;
+    }
+  }
 }
 
 /// A CBOR date time encoded as seconds since epoch in a float.
-class CborDateTimeFloat extends CborFloat implements CborDateTime {
-  const CborDateTimeFloat.fromSecondsSinceEpoch(
+abstract class CborDateTimeFloat extends CborFloat implements CborDateTime {
+  const factory CborDateTimeFloat.fromSecondsSinceEpoch(double amount,
+      {List<int> tags}) = _CborDateTimeFloatImpl.fromSecondsSinceEpoch;
+
+  factory CborDateTimeFloat(DateTime value, {List<int> tags}) =
+      _CborDateTimeFloatImpl;
+}
+
+class _CborDateTimeFloatImpl extends _CborFloatImpl
+    implements CborDateTimeFloat {
+  const _CborDateTimeFloatImpl.fromSecondsSinceEpoch(
     double amount, {
     List<int> tags = const [CborTag.epochDateTime],
   }) : super(amount, tags: tags);
 
-  CborDateTimeFloat(
+  _CborDateTimeFloatImpl(
     DateTime value, {
     List<int> tags = const [CborTag.epochDateTime],
   }) : super(value.millisecondsSinceEpoch / 1000, tags: tags);
 
-  /// <nodoc>
-  @internal
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
     if (o.parseDateTime) {
