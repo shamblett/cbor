@@ -47,6 +47,60 @@ class _MapSink<T, U> extends Sink<U> {
   }
 }
 
+extension DateTimeExtension on DateTime {
+  /// Will ommit milliseconds if it is 0.
+  ///
+  /// Will trim second fraction.
+  ///
+  /// Will add time zone.
+  String toInternetIso8601String(Duration? timeZoneOffset) {
+    var x = this;
+    if (timeZoneOffset == null) {
+      timeZoneOffset = x.timeZoneOffset;
+      x = x.toUtc();
+    }
+
+    final String y;
+    if (x.year.abs() < 9999) {
+      final ySign = x.year < 0 ? '-' : '';
+      y = ySign + x.year.abs().toString().padLeft(4, '0');
+    } else {
+      final ySign = x.year < 0 ? '-' : '+';
+      y = ySign + x.year.abs().toString().padLeft(6, '0');
+    }
+
+    final m = x.month.toString().padLeft(2, '0');
+    final d = x.day.toString().padLeft(2, '0');
+    final h = x.hour.toString().padLeft(2, '0');
+    final min = x.minute.toString().padLeft(2, '0');
+    final sec = x.second.toString().padLeft(2, '0');
+
+    final String secFraction;
+    if (x.millisecond == 0) {
+      secFraction = '';
+    } else {
+      final ms = x.millisecond.toString().padLeft(3, '0');
+      final us =
+          x.microsecond != 0 ? x.microsecond.toString().padLeft(3, '0') : '';
+      secFraction = '.$ms$us'.replaceAll(RegExp('0*\$'), '');
+    }
+
+    final String timeZone;
+    if (timeZoneOffset.inMinutes == 0) {
+      timeZone = 'Z';
+    } else {
+      final timeZoneTotalMin = timeZoneOffset.inMinutes.abs();
+      final timeZoneSign = !timeZoneOffset.isNegative ? '+' : '-';
+      final timeZoneHour = (timeZoneTotalMin ~/ 60).toString().padLeft(2, '0');
+      final timeZoneMin = (timeZoneTotalMin % 60).toString().padLeft(2, '0');
+
+      timeZone = '$timeZoneSign$timeZoneHour:$timeZoneMin';
+    }
+
+    return '$y-$m-${d}T$h:$min:$sec$secFraction$timeZone';
+  }
+}
+
 /// Returns whether T is a subtype of U.
 bool isSubtype<T, U>() => _Helper<T>() is _Helper<U>;
 

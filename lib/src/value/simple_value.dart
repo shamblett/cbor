@@ -1,5 +1,11 @@
+/*
+ * Package : Cbor
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 12/12/2016
+ * Copyright :  S.Hamblett
+ */
+
 import 'package:cbor/cbor.dart';
-import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
 import '../utils/info.dart';
@@ -7,10 +13,19 @@ import 'internal.dart';
 
 /// A CBOR simple value without any
 /// additional content.
-class CborSimpleValue with CborValueMixin implements CborValue {
-  const CborSimpleValue(this.simpleValue, {this.tags = const []});
+abstract class CborSimpleValue extends CborValue {
+  const factory CborSimpleValue(int simpleValue, {List<int> tags}) =
+      _CborSimpleValueImpl;
 
+  int get simpleValue;
+}
+
+class _CborSimpleValueImpl with CborValueMixin implements CborSimpleValue {
+  const _CborSimpleValueImpl(this.simpleValue, {this.tags = const []});
+
+  @override
   final int simpleValue;
+
   @override
   String toString() => simpleValue.toString();
   @override
@@ -21,58 +36,83 @@ class CborSimpleValue with CborValueMixin implements CborValue {
   @override
   final List<int> tags;
 
-  /// <nodoc>
-  @internal
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
     return simpleValue;
   }
 
-  /// <nodoc>
-  @internal
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
     sink.addHeaderInfo(7, Info.int(simpleValue));
   }
+
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    return o.substituteValue;
+  }
 }
 
 /// A CBOR null value.
-class CborNull extends CborSimpleValue {
-  const CborNull({List<int> tags = const []}) : super(22, tags: tags);
+abstract class CborNull extends CborSimpleValue {
+  const factory CborNull({List<int> tags}) = _CborNullImpl;
+}
 
-  /// <nodoc>
-  @internal
+class _CborNullImpl extends _CborSimpleValueImpl implements CborNull {
+  const _CborNullImpl({List<int> tags = const []}) : super(22, tags: tags);
+
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return null;
+  }
+
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
     return null;
   }
 }
 
 /// A CBOR undefined value.
-class CborUndefined extends CborSimpleValue {
-  const CborUndefined({List<int> tags = const []}) : super(23, tags: tags);
+abstract class CborUndefined extends CborSimpleValue {
+  const factory CborUndefined({List<int> tags}) = _CborUndefinedImpl;
+}
 
-  /// <nodoc>
-  @internal
+class _CborUndefinedImpl extends _CborSimpleValueImpl implements CborUndefined {
+  const _CborUndefinedImpl({List<int> tags = const []}) : super(23, tags: tags);
+
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
     return null;
   }
+
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    return o.substituteValue;
+  }
 }
 
 /// A CBOR boolean value.
-class CborBool extends CborSimpleValue {
-  const CborBool(this.value, {List<int> tags = const []})
+abstract class CborBool extends CborSimpleValue {
+  const factory CborBool(bool value, {List<int> tags}) = _CborBoolImpl;
+
+  bool get value;
+}
+
+class _CborBoolImpl extends _CborSimpleValueImpl implements CborBool {
+  const _CborBoolImpl(this.value, {List<int> tags = const []})
       : super(!value ? 20 : 21, tags: tags);
 
-  /// <nodoc>
-  @internal
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
     return value;
   }
 
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    return value;
+  }
+
+  @override
   final bool value;
 }

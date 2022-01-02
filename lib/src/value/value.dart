@@ -185,9 +185,6 @@ abstract class CborValue {
   /// Additional tags provided to the value.
   List<int> get tags;
 
-  /// Hint to a expected conversion when converting to JSON.
-  int? get expectedConversion;
-
   /// Transforms the CborValue into a Dart object.
   ///
   /// Throws [CborCyclicError] if cyclic references exist inside `this`.
@@ -225,6 +222,17 @@ abstract class CborValue {
     bool decodeBase64 = false,
   });
 
+  /// Transform this into a JSON encodable value.
+  ///
+  /// [substituteValue] will be used for values that cannot be encoded, such
+  /// as [double.infinity], [double.nan], [CborUndefined].
+  ///
+  /// If the keys for a map are not strings, they are encoded recursively
+  /// as JSON, and the string is used.
+  Object? toJson({
+    Object? substituteValue,
+  });
+
   /// <nodoc>
   @internal
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o);
@@ -232,10 +240,14 @@ abstract class CborValue {
   /// <nodoc>
   @internal
   void encode(EncodeSink sink);
+
+  /// <nodoc>
+  @internal
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o);
 }
 
 /// A CBOR datetime.
-abstract class CborDateTime with CborValueMixin implements CborValue {
+abstract class CborDateTime implements CborValue {
   /// Converts the value to [DateTime], throwing [FormatException] if fails.
   DateTime toDateTime();
 }

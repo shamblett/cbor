@@ -12,7 +12,6 @@ import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
 import '../utils/info.dart';
-import '../utils/utils.dart';
 
 class ToObjectOptions {
   ToObjectOptions({
@@ -26,22 +25,49 @@ class ToObjectOptions {
   final bool decodeBase64;
 }
 
+class ToJsonOptions {
+  ToJsonOptions({
+    required this.encoding,
+    this.substituteValue,
+  });
+
+  ToJsonOptions copyWith({
+    JsonBytesEncoding? encoding,
+  }) =>
+      ToJsonOptions(
+        encoding: encoding ?? this.encoding,
+        substituteValue: substituteValue,
+      );
+
+  final JsonBytesEncoding encoding;
+  final Object? substituteValue;
+}
+
+enum JsonBytesEncoding {
+  base64Url,
+
+  base64,
+
+  base16,
+}
+
 @internal
-class Break extends CborSimpleValue {
-  const Break() : super(31);
+class Break with CborValueMixin implements CborValue {
+  const Break();
 
   @override
   final List<int> tags = const [];
 
-  /// <nodoc>
-  @internal
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
     throw UnimplementedError();
   }
 
-  /// <nodoc>
-  @internal
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    throw UnimplementedError();
+  }
+
   @override
   void encode(EncodeSink sink) {
     sink.addHeaderInfo(7, Info.indefiniteLength);
@@ -65,10 +91,23 @@ mixin CborValueMixin implements CborValue {
           ));
 
   @override
-  int? get expectedConversion {
+  Object? toJson({Object? substituteValue}) => toJsonInternal(
+        {},
+        ToJsonOptions(
+          encoding: JsonBytesEncoding.base64Url,
+          substituteValue: substituteValue,
+        ),
+      );
+
+  JsonBytesEncoding? get expectedConversion {
     for (final tag in tags.reversed) {
-      if (isExpectConversion(tag)) {
-        return tag;
+      switch (tag) {
+        case CborTag.expectedConversionToBase16:
+          return JsonBytesEncoding.base16;
+        case CborTag.expectedConversionToBase64:
+          return JsonBytesEncoding.base64;
+        case CborTag.expectedConversionToBase64Url:
+          return JsonBytesEncoding.base64Url;
       }
     }
   }
