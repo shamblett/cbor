@@ -1,49 +1,106 @@
 # cbor 
 
 [![Build Status](https://travis-ci.org/shamblett/cbor.svg?branch=master)](https://travis-ci.org/shamblett/cbor)
+[![Pub Version](https://shields.io/pub/v/cbor)](https://pub.dev/packages/cbor)
 
-A CBOR library for Dart developers.
+[Documentation](https://pub.dev/documentation/cbor/latest/)
 
-This package provides an 
-encoding/decoding package for the Concise 
-Binary Object Representation as documented in RFC7049.
+This package provides an encoding/decoding package for the Concise Binary Object
+Representation as documented in RFC7049.
 
-CBOR is increasingly used as a line protocol in the IOT
-world where the overhead of transmitting JSON on constrained devices can be large
-in packet size and processing overheads.
+CBOR is increasingly used as a line protocol in the IOT world where the overhead
+of transmitting JSON on constrained devices can be large in packet size and
+processing overheads.
 
-The Cbor package provides an RFC7049 compliant solution for both the encoding and decoding of CBOR data.
+## Features
 
-The test suite supports the encoding and decoding examples in Appendix A of RFC7049 amongst others. Specifically :-
+* Streamlined encoding and decoding of CBOR, including indefinite length and
+  streamed decoding.
+* Set of types that semantically handles types, nesting, and tags.
+* Automatic conversion for the smallest size needed for integers.
+* Automatic conversion for the smallest precision needed for floating point
+  numbers.
+* Any value can be the key for a map.
+* Optional simple API for encoding and decoding directly to Dart objects.
+* Pretty-printing and conversion to JSON.
 
-1. Half, Single and Double precision floats are supported.
-2. Tag based encoding is supported(table 3 of the RFC).
-3. Indefinite item encoding/decoding is supported.
-4. Items can be nested to any level.
-5. All Major tag types are supported.
-6. Smallest size first is used, i.e. if an int can be encoded in one byte then
-   this size is used, similarly a double will be encoded into its smallest precision
-   size(unless you specify otherwise);
-   
-The implementation of maps restricts map keys to be of string, integer or byte strings(for Cardano transactions), note
-however that at the moment decoding to JSON will fail if map keys are not strings.
+## Usage
 
-Please examine the files in the examples directory for usage examples and the
-API docs for greater detail.
+Two APIs are provided, `cbor.dart` and `simple.dart`.
 
-In general the package guarantees to decode what it encodes and should
-decode all well formed CBOR data. Decoded output takes the form of standard Dart types, i.e.
-floats become doubles, text become String, arrays become Lists etc.
-This allows a simple interface for encoding from the Dart world and a simple interface to Dart world from the decoder.
+### `cbor.dart`
 
-Currently the package supports a payload based decoding, i.e. a complete CBOR entity needs to be submitted to the decoder. 
-Streamed decoding may be supported in future versions.
-Also error handling is somewhat basic, very badly formed CBOR data may
-trigger exceptions in the decoding process, if you need to
-protect against this please enclose all decoding operations in try/catch blocks. If you use this package at both ends of your CBOR interchange nodes you will not need
-to do this.
+Encodes from `CborValue` and decodes to `CborValue`.
 
+The `CborValue` contains the tags for this item, and its subtypes are used to
+identify the type and tags for the item. This allows one to handle information
+encoded in a more lossless way.
 
+Inheritance tree for `CborValue` looks something like this:
 
+```
+CborValue
+├── CborInt
+│   ├── CborSmallInt
+│   └── CborDateTimeInt
+├── CborBytes
+│   └── CborBigInt
+├── CborString
+│   ├── CborDateTimeString
+│   ├── CborBase64
+│   ├── CborBase64Url
+│   ├── CborBase16
+│   ├── CborMime
+│   └── CborRegex
+├── CborFloat
+│   └── CborDateTimeFloat
+├── CborSimpleValue
+│   ├── CborNull
+│   ├── CborFloat
+│   └── CborUndefined
+├── CborMap
+└── CborList
+    ├── CborDecimalFraction
+    └── CborBigFloat
+```
 
+#### Example
 
+```dart
+import 'package:cbor/cbor.dart';
+
+test('{1:2,3:4}', () {
+   final encoded = cbor.encode(CborMap({
+      CborSmallInt(1): CborSmallInt(2),
+      CborSmallInt(3): CborSmallInt(4),
+   }));
+   expect(encoded, [0xa2, 0x01, 0x02, 0x03, 0x04]);
+});
+```
+
+[Check out the example folder for more examples](https://github.com/shamblett/cbor/tree/master/example).
+
+### `simple.dart`
+
+Less powerful, but may be the best option for simple applications that do not
+need any of the fancy features of the `cbor` API above.
+
+The encoder in simple API will operate similarly to constructing a `CborValue`
+from the input and the encoding it.
+
+Decoder will translate the input to a common Dart object, ignoring any extra
+tags after the type is decided.
+
+#### Example
+
+```dart
+import 'package:cbor/simple.dart';
+
+test('{1:2,3:4}', () {
+   final encoded = cbor.encode({
+      1: 2,
+      3: 4,
+   });
+   expect(encoded, [0xa2, 0x01, 0x02, 0x03, 0x04]);
+});
+```
