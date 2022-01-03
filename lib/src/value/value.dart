@@ -220,6 +220,7 @@ abstract class CborValue {
     bool parseDateTime = true,
     bool parseUri = true,
     bool decodeBase64 = false,
+    bool allowMalformedUtf8 = false,
   });
 
   /// Transform this into a JSON encodable value.
@@ -231,6 +232,7 @@ abstract class CborValue {
   /// as JSON, and the string is used.
   Object? toJson({
     Object? substituteValue,
+    bool allowMalformedUtf8 = false,
   });
 
   /// <nodoc>

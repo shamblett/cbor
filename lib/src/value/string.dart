@@ -8,43 +8,66 @@
 import 'dart:convert';
 
 import 'package:cbor/cbor.dart';
-import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
 
 import '../encoder/sink.dart';
-import '../utils/info.dart';
-import 'internal.dart';
+import '../utils/arg.dart';
 import '../utils/utils.dart';
+import 'internal.dart';
 
 /// A CBOR string encoded in UTF-8.
 abstract class CborString extends CborValue {
-  const factory CborString(String string, {List<int> tags}) = _CborStringImpl;
+  factory CborString(String string, {List<int> tags}) = _CborStringImpl;
+  factory CborString.fromUtf8(List<int> value, {List<int> tags}) =
+      _CborStringImpl.fromUtf8;
 
-  /// <nodoc>
-  @internal
-  void verify();
+  /// Returns the UTF-8 value of this.
+  List<int> get utf8Bytes;
+
+  /// Convert to [String].
+  ///
+  /// Throws [FormatException] if [allowMalformed] is false and the value
+  /// is not valid UTF-8.
+  @override
+  String toString({bool allowMalformed = false});
 }
 
 class _CborStringImpl with CborValueMixin implements CborString {
-  const _CborStringImpl(this._string, {this.tags = const []});
+  _CborStringImpl(this._string, {this.tags = const []});
+  _CborStringImpl.fromUtf8(this._utf8, {this.tags = const []});
 
-  final String _string;
+  String? _string;
+  List<int>? _utf8;
 
   @override
-  void verify() {}
+  List<int> get utf8Bytes {
+    _utf8 ??= utf8.encode(_string!);
+
+    return _utf8!;
+  }
 
   @override
-  String toString() => _string;
+  String toString({bool allowMalformed = false}) {
+    _string ??= allowMalformed
+        ? const Utf8Decoder(allowMalformed: true).convert(_utf8!)
+        : const Utf8Decoder(allowMalformed: false).convert(_utf8!);
+
+    return _string!;
+  }
+
   @override
   bool operator ==(Object other) =>
-      other is CborString && _string == other.toString();
+      other is CborString &&
+      tags.equals(other.tags) &&
+      utf8Bytes.equals(other.utf8Bytes);
   @override
-  int get hashCode => null.hashCode;
+  int get hashCode => Object.hashAll([utf8Bytes, tags].flattened);
   @override
   final List<int> tags;
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    return toString();
+    return toString(allowMalformed: o.allowMalformedUtf8);
   }
 
   @override
@@ -86,7 +109,7 @@ class _CborEncodeIndefiniteLengthStringImpl
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(3, Info.indefiniteLength);
+    sink.addHeaderInfo(3, Arg.indefiniteLength);
 
     for (final value in items) {
       CborEncodeDefiniteLengthString(CborString(value)).encode(sink);
@@ -132,7 +155,7 @@ class _CborEncodeDefiniteLengthStringImpl
 
     sink.addTags(tags);
 
-    sink.addHeaderInfo(3, Info.int(bytes.length));
+    sink.addHeaderInfo(3, Arg.int(bytes.length));
 
     sink.add(bytes);
   }
@@ -159,6 +182,11 @@ abstract class CborDateTimeString extends CborString implements CborDateTime {
     String str, {
     List<int> tags,
   }) = _CborDateTimeStringImpl.fromString;
+
+  factory CborDateTimeString.fromUtf8(
+    List<int> str, {
+    List<int> tags,
+  }) = _CborDateTimeStringImpl.fromUtf8;
 }
 
 class _CborDateTimeStringImpl extends _CborStringImpl
@@ -175,6 +203,11 @@ class _CborDateTimeStringImpl extends _CborStringImpl
     List<int> tags = const [CborTag.dateTimeString],
   }) : super(str, tags: tags);
 
+  _CborDateTimeStringImpl.fromUtf8(
+    List<int> str, {
+    List<int> tags = const [CborTag.dateTimeString],
+  }) : super.fromUtf8(str, tags: tags);
+
   DateTime? _datetime;
 
   @override
@@ -187,13 +220,8 @@ class _CborDateTimeStringImpl extends _CborStringImpl
   }
 
   @override
-  void verify() {
-    _datetime ??= DateTime.parse(toString());
-  }
-
-  @override
   DateTime toDateTime() {
-    verify();
+    _datetime ??= DateTime.parse(toString());
     return _datetime!;
   }
 }
@@ -202,6 +230,9 @@ class _CborDateTimeStringImpl extends _CborStringImpl
 abstract class CborUri extends CborString {
   factory CborUri.fromString(String value, {List<int> tags}) =
       _CborUriImpl.fromString;
+
+  factory CborUri.fromUtf8(List<int> str, {List<int> tags}) =
+      _CborUriImpl.fromUtf8;
 
   factory CborUri(Uri value, {List<int> tags}) = _CborUriImpl;
 
@@ -221,6 +252,11 @@ class _CborUriImpl extends _CborStringImpl implements CborUri {
   })  : _value = value,
         super(value.toString(), tags: tags);
 
+  _CborUriImpl.fromUtf8(
+    List<int> value, {
+    List<int> tags = const [CborTag.uri],
+  }) : super.fromUtf8(value, tags: tags);
+
   Uri? _value;
 
   @override
@@ -233,13 +269,8 @@ class _CborUriImpl extends _CborStringImpl implements CborUri {
   }
 
   @override
-  void verify() {
-    _value ??= Uri.parse(toString());
-  }
-
-  @override
   Uri parse() {
-    verify();
+    _value ??= Uri.parse(toString());
     return _value!;
   }
 }
@@ -251,6 +282,9 @@ abstract class CborBase64 extends CborString {
 
   factory CborBase64.encode(List<int> bytes, {List<int> tags}) =
       _CborBase64Impl.encode;
+
+  factory CborBase64.fromUtf8(List<int> str, {List<int> tags}) =
+      _CborBase64Impl.fromUtf8;
 
   List<int> decode();
 }
@@ -267,6 +301,11 @@ class _CborBase64Impl extends _CborStringImpl implements CborBase64 {
   })  : _value = bytes,
         super(base64.encode(bytes), tags: tags);
 
+  _CborBase64Impl.fromUtf8(
+    List<int> str, {
+    List<int> tags = const [CborTag.base64],
+  }) : super.fromUtf8(str, tags: tags);
+
   List<int>? _value;
 
   @override
@@ -279,13 +318,8 @@ class _CborBase64Impl extends _CborStringImpl implements CborBase64 {
   }
 
   @override
-  void verify() {
-    _value ??= base64.decode(base64.normalize(toString()));
-  }
-
-  @override
   List<int> decode() {
-    verify();
+    _value ??= base64.decode(base64.normalize(toString()));
     return _value!;
   }
 }
@@ -297,6 +331,9 @@ abstract class CborBase64Url extends CborString {
 
   factory CborBase64Url.encode(List<int> bytes, {List<int> tags}) =
       _CborBase64UrlImpl.encode;
+
+  factory CborBase64Url.fromUtf8(List<int> str, {List<int> tags}) =
+      _CborBase64UrlImpl.fromUtf8;
 
   /// Use [Base64Codec.urlSafe] to decode.
   List<int> decode();
@@ -314,6 +351,11 @@ class _CborBase64UrlImpl extends _CborStringImpl implements CborBase64Url {
   })  : _value = bytes,
         super(base64Url.encode(bytes), tags: tags);
 
+  _CborBase64UrlImpl.fromUtf8(
+    List<int> str, {
+    List<int> tags = const [CborTag.base64Url],
+  }) : super.fromUtf8(str, tags: tags);
+
   List<int>? _value;
 
   @override
@@ -326,13 +368,8 @@ class _CborBase64UrlImpl extends _CborStringImpl implements CborBase64Url {
   }
 
   @override
-  void verify() {
-    _value ??= base64Url.decode(base64Url.normalize(toString()));
-  }
-
-  @override
   List<int> decode() {
-    verify();
+    _value ??= base64Url.decode(base64Url.normalize(toString()));
     return _value!;
   }
 }
@@ -343,6 +380,9 @@ class _CborBase64UrlImpl extends _CborStringImpl implements CborBase64Url {
 abstract class CborRegex extends CborString {
   factory CborRegex.fromString(String data, {List<int> tags}) =
       _CborRegexImpl.fromString;
+
+  factory CborRegex.fromUtf8(List<int> str, {List<int> tags}) =
+      _CborRegexImpl.fromUtf8;
 }
 
 class _CborRegexImpl extends _CborStringImpl implements CborRegex {
@@ -350,6 +390,11 @@ class _CborRegexImpl extends _CborStringImpl implements CborRegex {
     String data, {
     List<int> tags = const [CborTag.regex],
   }) : super(data, tags: tags);
+
+  _CborRegexImpl.fromUtf8(
+    List<int> str, {
+    List<int> tags = const [CborTag.regex],
+  }) : super.fromUtf8(str, tags: tags);
 }
 
 /// A CBOR string containing a regular expression.
@@ -358,6 +403,9 @@ class _CborRegexImpl extends _CborStringImpl implements CborRegex {
 abstract class CborMime extends CborString {
   factory CborMime.fromString(String data, {List<int> tags}) =
       _CborMimeImpl.fromString;
+
+  factory CborMime.fromUtf8(List<int> str, {List<int> tags}) =
+      _CborMimeImpl.fromUtf8;
 }
 
 class _CborMimeImpl extends _CborStringImpl implements CborMime {
@@ -365,4 +413,9 @@ class _CborMimeImpl extends _CborStringImpl implements CborMime {
     String data, {
     List<int> tags = const [CborTag.mime],
   }) : super(data, tags: tags);
+
+  _CborMimeImpl.fromUtf8(
+    List<int> str, {
+    List<int> tags = const [CborTag.mime],
+  }) : super.fromUtf8(str, tags: tags);
 }

@@ -6,6 +6,7 @@
  */
 
 import 'package:cbor/cbor.dart';
+import 'package:collection/collection.dart';
 import 'package:ieee754/ieee754.dart';
 
 import '../encoder/sink.dart';
@@ -28,9 +29,10 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
   @override
   String toString() => value.toString();
   @override
-  bool operator ==(Object other) => other is CborFloat && value == other.value;
+  bool operator ==(Object other) =>
+      other is CborFloat && tags.equals(other.tags) && value == other.value;
   @override
-  int get hashCode => value.hashCode;
+  int get hashCode => Object.hash(value, Object.hashAll(tags));
   @override
   final List<int> tags;
 

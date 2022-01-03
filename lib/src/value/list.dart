@@ -9,7 +9,7 @@ import 'package:cbor/cbor.dart';
 import 'package:collection/collection.dart';
 
 import '../encoder/sink.dart';
-import '../utils/info.dart';
+import '../utils/arg.dart';
 import 'internal.dart';
 
 /// A CBOR array.
@@ -118,7 +118,7 @@ class _CborEncodeIndefiniteLengthListImpl
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(4, Info.indefiniteLength);
+    sink.addHeaderInfo(4, Arg.indefiniteLength);
 
     sink.addToCycleCheck(inner);
     for (final x in inner) {
@@ -163,7 +163,7 @@ class _CborEncodeDefiniteLengthListImpl
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(4, Info.int(inner.length));
+    sink.addHeaderInfo(4, Arg.int(inner.length));
 
     sink.addToCycleCheck(inner);
     for (final x in inner) {
@@ -222,7 +222,7 @@ class _CborDecimalFractionImpl extends DelegatingList<CborValue>
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
-    sink.addHeaderInfo(4, Info.int(2));
+    sink.addHeaderInfo(4, Arg.int(2));
     exponent.encode(sink);
     mantissa.encode(sink);
   }
@@ -265,7 +265,7 @@ class _CborBigFloatImpl extends DelegatingList<CborValue>
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
-    sink.addHeaderInfo(4, Info.int(2));
+    sink.addHeaderInfo(4, Arg.int(2));
     exponent.encode(sink);
     mantissa.encode(sink);
   }

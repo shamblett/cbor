@@ -20,19 +20,28 @@ class CborJsonEncoder extends Converter<CborValue, String> {
   /// as [double.infinity], [double.nan], [CborUndefined].
   const CborJsonEncoder({
     Object? substituteValue,
-  }) : _substituteValue = substituteValue;
+    bool allowMalformedUtf8 = false,
+  })  : _allowMalformedUtf8 = allowMalformedUtf8,
+        _substituteValue = substituteValue;
 
   final Object? _substituteValue;
+  final bool _allowMalformedUtf8;
 
   @override
   String convert(CborValue input) {
-    return json.encode(input.toJson(substituteValue: _substituteValue));
+    return json.encode(input.toJson(
+      substituteValue: _substituteValue,
+      allowMalformedUtf8: _allowMalformedUtf8,
+    ));
   }
 
   @override
   Sink<CborValue> startChunkedConversion(Sink<String> input) {
     return const JsonEncoder()
         .startChunkedConversion(input)
-        .map((x) => x.toJson(substituteValue: _substituteValue));
+        .map((x) => x.toJson(
+              substituteValue: _substituteValue,
+              allowMalformedUtf8: _allowMalformedUtf8,
+            ));
   }
 }

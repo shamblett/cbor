@@ -5,72 +5,72 @@
  * Copyright :  S.Hamblett
  */
 
-/// The information encoded by additional info and the following bytes.
-abstract class Info {
-  const factory Info.int(int Info) = _InfoInt;
+/// The information encoded by additional Arg and the following bytes.
+abstract class Arg {
+  const factory Arg.int(int arg) = _ArgInt;
 
-  factory Info.bigInt(BigInt Info) = _InfoBigInt;
+  factory Arg.bigInt(BigInt arg) = _ArgBigInt;
 
-  Info operator ~();
+  Arg operator ~();
 
   bool get isIndefiniteLength;
 
   int toInt();
   BigInt toBigInt();
-  int get bitLength;
+  bool get isValidInt;
 
-  static const Info indefiniteLength = _InfoIndefiniteLength();
+  static const Arg indefiniteLength = _ArgIndefiniteLength();
 }
 
-class _InfoIndefiniteLength implements Info {
-  const _InfoIndefiniteLength();
+class _ArgIndefiniteLength implements Arg {
+  const _ArgIndefiniteLength();
 
   @override
-  _InfoIndefiniteLength operator ~() => this;
+  _ArgIndefiniteLength operator ~() => this;
 
   @override
   final bool isIndefiniteLength = true;
 
   @override
-  final int bitLength = 0;
+  final bool isValidInt = false;
   @override
   int toInt() => 0;
   @override
   BigInt toBigInt() => BigInt.zero;
 }
 
-class _InfoInt implements Info {
-  const _InfoInt(this.value);
+class _ArgInt implements Arg {
+  const _ArgInt(this.value);
 
   final int value;
 
   @override
-  _InfoInt operator ~() => _InfoInt(~value);
+  _ArgInt operator ~() => _ArgInt(~value);
 
   @override
   final bool isIndefiniteLength = false;
 
   @override
-  int get bitLength => value.bitLength;
+  final bool isValidInt = true;
   @override
   int toInt() => value;
   @override
   BigInt toBigInt() => BigInt.from(value);
 }
 
-class _InfoBigInt implements Info {
-  _InfoBigInt(this.value);
+class _ArgBigInt implements Arg {
+  _ArgBigInt(this.value);
 
   final BigInt value;
 
   @override
-  _InfoBigInt operator ~() => _InfoBigInt(~value);
+  _ArgBigInt operator ~() => _ArgBigInt(~value);
 
   @override
   final bool isIndefiniteLength = false;
 
   @override
-  int get bitLength => value.bitLength;
+  final bool isValidInt = false;
   @override
   int toInt() => value.toInt();
   @override

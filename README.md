@@ -6,7 +6,7 @@
 [Documentation](https://pub.dev/documentation/cbor/latest/)
 
 This package provides an encoding/decoding package for the Concise Binary Object
-Representation as documented in RFC7049.
+Representation as documented in [RFC8949](https://www.rfc-editor.org/rfc/rfc8949.html).
 
 CBOR is increasingly used as a line protocol in the IOT world where the overhead
 of transmitting JSON on constrained devices can be large in packet size and

@@ -6,13 +6,15 @@
  */
 
 import 'package:cbor/cbor.dart';
+import 'package:collection/collection.dart';
 
 import '../encoder/sink.dart';
-import '../utils/info.dart';
+import '../utils/arg.dart';
 import 'internal.dart';
 
 /// A CBOR simple value without any
 /// additional content.
+
 abstract class CborSimpleValue extends CborValue {
   const factory CborSimpleValue(int simpleValue, {List<int> tags}) =
       _CborSimpleValueImpl;
@@ -30,9 +32,11 @@ class _CborSimpleValueImpl with CborValueMixin implements CborSimpleValue {
   String toString() => simpleValue.toString();
   @override
   bool operator ==(Object other) =>
-      other is CborSimpleValue && other.simpleValue == simpleValue;
+      other is CborSimpleValue &&
+      tags.equals(other.tags) &&
+      other.simpleValue == simpleValue;
   @override
-  int get hashCode => simpleValue.hashCode;
+  int get hashCode => Object.hash(simpleValue, Object.hashAll(tags));
   @override
   final List<int> tags;
 
@@ -45,7 +49,7 @@ class _CborSimpleValueImpl with CborValueMixin implements CborSimpleValue {
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(7, Info.int(simpleValue));
+    sink.addHeaderInfo(7, Arg.int(simpleValue));
   }
 
   @override

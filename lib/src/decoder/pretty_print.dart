@@ -70,13 +70,13 @@ class _PrettyPrint extends Sink<RawValue> {
 
     switch (x.header.majorType) {
       case 0:
-        writer.write('(int ${x.header.info.toBigInt()})');
+        writer.write('(int ${x.header.arg.toBigInt()})');
         break;
       case 1:
-        writer.write('(int ${~x.header.info.toBigInt()})');
+        writer.write('(int ${~x.header.arg.toBigInt()})');
         break;
       case 2:
-        final length = x.header.info;
+        final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length bytes)');
           nested.add(_Nesting(null));
@@ -85,7 +85,7 @@ class _PrettyPrint extends Sink<RawValue> {
         }
         break;
       case 3:
-        final length = x.header.info;
+        final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length string)');
           nested.add(_Nesting(null));
@@ -95,7 +95,7 @@ class _PrettyPrint extends Sink<RawValue> {
         }
         break;
       case 4:
-        final length = x.header.info;
+        final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length array)');
           nested.add(_Nesting(null));
@@ -105,7 +105,7 @@ class _PrettyPrint extends Sink<RawValue> {
         }
         break;
       case 5:
-        final length = x.header.info;
+        final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length map)');
           nested.add(_Nesting(null));
@@ -115,7 +115,7 @@ class _PrettyPrint extends Sink<RawValue> {
         }
         break;
       case 6:
-        writer.write('(tag ${x.header.info.toInt()})');
+        writer.write('(tag ${x.header.arg.toInt()})');
         break;
       case 7:
         switch (x.header.additionalInfo) {
@@ -149,7 +149,7 @@ class _PrettyPrint extends Sink<RawValue> {
             break;
 
           default:
-            writer.write('(simple ${x.header.info.toInt()})');
+            writer.write('(simple ${x.header.arg.toInt()})');
             break;
         }
     }

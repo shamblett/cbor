@@ -11,7 +11,7 @@ import 'dart:typed_data';
 import 'package:cbor/cbor.dart';
 import 'package:typed_data/typed_buffers.dart';
 
-import '../utils/info.dart';
+import '../utils/arg.dart';
 import 'stage0.dart';
 
 class Header {
@@ -22,25 +22,25 @@ class Header {
 
   final Uint8List dataBytes;
 
-  Info get info {
+  Arg get arg {
     if (additionalInfo < 24) {
-      return Info.int(additionalInfo);
+      return Arg.int(additionalInfo);
     } else {
       switch (additionalInfo) {
         case 24:
-          return Info.int(dataBytes[0]);
+          return Arg.int(dataBytes[0]);
         case 25:
-          return Info.int(ByteData.view(dataBytes.buffer).getInt16(0));
+          return Arg.int(ByteData.view(dataBytes.buffer).getInt16(0));
         case 26:
-          return Info.int(ByteData.view(dataBytes.buffer).getInt32(0));
+          return Arg.int(ByteData.view(dataBytes.buffer).getInt32(0));
         case 27:
           var i =
               BigInt.from(ByteData.view(dataBytes.buffer).getUint32(0)) << 32;
           i |= BigInt.from(ByteData.view(dataBytes.buffer).getUint32(4));
-          return Info.bigInt(i);
+          return Arg.bigInt(i);
 
         case 31:
-          return Info.indefiniteLength;
+          return Arg.indefiniteLength;
 
         default:
           throw Error();
@@ -98,7 +98,7 @@ Header? _readHeader(Reader reader) {
         dataBytes = reader.readExactBytes(8)!;
         break;
       default:
-        throw CborDecodeException(
+        throw CborMalformedException(
             'Invalid CBOR additional info', reader.offset);
     }
   }
@@ -128,12 +128,12 @@ class _Builder {
   Uint8Buffer bytes = Uint8Buffer();
 
   RawValue? poll() {
-    if (bytes.length < header.info.toInt()) {
-      final read = reader.readBytes(header.info.toInt() - bytes.length);
+    if (bytes.length < header.arg.toInt()) {
+      final read = reader.readBytes(header.arg.toInt() - bytes.length);
       bytes.addAll(read);
     }
 
-    if (bytes.length < header.info.toInt()) {
+    if (bytes.length < header.arg.toInt()) {
       return null;
     }
 
