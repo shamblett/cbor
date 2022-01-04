@@ -302,15 +302,19 @@ void main() {
 
     test('Tag (23) multiple', () {
       final decoded = cbor.decode([0xd7, 0x44, 0x01, 0x02, 0x03, 0x04]);
-      expect(decoded, CborBytes([1, 2, 3, 4]));
-      expect(decoded.tags, [CborTag.expectedConversionToBase16]);
+      expect(
+          decoded,
+          CborBytes(
+            [1, 2, 3, 4],
+            tags: [CborTag.expectedConversionToBase16],
+          ));
     });
 
     test('Tag (24) multiple', () {
       final decoded =
           cbor.decode([0xd8, 0x18, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46]);
-      expect(decoded, CborBytes([100, 73, 69, 84, 70]));
-      expect(decoded.tags, [CborTag.encodedCborData]);
+      expect(decoded,
+          CborBytes([100, 73, 69, 84, 70], tags: [CborTag.encodedCborData]));
     });
 
     test('Tag (32) URI', () {

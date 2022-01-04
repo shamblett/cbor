@@ -11,7 +11,7 @@ import 'package:cbor/cbor.dart';
 import 'package:collection/collection.dart';
 
 import '../encoder/sink.dart';
-import '../utils/info.dart';
+import '../utils/arg.dart';
 import 'internal.dart';
 
 /// A CBOR map.
@@ -130,7 +130,7 @@ class _CborEncodeIndefiniteLengthMapImpl
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(5, Info.indefiniteLength);
+    sink.addHeaderInfo(5, Arg.indefiniteLength);
 
     sink.addToCycleCheck(inner);
     for (final e in inner.entries) {
@@ -175,7 +175,7 @@ class _CborEncodeDefiniteLengthMapImpl
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(5, Info.int(inner.length));
+    sink.addHeaderInfo(5, Arg.int(inner.length));
 
     sink.addToCycleCheck(inner);
     for (final e in inner.entries) {

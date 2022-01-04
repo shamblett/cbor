@@ -28,57 +28,28 @@ import 'stage3.dart';
 
 /// A CBOR decoder.
 ///
-/// There is a strict mode for decoding that aims to catch any ill-formed input,
-/// but one can opt-out and the decoder will try to ignore errors.
+/// If the input is malformed, the decoder will throw [CborMalformedException].
 ///
-/// Still, if the input is too ill-formed, the decoder will throw, so make sure
-/// to always wrap your decoding with `try` if you are taking user input.
-///
-/// The CBOR decoder will always throw [CborDecodeException] when:
-///
-/// * An invalid value for additional info is provided, or
-/// * The CBOR is incomplete, or
-/// * An indefinite length byte string contains any item other than a byte string, or
-/// * An indefinite length string contains any item other than a string.
-///
-/// If the CBOR decoder is using [strict] mode, it will throw [CborDecodeException]
-/// when:
-///
-/// * A string is not UTF-8, or
-/// * A tag is found with the incorrect type, or
-/// * A CBOR `break` is encountered outside a indefinite length item, or
-/// * Incompatible tags are used, or
-/// * When taking a tag in consideration, the format of a value is incorrect
-///   (for example, a [CborDateTimeString] is not in date time format). (1)
-///
-/// When not in [strict] mode, these errors will be ignored.
-///
-/// (1) Currently some checks are still not implemented, and the strict mode
-/// may pass incorrect data that will fail in future patches.
+/// The decoder will not throw if the input is invalid but well-formed.
+/// However, operations on [CborValue] may throw if invalid data is used.
 class CborDecoder extends Converter<List<int>, CborValue> {
   /// Create a CBOR decoder.
-  ///
-  /// Currently strict mode is on by default, but this may change in the
-  /// future. If you want to rely on this, explicitly add the argument.
-  const CborDecoder({this.strict = true});
-
-  /// If `true`, we are in strict mode. Check [CborDecoder] for its meaning.
-  final bool strict;
+  const CborDecoder();
 
   /// Converts [input] and returns the result of the conversion.
   ///
-  /// Will throw [CborDecodeException] if input contains anything other than a
-  /// single CBOR value.
+  /// If the input does not contain a single CBOR item, [FormatException] will
+  /// be thrown.
   @override
   CborValue convert(List<int> input) {
     CborValue? value;
 
     startChunkedConversion(ChunkedConversionSink.withCallback((values) {
       if (values.isEmpty) {
-        throw CborDecodeException('Expected at least one CBOR value.');
+        throw FormatException('Expected at least one CBOR value.');
       }
       if (values.length > 1) {
-        throw CborDecodeException('Expected at most one CBOR value.');
+        throw FormatException('Expected at most one CBOR value.');
       }
 
       value = values.single;
@@ -91,5 +62,5 @@ class CborDecoder extends Converter<List<int>, CborValue> {
 
   @override
   ByteConversionSink startChunkedConversion(Sink<CborValue> sink) =>
-      RawSink(RawSinkTagged(CborSink(strict, sink)));
+      RawSink(RawSinkTagged(CborSink(sink)));
 }

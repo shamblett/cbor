@@ -219,19 +219,17 @@ void main() {
   });
 
   group('Error handling', () {
-    const strictCbor = CborCodec(strict: true);
-
     test('No input', () {
-      expect(() => strictCbor.decode([]), throwsException);
+      expect(() => cbor.decode([]), throwsException);
     });
 
     test('Random bytes', () {
-      expect(() => strictCbor.decode([0xcd, 0xfe, 0x00]), throwsException);
+      expect(() => cbor.decode([0xcd, 0xfe, 0x00]), throwsException);
     });
 
     test('Premature termination', () {
       expect(
-        () => strictCbor.decode([0x44, 0x01, 0x02, 0x03]),
+        () => cbor.decode([0x44, 0x01, 0x02, 0x03]),
         throwsException,
       );
     });

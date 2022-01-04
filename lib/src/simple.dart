@@ -45,17 +45,13 @@ class CborSimpleEncoder extends Converter<Object?, List<int>> {
 
 /// A simple decoder for CBOR.
 ///
-/// Check [CborDecoder] for when the decoder will throw exceptions.
+/// May throw [FormatException] if the input is invalid.
 class CborSimpleDecoder extends Converter<List<int>, Object?> {
   /// Create a CBOR decoder.
-  ///
-  /// Currently strict mode is on by default, but this may change in the
-  /// future. If you want to rely on this, explicitly add the argument.
   ///
   /// See the docs of [CborValue.toObject] to see how CBOR values translate
   /// into objects.
   const CborSimpleDecoder({
-    this.strict = true,
     bool parseDateTime = true,
     bool decodeBase64 = true,
     bool parseUri = true,
@@ -63,24 +59,13 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
         _decodeBase64 = decodeBase64,
         _parseUri = parseUri;
 
-  /// If `true`, we are in strict mode. Check [CborDecoder] for its meaning.
-  final bool strict;
-
   final bool _parseDateTime;
   final bool _decodeBase64;
   final bool _parseUri;
 
-  CborDecoder get _decoder {
-    if (strict) {
-      return const CborDecoder(strict: true);
-    } else {
-      return const CborDecoder(strict: false);
-    }
-  }
-
   @override
   Object? convert(List<int> input) {
-    return _decoder.convert(input).toObject(
+    return const CborDecoder().convert(input).toObject(
           parseUri: _parseUri,
           parseDateTime: _parseDateTime,
           decodeBase64: _decodeBase64,
@@ -89,11 +74,12 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
 
   @override
   Sink<List<int>> startChunkedConversion(Sink<Object?> sink) {
-    return _decoder.startChunkedConversion(sink.map((object) => object.toObject(
-          parseUri: _parseUri,
-          parseDateTime: _parseDateTime,
-          decodeBase64: _decodeBase64,
-        )));
+    return const CborDecoder()
+        .startChunkedConversion(sink.map((object) => object.toObject(
+              parseUri: _parseUri,
+              parseDateTime: _parseDateTime,
+              decodeBase64: _decodeBase64,
+            )));
   }
 }
 
@@ -103,9 +89,6 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
 /// documentation of both [CborValue.CborValue] and [CborValue.toObject].
 class CborSimpleCodec extends Codec<Object?, List<int>> {
   /// Create a CBOR simple codec.
-  ///
-  /// Currently strict mode is on by default, but this may change in the
-  /// future. If you want to rely on this, explicitly add the argument.
   ///
   /// The [toEncodable] function is used during encoding. It is invoked for
   /// values that are not directly encodable to a [CborValue]. The
@@ -119,20 +102,17 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
   /// If [toEncodable] is omitted, it defaults to a function that returns the
   /// result of calling `.toCbor()` on the unencodable object.
   const CborSimpleCodec({
-    bool strict = true,
     bool encodeDateTimeEpoch = false,
     bool parseDateTime = true,
     bool decodeBase64 = true,
     bool parseUri = true,
     Object? Function(dynamic object)? toEncodable,
-  })  : _strict = strict,
-        _decodeBase64 = decodeBase64,
+  })  : _decodeBase64 = decodeBase64,
         _encodeDateTimeEpoch = encodeDateTimeEpoch,
         _parseUri = parseUri,
         _parseDateTime = parseDateTime,
         _toEncodable = toEncodable;
 
-  final bool _strict;
   final bool _encodeDateTimeEpoch;
   final bool _decodeBase64;
   final bool _parseUri;
@@ -150,7 +130,6 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
   @override
   CborSimpleDecoder get decoder {
     return CborSimpleDecoder(
-      strict: _strict,
       decodeBase64: _decodeBase64,
       parseUri: _parseUri,
       parseDateTime: _parseDateTime,
@@ -160,18 +139,15 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
   @override
   Object? decode(
     List<int> input, {
-    bool? strict,
     bool? parseDateTime,
     bool? decodeBase64,
     bool? parseUri,
   }) {
-    strict ??= _strict;
     parseDateTime ??= _parseDateTime;
     decodeBase64 ??= _decodeBase64;
     parseUri ??= _parseUri;
 
     return CborSimpleDecoder(
-      strict: strict,
       parseDateTime: parseDateTime,
       parseUri: parseUri,
       decodeBase64: decodeBase64,

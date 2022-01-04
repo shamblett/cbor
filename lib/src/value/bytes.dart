@@ -13,7 +13,7 @@ import 'package:collection/collection.dart';
 import 'package:hex/hex.dart';
 
 import '../encoder/sink.dart';
-import '../utils/info.dart';
+import '../utils/arg.dart';
 import 'internal.dart';
 
 /// A CBOR byte array.
@@ -35,9 +35,11 @@ class _CborBytesImpl with CborValueMixin implements CborBytes {
   String toString() => bytes.toString();
   @override
   bool operator ==(Object other) =>
-      other is CborBytes && bytes.equals(other.bytes);
+      other is CborBytes &&
+      tags.equals(other.tags) &&
+      bytes.equals(other.bytes);
   @override
-  int get hashCode => bytes.hashCode;
+  int get hashCode => Object.hashAll([bytes, tags].flattened);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -96,7 +98,7 @@ class _CborEncodeIndefiniteLengthBytesImpl
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(2, Info.indefiniteLength);
+    sink.addHeaderInfo(2, Arg.indefiniteLength);
 
     for (final value in items) {
       CborEncodeDefiniteLengthBytes(CborBytes(value)).encode(sink);
@@ -135,7 +137,7 @@ class _CborEncodeDefiniteLengthBytesImpl
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(2, Info.int(inner.bytes.length));
+    sink.addHeaderInfo(2, Arg.int(inner.bytes.length));
 
     sink.add(inner.bytes);
   }
@@ -214,12 +216,6 @@ class _CborBigIntImpl extends _CborBytesImpl implements CborBigInt {
         cyclicCheck, o.copyWith(encoding: JsonBytesEncoding.base64Url)));
     return output.toString();
   }
-
-  @override
-  bool operator ==(Object other) =>
-      other is CborBigInt &&
-      bytes.equals(other.bytes) &&
-      isNegative == other.isNegative;
 
   @override
   BigInt toBigInt() {

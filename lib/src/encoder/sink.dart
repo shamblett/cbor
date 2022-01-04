@@ -10,7 +10,7 @@ import 'dart:typed_data';
 import 'package:cbor/cbor.dart';
 import 'package:typed_data/typed_buffers.dart';
 
-import '../utils/info.dart';
+import '../utils/arg.dart';
 
 abstract class EncodeSink extends Sink<List<int>> {
   EncodeSink();
@@ -36,7 +36,7 @@ abstract class EncodeSink extends Sink<List<int>> {
 
   void addTags(List<int> tags) {
     for (final value in tags) {
-      addHeaderInfo(6, Info.int(value));
+      addHeaderInfo(6, Arg.int(value));
     }
   }
 
@@ -44,27 +44,34 @@ abstract class EncodeSink extends Sink<List<int>> {
     add([(majorType << 5) | additionalInfo]);
   }
 
-  void addHeaderInfo(int majorType, Info info) {
+  void addHeaderInfo(int majorType, Arg info) {
     if (info.isIndefiniteLength) {
       addHeader(majorType, 0x1f);
-    } else if (info.bitLength <= 8) {
-      if (info.toInt() <= 23) {
+    } else if (info.isValidInt) {
+      final int = info.toInt();
+
+      if (int <= 23) {
         addHeader(majorType, info.toInt());
         return;
+      } else if (int.bitLength <= 8) {
+        addHeader(majorType, 24);
+        add([int]);
+      } else if (int.bitLength <= 16) {
+        addHeader(majorType, 25);
+        final x = Uint8List(2);
+        ByteData.view(x.buffer).setUint16(0, info.toInt());
+        add(x);
+      } else if (int.bitLength <= 32) {
+        addHeader(majorType, 26);
+        final x = Uint8List(4);
+        ByteData.view(x.buffer).setUint32(0, info.toInt());
+        add(x);
+      } else {
+        addHeader(majorType, 27);
+        final x = Uint8List(8);
+        ByteData.view(x.buffer).setUint64(0, info.toInt());
+        add(x);
       }
-
-      addHeader(majorType, 24);
-      add([info.toInt()]);
-    } else if (info.bitLength <= 16) {
-      addHeader(majorType, 25);
-      final x = Uint8List(2);
-      ByteData.view(x.buffer).setUint16(0, info.toInt());
-      add(x);
-    } else if (info.bitLength <= 32) {
-      addHeader(majorType, 26);
-      final x = Uint8List(4);
-      ByteData.view(x.buffer).setUint32(0, info.toInt());
-      add(x);
     } else {
       addHeader(majorType, 27);
       final x = Uint8List(8);

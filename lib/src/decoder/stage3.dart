@@ -5,9 +5,8 @@
  * Copyright :  S.Hamblett
  */
 
-import 'dart:convert';
-
 import 'package:cbor/cbor.dart';
+import 'package:collection/collection.dart';
 import 'package:cbor/src/value/internal.dart';
 import 'package:ieee754/ieee754.dart';
 import 'package:typed_data/typed_buffers.dart';
@@ -16,9 +15,8 @@ import '../utils/utils.dart';
 import 'stage2.dart';
 
 class CborSink extends Sink<RawValueTagged> {
-  CborSink(this._strict, this._sink);
+  CborSink(this._sink);
 
-  final bool _strict;
   final Sink<CborValue> _sink;
   _Builder? _next;
 
@@ -28,32 +26,24 @@ class CborSink extends Sink<RawValueTagged> {
     switch (data.header.majorType) {
       case 0: // uint
       case 1: // negative
-        builder = _ValueBuilder(_createInt(_strict, data));
+        builder = _ValueBuilder(_createInt(data));
         break;
 
       case 2: // bytes
-        if (data.header.info.isIndefiniteLength) {
-          builder = _IndefiniteLengthByteBuilder(_strict, data);
+        if (data.header.arg.isIndefiniteLength) {
+          builder = _IndefiniteLengthByteBuilder(data);
         } else {
-          builder = _ValueBuilder(
-              _createBytes(_strict, data.data, data.offset, data.tags));
+          builder =
+              _ValueBuilder(_createBytes(data.data, data.offset, data.tags));
         }
         break;
 
       case 3: // string
-        if (data.header.info.isIndefiniteLength) {
-          builder = _IndefiniteLengthStringBuilder(_strict, data);
-        } else if (_strict) {
-          builder = _ValueBuilder(_createString(
-            _strict,
-            (const Utf8Codec(allowMalformed: false)).decode(data.data),
-            data.offset,
-            data.tags,
-          ));
+        if (data.header.arg.isIndefiniteLength) {
+          builder = _IndefiniteLengthStringBuilder(data);
         } else {
           builder = _ValueBuilder(_createString(
-            _strict,
-            (const Utf8Codec(allowMalformed: true)).decode(data.data),
+            data.data,
             data.offset,
             data.tags,
           ));
@@ -61,18 +51,18 @@ class CborSink extends Sink<RawValueTagged> {
         break;
 
       case 4: // array
-        if (data.header.info.isIndefiniteLength) {
-          builder = _IndefiniteLengthListBuilder(_strict, data);
+        if (data.header.arg.isIndefiniteLength) {
+          builder = _IndefiniteLengthListBuilder(data);
         } else {
-          builder = _ListBuilder(_strict, data);
+          builder = _ListBuilder(data);
         }
         break;
 
       case 5: // map
-        if (data.header.info.isIndefiniteLength) {
-          builder = _IndefiniteLengthMapBuilder(_strict, data);
+        if (data.header.arg.isIndefiniteLength) {
+          builder = _IndefiniteLengthMapBuilder(data);
         } else {
-          builder = _MapBuilder(_strict, data);
+          builder = _MapBuilder(data);
         }
         break;
 
@@ -80,41 +70,32 @@ class CborSink extends Sink<RawValueTagged> {
         switch (data.header.additionalInfo) {
           case 20:
           case 21:
-            builder = _ValueBuilder(_createBool(_strict, data));
+            builder = _ValueBuilder(_createBool(data));
             break;
           case 22:
-            builder = _ValueBuilder(_createNull(_strict, data));
+            builder = _ValueBuilder(_createNull(data));
             break;
           case 23:
-            builder = _ValueBuilder(_createUndefined(_strict, data));
+            builder = _ValueBuilder(_createUndefined(data));
             break;
 
           case 25:
           case 26:
           case 27:
-            builder = _ValueBuilder(_createFloat(_strict, data));
+            builder = _ValueBuilder(_createFloat(data));
             break;
 
           case 31:
-            if (data.tags.isNotEmpty) {
-              throw CborDecodeException('Type accepts no tags', data.offset);
-            }
-
             builder = _ValueBuilder(const Break());
             break;
 
           default:
             if (data.header.additionalInfo <= 24) {
-              if (data.tags.isNotEmpty) {
-                throw CborDecodeException('Type accepts no tags', data.offset);
-              }
-
               builder = _ValueBuilder(
-                  CborSimpleValue(data.header.info.toInt(), tags: data.tags));
-            } else if (_strict) {
-              throw CborDecodeException('Bad CBOR value.', data.offset);
+                  CborSimpleValue(data.header.arg.toInt(), tags: data.tags));
             } else {
-              return;
+              throw CborMalformedException(
+                  'Reserved simple value', data.offset);
             }
 
             break;
@@ -139,8 +120,8 @@ class CborSink extends Sink<RawValueTagged> {
     } else if (builder.isDone) {
       final value = builder.build();
 
-      if (value is Break && _strict) {
-        throw CborDecodeException('Unexpected CBOR break', data.offset);
+      if (value is Break) {
+        throw _CborUnexpectedBreakException(data.offset);
       }
 
       _sink.add(value);
@@ -155,49 +136,46 @@ class CborSink extends Sink<RawValueTagged> {
   }
 }
 
-class _IncompatibleTagException extends CborDecodeException {
-  _IncompatibleTagException(int offset) : super('Incompatible tags', offset);
+class _CborUnexpectedBreakException extends CborMalformedException {
+  _CborUnexpectedBreakException(int offset) : super('Unexpected break', offset);
 }
 
-CborString _createString(bool strict, String data, int offset, List<int> tags) {
+class _CborUnexpectedUndefinedLengthException extends CborMalformedException {
+  _CborUnexpectedUndefinedLengthException(int offset)
+      : super('Major type can not be undefined length', offset);
+}
+
+CborString _createString(List<int> str, int offset, List<int> tags) {
   final CborString cbor;
-  switch (_parseTags<CborString>(strict, offset, tags)) {
+  switch (tags.lastWhereOrNull(isHintSubtype)) {
     case CborTag.dateTimeString:
-      cbor = CborDateTimeString.fromString(data, tags: tags);
+      cbor = CborDateTimeString.fromUtf8(str, tags: tags);
       break;
     case CborTag.uri:
-      cbor = CborUri.fromString(data, tags: tags);
+      cbor = CborUri.fromUtf8(str, tags: tags);
       break;
     case CborTag.base64Url:
-      cbor = CborBase64Url.fromString(data, tags: tags);
+      cbor = CborBase64Url.fromUtf8(str, tags: tags);
       break;
     case CborTag.base64:
-      cbor = CborBase64.fromString(data, tags: tags);
+      cbor = CborBase64.fromUtf8(str, tags: tags);
       break;
     case CborTag.regex:
-      cbor = CborRegex.fromString(data, tags: tags);
+      cbor = CborRegex.fromUtf8(str, tags: tags);
       break;
     case CborTag.mime:
-      cbor = CborMime.fromString(data, tags: tags);
+      cbor = CborMime.fromUtf8(str, tags: tags);
       break;
     default:
-      cbor = CborString(data, tags: tags);
+      cbor = CborString.fromUtf8(str, tags: tags);
       break;
-  }
-  if (strict) {
-    try {
-      cbor.verify();
-    } on FormatException catch (ex) {
-      throw CborFormatException(ex, offset);
-    }
   }
 
   return cbor;
 }
 
-CborBytes _createBytes(
-    bool strict, List<int> data, int offset, List<int> tags) {
-  switch (_parseTags<CborBytes>(strict, offset, tags)) {
+CborBytes _createBytes(List<int> data, int offset, List<int> tags) {
+  switch (tags.lastWhereOrNull(isHintSubtype)) {
     case CborTag.positiveBignum:
       return CborBigInt.fromBytes(data, tags: tags);
     case CborTag.negativeBignum:
@@ -207,24 +185,27 @@ CborBytes _createBytes(
   }
 }
 
-CborInt _createInt(bool strict, RawValueTagged raw) {
-  var data = raw.header.info;
+CborInt _createInt(RawValueTagged raw) {
+  var data = raw.header.arg;
+
+  if (data.isIndefiniteLength) {
+    throw _CborUnexpectedUndefinedLengthException(raw.offset);
+  }
 
   if (raw.header.majorType == 1) {
     data = ~data;
   }
 
-  if (_parseTags<CborInt>(strict, raw.offset, raw.tags) ==
-      CborTag.epochDateTime) {
+  if (raw.tags.lastWhereOrNull(isHintSubtype) == CborTag.epochDateTime) {
     return CborDateTimeInt.fromSecondsSinceEpoch(data.toInt(), tags: raw.tags);
-  } else if (data.bitLength < 53) {
+  } else if (data.isValidInt) {
     return CborSmallInt(data.toInt());
   } else {
     return CborInt(data.toBigInt());
   }
 }
 
-CborFloat _createFloat(bool strict, RawValueTagged raw) {
+CborFloat _createFloat(RawValueTagged raw) {
   final double value;
   switch (raw.header.additionalInfo) {
     case 25:
@@ -241,16 +222,15 @@ CborFloat _createFloat(bool strict, RawValueTagged raw) {
       throw Error();
   }
 
-  if (_parseTags<CborFloat>(strict, raw.offset, raw.tags) ==
-      CborTag.epochDateTime) {
+  if (raw.tags.lastWhereOrNull(isHintSubtype) == CborTag.epochDateTime) {
     return CborDateTimeFloat.fromSecondsSinceEpoch(value, tags: raw.tags);
   } else {
     return CborFloat(value, tags: raw.tags);
   }
 }
 
-CborList _createList(bool strict, RawValueTagged raw, List<CborValue> items) {
-  switch (_parseTags<CborList>(strict, raw.offset, raw.tags, items)) {
+CborList _createList(RawValueTagged raw, List<CborValue> items) {
+  switch (raw.tags.lastWhereOrNull(isHintSubtype)) {
     case CborTag.decimalFraction:
       if (items.length != 2) {
         break;
@@ -261,7 +241,7 @@ CborList _createList(bool strict, RawValueTagged raw, List<CborValue> items) {
 
       if (exponent is! CborInt ||
           mantissa is! CborInt ||
-          (strict && exponent is CborBigInt)) {
+          exponent is CborBigInt) {
         break;
       }
 
@@ -281,7 +261,7 @@ CborList _createList(bool strict, RawValueTagged raw, List<CborValue> items) {
 
       if (exponent is! CborInt ||
           mantissa is! CborInt ||
-          (strict && exponent is CborBigInt)) {
+          exponent is CborBigInt) {
         break;
       }
 
@@ -295,104 +275,26 @@ CborList _createList(bool strict, RawValueTagged raw, List<CborValue> items) {
   return CborList(items, tags: raw.tags);
 }
 
-CborMap _createMap(bool strict, RawValueTagged raw, List<CborValue> items) {
-  _parseTags<CborMap>(strict, raw.offset, raw.tags);
-
-  if (strict && items.length % 2 != 0) {
-    throw CborDecodeException('Map has more keys than values', raw.offset);
+CborMap _createMap(RawValueTagged raw, List<CborValue> items) {
+  if (items.length % 2 != 0) {
+    throw CborMalformedException('Map has more keys than values', raw.offset);
   }
 
   return CborMap.fromEntries(items.chunks(2).map((x) => MapEntry(x[0], x[1])),
       tags: raw.tags);
 }
 
-CborBool _createBool(bool strict, RawValueTagged raw) {
+CborBool _createBool(RawValueTagged raw) {
   final value = raw.header.additionalInfo != 20;
-
-  _parseTags<CborBool>(strict, raw.offset, raw.tags);
   return CborBool(value, tags: raw.tags);
 }
 
-CborUndefined _createUndefined(bool strict, RawValueTagged raw) {
-  _parseTags<CborUndefined>(strict, raw.offset, raw.tags);
+CborUndefined _createUndefined(RawValueTagged raw) {
   return CborUndefined(tags: raw.tags);
 }
 
-CborNull _createNull(bool strict, RawValueTagged raw) {
-  _parseTags<CborNull>(strict, raw.offset, raw.tags);
+CborNull _createNull(RawValueTagged raw) {
   return CborNull(tags: raw.tags);
-}
-
-int _parseTags<T>(bool strict, int offset, List<int> tags,
-    [List<CborValue>? value]) {
-  var subtype = -1;
-
-  var expectConversion = -1;
-  for (final h in tags.reversed) {
-    if (isHintSubtype(h)) {
-      if (subtype != -1) {
-        if (strict) {
-          throw _IncompatibleTagException(offset);
-        }
-      } else {
-        subtype = h;
-      }
-    }
-
-    if (strict) {
-      if (isExpectConversion(h)) {
-        if (expectConversion != -1) {
-          throw _IncompatibleTagException(offset);
-        } else {
-          expectConversion = h;
-        }
-      }
-
-      switch (h) {
-        case CborTag.uri:
-        case CborTag.base64Url:
-        case CborTag.base64:
-        case CborTag.regex:
-        case CborTag.mime:
-        case CborTag.dateTimeString:
-          if (!isSubtype<T, CborString>()) {
-            throw _IncompatibleTagException(offset);
-          }
-
-          break;
-
-        case CborTag.epochDateTime:
-          if ((!isSubtype<T, CborInt>() || isSubtype<T, CborBigInt>()) &&
-              !isSubtype<T, CborFloat>()) {
-            throw _IncompatibleTagException(offset);
-          }
-
-          break;
-
-        case CborTag.positiveBignum:
-        case CborTag.negativeBignum:
-        case CborTag.encodedCborData:
-          if (!isSubtype<T, CborBytes>()) {
-            throw _IncompatibleTagException(offset);
-          }
-
-          break;
-
-        case CborTag.decimalFraction:
-        case CborTag.bigFloat:
-          if (value?.length != 2 ||
-              value![0] is! CborInt ||
-              value[1] is! CborInt ||
-              value[0] is CborBigInt) {
-            throw _IncompatibleTagException(offset);
-          }
-
-          break;
-      }
-    }
-  }
-
-  return subtype;
 }
 
 abstract class _Builder {
@@ -421,15 +323,14 @@ class _ValueBuilder extends _Builder {
 }
 
 class _ListBuilder extends _Builder {
-  _ListBuilder(this.strict, this.raw);
+  _ListBuilder(this.raw);
 
   final RawValueTagged raw;
-  final bool strict;
   final List<CborValue> items = [];
   _Builder? _next;
 
   @override
-  bool get isDone => items.length == raw.header.info.toInt();
+  bool get isDone => items.length == raw.header.arg.toInt();
 
   @override
   void add(_Builder builder) {
@@ -442,8 +343,8 @@ class _ListBuilder extends _Builder {
       }
     } else if (builder.isDone) {
       final value = builder.build();
-      if (value is Break && strict) {
-        throw CborDecodeException('Unexpected CBOR break', raw.offset);
+      if (value is Break) {
+        throw _CborUnexpectedBreakException(raw.offset);
       }
 
       items.add(value);
@@ -454,20 +355,19 @@ class _ListBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createList(strict, raw, items);
+    return _createList(raw, items);
   }
 }
 
 class _MapBuilder extends _Builder {
-  _MapBuilder(this.strict, this.raw);
+  _MapBuilder(this.raw);
 
   final RawValueTagged raw;
-  final bool strict;
   final List<CborValue> items = [];
   _Builder? _next;
 
   @override
-  bool get isDone => items.length == 2 * raw.header.info.toInt();
+  bool get isDone => items.length == 2 * raw.header.arg.toInt();
 
   @override
   void add(_Builder builder) {
@@ -480,8 +380,8 @@ class _MapBuilder extends _Builder {
       }
     } else if (builder.isDone) {
       final value = builder.build();
-      if (value is Break && strict) {
-        throw CborDecodeException('Unexpected CBOR break', raw.offset);
+      if (value is Break) {
+        throw _CborUnexpectedBreakException(raw.offset);
       }
 
       items.add(value);
@@ -492,15 +392,14 @@ class _MapBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createMap(strict, raw, items);
+    return _createMap(raw, items);
   }
 }
 
 class _IndefiniteLengthByteBuilder extends _Builder {
-  _IndefiniteLengthByteBuilder(this.strict, this.raw);
+  _IndefiniteLengthByteBuilder(this.raw);
 
   final RawValueTagged raw;
-  final bool strict;
   final Uint8Buffer bytes = Uint8Buffer();
 
   @override
@@ -519,23 +418,22 @@ class _IndefiniteLengthByteBuilder extends _Builder {
       }
     }
 
-    throw CborDecodeException(
+    throw CborMalformedException(
         'An indefinite byte string must only contain byte strings.',
         raw.offset);
   }
 
   @override
   CborValue build() {
-    return _createBytes(strict, bytes, raw.offset, raw.tags);
+    return _createBytes(bytes, raw.offset, raw.tags);
   }
 }
 
 class _IndefiniteLengthStringBuilder extends _Builder {
-  _IndefiniteLengthStringBuilder(this.strict, this.raw);
+  _IndefiniteLengthStringBuilder(this.raw);
 
   final RawValueTagged raw;
-  final bool strict;
-  final StringBuffer accumulated = StringBuffer();
+  final Uint8Buffer bytes = Uint8Buffer();
 
   @override
   bool isDone = false;
@@ -548,26 +446,25 @@ class _IndefiniteLengthStringBuilder extends _Builder {
         isDone = true;
         return;
       } else if (value is CborString) {
-        accumulated.write(value);
+        bytes.addAll(value.utf8Bytes);
         return;
       }
     }
 
-    throw CborDecodeException(
+    throw CborMalformedException(
         'An indefinite string must only contain strings.', raw.offset);
   }
 
   @override
   CborValue build() {
-    return _createString(strict, accumulated.toString(), raw.offset, raw.tags);
+    return _createString(bytes, raw.offset, raw.tags);
   }
 }
 
 class _IndefiniteLengthListBuilder extends _Builder {
-  _IndefiniteLengthListBuilder(this.strict, this.raw);
+  _IndefiniteLengthListBuilder(this.raw);
 
   final RawValueTagged raw;
-  final bool strict;
   final List<CborValue> items = [];
   _Builder? _next;
 
@@ -598,15 +495,14 @@ class _IndefiniteLengthListBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createList(strict, raw, items);
+    return _createList(raw, items);
   }
 }
 
 class _IndefiniteLengthMapBuilder extends _Builder {
-  _IndefiniteLengthMapBuilder(this.strict, this.raw);
+  _IndefiniteLengthMapBuilder(this.raw);
 
   final RawValueTagged raw;
-  final bool strict;
   final List<CborValue> items = [];
   _Builder? _next;
 
@@ -637,6 +533,6 @@ class _IndefiniteLengthMapBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createMap(strict, raw, items);
+    return _createMap(raw, items);
   }
 }

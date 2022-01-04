@@ -11,24 +11,27 @@ import 'package:cbor/cbor.dart';
 import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
-import '../utils/info.dart';
+import '../utils/arg.dart';
 
 class ToObjectOptions {
   ToObjectOptions({
     required this.parseDateTime,
     required this.parseUri,
     required this.decodeBase64,
+    required this.allowMalformedUtf8,
   });
 
   final bool parseDateTime;
   final bool parseUri;
   final bool decodeBase64;
+  final bool allowMalformedUtf8;
 }
 
 class ToJsonOptions {
   ToJsonOptions({
     required this.encoding,
     this.substituteValue,
+    required this.allowMalformedUtf8,
   });
 
   ToJsonOptions copyWith({
@@ -37,9 +40,11 @@ class ToJsonOptions {
       ToJsonOptions(
         encoding: encoding ?? this.encoding,
         substituteValue: substituteValue,
+        allowMalformedUtf8: allowMalformedUtf8,
       );
 
   final JsonBytesEncoding encoding;
+  final bool allowMalformedUtf8;
   final Object? substituteValue;
 }
 
@@ -70,7 +75,7 @@ class Break with CborValueMixin implements CborValue {
 
   @override
   void encode(EncodeSink sink) {
-    sink.addHeaderInfo(7, Info.indefiniteLength);
+    sink.addHeaderInfo(7, Arg.indefiniteLength);
   }
 }
 
@@ -81,6 +86,7 @@ mixin CborValueMixin implements CborValue {
     bool parseDateTime = true,
     bool parseUri = true,
     bool decodeBase64 = false,
+    bool allowMalformedUtf8 = false,
   }) =>
       toObjectInternal(
           {},
@@ -88,13 +94,16 @@ mixin CborValueMixin implements CborValue {
             parseDateTime: parseDateTime,
             parseUri: parseUri,
             decodeBase64: decodeBase64,
+            allowMalformedUtf8: allowMalformedUtf8,
           ));
 
   @override
-  Object? toJson({Object? substituteValue}) => toJsonInternal(
+  Object? toJson({Object? substituteValue, bool allowMalformedUtf8 = false}) =>
+      toJsonInternal(
         {},
         ToJsonOptions(
           encoding: JsonBytesEncoding.base64Url,
+          allowMalformedUtf8: allowMalformedUtf8,
           substituteValue: substituteValue,
         ),
       );

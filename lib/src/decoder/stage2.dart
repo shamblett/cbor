@@ -5,6 +5,8 @@
  * Copyright :  S.Hamblett
  */
 
+import 'package:cbor/cbor.dart';
+
 import 'stage1.dart';
 
 class RawValueTagged {
@@ -30,7 +32,11 @@ class RawSinkTagged extends Sink<RawValue> {
   @override
   void add(RawValue data) {
     if (data.header.majorType == 6) {
-      _tags.add(data.header.info.toInt());
+      if (data.header.arg.isIndefiniteLength) {
+        throw CborMalformedException('Tag can not have additional info 31');
+      }
+
+      _tags.add(data.header.arg.toInt());
     } else {
       sink.add(RawValueTagged(
         data.header,

@@ -8,7 +8,8 @@
 import 'package:cbor/cbor.dart';
 
 import '../encoder/sink.dart';
-import '../utils/info.dart';
+import 'package:collection/collection.dart';
+import '../utils/arg.dart';
 import 'internal.dart';
 
 /// A CBOR integer or big number.
@@ -58,9 +59,11 @@ class _CborSmallIntImpl with CborValueMixin implements CborSmallInt {
   String toString() => value.toString();
   @override
   bool operator ==(Object other) =>
-      other is CborSmallInt && value == other.toInt();
+      other is CborSmallInt &&
+      tags.equals(other.tags) &&
+      value == other.toInt();
   @override
-  int get hashCode => value.hashCode;
+  int get hashCode => Object.hash(value, Object.hashAll(tags));
   @override
   BigInt toBigInt() => BigInt.from(value);
   @override
@@ -87,9 +90,9 @@ class _CborSmallIntImpl with CborValueMixin implements CborSmallInt {
     sink.addTags(tags);
 
     if (!value.isNegative) {
-      sink.addHeaderInfo(0, Info.int(value));
+      sink.addHeaderInfo(0, Arg.int(value));
     } else {
-      sink.addHeaderInfo(1, Info.int(~value));
+      sink.addHeaderInfo(1, Arg.int(~value));
     }
   }
 }
@@ -103,9 +106,11 @@ class _LargeInt with CborValueMixin implements CborInt {
   String toString() => value.toString();
   @override
   bool operator ==(Object other) =>
-      other is CborInt && toBigInt() == other.toBigInt();
+      other is CborInt &&
+      tags.equals(other.tags) &&
+      toBigInt() == other.toBigInt();
   @override
-  int get hashCode => value.hashCode;
+  int get hashCode => Object.hash(value, Object.hashAll(tags));
   @override
   BigInt toBigInt() => value;
   @override
@@ -128,9 +133,9 @@ class _LargeInt with CborValueMixin implements CborInt {
     sink.addTags(tags);
 
     if (!value.isNegative) {
-      sink.addHeaderInfo(0, Info.bigInt(value));
+      sink.addHeaderInfo(0, Arg.bigInt(value));
     } else {
-      sink.addHeaderInfo(1, Info.bigInt(~value));
+      sink.addHeaderInfo(1, Arg.bigInt(~value));
     }
   }
 }
