@@ -18,6 +18,9 @@ import 'utils/utils.dart';
 ///
 /// If cyclic references are found while encoding, a [CborCyclicError] will
 /// be thrown.
+///
+/// This encoder supports [startChunkedConversion] and can therefore be
+/// used as a stream transformer.
 class CborSimpleEncoder extends Converter<Object?, List<int>> {
   const CborSimpleEncoder({
     bool dateTimeEpoch = false,
@@ -30,16 +33,20 @@ class CborSimpleEncoder extends Converter<Object?, List<int>> {
 
   @override
   List<int> convert(Object? input) {
-    return cbor.encode(CborValue(input,
-        dateTimeEpoch: _dateTimeEpoch, toEncodable: _toEncodable));
+    return cbor.encode(CborValue(
+      input,
+      dateTimeEpoch: _dateTimeEpoch,
+      toEncodable: _toEncodable,
+    ));
   }
 
   @override
   Sink<Object?> startChunkedConversion(Sink<List<int>> sink) {
     return cbor.encoder.startChunkedConversion(sink).map((object) => CborValue(
-        object,
-        dateTimeEpoch: _dateTimeEpoch,
-        toEncodable: _toEncodable));
+          object,
+          dateTimeEpoch: _dateTimeEpoch,
+          toEncodable: _toEncodable,
+        ));
   }
 }
 
@@ -51,6 +58,10 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
   ///
   /// See the docs of [CborValue.toObject] to see how CBOR values translate
   /// into objects.
+  ///
+  /// This decoder supports [startChunkedConversion] and can therefore be
+  /// used as a stream transformer. The decoder operates over a CBOR sequence
+  /// in this mode.
   const CborSimpleDecoder({
     bool parseDateTime = true,
     bool decodeBase64 = true,

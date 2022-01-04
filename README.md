@@ -49,14 +49,13 @@ CborValue
 │   ├── CborDateTimeString
 │   ├── CborBase64
 │   ├── CborBase64Url
-│   ├── CborBase16
 │   ├── CborMime
 │   └── CborRegex
 ├── CborFloat
 │   └── CborDateTimeFloat
 ├── CborSimpleValue
 │   ├── CborNull
-│   ├── CborFloat
+│   ├── CborBool
 │   └── CborUndefined
 ├── CborMap
 └── CborList
