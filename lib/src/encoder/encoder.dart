@@ -1,7 +1,7 @@
 /*
  * Package : Cbor
  * Author : S. Hamblett <steve.hamblett@linux.com>
- * Date   : 12/12/2016
+ * Date   : 04/01/2022
  * Copyright :  S.Hamblett
  */
 
@@ -18,6 +18,9 @@ import 'sink.dart';
 /// be thrown.
 ///
 /// Other than that, usage of the encoder is not expected to produce exceptions.
+///
+/// This encoder supports [startChunkedConversion] and can therefore be
+/// used as a stream transformer.
 class CborEncoder extends Converter<CborValue, List<int>> {
   const CborEncoder();
 

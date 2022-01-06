@@ -1,7 +1,7 @@
 /*
  * Package : Cbor
  * Author : S. Hamblett <steve.hamblett@linux.com>
- * Date   : 12/12/2016
+ * Date   : 04/01/2022
  * Copyright :  S.Hamblett
  */
 
@@ -32,6 +32,10 @@ import 'stage3.dart';
 ///
 /// The decoder will not throw if the input is invalid but well-formed.
 /// However, operations on [CborValue] may throw if invalid data is used.
+///
+/// This decoder supports [startChunkedConversion] and can therefore be
+/// used as a stream transformer. The decoder operates over a CBOR sequence
+/// in this mode.
 class CborDecoder extends Converter<List<int>, CborValue> {
   /// Create a CBOR decoder.
   const CborDecoder();

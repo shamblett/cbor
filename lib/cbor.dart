@@ -1,10 +1,84 @@
 /*
  * Package : Cbor
  * Author : S. Hamblett <steve.hamblett@linux.com>
- * Date   : 12/12/2016
+ * Date   : 04/01/2022
  * Copyright :  S.Hamblett
  */
 
+/// Advanced API for CBOR.
+///
+/// # Quick reference
+///
+/// ## Decoders and encoders
+///
+/// Between bytes and [CborValue]:
+///
+/// * [CborCodec]
+///   * [CborDecoder]
+///   * [CborEncoder]
+///   * [cbor]
+///   * [cborDecode]
+///   * [cborEncode]
+///
+/// Between bytes and objects:
+///
+/// * [CborSimpleCodec]
+///   * [CborSimpleDecoder]
+///   * [CborSimpleEncoder]
+///
+/// To JSON from [CborValue]:
+///
+/// * [CborJsonEncoder]
+///
+/// ## Pretty printing
+///
+/// * [cborPrettyPrint]
+///
+/// ## Values
+///
+/// Super type:
+///
+/// * [CborValue]
+///
+/// Interfaces:
+///
+/// * [CborDateTime]
+///   * Implementers:
+///   * [CborDateTimeString]
+///   * [CborDateTimeInt]
+///   * [CborDateTimeFloat]
+/// * [CborInt]
+///   * Implementers:
+///   * [CborSmallInt]
+///   * [CborBigInt]
+///   * [CborDateTimeInt]
+///
+/// Major types:
+///
+/// * [CborBytes]
+/// * [CborString]
+/// * [CborFloat]
+/// * [CborMap]
+/// * [CborList]
+/// * [CborInt]
+///   * [CborSmallInt]
+/// * [CborSimpleValue]
+///   * [CborNull]
+///   * [CborBool]
+///   * [CborUndefined]
+///
+/// Tag based:
+///
+/// * [CborDateTimeInt]
+/// * [CborBigInt]
+/// * [CborDateTimeString]
+/// * [CborBase64]
+/// * [CborBase64Url]
+/// * [CborMime]
+/// * [CborRegex]
+/// * [CborDateTimeFloat]
+/// * [CborDecimalFraction]
+/// * [CborBigFloat]
 library cbor;
 
 export 'src/codec.dart';
