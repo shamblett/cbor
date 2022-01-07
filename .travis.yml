@@ -7,6 +7,3 @@ branches:
     - master
 script:
   - pub run test
-  - pub run test/issues/issue9.dart
-  - pub run test/issues/issue18.dart
-

@@ -1,37 +1,91 @@
 /*
  * Package : Cbor
  * Author : S. Hamblett <steve.hamblett@linux.com>
- * Date   : 12/12/2016
+ * Date   : 04/01/2022
  * Copyright :  S.Hamblett
  */
 
+/// Advanced API for CBOR.
+///
+/// # Quick reference
+///
+/// ## Decoders and encoders
+///
+/// Between bytes and [CborValue]:
+///
+/// * [CborCodec]
+///   * [CborDecoder]
+///   * [CborEncoder]
+///   * [cbor]
+///   * [cborDecode]
+///   * [cborEncode]
+///
+/// Between bytes and objects:
+///
+/// * [CborSimpleCodec]
+///   * [CborSimpleDecoder]
+///   * [CborSimpleEncoder]
+///
+/// To JSON from [CborValue]:
+///
+/// * [CborJsonEncoder]
+///
+/// ## Pretty printing
+///
+/// * [cborPrettyPrint]
+///
+/// ## Values
+///
+/// Super type:
+///
+/// * [CborValue]
+///
+/// Interfaces:
+///
+/// * [CborDateTime]
+///   * Implementers:
+///   * [CborDateTimeString]
+///   * [CborDateTimeInt]
+///   * [CborDateTimeFloat]
+/// * [CborInt]
+///   * Implementers:
+///   * [CborSmallInt]
+///   * [CborBigInt]
+///   * [CborDateTimeInt]
+///
+/// Major types:
+///
+/// * [CborBytes]
+/// * [CborString]
+/// * [CborFloat]
+/// * [CborMap]
+/// * [CborList]
+/// * [CborInt]
+///   * [CborSmallInt]
+/// * [CborSimpleValue]
+///   * [CborNull]
+///   * [CborBool]
+///   * [CborUndefined]
+///
+/// Tag based:
+///
+/// * [CborDateTimeInt]
+/// * [CborBigInt]
+/// * [CborDateTimeString]
+/// * [CborBase64]
+/// * [CborBase64Url]
+/// * [CborMime]
+/// * [CborRegex]
+/// * [CborDateTimeFloat]
+/// * [CborDecimalFraction]
+/// * [CborBigFloat]
 library cbor;
 
-import 'dart:collection';
-import 'dart:convert' as convertor;
-import 'dart:math';
-import 'dart:typed_data';
-
-import 'package:typed_data/typed_data.dart' as typed;
-import 'package:meta/meta.dart';
-
-part 'src/cbor.dart';
-
-part 'src/cbor_listener_stack.dart';
-part 'src/cbor_decode_stack.dart';
-part 'src/cbor_item_stack.dart';
-part 'src/cbor_stack.dart';
-part 'src/cbor_numeric_support.dart';
-part 'src/cbor_constants.dart';
-part 'src/cbor_output.dart';
-part 'src/cbor_input.dart';
-part 'src/cbor_decoder.dart';
-part 'src/cbor_list_builder.dart';
-part 'src/cbor_map_builder.dart';
-part 'src/cbor_encoder.dart';
-part 'src/cbor_listener_debug.dart';
-part 'src/cbor_listener.dart';
-part 'src/cbor_exception.dart';
-
-part 'src/cbor_dart_item.dart';
-part 'src/cbor_output_standard.dart';
+export 'src/codec.dart';
+export 'src/decoder/decoder.dart';
+export 'src/decoder/pretty_print.dart';
+export 'src/encoder/encoder.dart';
+export 'src/error.dart';
+export 'src/json.dart';
+export 'src/simple.dart';
+export 'src/value/value.dart';
