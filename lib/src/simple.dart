@@ -149,7 +149,7 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
 
   @override
   Object? decode(
-    List<int> input, {
+    List<int> encoded, {
     bool? parseDateTime,
     bool? decodeBase64,
     bool? parseUri,
@@ -162,12 +162,12 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
       parseDateTime: parseDateTime,
       parseUri: parseUri,
       decodeBase64: decodeBase64,
-    ).convert(input);
+    ).convert(encoded);
   }
 
   @override
   List<int> encode(
-    Object? value, {
+    Object? input, {
     bool? dateTimeEpoch,
     Object? Function(dynamic object)? toEncodable,
   }) {
@@ -177,6 +177,6 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
     return CborSimpleEncoder(
       dateTimeEpoch: dateTimeEpoch,
       toEncodable: toEncodable,
-    ).convert(value);
+    ).convert(input);
   }
 }

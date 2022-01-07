@@ -1,0 +1,1 @@
+## Please refer to the example Dart files in this directory and the README for usage examples.

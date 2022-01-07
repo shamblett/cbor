@@ -46,10 +46,9 @@ class CborJsonEncoder extends Converter<CborValue, String> {
   }
 
   @override
-  Sink<CborValue> startChunkedConversion(Sink<String> output) {
-    return const JsonEncoder().startChunkedConversion(output).map((x) =>
-        x.toJson(
-            substituteValue: _substituteValue,
-            allowMalformedUtf8: _allowMalformedUtf8));
+  Sink<CborValue> startChunkedConversion(Sink<String> sink) {
+    return const JsonEncoder().startChunkedConversion(sink).map((x) => x.toJson(
+        substituteValue: _substituteValue,
+        allowMalformedUtf8: _allowMalformedUtf8));
   }
 }
