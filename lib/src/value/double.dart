@@ -87,7 +87,7 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
 
 /// A CBOR date time encoded as seconds since epoch in a float.
 abstract class CborDateTimeFloat extends CborFloat implements CborDateTime {
-  const factory CborDateTimeFloat.fromSecondsSinceEpoch(double amount,
+  factory CborDateTimeFloat.fromSecondsSinceEpoch(double amount,
       {List<int> tags}) = _CborDateTimeFloatImpl.fromSecondsSinceEpoch;
 
   factory CborDateTimeFloat(DateTime value, {List<int> tags}) =

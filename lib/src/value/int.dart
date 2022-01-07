@@ -145,8 +145,8 @@ abstract class CborDateTimeInt extends CborSmallInt implements CborDateTime {
   factory CborDateTimeInt(DateTime value, {List<int> tags}) =
       _CborDateTimeIntImpl;
 
-  const factory CborDateTimeInt.fromSecondsSinceEpoch(int value,
-      {List<int> tags}) = _CborDateTimeIntImpl.fromSecondsSinceEpoch;
+  factory CborDateTimeInt.fromSecondsSinceEpoch(int value, {List<int> tags}) =
+      _CborDateTimeIntImpl.fromSecondsSinceEpoch;
 }
 
 /// A CBOR datetieme encoded as seconds since epoch.
