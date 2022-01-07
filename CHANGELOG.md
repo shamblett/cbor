@@ -1,3 +1,7 @@
+### 5.0.0
+Issue 28 - API rewrite - 
+***Warning - major breaking API change in this version***
+
 ### 4.1.0
 Issue 2 - Byte string keys added
 
