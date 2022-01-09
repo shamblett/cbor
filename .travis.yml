@@ -6,4 +6,4 @@ branches:
   only:
     - master
 script:
-  - pub run test
+  - dart pub run test
