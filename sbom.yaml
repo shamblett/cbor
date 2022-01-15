@@ -1,0 +1,6 @@
+type: spdx
+
+spdx:
+  SPDXFormat: 'tagvalue'
+  documentCreation:
+    CreatorComment: '<text>Please refer to the AUTHORS file for contributor/creation details</text>'
