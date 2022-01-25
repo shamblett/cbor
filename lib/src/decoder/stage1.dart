@@ -30,9 +30,9 @@ class Header {
         case 24:
           return Arg.int(dataBytes[0]);
         case 25:
-          return Arg.int(ByteData.view(dataBytes.buffer).getInt16(0));
+          return Arg.int(ByteData.view(dataBytes.buffer).getUint16(0));
         case 26:
-          return Arg.int(ByteData.view(dataBytes.buffer).getInt32(0));
+          return Arg.int(ByteData.view(dataBytes.buffer).getUint32(0));
         case 27:
           var i =
               BigInt.from(ByteData.view(dataBytes.buffer).getUint32(0)) << 32;

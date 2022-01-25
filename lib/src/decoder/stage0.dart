@@ -33,29 +33,6 @@ class Reader {
     return readExactBytes(1)?[0];
   }
 
-  int? readUint16(int offset) {
-    final bytes = readExactBytes(2);
-    if (bytes != null) {
-      return ByteData.view(bytes.buffer).getUint16(0);
-    }
-  }
-
-  int? readUint32(int offset) {
-    final bytes = readExactBytes(4);
-    if (bytes != null) {
-      return ByteData.view(bytes.buffer).getUint32(0);
-    }
-  }
-
-  BigInt? readUint64(int offset) {
-    final bytes = readExactBytes(4);
-    if (bytes != null) {
-      var i = BigInt.from(ByteData.view(bytes.buffer).getUint32(0)) << 4;
-      i |= BigInt.from(ByteData.view(bytes.buffer).getUint32(4));
-      return i;
-    }
-  }
-
   Uint8List? readExactBytes(int c) {
     if (_read + c <= _bytes.length) {
       final bytes = _bytes.buffer.asUint8List().sublist(_read, c + _read);
