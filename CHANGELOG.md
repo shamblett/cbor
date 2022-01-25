@@ -1,3 +1,6 @@
+### 5.0.1
+Issue 41, PR42
+
 ### 5.0.0
 Issue 28 - API rewrite - 
 ***Warning - major breaking API change in this version***
