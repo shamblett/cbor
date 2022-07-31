@@ -54,7 +54,7 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
     }
 
     final parts = FloatParts.fromDouble(value);
-
+    //TODO SJH issue 44 here
     if (parts.isFloat16Lossless) {
       sink.addHeader(7, 25);
 
