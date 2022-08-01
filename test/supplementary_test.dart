@@ -302,4 +302,11 @@ void main() {
           ]);
     });
   });
+
+  group('Floating point precision', () {
+    test('Automatic', () {
+      final encoded = cbor.encode(CborFloat(0.0));
+      expect(encoded, [0xf9, 0x00, 0x00]);
+    });
+  });
 }

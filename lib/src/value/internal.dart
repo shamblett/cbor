@@ -109,15 +109,20 @@ mixin CborValueMixin implements CborValue {
       );
 
   JsonBytesEncoding? get expectedConversion {
+    var retVal = JsonBytesEncoding.base64Url;
     for (final tag in tags.reversed) {
       switch (tag) {
         case CborTag.expectedConversionToBase16:
-          return JsonBytesEncoding.base16;
+          retVal = JsonBytesEncoding.base16;
+          break;
         case CborTag.expectedConversionToBase64:
-          return JsonBytesEncoding.base64;
+          retVal = JsonBytesEncoding.base64;
+          break;
         case CborTag.expectedConversionToBase64Url:
-          return JsonBytesEncoding.base64Url;
+          retVal = JsonBytesEncoding.base64Url;
+          break;
       }
     }
+    return retVal;
   }
 }
