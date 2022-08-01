@@ -29,6 +29,17 @@ abstract class CborFloat extends CborValue {
   factory CborFloat(double value, {List<int> tags}) = _CborFloatImpl;
 
   double get value;
+
+  CborFloatPrecision precision = CborFloatPrecision.automatic;
+
+  /// Set half precision
+  void halfPrecision() => precision = CborFloatPrecision.half;
+
+  /// Set float(normal) precision
+  void floatPrecision() => precision = CborFloatPrecision.float;
+
+  /// Set double precision
+  void doublePrecision() => precision = CborFloatPrecision.double;
 }
 
 class _CborFloatImpl with CborValueMixin implements CborFloat {
@@ -45,6 +56,7 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
   int get hashCode => Object.hash(value, Object.hashAll(tags));
   @override
   final List<int> tags;
+  @override
   var precision = CborFloatPrecision.automatic;
 
   @override
@@ -133,14 +145,14 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
     }
   }
 
-  /// Set half precision
-  void halfPrecision() => precision = CborFloatPrecision.half;
+  @override
+  void doublePrecision() => precision = CborFloatPrecision.half;
 
-  /// Set float(normal) precision
+  @override
   void floatPrecision() => precision = CborFloatPrecision.float;
 
-  /// Set double precision
-  void doublePrecision() => precision = CborFloatPrecision.double;
+  @override
+  void halfPrecision() => precision = CborFloatPrecision.double;
 }
 
 /// A CBOR date time encoded as seconds since epoch in a float.
