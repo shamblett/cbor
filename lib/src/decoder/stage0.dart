@@ -46,6 +46,7 @@ class Reader {
 
       return bytes;
     }
+    return null;
   }
 
   Uint8List readBytes(int maximum) {

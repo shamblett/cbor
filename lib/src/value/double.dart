@@ -12,17 +12,40 @@ import 'package:ieee754/ieee754.dart';
 import '../encoder/sink.dart';
 import 'internal.dart';
 
+/// Enumeration to allow the user to select which level of precision to
+/// use encoding a CBOR float.
+enum CborFloatPrecision {
+  automatic, // Default behaviour
+  half,
+  float,
+  double
+}
+
 /// A CBOR float.
 ///
-/// Encoded to the least precision which can represent the value losslessly.
+/// Encoded to the least precision which can represent the value losslessly unless
+/// the user has selected half, float or double precision.
+/// If the user has selected the precision to use and the supplied value cannot
+/// be encoded in that precision then an [ArgumentError] is thrown.
 abstract class CborFloat extends CborValue {
-  const factory CborFloat(double value, {List<int> tags}) = _CborFloatImpl;
+  factory CborFloat(double value, {List<int> tags}) = _CborFloatImpl;
 
   double get value;
+
+  CborFloatPrecision precision = CborFloatPrecision.automatic;
+
+  /// Set half precision
+  void halfPrecision();
+
+  /// Set float(normal) precision
+  void floatPrecision();
+
+  /// Set double precision
+  void doublePrecision();
 }
 
 class _CborFloatImpl with CborValueMixin implements CborFloat {
-  const _CborFloatImpl(this.value, {this.tags = const []});
+  _CborFloatImpl(this.value, {this.tags = const []});
 
   @override
   final double value;
@@ -35,6 +58,8 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
   int get hashCode => Object.hash(value, Object.hashAll(tags));
   @override
   final List<int> tags;
+  @override
+  var precision = CborFloatPrecision.automatic;
 
   @override
   void encode(EncodeSink sink) {
@@ -55,18 +80,56 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
 
     final parts = FloatParts.fromDouble(value);
 
-    if (parts.isFloat16Lossless) {
-      sink.addHeader(7, 25);
+    // Automatic(default) conversion picks the best encoding.
+    if (precision == CborFloatPrecision.automatic) {
+      if (parts.isFloat16Lossless) {
+        sink.addHeader(7, 25);
 
-      sink.add(parts.toFloat16Bytes());
-    } else if (parts.isFloat32Lossless) {
-      sink.addHeader(7, 26);
+        sink.add(parts.toFloat16Bytes());
+      } else if (parts.isFloat32Lossless) {
+        sink.addHeader(7, 26);
 
-      sink.add(parts.toFloat32Bytes());
+        sink.add(parts.toFloat32Bytes());
+      } else {
+        sink.addHeader(7, 27);
+
+        sink.add(parts.toFloat64Bytes());
+      }
     } else {
-      sink.addHeader(7, 27);
-
-      sink.add(parts.toFloat64Bytes());
+      switch (precision) {
+        case CborFloatPrecision.half:
+          if (parts.isFloat16Lossless) {
+            sink.addHeader(7, 25);
+            sink.add(parts.toFloat16Bytes());
+          } else {
+            // Invalid conversion
+            throw ArgumentError(
+                precision, 'Cannot encode value as a half precision float');
+          }
+          break;
+        case CborFloatPrecision.float:
+          if (parts.isFloat32Lossless) {
+            sink.addHeader(7, 26);
+            sink.add(parts.toFloat32Bytes());
+          } else {
+            // Invalid conversion
+            throw ArgumentError(precision,
+                'Cannot encode value as a normal(32 bit) precision float');
+          }
+          break;
+        case CborFloatPrecision.double:
+          if (parts.isFloat64Lossless) {
+            sink.addHeader(7, 27);
+            sink.add(parts.toFloat64Bytes());
+          } else {
+            // Invalid conversion
+            throw ArgumentError(
+                precision, 'Cannot encode value as a double precision float');
+          }
+          break;
+        case CborFloatPrecision.automatic:
+        // Nothing to do
+      }
     }
   }
 
@@ -83,6 +146,18 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
       return o.substituteValue;
     }
   }
+
+  /// Select double precision encoding
+  @override
+  void doublePrecision() => precision = CborFloatPrecision.double;
+
+  /// Select float precision encoding
+  @override
+  void floatPrecision() => precision = CborFloatPrecision.float;
+
+  /// Select half precision encoding
+  @override
+  void halfPrecision() => precision = CborFloatPrecision.half;
 }
 
 /// A CBOR date time encoded as seconds since epoch in a float.
@@ -96,7 +171,7 @@ abstract class CborDateTimeFloat extends CborFloat implements CborDateTime {
 
 class _CborDateTimeFloatImpl extends _CborFloatImpl
     implements CborDateTimeFloat {
-  const _CborDateTimeFloatImpl.fromSecondsSinceEpoch(
+  _CborDateTimeFloatImpl.fromSecondsSinceEpoch(
     double amount, {
     List<int> tags = const [CborTag.epochDateTime],
   }) : super(amount, tags: tags);

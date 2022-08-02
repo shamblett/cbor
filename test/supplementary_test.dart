@@ -302,4 +302,41 @@ void main() {
           ]);
     });
   });
+
+  group('Floating point precision', () {
+    test('Automatic', () {
+      final encoded = cbor.encode(CborFloat(0.0));
+      expect(encoded, [0xf9, 0x00, 0x00]);
+    });
+    test('Half', () {
+      final encoded = cbor.encode(CborFloat(0.0)..halfPrecision());
+      expect(encoded, [0xf9, 0x00, 0x00]);
+    });
+    test('Float', () {
+      final encoded = cbor.encode(CborFloat(100000.0)..floatPrecision());
+      expect(encoded, [0xfa, 0x47, 0xc3, 0x50, 0x00]);
+    });
+    test('Double', () {
+      final encoded = cbor.encode(CborFloat(1.0e+300)..doublePrecision());
+      expect(encoded, [0xfb, 0x7e, 0x37, 0xe4, 0x3c, 0x88, 0x00, 0x75, 0x9c]);
+    });
+    test('Half - value to large', () {
+      bool raised = false;
+      try {
+        cbor.encode(CborFloat(100000.0)..halfPrecision());
+      } on ArgumentError {
+        raised = true;
+      }
+      expect(raised, true);
+    });
+    test('Float - value to large', () {
+      bool raised = false;
+      try {
+        cbor.encode(CborFloat(1.0e+300)..floatPrecision());
+      } on ArgumentError {
+        raised = true;
+      }
+      expect(raised, true);
+    });
+  });
 }
