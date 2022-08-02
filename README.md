@@ -1,6 +1,5 @@
 # cbor 
-
-[![Build Status](https://travis-ci.org/shamblett/cbor.svg?branch=master)](https://travis-ci.org/shamblett/cbor)
+[![Build Status](https://github.com/shamblett/cbor/actions/workflows/ci.yml/badge.svg)](https://github.com/shamblett/cbor/actions/workflows/ci.yml)
 [![Pub Version](https://shields.io/pub/v/cbor)](https://pub.dev/packages/cbor)
 
 [Documentation](https://pub.dev/documentation/cbor/latest/)
