@@ -25,6 +25,8 @@ enum CborFloatPrecision {
 ///
 /// Encoded to the least precision which can represent the value losslessly unless
 /// the user has selected half, float or double precision.
+/// If the user has selected the precision to use and the supplied value cannot
+/// be encoded in that precision then an [ArgumentError] is thrown.
 abstract class CborFloat extends CborValue {
   factory CborFloat(double value, {List<int> tags}) = _CborFloatImpl;
 
@@ -33,13 +35,13 @@ abstract class CborFloat extends CborValue {
   CborFloatPrecision precision = CborFloatPrecision.automatic;
 
   /// Set half precision
-  void halfPrecision() => precision = CborFloatPrecision.half;
+  void halfPrecision();
 
   /// Set float(normal) precision
-  void floatPrecision() => precision = CborFloatPrecision.float;
+  void floatPrecision();
 
   /// Set double precision
-  void doublePrecision() => precision = CborFloatPrecision.double;
+  void doublePrecision();
 }
 
 class _CborFloatImpl with CborValueMixin implements CborFloat {
@@ -145,14 +147,17 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
     }
   }
 
+  /// Select double precision encoding
   @override
-  void doublePrecision() => precision = CborFloatPrecision.half;
+  void doublePrecision() => precision = CborFloatPrecision.double;
 
+  /// Select float precision encoding
   @override
   void floatPrecision() => precision = CborFloatPrecision.float;
 
+  /// Select half precision encoding
   @override
-  void halfPrecision() => precision = CborFloatPrecision.double;
+  void halfPrecision() => precision = CborFloatPrecision.half;
 }
 
 /// A CBOR date time encoded as seconds since epoch in a float.
