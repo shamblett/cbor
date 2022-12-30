@@ -1,6 +1,7 @@
 name: cbor
 description: A CBOR library for Dart. An RFC8949 compliant encoding/decoding CBOR implementation.
-version: 5.1.1
+version: 5.1.2
+repository: https://github.com/shamblett/cbor
 homepage: https://github.com/shamblett/cbor
 
 funding:
