@@ -13,13 +13,8 @@ import '../encoder/sink.dart';
 import 'internal.dart';
 
 /// Enumeration to allow the user to select which level of precision to
-/// use encoding a CBOR float.
-enum CborFloatPrecision {
-  automatic, // Default behaviour
-  half,
-  float,
-  double
-}
+/// use encoding a CBOR float. Defaults to 'automatic'
+enum CborFloatPrecision { automatic, half, float, double }
 
 /// A CBOR float.
 ///
