@@ -18,11 +18,20 @@ import 'internal.dart';
 /// A CBOR string encoded in UTF-8.
 abstract class CborString extends CborValue {
   factory CborString(String string, {List<int> tags}) = _CborStringImpl;
+
   factory CborString.fromUtf8(List<int> value, {List<int> tags}) =
       _CborStringImpl.fromUtf8;
 
+  factory CborString.indefinite(List<String> string, {List<int> tags}) =
+      _CborIndefiniteLengthStringImpl;
+
+  factory CborString.indefiniteFromUtf8(List<List<int>> value,
+      {List<int> tags}) = _CborIndefiniteLengthStringImpl.fromUtf8;
+
   /// Returns the UTF-8 value of this.
   List<int> get utf8Bytes;
+
+  CborLengthType get type;
 
   /// Convert to [String].
   ///
@@ -60,10 +69,13 @@ class _CborStringImpl with CborValueMixin implements CborString {
       other is CborString &&
       tags.equals(other.tags) &&
       utf8Bytes.equals(other.utf8Bytes);
+
   @override
   int get hashCode => Object.hashAll([utf8Bytes, tags].flattened);
   @override
   final List<int> tags;
+  @override
+  final CborLengthType type = CborLengthType.definite;
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -73,6 +85,64 @@ class _CborStringImpl with CborValueMixin implements CborString {
   @override
   void encode(EncodeSink sink) {
     CborEncodeDefiniteLengthString(this).encode(sink);
+  }
+
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    return toString();
+  }
+}
+
+class _CborIndefiniteLengthStringImpl
+    with CborValueMixin
+    implements CborString {
+  _CborIndefiniteLengthStringImpl(this._string, {this.tags = const []});
+  _CborIndefiniteLengthStringImpl.fromUtf8(this._utf8, {this.tags = const []});
+
+  List<String>? _string;
+  List<List<int>>? _utf8;
+
+  @override
+  List<int> get utf8Bytes {
+    _utf8 ??= _string!.map(utf8.encode).toList(growable: false);
+
+    return _utf8!.flattened.toList(growable: false);
+  }
+
+  @override
+  String toString({bool allowMalformed = false}) {
+    _string ??= _utf8!
+        .map(Utf8Decoder(allowMalformed: allowMalformed).convert)
+        .toList(growable: false);
+
+    return _string!.join();
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is CborString &&
+      tags.equals(other.tags) &&
+      utf8Bytes.equals(other.utf8Bytes);
+
+  @override
+  int get hashCode => Object.hashAll([utf8Bytes, tags].flattened);
+  @override
+  final List<int> tags;
+  @override
+  final CborLengthType type = CborLengthType.indefinite;
+
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return toString(allowMalformed: o.allowMalformedUtf8);
+  }
+
+  @override
+  void encode(EncodeSink sink) {
+    _string ??= _utf8!
+        .map(const Utf8Decoder(allowMalformed: true).convert)
+        .toList(growable: false);
+
+    CborEncodeIndefiniteLengthString(_string!).encode(sink);
   }
 
   @override

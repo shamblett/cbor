@@ -14,10 +14,10 @@ import '../encoder/sink.dart';
 import 'internal.dart';
 
 export 'bytes.dart';
-export 'map.dart';
 export 'double.dart';
 export 'int.dart';
 export 'list.dart';
+export 'map.dart';
 export 'simple_value.dart';
 export 'string.dart';
 
@@ -46,17 +46,7 @@ class CborTag {
 
 const kCborDefiniteLengthThreshold = 256;
 
-enum CborLengthType {
-  /// The value is definite length.
-  definite,
-
-  /// The value is indefinite length.
-  indefinite,
-
-  /// The value is indefinite length when there are at least
-  /// [kCborDefiniteLengthThreshold] items.
-  auto
-}
+enum CborLengthType { definite, indefinite, auto }
 
 /// A CBOR value.
 @sealed

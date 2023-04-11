@@ -17,37 +17,55 @@ import 'internal.dart';
 /// A CBOR map.
 abstract class CborMap implements Map<CborValue, CborValue>, CborValue {
   /// Create a new [CborMap] from a view of the given map.
-  factory CborMap(Map<CborValue, CborValue> items, {List<int> tags}) =
-      _CborMapImpl;
+  factory CborMap(
+    Map<CborValue, CborValue> items, {
+    List<int> tags,
+    CborLengthType type,
+  }) = _CborMapImpl;
 
   /// Create a new [CborMap] as a copy of the given map.
-  factory CborMap.of(Map<CborValue, CborValue> items, {List<int> tags}) =
-      _CborMapImpl.of;
+  factory CborMap.of(
+    Map<CborValue, CborValue> items, {
+    List<int> tags,
+    CborLengthType type,
+  }) = _CborMapImpl.of;
 
   /// Create a new [CborMap] from entries.
-  factory CborMap.fromEntries(Iterable<MapEntry<CborValue, CborValue>> entries,
-      {List<int> tags}) = _CborMapImpl.fromEntries;
+  factory CborMap.fromEntries(
+    Iterable<MapEntry<CborValue, CborValue>> entries, {
+    List<int> tags,
+    CborLengthType type,
+  }) = _CborMapImpl.fromEntries;
 
   /// Create a new [CborMap] from key and value.
   factory CborMap.fromIterables(
-      Iterable<CborValue> key, Iterable<CborValue> values,
-      {List<int> tags}) = _CborMapImpl.fromIterables;
+    Iterable<CborValue> key,
+    Iterable<CborValue> values, {
+    List<int> tags,
+    CborLengthType type,
+  }) = _CborMapImpl.fromIterables;
 }
 
 class _CborMapImpl extends DelegatingMap<CborValue, CborValue>
     with CborValueMixin
     implements CborMap {
-  const _CborMapImpl(Map<CborValue, CborValue> items, {this.tags = const []})
+  const _CborMapImpl(Map<CborValue, CborValue> items,
+      {this.tags = const [], this.type = CborLengthType.auto})
       : super(items);
-  _CborMapImpl.of(Map<CborValue, CborValue> items, {this.tags = const []})
+
+  _CborMapImpl.of(Map<CborValue, CborValue> items,
+      {this.tags = const [], this.type = CborLengthType.auto})
       : super(Map.of(items));
+
   _CborMapImpl.fromEntries(Iterable<MapEntry<CborValue, CborValue>> entries,
-      {this.tags = const []})
+      {this.tags = const [], this.type = CborLengthType.auto})
       : super(Map.fromEntries(entries));
+
   _CborMapImpl.fromIterables(
     Iterable<CborValue> keys,
     Iterable<CborValue> values, {
     this.tags = const [],
+    this.type = CborLengthType.auto,
   }) : super(Map.fromIterables(keys, values));
 
   @override
@@ -91,9 +109,13 @@ class _CborMapImpl extends DelegatingMap<CborValue, CborValue>
   @override
   final List<int> tags;
 
+  final CborLengthType type;
+
   @override
   void encode(EncodeSink sink) {
-    if (length < 256) {
+    if (type == CborLengthType.definite ||
+        (type == CborLengthType.auto &&
+            length < kCborDefiniteLengthThreshold)) {
       CborEncodeDefiniteLengthMap(this).encode(sink);
     } else {
       CborEncodeIndefiniteLengthMap(this).encode(sink);

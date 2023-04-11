@@ -508,6 +508,12 @@ void main() {
       expect(decoded, [1, 2, 3, 4, 5]);
     });
 
+    test("(_ h'0102030405')", () {
+      final decoded =
+      cbor.decode([0x45, 0x01, 0x02, 0x03, 0x04, 0x05]);
+      expect(decoded, [1, 2, 3, 4, 5]);
+    });
+
     test('(_ "strea", "ming")', () {
       final decoded = cbor.decode([
         0x7f,
