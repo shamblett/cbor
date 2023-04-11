@@ -15,13 +15,14 @@ import 'internal.dart';
 /// A CBOR array.
 abstract class CborList extends CborValue implements List<CborValue> {
   /// Create a new [CborList] from a view of the given list.
-  factory CborList(List<CborValue> items, {List<int> tags}) = _CborListImpl;
+  factory CborList(List<CborValue> items,
+      {List<int> tags, CborLengthType type}) = _CborListImpl;
 
   /// Create a new [CborList] from values.
   ///
   /// The resulting list is growable.
-  factory CborList.of(Iterable<CborValue> elements, {List<int> tags}) =
-      _CborListImpl.of;
+  factory CborList.of(Iterable<CborValue> elements,
+      {List<int> tags, CborLengthType type}) = _CborListImpl.of;
 
   /// Create a new [CborList] from generator.
   ///
@@ -33,15 +34,19 @@ abstract class CborList extends CborValue implements List<CborValue> {
 class _CborListImpl extends DelegatingList<CborValue>
     with CborValueMixin
     implements CborList {
-  const _CborListImpl(List<CborValue> items, {this.tags = const []})
+  const _CborListImpl(List<CborValue> items,
+      {this.tags = const [], this.type = CborLengthType.auto})
       : super(items);
 
-  _CborListImpl.of(Iterable<CborValue> elements, {this.tags = const []})
+  _CborListImpl.of(Iterable<CborValue> elements,
+      {this.tags = const [], this.type = CborLengthType.auto})
       : super(List.of(elements));
+
   _CborListImpl.generate(
     int len,
     CborValue Function(int index) f, {
     this.tags = const [],
+    this.type = CborLengthType.auto,
   }) : super(List.generate(len, f));
 
   @override
@@ -77,9 +82,13 @@ class _CborListImpl extends DelegatingList<CborValue>
   @override
   final List<int> tags;
 
+  final CborLengthType type;
+
   @override
   void encode(EncodeSink sink) {
-    if (length < 256) {
+    if (type == CborLengthType.definite ||
+        (type == CborLengthType.auto &&
+            length < kCborDefiniteLengthThreshold)) {
       CborEncodeDefiniteLengthList(this).encode(sink);
     } else {
       // Indefinite length
@@ -236,6 +245,7 @@ abstract class CborBigFloat extends CborList {
   }) = _CborBigFloatImpl;
 
   CborInt get exponent;
+
   CborInt get mantissa;
 }
 

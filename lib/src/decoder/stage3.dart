@@ -6,8 +6,8 @@
  */
 
 import 'package:cbor/cbor.dart';
-import 'package:collection/collection.dart';
 import 'package:cbor/src/value/internal.dart';
+import 'package:collection/collection.dart';
 import 'package:ieee754/ieee754.dart';
 import 'package:typed_data/typed_buffers.dart';
 
@@ -229,7 +229,11 @@ CborFloat _createFloat(RawValueTagged raw) {
   }
 }
 
-CborList _createList(RawValueTagged raw, List<CborValue> items) {
+CborList _createList(
+  RawValueTagged raw,
+  List<CborValue> items,
+  CborLengthType type,
+) {
   switch (raw.tags.lastWhereOrNull(isHintSubtype)) {
     case CborTag.decimalFraction:
       if (items.length != 2) {
@@ -272,7 +276,7 @@ CborList _createList(RawValueTagged raw, List<CborValue> items) {
       );
   }
 
-  return CborList(items, tags: raw.tags);
+  return CborList(items, tags: raw.tags, type: type);
 }
 
 CborMap _createMap(RawValueTagged raw, List<CborValue> items) {
@@ -355,7 +359,7 @@ class _ListBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createList(raw, items);
+    return _createList(raw, items, CborLengthType.definite);
   }
 }
 
@@ -495,7 +499,7 @@ class _IndefiniteLengthListBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createList(raw, items);
+    return _createList(raw, items, CborLengthType.indefinite);
   }
 }
 

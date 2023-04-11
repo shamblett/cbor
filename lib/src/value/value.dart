@@ -44,6 +44,20 @@ class CborTag {
   static const int selfDescribeCbor = 55799;
 }
 
+const kCborDefiniteLengthThreshold = 256;
+
+enum CborLengthType {
+  /// The value is definite length.
+  definite,
+
+  /// The value is indefinite length.
+  indefinite,
+
+  /// The value is indefinite length when there are at least
+  /// [kCborDefiniteLengthThreshold] items.
+  auto
+}
+
 /// A CBOR value.
 @sealed
 abstract class CborValue {
