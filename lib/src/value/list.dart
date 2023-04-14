@@ -29,6 +29,8 @@ abstract class CborList extends CborValue implements List<CborValue> {
   /// The resulting list is growable.
   factory CborList.generate(int len, CborValue Function(int index) f,
       {List<int> tags}) = _CborListImpl.generate;
+
+  CborLengthType get type;
 }
 
 class _CborListImpl extends DelegatingList<CborValue>
@@ -82,6 +84,7 @@ class _CborListImpl extends DelegatingList<CborValue>
   @override
   final List<int> tags;
 
+  @override
   final CborLengthType type;
 
   @override
@@ -190,6 +193,7 @@ abstract class CborDecimalFraction extends CborList {
     required CborInt exponent,
     required CborInt mantissa,
     List<int> tags,
+    CborLengthType type,
   }) = _CborDecimalFractionImpl;
 
   CborInt get exponent;
@@ -204,6 +208,7 @@ class _CborDecimalFractionImpl extends DelegatingList<CborValue>
     required this.exponent,
     required this.mantissa,
     this.tags = const [CborTag.decimalFraction],
+    this.type = CborLengthType.auto,
   }) : super(List.of([exponent, mantissa], growable: false));
 
   @override
@@ -213,6 +218,9 @@ class _CborDecimalFractionImpl extends DelegatingList<CborValue>
 
   @override
   final List<int> tags;
+
+  @override
+  final CborLengthType type;
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -242,6 +250,7 @@ abstract class CborBigFloat extends CborList {
     required CborInt exponent,
     required CborInt mantissa,
     List<int> tags,
+    CborLengthType type,
   }) = _CborBigFloatImpl;
 
   CborInt get exponent;
@@ -256,6 +265,7 @@ class _CborBigFloatImpl extends DelegatingList<CborValue>
     required this.exponent,
     required this.mantissa,
     this.tags = const [CborTag.bigFloat],
+    this.type = CborLengthType.auto,
   }) : super(List.of([exponent, mantissa], growable: false));
 
   @override
@@ -265,6 +275,8 @@ class _CborBigFloatImpl extends DelegatingList<CborValue>
 
   @override
   final List<int> tags;
+  @override
+  final CborLengthType type;
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {

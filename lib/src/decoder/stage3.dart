@@ -252,6 +252,7 @@ CborList _createList(
         exponent: exponent,
         mantissa: mantissa,
         tags: raw.tags,
+        type: type,
       );
 
     case CborTag.bigFloat:
@@ -272,6 +273,7 @@ CborList _createList(
         exponent: exponent,
         mantissa: mantissa,
         tags: raw.tags,
+        type: type,
       );
   }
 
