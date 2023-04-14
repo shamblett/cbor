@@ -25,6 +25,8 @@ abstract class CborBytes extends CborValue {
 
   List<int> get bytes;
 
+  List<List<int>> get bytesList;
+
   CborLengthType get type;
 }
 
@@ -37,6 +39,9 @@ class _CborBytesImpl with CborValueMixin implements CborBytes {
   final List<int> tags;
   @override
   final CborLengthType type = CborLengthType.definite;
+
+  @override
+  List<List<int>> get bytesList => [bytes];
 
   @override
   String toString() => bytes.toString();
@@ -76,14 +81,14 @@ class _CborBytesImpl with CborValueMixin implements CborBytes {
 class _CborBytesIndefiniteLengthImpl with CborValueMixin implements CborBytes {
   const _CborBytesIndefiniteLengthImpl(this.bytesList, {this.tags = const []});
 
-  final List<List<int>> bytesList;
-
   @override
   List<int> get bytes => bytesList.flattened.toList(growable: false);
   @override
   final List<int> tags;
   @override
   final CborLengthType type = CborLengthType.indefinite;
+  @override
+  final List<List<int>> bytesList;
 
   @override
   String toString() => bytes.toString();
