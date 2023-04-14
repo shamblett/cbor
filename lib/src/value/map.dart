@@ -44,6 +44,8 @@ abstract class CborMap implements Map<CborValue, CborValue>, CborValue {
     List<int> tags,
     CborLengthType type,
   }) = _CborMapImpl.fromIterables;
+
+  CborLengthType get type;
 }
 
 class _CborMapImpl extends DelegatingMap<CborValue, CborValue>
@@ -109,6 +111,7 @@ class _CborMapImpl extends DelegatingMap<CborValue, CborValue>
   @override
   final List<int> tags;
 
+  @override
   final CborLengthType type;
 
   @override
