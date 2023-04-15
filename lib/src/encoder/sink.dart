@@ -68,9 +68,7 @@ abstract class EncodeSink extends Sink<List<int>> {
         add(x);
       } else {
         addHeader(majorType, 27);
-        final x = Uint8List(8);
-        ByteData.view(x.buffer).setUint64(0, info.toInt());
-        add(x);
+        add(u64BytesHelper(info.toInt()));      
       }
     } else {
       addHeader(majorType, 27);
@@ -110,3 +108,19 @@ class _EncodeSink extends EncodeSink {
     _sink.add(data);
   }
 }
+
+
+
+Uint8List u64BytesHelper(int x) {
+  String rstr = x.toRadixString(2);
+  List<String> bytes_bitstrings = [];
+  while (rstr.length<64) {
+    rstr = '0' + rstr;
+  }
+  List<int> bytes = [];
+  for (int i=0;i<8;i++) {
+    bytes.add(int.parse(rstr.substring(i*8, i*8+8), radix: 2));   
+  }
+  return Uint8List.fromList(bytes);
+}
+
