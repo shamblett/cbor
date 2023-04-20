@@ -113,7 +113,6 @@ class _EncodeSink extends EncodeSink {
 
 Uint8List u64BytesHelper(int x) {
   String rstr = x.toRadixString(2);
-  List<String> bytes_bitstrings = [];
   while (rstr.length<64) {
     rstr = '0' + rstr;
   }
