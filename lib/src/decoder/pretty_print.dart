@@ -54,7 +54,7 @@ class _PrettyPrint extends Sink<RawValue> {
 
     writer.write(indentation);
     writer.writeAll(
-        data.getRange(x.start, x.end).map((by) => by.toRadixString(16) + ' '));
+        data.getRange(x.start, x.end).map((by) => '${by.toRadixString(16)} '));
 
     if (nested.isNotEmpty) {
       var remainingItems = nested.last.remainingItems;

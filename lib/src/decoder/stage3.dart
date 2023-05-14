@@ -334,12 +334,12 @@ class _ListBuilder extends _Builder {
 
   @override
   void add(_Builder builder) {
-    final _next = this._next;
-    if (_next != null) {
-      _next.add(builder);
-      if (_next.isDone) {
-        items.add(_next.build());
-        this._next = null;
+    final next = _next;
+    if (next != null) {
+      next.add(builder);
+      if (next.isDone) {
+        items.add(next.build());
+        _next = null;
       }
     } else if (builder.isDone) {
       final value = builder.build();
@@ -349,7 +349,7 @@ class _ListBuilder extends _Builder {
 
       items.add(value);
     } else {
-      this._next = builder;
+      _next = builder;
     }
   }
 
@@ -371,12 +371,12 @@ class _MapBuilder extends _Builder {
 
   @override
   void add(_Builder builder) {
-    final _next = this._next;
-    if (_next != null) {
-      _next.add(builder);
-      if (_next.isDone) {
-        items.add(_next.build());
-        this._next = null;
+    final next = _next;
+    if (next != null) {
+      next.add(builder);
+      if (next.isDone) {
+        items.add(next.build());
+        _next = null;
       }
     } else if (builder.isDone) {
       final value = builder.build();
@@ -386,7 +386,7 @@ class _MapBuilder extends _Builder {
 
       items.add(value);
     } else {
-      this._next = builder;
+      _next = builder;
     }
   }
 
@@ -473,12 +473,12 @@ class _IndefiniteLengthListBuilder extends _Builder {
 
   @override
   void add(_Builder builder) {
-    final _next = this._next;
-    if (_next != null) {
-      _next.add(builder);
-      if (_next.isDone) {
-        items.add(_next.build());
-        this._next = null;
+    final next = _next;
+    if (next != null) {
+      next.add(builder);
+      if (next.isDone) {
+        items.add(next.build());
+        _next = null;
       }
     } else if (builder.isDone) {
       final value = builder.build();
@@ -489,7 +489,7 @@ class _IndefiniteLengthListBuilder extends _Builder {
         items.add(builder.build());
       }
     } else {
-      this._next = builder;
+      _next = builder;
     }
   }
 
@@ -511,12 +511,12 @@ class _IndefiniteLengthMapBuilder extends _Builder {
 
   @override
   void add(_Builder builder) {
-    final _next = this._next;
-    if (_next != null) {
-      _next.add(builder);
-      if (_next.isDone) {
-        items.add(_next.build());
-        this._next = null;
+    final next = _next;
+    if (next != null) {
+      next.add(builder);
+      if (next.isDone) {
+        items.add(next.build());
+        _next = null;
       }
     } else if (builder.isDone) {
       final value = builder.build();
@@ -527,7 +527,7 @@ class _IndefiniteLengthMapBuilder extends _Builder {
         items.add(builder.build());
       }
     } else {
-      this._next = builder;
+      _next = builder;
     }
   }
 
