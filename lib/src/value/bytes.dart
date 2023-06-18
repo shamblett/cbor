@@ -20,7 +20,14 @@ import 'internal.dart';
 abstract class CborBytes extends CborValue {
   factory CborBytes(List<int> bytes, {List<int> tags}) = _CborBytesImpl;
 
+  factory CborBytes.indefinite(List<List<int>> bytes, {List<int> tags}) =
+      _CborBytesIndefiniteLengthImpl;
+
   List<int> get bytes;
+
+  List<List<int>> get bytesList;
+
+  CborLengthType get type;
 }
 
 class _CborBytesImpl with CborValueMixin implements CborBytes {
@@ -30,14 +37,21 @@ class _CborBytesImpl with CborValueMixin implements CborBytes {
   final List<int> bytes;
   @override
   final List<int> tags;
+  @override
+  final CborLengthType type = CborLengthType.definite;
+
+  @override
+  List<List<int>> get bytesList => [bytes];
 
   @override
   String toString() => bytes.toString();
+
   @override
   bool operator ==(Object other) =>
       other is CborBytes &&
       tags.equals(other.tags) &&
       bytes.equals(other.bytes);
+
   @override
   int get hashCode => Object.hashAll([bytes, tags].flattened);
 
@@ -61,6 +75,53 @@ class _CborBytesImpl with CborValueMixin implements CborBytes {
   @override
   void encode(EncodeSink sink) {
     CborEncodeDefiniteLengthBytes(this).encode(sink);
+  }
+}
+
+class _CborBytesIndefiniteLengthImpl with CborValueMixin implements CborBytes {
+  const _CborBytesIndefiniteLengthImpl(this.bytesList, {this.tags = const []});
+
+  @override
+  List<int> get bytes => bytesList.flattened.toList(growable: false);
+  @override
+  final List<int> tags;
+  @override
+  final CborLengthType type = CborLengthType.indefinite;
+  @override
+  final List<List<int>> bytesList;
+
+  @override
+  String toString() => bytes.toString();
+
+  @override
+  bool operator ==(Object other) =>
+      other is _CborBytesIndefiniteLengthImpl &&
+      tags.equals(other.tags) &&
+      DeepCollectionEquality().equals(bytesList, other.bytesList);
+
+  @override
+  int get hashCode => Object.hashAll([bytesList, tags].flattened);
+
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return bytes;
+  }
+
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    switch (expectedConversion ?? o.encoding) {
+      case JsonBytesEncoding.base16:
+        return const HexEncoder(upperCase: true).convert(bytes);
+      case JsonBytesEncoding.base64:
+        return base64.encode(bytes);
+      case JsonBytesEncoding.base64Url:
+        return base64Url.encode(bytes).replaceAll('=', '');
+    }
+  }
+
+  @override
+  void encode(EncodeSink sink) {
+    CborEncodeIndefiniteLengthBytes(bytesList).encode(sink);
   }
 }
 

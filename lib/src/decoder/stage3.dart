@@ -6,10 +6,9 @@
  */
 
 import 'package:cbor/cbor.dart';
-import 'package:collection/collection.dart';
 import 'package:cbor/src/value/internal.dart';
+import 'package:collection/collection.dart';
 import 'package:ieee754/ieee754.dart';
-import 'package:typed_data/typed_buffers.dart';
 
 import '../utils/utils.dart';
 import 'stage2.dart';
@@ -229,7 +228,11 @@ CborFloat _createFloat(RawValueTagged raw) {
   }
 }
 
-CborList _createList(RawValueTagged raw, List<CborValue> items) {
+CborList _createList(
+  RawValueTagged raw,
+  List<CborValue> items,
+  CborLengthType type,
+) {
   switch (raw.tags.lastWhereOrNull(isHintSubtype)) {
     case CborTag.decimalFraction:
       if (items.length != 2) {
@@ -249,6 +252,7 @@ CborList _createList(RawValueTagged raw, List<CborValue> items) {
         exponent: exponent,
         mantissa: mantissa,
         tags: raw.tags,
+        type: type,
       );
 
     case CborTag.bigFloat:
@@ -269,19 +273,24 @@ CborList _createList(RawValueTagged raw, List<CborValue> items) {
         exponent: exponent,
         mantissa: mantissa,
         tags: raw.tags,
+        type: type,
       );
   }
 
-  return CborList(items, tags: raw.tags);
+  return CborList(items, tags: raw.tags, type: type);
 }
 
-CborMap _createMap(RawValueTagged raw, List<CborValue> items) {
+CborMap _createMap(
+  RawValueTagged raw,
+  List<CborValue> items,
+  CborLengthType type,
+) {
   if (items.length % 2 != 0) {
     throw CborMalformedException('Map has more keys than values', raw.offset);
   }
 
   return CborMap.fromEntries(items.chunks(2).map((x) => MapEntry(x[0], x[1])),
-      tags: raw.tags);
+      tags: raw.tags, type: type);
 }
 
 CborBool _createBool(RawValueTagged raw) {
@@ -299,7 +308,9 @@ CborNull _createNull(RawValueTagged raw) {
 
 abstract class _Builder {
   bool get isDone;
+
   void add(_Builder builder);
+
   CborValue build();
 }
 
@@ -355,7 +366,7 @@ class _ListBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createList(raw, items);
+    return _createList(raw, items, CborLengthType.definite);
   }
 }
 
@@ -392,7 +403,7 @@ class _MapBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createMap(raw, items);
+    return _createMap(raw, items, CborLengthType.definite);
   }
 }
 
@@ -400,7 +411,7 @@ class _IndefiniteLengthByteBuilder extends _Builder {
   _IndefiniteLengthByteBuilder(this.raw);
 
   final RawValueTagged raw;
-  final Uint8Buffer bytes = Uint8Buffer();
+  final List<List<int>> bytes = [];
 
   @override
   bool isDone = false;
@@ -413,7 +424,7 @@ class _IndefiniteLengthByteBuilder extends _Builder {
         isDone = true;
         return;
       } else if (value is CborBytes) {
-        bytes.addAll(value.bytes);
+        bytes.add(value.bytes);
         return;
       }
     }
@@ -425,7 +436,7 @@ class _IndefiniteLengthByteBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createBytes(bytes, raw.offset, raw.tags);
+    return CborBytes.indefinite(bytes, tags: raw.tags);
   }
 }
 
@@ -433,7 +444,7 @@ class _IndefiniteLengthStringBuilder extends _Builder {
   _IndefiniteLengthStringBuilder(this.raw);
 
   final RawValueTagged raw;
-  final Uint8Buffer bytes = Uint8Buffer();
+  final List<List<int>> bytes = [];
 
   @override
   bool isDone = false;
@@ -446,7 +457,7 @@ class _IndefiniteLengthStringBuilder extends _Builder {
         isDone = true;
         return;
       } else if (value is CborString) {
-        bytes.addAll(value.utf8Bytes);
+        bytes.add(value.utf8Bytes);
         return;
       }
     }
@@ -457,7 +468,7 @@ class _IndefiniteLengthStringBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createString(bytes, raw.offset, raw.tags);
+    return CborString.indefiniteFromUtf8(bytes, tags: raw.tags);
   }
 }
 
@@ -495,7 +506,7 @@ class _IndefiniteLengthListBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createList(raw, items);
+    return _createList(raw, items, CborLengthType.indefinite);
   }
 }
 
@@ -533,6 +544,6 @@ class _IndefiniteLengthMapBuilder extends _Builder {
 
   @override
   CborValue build() {
-    return _createMap(raw, items);
+    return _createMap(raw, items, CborLengthType.indefinite);
   }
 }

@@ -14,10 +14,10 @@ import '../encoder/sink.dart';
 import 'internal.dart';
 
 export 'bytes.dart';
-export 'map.dart';
 export 'double.dart';
 export 'int.dart';
 export 'list.dart';
+export 'map.dart';
 export 'simple_value.dart';
 export 'string.dart';
 
@@ -43,6 +43,10 @@ class CborTag {
   static const int mime = 36;
   static const int selfDescribeCbor = 55799;
 }
+
+const kCborDefiniteLengthThreshold = 256;
+
+enum CborLengthType { definite, indefinite, auto }
 
 /// A CBOR value.
 @sealed
