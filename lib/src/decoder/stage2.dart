@@ -23,7 +23,7 @@ class RawValueTagged {
   final List<int> tags;
 }
 
-class RawSinkTagged extends Sink<RawValue> {
+class RawSinkTagged implements Sink<RawValue> {
   RawSinkTagged(this.sink);
 
   final Sink<RawValueTagged> sink;

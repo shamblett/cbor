@@ -34,7 +34,7 @@ String cborPrettyPrint(
   return prettyPrint.writer.toString();
 }
 
-class _PrettyPrint extends Sink<RawValue> {
+class _PrettyPrint implements Sink<RawValue> {
   _PrettyPrint(
     this.data, {
     required this.indent,
