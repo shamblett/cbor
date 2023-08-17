@@ -30,7 +30,7 @@ extension SinkExt<T> on Sink<T> {
   Sink<U> map<U>(T Function(U) conversion) => _MapSink<T, U>(conversion, this);
 }
 
-class _MapSink<T, U> extends Sink<U> {
+class _MapSink<T, U> implements Sink<U> {
   _MapSink(this.map, this.sink);
 
   final T Function(U) map;

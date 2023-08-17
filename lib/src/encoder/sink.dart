@@ -12,7 +12,7 @@ import 'package:typed_data/typed_buffers.dart';
 
 import '../utils/arg.dart';
 
-abstract class EncodeSink extends Sink<List<int>> {
+abstract class EncodeSink implements Sink<List<int>> {
   EncodeSink();
 
   final Set<Object> _references = {};
