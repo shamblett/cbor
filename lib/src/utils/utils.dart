@@ -141,5 +141,5 @@ bool isExpectConversion(int tag) {
 const bool kIsWeb = identical(0, 0.0);
 
 bool isWebDouble(Object a) {
-  return (a as double).toInt() == a;
+  return a is double && a.toInt() == a;
 }

@@ -62,8 +62,8 @@ abstract class CborValue {
       return CborNull();
     } else if (object is CborValue) {
       return object;
-    } else if (!kIsWeb && object is double || kIsWeb && isWebDouble(object)) {
-      return CborFloat(object as double);
+    } else if (object is double && (!kIsWeb || kIsWeb && isWebDouble(object))) {
+      return CborFloat(object);
     } else if (object is int) {
       return CborSmallInt(object);
     } else if (object is BigInt) {
