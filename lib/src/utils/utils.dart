@@ -137,9 +137,3 @@ bool isExpectConversion(int tag) {
 
   return false;
 }
-
-const bool kIsWeb = identical(0, 0.0);
-
-bool isWebDouble(Object a) {
-  return a is double && a.toInt() == a;
-}
