@@ -8,6 +8,7 @@
 import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
+import 'package:cbor/src/utils/utils.dart';
 import 'package:meta/meta.dart';
 
 import '../encoder/sink.dart';
@@ -61,8 +62,8 @@ abstract class CborValue {
       return CborNull();
     } else if (object is CborValue) {
       return object;
-    } else if (object is double) {
-      return CborFloat(object);
+    } else if (!kIsWeb && object is double || kIsWeb && isWebDouble(object)) {
+      return CborFloat(object as double);
     } else if (object is int) {
       return CborSmallInt(object);
     } else if (object is BigInt) {

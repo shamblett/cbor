@@ -5,6 +5,8 @@
  * Copyright :  S.Hamblett
  */
 
+import 'utils.dart';
+
 /// The information encoded by additional Arg and the following bytes.
 abstract class Arg {
   const factory Arg.int(int arg) = _ArgInt;
@@ -45,7 +47,7 @@ class _ArgInt implements Arg {
   final int value;
 
   @override
-  _ArgInt operator ~() => _ArgInt(~value);
+  _ArgInt operator ~() => _ArgInt(kIsWeb ? -value - 1 : ~value);
 
   @override
   final bool isIndefiniteLength = false;
