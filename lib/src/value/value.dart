@@ -61,12 +61,12 @@ abstract class CborValue {
       return CborNull();
     } else if (object is CborValue) {
       return object;
-    } else if (object is double) {
-      return CborFloat(object);
     } else if (object is int) {
       return CborSmallInt(object);
     } else if (object is BigInt) {
       return CborInt(object);
+    } else if (object is double) {
+      return CborFloat(object);
     } else if (object is bool) {
       return CborBool(object);
     } else if (object is Uint8List) {
