@@ -78,6 +78,7 @@
 /// * [CborRegex]
 /// * [CborDateTimeFloat]
 /// * [CborDecimalFraction]
+/// * [CborRationalNumber]
 /// * [CborBigFloat]
 library cbor;
 

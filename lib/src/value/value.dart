@@ -36,6 +36,7 @@ class CborTag {
   static const int expectedConversionToBase64 = 22;
   static const int expectedConversionToBase64Url = 21;
   static const int expectedConversionToBase16 = 23;
+  static const int rationalNumber = 30;
   static const int uri = 32;
   static const int base64Url = 33;
   static const int base64 = 34;

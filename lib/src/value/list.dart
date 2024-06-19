@@ -238,9 +238,88 @@ class _CborDecimalFractionImpl extends DelegatingList<CborValue>
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
-    sink.addHeaderInfo(4, const Arg.int(2));
+    sink.addHeaderInfo(
+      4,
+      switch (type) {
+        CborLengthType.definite || CborLengthType.auto => const Arg.int(2),
+        CborLengthType.indefinite => Arg.indefiniteLength,
+      },
+    );
     exponent.encode(sink);
     mantissa.encode(sink);
+
+    if (type == CborLengthType.indefinite) {
+      (const Break()).encode(sink);
+    }
+  }
+}
+
+/// A CBOR rational number (m / n).
+/// https://peteroupc.github.io/CBOR/rational.html
+abstract class CborRationalNumber extends CborList {
+  factory CborRationalNumber({
+    required CborInt numerator,
+    required CborInt denominator,
+    List<int> tags,
+    CborLengthType type,
+  }) = _CborRationalNumberImpl;
+
+  CborInt get numerator;
+
+  CborInt get denominator;
+}
+
+class _CborRationalNumberImpl extends DelegatingList<CborValue>
+    with CborValueMixin
+    implements CborRationalNumber {
+  _CborRationalNumberImpl({
+    required this.numerator,
+    required this.denominator,
+    this.tags = const [CborTag.rationalNumber],
+    this.type = CborLengthType.auto,
+  })  : assert(denominator.toInt() != 0),
+        super(List.of([numerator, denominator], growable: false));
+
+  @override
+  final CborInt numerator;
+  @override
+  final CborInt denominator;
+
+  @override
+  final List<int> tags;
+
+  @override
+  final CborLengthType type;
+
+  @override
+  Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    return [numerator.toBigInt(), denominator.toBigInt()];
+  }
+
+  @override
+  Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
+    return [
+      numerator.toJsonInternal(cyclicCheck, o),
+      denominator.toJsonInternal(cyclicCheck, o),
+    ];
+  }
+
+  @override
+  void encode(EncodeSink sink) {
+    sink.addTags(tags);
+    sink.addHeaderInfo(
+      4,
+      switch (type) {
+        CborLengthType.definite || CborLengthType.auto => const Arg.int(2),
+        CborLengthType.indefinite => Arg.indefiniteLength,
+      },
+    );
+    numerator.encode(sink);
+    denominator.encode(sink);
+
+    if (type == CborLengthType.indefinite) {
+      (const Break()).encode(sink);
+    }
   }
 }
 
@@ -286,9 +365,19 @@ class _CborBigFloatImpl extends DelegatingList<CborValue>
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
-    sink.addHeaderInfo(4, const Arg.int(2));
+    sink.addHeaderInfo(
+      4,
+      switch (type) {
+        CborLengthType.definite || CborLengthType.auto => const Arg.int(2),
+        CborLengthType.indefinite => Arg.indefiniteLength,
+      },
+    );
     exponent.encode(sink);
     mantissa.encode(sink);
+
+    if (type == CborLengthType.indefinite) {
+      (const Break()).encode(sink);
+    }
   }
 
   @override

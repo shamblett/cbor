@@ -234,6 +234,26 @@ CborList _createList(
   CborLengthType type,
 ) {
   switch (raw.tags.lastWhereOrNull(isHintSubtype)) {
+    case CborTag.rationalNumber:
+      if (items.length != 2) {
+        break;
+      }
+
+      final numerator = items[0];
+      final denominator = items[1];
+
+      if (numerator is! CborInt ||
+          denominator is! CborInt ||
+          denominator.toInt() == 0) {
+        break;
+      }
+
+      return CborRationalNumber(
+        numerator: numerator,
+        denominator: denominator,
+        tags: raw.tags,
+        type: type,
+      );
     case CborTag.decimalFraction:
       if (items.length != 2) {
         break;
