@@ -22,6 +22,7 @@ processing overheads.
 * Any value can be the key for a map.
 * Optional simple API for encoding and decoding directly to Dart objects.
 * Pretty-printing and conversion to JSON.
+* Rational numbering encoding is supported on tag 30.
 
 ## Usage
 
@@ -59,6 +60,7 @@ CborValue
 ├── CborMap
 └── CborList
     ├── CborDecimalFraction
+    ├── CborRationalNumber
     └── CborBigFloat
 ```
 
