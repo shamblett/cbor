@@ -18,7 +18,8 @@ void main() {
         final f = File('$currDir/test/issue62/raw.txt');
         final decoded = await f.openRead().transform(cbor.decoder).single;
         expect(decoded.toString().isNotEmpty, isTrue);
-        final jsonEncoder = CborJsonEncoder();
-        print(jsonEncoder.convert(decoded));
+        print(decoded);
+        //final jsonEncoder = CborJsonEncoder();
+        //print(jsonEncoder.convert(decoded));
   });
 }
