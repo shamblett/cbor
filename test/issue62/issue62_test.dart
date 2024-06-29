@@ -7,7 +7,6 @@
 import 'dart:io';
 
 import 'package:cbor/cbor.dart';
-import 'package:hex/hex.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -18,6 +17,8 @@ void main() {
         final f = File('$currDir/test/issue62/raw.txt');
         final decoded = await f.openRead().transform(cbor.decoder).single;
         expect(decoded.toString().isNotEmpty, isTrue);
-        print(decoded);
+        CborJsonEncoder jsonEncoder = CborJsonEncoder();
+        final json = jsonEncoder.convert(decoded);
+        print(json);
   });
 }
