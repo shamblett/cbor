@@ -18,7 +18,6 @@ void main() {
         final f = File('$currDir/test/issue62/raw.txt');
         final decoded = await f.openRead().transform(cbor.decoder).single;
         expect(decoded.toString().isNotEmpty, isTrue);
-        final encoded = cbor.encode(decoded);
-        print(encoded);
+        print(decoded);
   });
 }
