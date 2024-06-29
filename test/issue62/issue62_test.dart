@@ -17,7 +17,7 @@ void main() {
         final f = File('$currDir/test/issue62/raw.txt');
         final decoded = await f.openRead().transform(cbor.decoder).single;
         expect(decoded.toString().isNotEmpty, isTrue);
-        CborJsonEncoder jsonEncoder = CborJsonEncoder();
+        final jsonEncoder = CborJsonEncoder();
         final json = jsonEncoder.convert(decoded);
         print(json);
   });
