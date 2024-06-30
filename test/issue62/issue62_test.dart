@@ -10,15 +10,13 @@ import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test(
-      'Weird JSON conversion',
-      () async {
-        final currDir = Directory.current.path;
-        final f = File('$currDir/test/issue62/raw.txt');
-        final decoded = await f.openRead().transform(cbor.decoder).single;
-        expect(decoded.toString().isNotEmpty, isTrue);
-        final jsonEncoder = CborJsonEncoder();
-        final json = jsonEncoder.convert(decoded);
-        print(json);
+  test('Weird JSON conversion', () async {
+    final currDir = Directory.current.path;
+    final f = File('$currDir/test/issue62/raw.txt');
+    final decoded = await f.openRead().transform(cbor.decoder).single;
+    expect(decoded.toString().isNotEmpty, isTrue);
+    final jsonEncoder = CborJsonEncoder();
+    final json = jsonEncoder.convert(decoded);
+    print(json);
   });
 }

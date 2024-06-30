@@ -25,19 +25,23 @@ void main() {
     });
 
     test('18446744073709551615', () {
-      expect(encode(BigInt.parse('18446744073709551615')), '"__________8"');
+      expect(
+          encode(BigInt.parse('18446744073709551615')), '"FFFFFFFFFFFFFFFF"');
     });
 
     test('18446744073709551616', () {
-      expect(encode(BigInt.parse('18446744073709551616')), '"AQAAAAAAAAAA"');
+      expect(
+          encode(BigInt.parse('18446744073709551616')), '"010000000000000000"');
     });
 
     test('-18446744073709551616', () {
-      expect(encode(BigInt.parse('-18446744073709551616')), '"~__________8"');
+      expect(
+          encode(BigInt.parse('-18446744073709551616')), '"~FFFFFFFFFFFFFFFF"');
     });
 
     test('-18446744073709551617', () {
-      expect(encode(BigInt.parse('-18446744073709551617')), '"~AQAAAAAAAAAA"');
+      expect(encode(BigInt.parse('-18446744073709551617')),
+          '"~010000000000000000"');
     });
 
     test('-1', () {
@@ -113,7 +117,7 @@ void main() {
     });
 
     test('4 bytes', () {
-      expect(encode(Uint8List.fromList([0x1, 0x2, 0x3, 0x4])), '"AQIDBA"');
+      expect(encode(Uint8List.fromList([0x1, 0x2, 0x3, 0x4])), '"01020304"');
     });
 
     test('Quoted backslash', () {
