@@ -102,14 +102,14 @@ mixin CborValueMixin implements CborValue {
       toJsonInternal(
         {},
         ToJsonOptions(
-          encoding: JsonBytesEncoding.base64Url,
+          encoding: JsonBytesEncoding.base16,
           allowMalformedUtf8: allowMalformedUtf8,
           substituteValue: substituteValue,
         ),
       );
 
   JsonBytesEncoding? get expectedConversion {
-    var retVal = JsonBytesEncoding.base64Url;
+    var retVal = JsonBytesEncoding.base16;
     for (final tag in tags.reversed) {
       switch (tag) {
         case CborTag.expectedConversionToBase16:
