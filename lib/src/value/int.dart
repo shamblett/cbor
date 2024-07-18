@@ -92,7 +92,7 @@ class _CborSmallIntImpl with CborValueMixin implements CborSmallInt {
     if (!value.isNegative) {
       sink.addHeaderInfo(0, Arg.int(value));
     } else {
-      sink.addHeaderInfo(1, Arg.int(~value));
+      sink.addHeaderInfo(1, Arg.int((~BigInt.from(value)).toInt()));
     }
   }
 }
