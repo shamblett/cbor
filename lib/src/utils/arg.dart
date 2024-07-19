@@ -45,7 +45,7 @@ class _ArgInt implements Arg {
   final int value;
 
   @override
-  _ArgInt operator ~() => _ArgInt((~value).toSigned(33));
+  _ArgInt operator ~() => _ArgInt((~BigInt.from(value)).toSigned(33).toInt());
 
   @override
   final bool isIndefiniteLength = false;
