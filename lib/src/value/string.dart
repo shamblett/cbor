@@ -269,14 +269,14 @@ class _CborDateTimeStringImpl extends _CborStringImpl
         super(value.toInternetIso8601String(timeZoneOffset), tags: tags);
 
   _CborDateTimeStringImpl.fromString(
-    String str, {
-    List<int> tags = const [CborTag.dateTimeString],
-  }) : super(str, tags: tags);
+    String super.str, {
+    super.tags = const [CborTag.dateTimeString],
+  });
 
   _CborDateTimeStringImpl.fromUtf8(
-    List<int> str, {
-    List<int> tags = const [CborTag.dateTimeString],
-  }) : super.fromUtf8(str, tags: tags);
+    List<int> super.str, {
+    super.tags = const [CborTag.dateTimeString],
+  }) : super.fromUtf8();
 
   DateTime? _datetime;
 
@@ -312,9 +312,9 @@ abstract class CborUri extends CborString {
 
 class _CborUriImpl extends _CborStringImpl implements CborUri {
   _CborUriImpl.fromString(
-    String value, {
-    List<int> tags = const [CborTag.uri],
-  }) : super(value, tags: tags);
+    String super.value, {
+    super.tags = const [CborTag.uri],
+  });
 
   _CborUriImpl(
     Uri value, {
@@ -323,9 +323,9 @@ class _CborUriImpl extends _CborStringImpl implements CborUri {
         super(value.toString(), tags: tags);
 
   _CborUriImpl.fromUtf8(
-    List<int> value, {
-    List<int> tags = const [CborTag.uri],
-  }) : super.fromUtf8(value, tags: tags);
+    List<int> super.value, {
+    super.tags = const [CborTag.uri],
+  }) : super.fromUtf8();
 
   Uri? _value;
 
@@ -361,9 +361,9 @@ abstract class CborBase64 extends CborString {
 
 class _CborBase64Impl extends _CborStringImpl implements CborBase64 {
   _CborBase64Impl.fromString(
-    String value, {
-    List<int> tags = const [CborTag.base64],
-  }) : super(value, tags: tags);
+    String super.value, {
+    super.tags = const [CborTag.base64],
+  });
 
   _CborBase64Impl.encode(
     List<int> bytes, {
@@ -372,9 +372,9 @@ class _CborBase64Impl extends _CborStringImpl implements CborBase64 {
         super(base64.encode(bytes), tags: tags);
 
   _CborBase64Impl.fromUtf8(
-    List<int> str, {
-    List<int> tags = const [CborTag.base64],
-  }) : super.fromUtf8(str, tags: tags);
+    List<int> super.str, {
+    super.tags = const [CborTag.base64],
+  }) : super.fromUtf8();
 
   List<int>? _value;
 
@@ -411,9 +411,9 @@ abstract class CborBase64Url extends CborString {
 
 class _CborBase64UrlImpl extends _CborStringImpl implements CborBase64Url {
   _CborBase64UrlImpl.fromString(
-    String value, {
-    List<int> tags = const [CborTag.base64Url],
-  }) : super(value, tags: tags);
+    String super.value, {
+    super.tags = const [CborTag.base64Url],
+  });
 
   _CborBase64UrlImpl.encode(
     List<int> bytes, {
@@ -422,9 +422,9 @@ class _CborBase64UrlImpl extends _CborStringImpl implements CborBase64Url {
         super(base64Url.encode(bytes), tags: tags);
 
   _CborBase64UrlImpl.fromUtf8(
-    List<int> str, {
-    List<int> tags = const [CborTag.base64Url],
-  }) : super.fromUtf8(str, tags: tags);
+    List<int> super.str, {
+    super.tags = const [CborTag.base64Url],
+  }) : super.fromUtf8();
 
   List<int>? _value;
 
@@ -457,14 +457,14 @@ abstract class CborRegex extends CborString {
 
 class _CborRegexImpl extends _CborStringImpl implements CborRegex {
   _CborRegexImpl.fromString(
-    String data, {
-    List<int> tags = const [CborTag.regex],
-  }) : super(data, tags: tags);
+    String super.data, {
+    super.tags = const [CborTag.regex],
+  });
 
   _CborRegexImpl.fromUtf8(
-    List<int> str, {
-    List<int> tags = const [CborTag.regex],
-  }) : super.fromUtf8(str, tags: tags);
+    List<int> super.str, {
+    super.tags = const [CborTag.regex],
+  }) : super.fromUtf8();
 }
 
 /// A CBOR string containing a regular expression.
@@ -480,12 +480,12 @@ abstract class CborMime extends CborString {
 
 class _CborMimeImpl extends _CborStringImpl implements CborMime {
   _CborMimeImpl.fromString(
-    String data, {
-    List<int> tags = const [CborTag.mime],
-  }) : super(data, tags: tags);
+    String super.data, {
+    super.tags = const [CborTag.mime],
+  });
 
   _CborMimeImpl.fromUtf8(
-    List<int> str, {
-    List<int> tags = const [CborTag.mime],
-  }) : super.fromUtf8(str, tags: tags);
+    List<int> super.str, {
+    super.tags = const [CborTag.mime],
+  }) : super.fromUtf8();
 }

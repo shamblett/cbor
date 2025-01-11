@@ -51,9 +51,8 @@ abstract class CborMap implements Map<CborValue, CborValue>, CborValue {
 class _CborMapImpl extends DelegatingMap<CborValue, CborValue>
     with CborValueMixin
     implements CborMap {
-  const _CborMapImpl(Map<CborValue, CborValue> items,
-      {this.tags = const [], this.type = CborLengthType.auto})
-      : super(items);
+  const _CborMapImpl(super.items,
+      {this.tags = const [], this.type = CborLengthType.auto});
 
   _CborMapImpl.of(Map<CborValue, CborValue> items,
       {this.tags = const [], this.type = CborLengthType.auto})

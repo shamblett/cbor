@@ -36,9 +36,8 @@ abstract class CborList extends CborValue implements List<CborValue> {
 class _CborListImpl extends DelegatingList<CborValue>
     with CborValueMixin
     implements CborList {
-  const _CborListImpl(List<CborValue> items,
-      {this.tags = const [], this.type = CborLengthType.auto})
-      : super(items);
+  const _CborListImpl(super.items,
+      {this.tags = const [], this.type = CborLengthType.auto});
 
   _CborListImpl.of(Iterable<CborValue> elements,
       {this.tags = const [], this.type = CborLengthType.auto})

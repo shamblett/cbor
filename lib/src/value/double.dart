@@ -167,9 +167,9 @@ abstract class CborDateTimeFloat extends CborFloat implements CborDateTime {
 class _CborDateTimeFloatImpl extends _CborFloatImpl
     implements CborDateTimeFloat {
   _CborDateTimeFloatImpl.fromSecondsSinceEpoch(
-    double amount, {
-    List<int> tags = const [CborTag.epochDateTime],
-  }) : super(amount, tags: tags);
+    super.amount, {
+    super.tags = const [CborTag.epochDateTime],
+  });
 
   _CborDateTimeFloatImpl(
     DateTime value, {

@@ -246,16 +246,14 @@ abstract class CborBigInt extends CborBytes implements CborInt {
 
 class _CborBigIntImpl extends _CborBytesImpl implements CborBigInt {
   const _CborBigIntImpl.fromBytes(
-    List<int> bytes, {
-    List<int> tags = const [CborTag.positiveBignum],
-  })  : isNegative = false,
-        super(bytes, tags: tags);
+    super.bytes, {
+    super.tags = const [CborTag.positiveBignum],
+  }) : isNegative = false;
 
   const _CborBigIntImpl.fromNegativeBytes(
-    List<int> bytes, {
-    List<int> tags = const [CborTag.negativeBignum],
-  })  : isNegative = true,
-        super(bytes, tags: tags);
+    super.bytes, {
+    super.tags = const [CborTag.negativeBignum],
+  }) : isNegative = true;
 
   @override
   final bool isNegative;

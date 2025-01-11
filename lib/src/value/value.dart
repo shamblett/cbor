@@ -240,15 +240,12 @@ abstract class CborValue {
     bool allowMalformedUtf8 = false,
   });
 
-  /// <nodoc>
   @internal
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o);
 
-  /// <nodoc>
   @internal
   void encode(EncodeSink sink);
 
-  /// <nodoc>
   @internal
   Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o);
 }
