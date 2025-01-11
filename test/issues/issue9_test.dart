@@ -10,7 +10,6 @@ import 'package:test/test.dart';
 
 void main() {
   test('9-1', () {
-    print('9-1 - invalid decoding of arrays');
     //        81          # array(1)
     //        A3       # map(3)
     //        01    # unsigned(1)
@@ -48,7 +47,6 @@ void main() {
   });
 
   test('9-2', () {
-    print('9-2 - invalid decoding of arrays');
     //        81             # array(1)
     //        A3          # map(3)
     //        01       # unsigned(1)

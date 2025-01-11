@@ -7,8 +7,7 @@
 
 /// An exception raised when decoding.
 class CborMalformedException extends FormatException {
-  const CborMalformedException(String message, [int? offset])
-      : super(message, offset);
+  const CborMalformedException(super.message, [int? super.offset]);
 
   @override
   String toString() {

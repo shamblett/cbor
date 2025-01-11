@@ -10,7 +10,7 @@
 ///
 /// Everything this API exposes, except the [cbor] constant, is exposed
 /// from the advanced API too.
-library simple;
+library;
 
 import 'src/simple.dart';
 

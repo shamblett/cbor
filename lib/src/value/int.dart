@@ -161,9 +161,9 @@ class _CborDateTimeIntImpl extends _CborSmallIntImpl
         );
 
   const _CborDateTimeIntImpl.fromSecondsSinceEpoch(
-    int value, {
-    List<int> tags = const [CborTag.epochDateTime],
-  }) : super(value, tags: tags);
+    super.value, {
+    super.tags = const [CborTag.epochDateTime],
+  });
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {

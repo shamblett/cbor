@@ -80,7 +80,7 @@
 /// * [CborDecimalFraction]
 /// * [CborRationalNumber]
 /// * [CborBigFloat]
-library cbor;
+library;
 
 export 'src/codec.dart';
 export 'src/decoder/decoder.dart';
