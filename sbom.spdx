@@ -5,19 +5,19 @@ DocumentName: cbor
 DocumentNamespace: https://pub.dev/packages/cbor
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2025-01-11T11:19:14Z
+Created: 2025-01-17T09:45:16Z
 CreatorComment: <text>Please refer to the AUTHORS file for contributor/creation details</text>
 
 
 PackageName: cbor
 SPDXID: SPDXRef-Package-cbor
-PackageVersion: 6.3.4
+PackageVersion: 6.3.5
 PackageFileName: cbor
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/cbor
 FilesAnalyzed: true
-PackageVerificationCode: 387a85dd31ef31655bb17cca45fa18b257ca2f55
+PackageVerificationCode: e49a8d976d26159b09676a6b59831117b867b806
 PackageHomePage: https://pub.dev/packages/cbor
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -254,7 +254,7 @@ FileCopyrightText: NOASSERTION
 FileName: pubspec.yaml
 SPDXID: SPDXRef-pubspec-25
 FileType: TEXT
-FileChecksum: SHA1: 8729c9cee2409b849fb84520d72554ada19dd936
+FileChecksum: SHA1: d63186eb5e3be285da32f5d00a6fde9e34ecfb03
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
