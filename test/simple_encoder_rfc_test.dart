@@ -69,8 +69,10 @@ void main() {
 
     test('18446744073709551616', () {
       final encoded = cbor.encode(BigInt.parse('18446744073709551616'));
-      expect(encoded,
-          [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      expect(
+        encoded,
+        [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+      );
     });
 
     test('-18446744073709551616', () {
@@ -80,8 +82,10 @@ void main() {
 
     test('-18446744073709551617', () {
       final encoded = cbor.encode(BigInt.parse('-18446744073709551617'));
-      expect(encoded,
-          [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      expect(
+        encoded,
+        [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+      );
     });
 
     test('-1', () {
@@ -218,7 +222,7 @@ void main() {
         0x3a,
         0x30,
         0x30,
-        0x5a
+        0x5a,
       ]);
     });
 
@@ -242,8 +246,10 @@ void main() {
         dateTimeEpoch: true,
       );
 
-      expect(encoded,
-          [0xc1, 0xfb, 0x41, 0xd4, 0x52, 0xd9, 0xec, 0x20, 0x00, 0x00]);
+      expect(
+        encoded,
+        [0xc1, 0xfb, 0x41, 0xd4, 0x52, 0xd9, 0xec, 0x20, 0x00, 0x00],
+      );
     });
 
     test('Tag (32) URI', () {
@@ -273,7 +279,7 @@ void main() {
         0x2e,
         0x63,
         0x6f,
-        0x6d
+        0x6d,
       ]);
     });
 
@@ -340,7 +346,7 @@ void main() {
       final encoded = cbor.encode([
         1,
         [2, 3],
-        [4, 5]
+        [4, 5],
       ]);
       expect(encoded, [0x83, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05]);
     });
@@ -376,7 +382,7 @@ void main() {
         0x18,
         0x18,
         0x18,
-        0x19
+        0x19,
       ]);
     });
 
@@ -435,7 +441,7 @@ void main() {
         0x61,
         0x65,
         0x61,
-        0x45
+        0x45,
       ]);
     });
   });

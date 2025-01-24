@@ -34,9 +34,10 @@ void main() {
 
     test('With timezone', () {
       expect(
-        CborDateTimeString(DateTime(2013, 3, 21, 20, 4, 0),
-                timeZoneOffset: Duration(hours: 2, minutes: 30))
-            .toString(),
+        CborDateTimeString(
+          DateTime(2013, 3, 21, 20, 4, 0),
+          timeZoneOffset: Duration(hours: 2, minutes: 30),
+        ).toString(),
         '2013-03-21T20:04:00+02:30',
       );
     });

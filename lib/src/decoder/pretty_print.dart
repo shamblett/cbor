@@ -54,7 +54,8 @@ class _PrettyPrint implements Sink<RawValue> {
 
     writer.write(indentation);
     writer.writeAll(
-        data.getRange(x.start, x.end).map((by) => '${by.toRadixString(16)} '));
+      data.getRange(x.start, x.end).map((by) => '${by.toRadixString(16)} '),
+    );
 
     if (nested.isNotEmpty) {
       var remainingItems = nested.last.remainingItems;
@@ -91,7 +92,8 @@ class _PrettyPrint implements Sink<RawValue> {
           nested.add(_Nesting(null));
         } else {
           writer.write(
-              '(string "${(const Utf8Codec(allowMalformed: true)).decode(x.data)}")');
+            '(string "${(const Utf8Codec(allowMalformed: true)).decode(x.data)}")',
+          );
         }
         break;
       case 4:
@@ -133,15 +135,18 @@ class _PrettyPrint implements Sink<RawValue> {
             break;
           case 25:
             writer.write(
-                '(${FloatParts.fromFloat16Bytes(x.header.dataBytes).toDouble()})');
+              '(${FloatParts.fromFloat16Bytes(x.header.dataBytes).toDouble()})',
+            );
             break;
           case 26:
             writer.write(
-                '(${FloatParts.fromFloat32Bytes(x.header.dataBytes).toDouble()})');
+              '(${FloatParts.fromFloat32Bytes(x.header.dataBytes).toDouble()})',
+            );
             break;
           case 27:
             writer.write(
-                '(${FloatParts.fromFloat64Bytes(x.header.dataBytes).toDouble()})');
+              '(${FloatParts.fromFloat64Bytes(x.header.dataBytes).toDouble()})',
+            );
             break;
           case 31:
             writer.write('(break)');

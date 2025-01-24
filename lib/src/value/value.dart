@@ -79,10 +79,12 @@ abstract class CborValue {
         return CborDateTimeString(object);
       } else if (object.millisecondsSinceEpoch % 1000 == 0) {
         return CborDateTimeInt.fromSecondsSinceEpoch(
-            object.millisecondsSinceEpoch ~/ 1000);
+          object.millisecondsSinceEpoch ~/ 1000,
+        );
       } else {
         return CborDateTimeFloat.fromSecondsSinceEpoch(
-            object.millisecondsSinceEpoch / 1000);
+          object.millisecondsSinceEpoch / 1000,
+        );
       }
     } else if (object is Uri) {
       return CborUri(object);
@@ -93,12 +95,16 @@ abstract class CborValue {
         throw CborCyclicError(object);
       }
 
-      final value = CborList.of(object.map((v) => CborValue._fromObject(
+      final value = CborList.of(
+        object.map(
+          (v) => CborValue._fromObject(
             v,
             dateTimeEpoch: dateTimeEpoch,
             toEncodable: toEncodable,
             cycleCheck: cycleCheck,
-          )));
+          ),
+        ),
+      );
 
       cycleCheck.remove(object);
 
@@ -110,22 +116,24 @@ abstract class CborValue {
         throw CborCyclicError(object);
       }
 
-      final value = CborMap.fromEntries(object.entries.map(
-        (entry) => MapEntry(
-          CborValue._fromObject(
-            entry.key,
-            dateTimeEpoch: dateTimeEpoch,
-            toEncodable: toEncodable,
-            cycleCheck: cycleCheck,
-          ),
-          CborValue._fromObject(
-            entry.value,
-            dateTimeEpoch: dateTimeEpoch,
-            toEncodable: toEncodable,
-            cycleCheck: cycleCheck,
+      final value = CborMap.fromEntries(
+        object.entries.map(
+          (entry) => MapEntry(
+            CborValue._fromObject(
+              entry.key,
+              dateTimeEpoch: dateTimeEpoch,
+              toEncodable: toEncodable,
+              cycleCheck: cycleCheck,
+            ),
+            CborValue._fromObject(
+              entry.value,
+              dateTimeEpoch: dateTimeEpoch,
+              toEncodable: toEncodable,
+              cycleCheck: cycleCheck,
+            ),
           ),
         ),
-      ));
+      );
 
       cycleCheck.remove(object);
 

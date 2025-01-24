@@ -15,20 +15,29 @@ import 'internal.dart';
 /// A CBOR array.
 abstract class CborList extends CborValue implements List<CborValue> {
   /// Create a new [CborList] from a view of the given list.
-  factory CborList(List<CborValue> items,
-      {List<int> tags, CborLengthType type}) = _CborListImpl;
+  factory CborList(
+    List<CborValue> items, {
+    List<int> tags,
+    CborLengthType type,
+  }) = _CborListImpl;
 
   /// Create a new [CborList] from values.
   ///
   /// The resulting list is growable.
-  factory CborList.of(Iterable<CborValue> elements,
-      {List<int> tags, CborLengthType type}) = _CborListImpl.of;
+  factory CborList.of(
+    Iterable<CborValue> elements, {
+    List<int> tags,
+    CborLengthType type,
+  }) = _CborListImpl.of;
 
   /// Create a new [CborList] from generator.
   ///
   /// The resulting list is growable.
-  factory CborList.generate(int len, CborValue Function(int index) f,
-      {List<int> tags}) = _CborListImpl.generate;
+  factory CborList.generate(
+    int len,
+    CborValue Function(int index) f, {
+    List<int> tags,
+  }) = _CborListImpl.generate;
 
   CborLengthType get type;
 }
@@ -36,12 +45,17 @@ abstract class CborList extends CborValue implements List<CborValue> {
 class _CborListImpl extends DelegatingList<CborValue>
     with CborValueMixin
     implements CborList {
-  const _CborListImpl(super.items,
-      {this.tags = const [], this.type = CborLengthType.auto});
+  const _CborListImpl(
+    super.items, {
+    this.tags = const [],
+    this.type = CborLengthType.auto,
+  });
 
-  _CborListImpl.of(Iterable<CborValue> elements,
-      {this.tags = const [], this.type = CborLengthType.auto})
-      : super(List.of(elements));
+  _CborListImpl.of(
+    Iterable<CborValue> elements, {
+    this.tags = const [],
+    this.type = CborLengthType.auto,
+  }) : super(List.of(elements));
 
   _CborListImpl.generate(
     int len,
@@ -69,11 +83,14 @@ class _CborListImpl extends DelegatingList<CborValue>
       throw CborCyclicError(this);
     }
 
-    final res = map((i) => i.toJsonInternal(
+    final res = map(
+      (i) => i.toJsonInternal(
         cyclicCheck,
         o.copyWith(
           encoding: expectedConversion,
-        ))).toList();
+        ),
+      ),
+    ).toList();
 
     cyclicCheck.remove(this);
 

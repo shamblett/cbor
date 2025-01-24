@@ -69,7 +69,8 @@ void main() {
 
     test('18446744073709551616', () {
       final decoded = cbor.decode(
-          [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+        [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+      );
       expect(decoded, BigInt.parse('18446744073709551616'));
     });
 
@@ -81,7 +82,8 @@ void main() {
 
     test('-18446744073709551617', () {
       final decoded = cbor.decode(
-          [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+        [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+      );
       expect(decoded, BigInt.parse('-18446744073709551617'));
     });
 
@@ -282,22 +284,26 @@ void main() {
         0x3a,
         0x30,
         0x30,
-        0x5a
+        0x5a,
       ]);
       expect(decoded, DateTime.parse('2013-03-21T20:04:00Z'));
     });
 
     test('Tag (1) Int', () {
       final decoded = cbor.decode([0xc1, 0x1a, 0x51, 0x4b, 0x67, 0xb0]);
-      expect(decoded,
-          DateTime.fromMillisecondsSinceEpoch(1363896240000, isUtc: true));
+      expect(
+        decoded,
+        DateTime.fromMillisecondsSinceEpoch(1363896240000, isUtc: true),
+      );
     });
 
     test('Tag (1) Float', () {
       final decoded = cbor
           .decode([0xc1, 0xfb, 0x41, 0xd4, 0x52, 0xd9, 0xec, 0x20, 0x00, 0x00]);
-      expect(decoded,
-          DateTime.fromMillisecondsSinceEpoch(1363896240500, isUtc: true));
+      expect(
+        decoded,
+        DateTime.fromMillisecondsSinceEpoch(1363896240500, isUtc: true),
+      );
     });
 
     test('Tag (32) URI', () {
@@ -326,7 +332,7 @@ void main() {
         0x2e,
         0x63,
         0x6f,
-        0x6d
+        0x6d,
       ]);
       expect(decoded, Uri.parse('http://www.example.com'));
     });
@@ -416,7 +422,7 @@ void main() {
         0x18,
         0x18,
         0x18,
-        0x19
+        0x19,
       ]);
       expect(decoded is List, true);
       if (decoded is List) {
@@ -491,7 +497,7 @@ void main() {
         0x61,
         0x65,
         0x61,
-        0x45
+        0x45,
       ]);
       expect(decoded, {
         'a': 'A',
@@ -527,7 +533,7 @@ void main() {
         0x69,
         0x6e,
         0x67,
-        0xff
+        0xff,
       ]);
       expect(decoded, 'streaming');
     });
@@ -607,7 +613,7 @@ void main() {
         0x18,
         0x18,
         0x19,
-        0xff
+        0xff,
       ]);
       expect(decoded is List, true);
 
@@ -620,7 +626,8 @@ void main() {
 
     test('{_ "a":1, "b": [_ 2, 3]}', () {
       final decoded = cbor.decode(
-          [0xbf, 0x61, 0x61, 0x01, 0x61, 0x62, 0x9f, 0x02, 0x03, 0xff, 0xff]);
+        [0xbf, 0x61, 0x61, 0x01, 0x61, 0x62, 0x9f, 0x02, 0x03, 0xff, 0xff],
+      );
       expect(decoded, {
         'a': 1,
         'b': [2, 3],
@@ -651,7 +658,7 @@ void main() {
         0x6d,
         0x74,
         0x21,
-        0xff
+        0xff,
       ]);
       expect(decoded, {
         'Fun': true,

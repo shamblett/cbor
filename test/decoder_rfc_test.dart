@@ -69,7 +69,8 @@ void main() {
 
     test('18446744073709551616', () {
       final decoded = cbor.decode(
-          [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+        [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+      );
       expect(decoded, CborBigInt(BigInt.parse('18446744073709551616')));
     });
 
@@ -81,7 +82,8 @@ void main() {
 
     test('-18446744073709551617', () {
       final decoded = cbor.decode(
-          [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+        [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+      );
       expect(decoded, CborInt(BigInt.parse('-18446744073709551617')));
     });
 
@@ -282,11 +284,13 @@ void main() {
         0x3a,
         0x30,
         0x30,
-        0x5a
+        0x5a,
       ]);
       expect(decoded, CborDateTimeString.fromString('2013-03-21T20:04:00Z'));
-      expect((decoded as CborDateTime).toDateTime(),
-          DateTime.parse('2013-03-21T20:04:00Z'));
+      expect(
+        (decoded as CborDateTime).toDateTime(),
+        DateTime.parse('2013-03-21T20:04:00Z'),
+      );
     });
 
     test('Tag (1) Int', () {
@@ -303,18 +307,21 @@ void main() {
     test('Tag (23) multiple', () {
       final decoded = cbor.decode([0xd7, 0x44, 0x01, 0x02, 0x03, 0x04]);
       expect(
-          decoded,
-          CborBytes(
-            [1, 2, 3, 4],
-            tags: [CborTag.expectedConversionToBase16],
-          ));
+        decoded,
+        CborBytes(
+          [1, 2, 3, 4],
+          tags: [CborTag.expectedConversionToBase16],
+        ),
+      );
     });
 
     test('Tag (24) multiple', () {
       final decoded =
           cbor.decode([0xd8, 0x18, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46]);
-      expect(decoded,
-          CborBytes([100, 73, 69, 84, 70], tags: [CborTag.encodedCborData]));
+      expect(
+        decoded,
+        CborBytes([100, 73, 69, 84, 70], tags: [CborTag.encodedCborData]),
+      );
     });
 
     test('Tag (32) URI', () {
@@ -343,7 +350,7 @@ void main() {
         0x2e,
         0x63,
         0x6f,
-        0x6d
+        0x6d,
       ]);
       expect(decoded, CborUri.fromString('http://www.example.com'));
     });
@@ -433,7 +440,7 @@ void main() {
         0x18,
         0x18,
         0x18,
-        0x19
+        0x19,
       ]);
       expect(decoded is CborList, true);
       if (decoded is CborList) {
@@ -508,7 +515,7 @@ void main() {
         0x61,
         0x65,
         0x61,
-        0x45
+        0x45,
       ]);
       expect(decoded, {
         CborString('a'): CborString('A'),
@@ -539,7 +546,7 @@ void main() {
         0x69,
         0x6e,
         0x67,
-        0xff
+        0xff,
       ]);
       expect(decoded, CborString('streaming'));
     });
@@ -619,7 +626,7 @@ void main() {
         0x18,
         0x18,
         0x19,
-        0xff
+        0xff,
       ]);
       expect(decoded is CborList, true);
 
@@ -632,7 +639,8 @@ void main() {
 
     test('{_ "a":1, "b": [_ 2, 3]}', () {
       final decoded = cbor.decode(
-          [0xbf, 0x61, 0x61, 0x01, 0x61, 0x62, 0x9f, 0x02, 0x03, 0xff, 0xff]);
+        [0xbf, 0x61, 0x61, 0x01, 0x61, 0x62, 0x9f, 0x02, 0x03, 0xff, 0xff],
+      );
       expect(decoded, {
         CborString('a'): CborSmallInt(1),
         CborString('b'): [CborSmallInt(2), CborSmallInt(3)],
@@ -663,7 +671,7 @@ void main() {
         0x6d,
         0x74,
         0x21,
-        0xff
+        0xff,
       ]);
       expect(decoded, {
         CborString('Fun'): CborBool(true),

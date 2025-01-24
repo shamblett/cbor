@@ -48,16 +48,18 @@ class CborDecoder extends Converter<List<int>, CborValue> {
   CborValue convert(List<int> input) {
     CborValue? value;
 
-    startChunkedConversion(ChunkedConversionSink.withCallback((values) {
-      if (values.isEmpty) {
-        throw FormatException('Expected at least one CBOR value.');
-      }
-      if (values.length > 1) {
-        throw FormatException('Expected at most one CBOR value.');
-      }
+    startChunkedConversion(
+      ChunkedConversionSink.withCallback((values) {
+        if (values.isEmpty) {
+          throw FormatException('Expected at least one CBOR value.');
+        }
+        if (values.length > 1) {
+          throw FormatException('Expected at most one CBOR value.');
+        }
 
-      value = values.single;
-    }))
+        value = values.single;
+      }),
+    )
       ..add(input)
       ..close();
 

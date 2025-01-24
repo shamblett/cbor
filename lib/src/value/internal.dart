@@ -89,13 +89,14 @@ mixin CborValueMixin implements CborValue {
     bool allowMalformedUtf8 = false,
   }) =>
       toObjectInternal(
-          {},
-          ToObjectOptions(
-            parseDateTime: parseDateTime,
-            parseUri: parseUri,
-            decodeBase64: decodeBase64,
-            allowMalformedUtf8: allowMalformedUtf8,
-          ));
+        {},
+        ToObjectOptions(
+          parseDateTime: parseDateTime,
+          parseUri: parseUri,
+          decodeBase64: decodeBase64,
+          allowMalformedUtf8: allowMalformedUtf8,
+        ),
+      );
 
   @override
   Object? toJson({Object? substituteValue, bool allowMalformedUtf8 = false}) =>

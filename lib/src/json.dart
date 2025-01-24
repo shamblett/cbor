@@ -39,16 +39,21 @@ class CborJsonEncoder extends Converter<CborValue, String> {
 
   @override
   String convert(CborValue input) {
-    return json.encode(input.toJson(
-      substituteValue: _substituteValue,
-      allowMalformedUtf8: _allowMalformedUtf8,
-    ));
+    return json.encode(
+      input.toJson(
+        substituteValue: _substituteValue,
+        allowMalformedUtf8: _allowMalformedUtf8,
+      ),
+    );
   }
 
   @override
   Sink<CborValue> startChunkedConversion(Sink<String> sink) {
-    return const JsonEncoder().startChunkedConversion(sink).map((x) => x.toJson(
-        substituteValue: _substituteValue,
-        allowMalformedUtf8: _allowMalformedUtf8));
+    return const JsonEncoder().startChunkedConversion(sink).map(
+          (x) => x.toJson(
+            substituteValue: _substituteValue,
+            allowMalformedUtf8: _allowMalformedUtf8,
+          ),
+        );
   }
 }

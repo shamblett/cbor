@@ -90,15 +90,17 @@ void main() {
       final cmp = File('$currDir/test/data/floats.cbor');
       final f = File('$currDir/test/data/floats.out');
       final write = f.openWrite();
-      cbor.encoder.startChunkedConversion(write).add(CborMap({
-            CborString('half'): CborFloat(0.0),
-            CborString('single'): CborFloat(3.4028234663852886e+38),
-            CborString('simple values'): CborList([
-              CborBool(true),
-              CborBool(false),
-              CborNull(),
-            ]),
-          }));
+      cbor.encoder.startChunkedConversion(write).add(
+            CborMap({
+              CborString('half'): CborFloat(0.0),
+              CborString('single'): CborFloat(3.4028234663852886e+38),
+              CborString('simple values'): CborList([
+                CborBool(true),
+                CborBool(false),
+                CborNull(),
+              ]),
+            }),
+          );
       await write.flush();
       expect(await f.readAsBytes(), await cmp.readAsBytes());
     });
@@ -127,11 +129,13 @@ void main() {
       final cmp = File('$currDir/test/data/map.cbor');
       final f = File('$currDir/test/data/map.out');
       final write = f.openWrite();
-      cbor.encoder.startChunkedConversion(write).add(CborMap({
-            CborString('a key'): CborBool(false),
-            CborString('a secret key'): CborString('42'),
-            CborSmallInt(0): CborSmallInt(-1),
-          }));
+      cbor.encoder.startChunkedConversion(write).add(
+            CborMap({
+              CborString('a key'): CborBool(false),
+              CborString('a secret key'): CborString('42'),
+              CborSmallInt(0): CborSmallInt(-1),
+            }),
+          );
       await write.flush();
       expect(await f.readAsBytes(), await cmp.readAsBytes());
     });
@@ -140,18 +144,20 @@ void main() {
       final cmp = File('$currDir/test/data/nested_array.cbor');
       final f = File('$currDir/test/data/nested_array.out');
       final write = f.openWrite();
-      cbor.encoder.startChunkedConversion(write).add(CborList([
-            CborSmallInt(1),
-            CborSmallInt(2),
+      cbor.encoder.startChunkedConversion(write).add(
             CborList([
-              CborSmallInt(3),
+              CborSmallInt(1),
+              CborSmallInt(2),
               CborList([
-                CborSmallInt(4),
-                CborSmallInt(5),
-                CborList([]),
+                CborSmallInt(3),
+                CborList([
+                  CborSmallInt(4),
+                  CborSmallInt(5),
+                  CborList([]),
+                ]),
               ]),
             ]),
-          ]));
+          );
       await write.flush();
       expect(await f.readAsBytes(), await cmp.readAsBytes());
     });
