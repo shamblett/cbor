@@ -99,7 +99,9 @@ Header? _readHeader(Reader reader) {
         break;
       default:
         throw CborMalformedException(
-            'Invalid CBOR additional info', reader.offset);
+          'Invalid CBOR additional info',
+          reader.offset,
+        );
     }
   }
   return Header(majorType, additionalInfo, dataBytes);

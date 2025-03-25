@@ -12,29 +12,31 @@ Future<int> main() async {
   // Assume we have received a CBOR encoded byte buffer from the network.
   // The byte sequence below gives :-
   // {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E'}
-  final payload = Stream.fromIterable([
-    0xa5,
-    0x61,
-    0x61,
-    0x61,
-    0x41,
-    0x61,
-    0x62,
-    0x61,
-    0x42,
-    0x61,
-    0x63,
-    0x61,
-    0x43,
-    0x61,
-    0x64,
-    0x61,
-    0x44,
-    0x61,
-    0x65,
-    0x61,
-    0x45
-  ].map((x) => [x]));
+  final payload = Stream.fromIterable(
+    [
+      0xa5,
+      0x61,
+      0x61,
+      0x61,
+      0x41,
+      0x61,
+      0x62,
+      0x61,
+      0x42,
+      0x61,
+      0x63,
+      0x61,
+      0x43,
+      0x61,
+      0x64,
+      0x61,
+      0x44,
+      0x61,
+      0x65,
+      0x61,
+      0x45,
+    ].map((x) => [x]),
+  );
 
   // Decode using stream transforming
   // We use single because this is a single item

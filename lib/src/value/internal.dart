@@ -34,27 +34,18 @@ class ToJsonOptions {
     required this.allowMalformedUtf8,
   });
 
-  ToJsonOptions copyWith({
-    JsonBytesEncoding? encoding,
-  }) =>
-      ToJsonOptions(
-        encoding: encoding ?? this.encoding,
-        substituteValue: substituteValue,
-        allowMalformedUtf8: allowMalformedUtf8,
-      );
+  ToJsonOptions copyWith({JsonBytesEncoding? encoding}) => ToJsonOptions(
+    encoding: encoding ?? this.encoding,
+    substituteValue: substituteValue,
+    allowMalformedUtf8: allowMalformedUtf8,
+  );
 
   final JsonBytesEncoding encoding;
   final bool allowMalformedUtf8;
   final Object? substituteValue;
 }
 
-enum JsonBytesEncoding {
-  base64Url,
-
-  base64,
-
-  base16,
-}
+enum JsonBytesEncoding { base64Url, base64, base16 }
 
 @internal
 class Break with CborValueMixin implements CborValue {
@@ -87,15 +78,15 @@ mixin CborValueMixin implements CborValue {
     bool parseUri = true,
     bool decodeBase64 = false,
     bool allowMalformedUtf8 = false,
-  }) =>
-      toObjectInternal(
-          {},
-          ToObjectOptions(
-            parseDateTime: parseDateTime,
-            parseUri: parseUri,
-            decodeBase64: decodeBase64,
-            allowMalformedUtf8: allowMalformedUtf8,
-          ));
+  }) => toObjectInternal(
+    {},
+    ToObjectOptions(
+      parseDateTime: parseDateTime,
+      parseUri: parseUri,
+      decodeBase64: decodeBase64,
+      allowMalformedUtf8: allowMalformedUtf8,
+    ),
+  );
 
   @override
   Object? toJson({Object? substituteValue, bool allowMalformedUtf8 = false}) =>

@@ -74,8 +74,9 @@ abstract class EncodeSink implements Sink<List<int>> {
       addHeader(majorType, 27);
       final x = Uint8List(8);
       final infoBigInt = info.toBigInt();
-      ByteData.view(x.buffer)
-          .setUint32(0, (infoBigInt >> 32).toUnsigned(32).toInt());
+      ByteData.view(
+        x.buffer,
+      ).setUint32(0, (infoBigInt >> 32).toUnsigned(32).toInt());
       ByteData.view(x.buffer).setUint32(4, infoBigInt.toUnsigned(32).toInt());
       add(x);
     }

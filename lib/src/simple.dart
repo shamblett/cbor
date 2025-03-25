@@ -25,28 +25,34 @@ class CborSimpleEncoder extends Converter<Object?, List<int>> {
   const CborSimpleEncoder({
     bool dateTimeEpoch = false,
     Object? Function(dynamic object)? toEncodable,
-  })  : _toEncodable = toEncodable,
-        _dateTimeEpoch = dateTimeEpoch;
+  }) : _toEncodable = toEncodable,
+       _dateTimeEpoch = dateTimeEpoch;
 
   final Object? Function(dynamic object)? _toEncodable;
   final bool _dateTimeEpoch;
 
   @override
   List<int> convert(Object? input) {
-    return cbor.encode(CborValue(
-      input,
-      dateTimeEpoch: _dateTimeEpoch,
-      toEncodable: _toEncodable,
-    ));
+    return cbor.encode(
+      CborValue(
+        input,
+        dateTimeEpoch: _dateTimeEpoch,
+        toEncodable: _toEncodable,
+      ),
+    );
   }
 
   @override
   Sink<Object?> startChunkedConversion(Sink<List<int>> sink) {
-    return cbor.encoder.startChunkedConversion(sink).map((object) => CborValue(
-          object,
-          dateTimeEpoch: _dateTimeEpoch,
-          toEncodable: _toEncodable,
-        ));
+    return cbor.encoder
+        .startChunkedConversion(sink)
+        .map(
+          (object) => CborValue(
+            object,
+            dateTimeEpoch: _dateTimeEpoch,
+            toEncodable: _toEncodable,
+          ),
+        );
   }
 }
 
@@ -66,9 +72,9 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
     bool parseDateTime = true,
     bool decodeBase64 = true,
     bool parseUri = true,
-  })  : _parseDateTime = parseDateTime,
-        _decodeBase64 = decodeBase64,
-        _parseUri = parseUri;
+  }) : _parseDateTime = parseDateTime,
+       _decodeBase64 = decodeBase64,
+       _parseUri = parseUri;
 
   final bool _parseDateTime;
   final bool _decodeBase64;
@@ -76,7 +82,9 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
 
   @override
   Object? convert(List<int> input) {
-    return const CborDecoder().convert(input).toObject(
+    return const CborDecoder()
+        .convert(input)
+        .toObject(
           parseUri: _parseUri,
           parseDateTime: _parseDateTime,
           decodeBase64: _decodeBase64,
@@ -85,12 +93,15 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
 
   @override
   Sink<List<int>> startChunkedConversion(Sink<Object?> sink) {
-    return const CborDecoder()
-        .startChunkedConversion(sink.map((object) => object.toObject(
-              parseUri: _parseUri,
-              parseDateTime: _parseDateTime,
-              decodeBase64: _decodeBase64,
-            )));
+    return const CborDecoder().startChunkedConversion(
+      sink.map(
+        (object) => object.toObject(
+          parseUri: _parseUri,
+          parseDateTime: _parseDateTime,
+          decodeBase64: _decodeBase64,
+        ),
+      ),
+    );
   }
 }
 
@@ -118,11 +129,11 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
     bool decodeBase64 = true,
     bool parseUri = true,
     Object? Function(dynamic object)? toEncodable,
-  })  : _decodeBase64 = decodeBase64,
-        _encodeDateTimeEpoch = encodeDateTimeEpoch,
-        _parseUri = parseUri,
-        _parseDateTime = parseDateTime,
-        _toEncodable = toEncodable;
+  }) : _decodeBase64 = decodeBase64,
+       _encodeDateTimeEpoch = encodeDateTimeEpoch,
+       _parseUri = parseUri,
+       _parseDateTime = parseDateTime,
+       _toEncodable = toEncodable;
 
   final bool _encodeDateTimeEpoch;
   final bool _decodeBase64;

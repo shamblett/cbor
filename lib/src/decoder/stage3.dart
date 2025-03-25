@@ -32,8 +32,9 @@ class CborSink implements Sink<RawValueTagged> {
         if (data.header.arg.isIndefiniteLength) {
           builder = _IndefiniteLengthByteBuilder(data);
         } else {
-          builder =
-              _ValueBuilder(_createBytes(data.data, data.offset, data.tags));
+          builder = _ValueBuilder(
+            _createBytes(data.data, data.offset, data.tags),
+          );
         }
         break;
 
@@ -41,11 +42,9 @@ class CborSink implements Sink<RawValueTagged> {
         if (data.header.arg.isIndefiniteLength) {
           builder = _IndefiniteLengthStringBuilder(data);
         } else {
-          builder = _ValueBuilder(_createString(
-            data.data,
-            data.offset,
-            data.tags,
-          ));
+          builder = _ValueBuilder(
+            _createString(data.data, data.offset, data.tags),
+          );
         }
         break;
 
@@ -91,10 +90,13 @@ class CborSink implements Sink<RawValueTagged> {
           default:
             if (data.header.additionalInfo <= 24) {
               builder = _ValueBuilder(
-                  CborSimpleValue(data.header.arg.toInt(), tags: data.tags));
+                CborSimpleValue(data.header.arg.toInt(), tags: data.tags),
+              );
             } else {
               throw CborMalformedException(
-                  'Reserved simple value', data.offset);
+                'Reserved simple value',
+                data.offset,
+              );
             }
 
             break;
@@ -141,7 +143,7 @@ class _CborUnexpectedBreakException extends CborMalformedException {
 
 class _CborUnexpectedUndefinedLengthException extends CborMalformedException {
   _CborUnexpectedUndefinedLengthException(int offset)
-      : super('Major type can not be undefined length', offset);
+    : super('Major type can not be undefined length', offset);
 }
 
 CborString _createString(List<int> str, int offset, List<int> tags) {
@@ -309,8 +311,11 @@ CborMap _createMap(
     throw CborMalformedException('Map has more keys than values', raw.offset);
   }
 
-  return CborMap.fromEntries(items.chunks(2).map((x) => MapEntry(x[0], x[1])),
-      tags: raw.tags, type: type);
+  return CborMap.fromEntries(
+    items.chunks(2).map((x) => MapEntry(x[0], x[1])),
+    tags: raw.tags,
+    type: type,
+  );
 }
 
 CborBool _createBool(RawValueTagged raw) {
@@ -450,8 +455,9 @@ class _IndefiniteLengthByteBuilder extends _Builder {
     }
 
     throw CborMalformedException(
-        'An indefinite byte string must only contain byte strings.',
-        raw.offset);
+      'An indefinite byte string must only contain byte strings.',
+      raw.offset,
+    );
   }
 
   @override
@@ -483,7 +489,9 @@ class _IndefiniteLengthStringBuilder extends _Builder {
     }
 
     throw CborMalformedException(
-        'An indefinite string must only contain strings.', raw.offset);
+      'An indefinite string must only contain strings.',
+      raw.offset,
+    );
   }
 
   @override

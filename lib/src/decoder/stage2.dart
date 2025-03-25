@@ -38,12 +38,14 @@ class RawSinkTagged implements Sink<RawValue> {
 
       _tags.add(data.header.arg.toInt());
     } else {
-      sink.add(RawValueTagged(
-        data.header,
-        offset: data.start,
-        data: data.data,
-        tags: _clearTags(),
-      ));
+      sink.add(
+        RawValueTagged(
+          data.header,
+          offset: data.start,
+          data: data.data,
+          tags: _clearTags(),
+        ),
+      );
     }
   }
 

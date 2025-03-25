@@ -56,32 +56,81 @@ void main() {
     });
 
     test('1000000000000', () {
-      final decoded =
-          cbor.decode([0x1b, 0x00, 0x00, 0x00, 0xe8, 0xd4, 0xa5, 0x10, 0x00]);
+      final decoded = cbor.decode([
+        0x1b,
+        0x00,
+        0x00,
+        0x00,
+        0xe8,
+        0xd4,
+        0xa5,
+        0x10,
+        0x00,
+      ]);
       expect(decoded, CborSmallInt(1000000000000));
     });
 
     test('18446744073709551615', () {
-      final decoded =
-          cbor.decode([0x1b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
+      final decoded = cbor.decode([
+        0x1b,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+      ]);
       expect(decoded, CborInt(BigInt.parse('18446744073709551615')));
     });
 
     test('18446744073709551616', () {
-      final decoded = cbor.decode(
-          [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      final decoded = cbor.decode([
+        0xc2,
+        0x49,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+      ]);
       expect(decoded, CborBigInt(BigInt.parse('18446744073709551616')));
     });
 
     test('-18446744073709551616', () {
-      final decoded =
-          cbor.decode([0x3b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
+      final decoded = cbor.decode([
+        0x3b,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+      ]);
       expect(decoded, CborInt(BigInt.parse('-18446744073709551616')));
     });
 
     test('-18446744073709551617', () {
-      final decoded = cbor.decode(
-          [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      final decoded = cbor.decode([
+        0xc3,
+        0x49,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+      ]);
       expect(decoded, CborInt(BigInt.parse('-18446744073709551617')));
     });
 
@@ -121,8 +170,17 @@ void main() {
     });
 
     test('1.1', () {
-      final decoded =
-          cbor.decode([0xfb, 0x3f, 0xf1, 0x99, 0x99, 0x99, 0x99, 0x99, 0x9a]);
+      final decoded = cbor.decode([
+        0xfb,
+        0x3f,
+        0xf1,
+        0x99,
+        0x99,
+        0x99,
+        0x99,
+        0x99,
+        0x9a,
+      ]);
       expect(decoded, CborFloat(1.1));
     });
 
@@ -147,8 +205,17 @@ void main() {
     });
 
     test('1.0e+300', () {
-      final decoded =
-          cbor.decode([0xfb, 0x7e, 0x37, 0xe4, 0x3c, 0x88, 0x00, 0x75, 0x9c]);
+      final decoded = cbor.decode([
+        0xfb,
+        0x7e,
+        0x37,
+        0xe4,
+        0x3c,
+        0x88,
+        0x00,
+        0x75,
+        0x9c,
+      ]);
       expect(decoded, CborFloat(1.0e+300));
     });
 
@@ -168,8 +235,17 @@ void main() {
     });
 
     test('-4.1', () {
-      final decoded =
-          cbor.decode([0xfb, 0xc0, 0x10, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66]);
+      final decoded = cbor.decode([
+        0xfb,
+        0xc0,
+        0x10,
+        0x66,
+        0x66,
+        0x66,
+        0x66,
+        0x66,
+        0x66,
+      ]);
       expect(decoded, CborFloat(-4.1));
     });
 
@@ -206,21 +282,48 @@ void main() {
     });
 
     test('Infinity double', () {
-      final decoded =
-          cbor.decode([0xfb, 0x7f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      final decoded = cbor.decode([
+        0xfb,
+        0x7f,
+        0xf0,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+      ]);
       expect(decoded, CborFloat(double.infinity));
     });
 
     test('NaN double', () {
-      final decoded =
-          cbor.decode([0xfb, 0x7f, 0xf8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      final decoded = cbor.decode([
+        0xfb,
+        0x7f,
+        0xf8,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+      ]);
       expect(decoded is CborFloat, true);
       expect((decoded as CborFloat).value, isNaN);
     });
 
     test('-Infinity double', () {
-      final decoded =
-          cbor.decode([0xfb, 0xff, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      final decoded = cbor.decode([
+        0xfb,
+        0xff,
+        0xf0,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+      ]);
       expect(decoded, CborFloat(double.negativeInfinity));
     });
 
@@ -282,11 +385,13 @@ void main() {
         0x3a,
         0x30,
         0x30,
-        0x5a
+        0x5a,
       ]);
       expect(decoded, CborDateTimeString.fromString('2013-03-21T20:04:00Z'));
-      expect((decoded as CborDateTime).toDateTime(),
-          DateTime.parse('2013-03-21T20:04:00Z'));
+      expect(
+        (decoded as CborDateTime).toDateTime(),
+        DateTime.parse('2013-03-21T20:04:00Z'),
+      );
     });
 
     test('Tag (1) Int', () {
@@ -295,26 +400,44 @@ void main() {
     });
 
     test('Tag (1) Float', () {
-      final decoded = cbor
-          .decode([0xc1, 0xfb, 0x41, 0xd4, 0x52, 0xd9, 0xec, 0x20, 0x00, 0x00]);
+      final decoded = cbor.decode([
+        0xc1,
+        0xfb,
+        0x41,
+        0xd4,
+        0x52,
+        0xd9,
+        0xec,
+        0x20,
+        0x00,
+        0x00,
+      ]);
       expect(decoded, CborDateTimeFloat.fromSecondsSinceEpoch(1363896240.5));
     });
 
     test('Tag (23) multiple', () {
       final decoded = cbor.decode([0xd7, 0x44, 0x01, 0x02, 0x03, 0x04]);
       expect(
-          decoded,
-          CborBytes(
-            [1, 2, 3, 4],
-            tags: [CborTag.expectedConversionToBase16],
-          ));
+        decoded,
+        CborBytes([1, 2, 3, 4], tags: [CborTag.expectedConversionToBase16]),
+      );
     });
 
     test('Tag (24) multiple', () {
-      final decoded =
-          cbor.decode([0xd8, 0x18, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46]);
-      expect(decoded,
-          CborBytes([100, 73, 69, 84, 70], tags: [CborTag.encodedCborData]));
+      final decoded = cbor.decode([
+        0xd8,
+        0x18,
+        0x45,
+        0x64,
+        0x49,
+        0x45,
+        0x54,
+        0x46,
+      ]);
+      expect(
+        decoded,
+        CborBytes([100, 73, 69, 84, 70], tags: [CborTag.encodedCborData]),
+      );
     });
 
     test('Tag (32) URI', () {
@@ -343,7 +466,7 @@ void main() {
         0x2e,
         0x63,
         0x6f,
-        0x6d
+        0x6d,
       ]);
       expect(decoded, CborUri.fromString('http://www.example.com'));
     });
@@ -433,7 +556,7 @@ void main() {
         0x18,
         0x18,
         0x18,
-        0x19
+        0x19,
       ]);
       expect(decoded is CborList, true);
       if (decoded is CborList) {
@@ -444,8 +567,16 @@ void main() {
     });
 
     test('Nested array', () {
-      final decoded =
-          cbor.decode([0x83, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05]);
+      final decoded = cbor.decode([
+        0x83,
+        0x01,
+        0x82,
+        0x02,
+        0x03,
+        0x82,
+        0x04,
+        0x05,
+      ]);
       expect(decoded, [
         CborSmallInt(1),
         [CborSmallInt(2), CborSmallInt(3)],
@@ -467,8 +598,17 @@ void main() {
     });
 
     test('{"a": 1, "b": [2, 3]}', () {
-      final decoded =
-          cbor.decode([0xa2, 0x61, 0x61, 0x01, 0x61, 0x62, 0x82, 0x02, 0x03]);
+      final decoded = cbor.decode([
+        0xa2,
+        0x61,
+        0x61,
+        0x01,
+        0x61,
+        0x62,
+        0x82,
+        0x02,
+        0x03,
+      ]);
       expect(decoded, {
         CborString('a'): CborSmallInt(1),
         CborString('b'): [CborSmallInt(2), CborSmallInt(3)],
@@ -476,13 +616,19 @@ void main() {
     });
 
     test('["a", {"b": "c"}]', () {
-      final decoded =
-          cbor.decode([0x82, 0x61, 0x61, 0xa1, 0x61, 0x62, 0x61, 0x63]);
+      final decoded = cbor.decode([
+        0x82,
+        0x61,
+        0x61,
+        0xa1,
+        0x61,
+        0x62,
+        0x61,
+        0x63,
+      ]);
       expect(decoded, [
         CborString('a'),
-        {
-          CborString('b'): CborString('c'),
-        },
+        {CborString('b'): CborString('c')},
       ]);
     });
 
@@ -508,7 +654,7 @@ void main() {
         0x61,
         0x65,
         0x61,
-        0x45
+        0x45,
       ]);
       expect(decoded, {
         CborString('a'): CborString('A'),
@@ -520,8 +666,17 @@ void main() {
     });
 
     test("(_ h'0102', h'030405')", () {
-      final decoded =
-          cbor.decode([0x5f, 0x42, 0x01, 0x02, 0x43, 0x03, 0x04, 0x05, 0xff]);
+      final decoded = cbor.decode([
+        0x5f,
+        0x42,
+        0x01,
+        0x02,
+        0x43,
+        0x03,
+        0x04,
+        0x05,
+        0xff,
+      ]);
       expect(decoded, CborBytes([1, 2, 3, 4, 5]));
     });
 
@@ -539,7 +694,7 @@ void main() {
         0x69,
         0x6e,
         0x67,
-        0xff
+        0xff,
       ]);
       expect(decoded, CborString('streaming'));
     });
@@ -550,8 +705,18 @@ void main() {
     });
 
     test('[_ 1, [2, 3], [_4, 5]]', () {
-      final decoded = cbor
-          .decode([0x9f, 0x01, 0x82, 0x02, 0x03, 0x9f, 0x04, 0x05, 0xff, 0xff]);
+      final decoded = cbor.decode([
+        0x9f,
+        0x01,
+        0x82,
+        0x02,
+        0x03,
+        0x9f,
+        0x04,
+        0x05,
+        0xff,
+        0xff,
+      ]);
       expect(decoded, [
         CborSmallInt(1),
         [CborSmallInt(2), CborSmallInt(3)],
@@ -560,8 +725,17 @@ void main() {
     });
 
     test('[_ 1, [2, 3], [4, 5]]', () {
-      final decoded =
-          cbor.decode([0x9f, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05, 0xff]);
+      final decoded = cbor.decode([
+        0x9f,
+        0x01,
+        0x82,
+        0x02,
+        0x03,
+        0x82,
+        0x04,
+        0x05,
+        0xff,
+      ]);
       expect(decoded, [
         CborSmallInt(1),
         [CborSmallInt(2), CborSmallInt(3)],
@@ -570,8 +744,17 @@ void main() {
     });
 
     test('[1, [2, 3], [_ 4, 5]]', () {
-      final decoded =
-          cbor.decode([0x83, 0x01, 0x82, 0x02, 0x03, 0x9f, 0x04, 0x05, 0xff]);
+      final decoded = cbor.decode([
+        0x83,
+        0x01,
+        0x82,
+        0x02,
+        0x03,
+        0x9f,
+        0x04,
+        0x05,
+        0xff,
+      ]);
       expect(decoded, [
         CborSmallInt(1),
         [CborSmallInt(2), CborSmallInt(3)],
@@ -580,8 +763,17 @@ void main() {
     });
 
     test('[1, [_ 2, 3], [4, 5]]', () {
-      final decoded =
-          cbor.decode([0x83, 0x01, 0x9f, 0x02, 0x03, 0xff, 0x82, 0x04, 0x05]);
+      final decoded = cbor.decode([
+        0x83,
+        0x01,
+        0x9f,
+        0x02,
+        0x03,
+        0xff,
+        0x82,
+        0x04,
+        0x05,
+      ]);
       expect(decoded, [
         CborSmallInt(1),
         [CborSmallInt(2), CborSmallInt(3)],
@@ -619,7 +811,7 @@ void main() {
         0x18,
         0x18,
         0x19,
-        0xff
+        0xff,
       ]);
       expect(decoded is CborList, true);
 
@@ -631,8 +823,19 @@ void main() {
     });
 
     test('{_ "a":1, "b": [_ 2, 3]}', () {
-      final decoded = cbor.decode(
-          [0xbf, 0x61, 0x61, 0x01, 0x61, 0x62, 0x9f, 0x02, 0x03, 0xff, 0xff]);
+      final decoded = cbor.decode([
+        0xbf,
+        0x61,
+        0x61,
+        0x01,
+        0x61,
+        0x62,
+        0x9f,
+        0x02,
+        0x03,
+        0xff,
+        0xff,
+      ]);
       expect(decoded, {
         CborString('a'): CborSmallInt(1),
         CborString('b'): [CborSmallInt(2), CborSmallInt(3)],
@@ -640,13 +843,20 @@ void main() {
     });
 
     test('["a", {_ "b": "c"}]', () {
-      final decoded =
-          cbor.decode([0x82, 0x61, 0x61, 0xbf, 0x61, 0x62, 0x61, 0x63, 0xff]);
+      final decoded = cbor.decode([
+        0x82,
+        0x61,
+        0x61,
+        0xbf,
+        0x61,
+        0x62,
+        0x61,
+        0x63,
+        0xff,
+      ]);
       expect(decoded, [
         CborString('a'),
-        {
-          CborString('b'): CborString('c'),
-        },
+        {CborString('b'): CborString('c')},
       ]);
     });
 
@@ -663,7 +873,7 @@ void main() {
         0x6d,
         0x74,
         0x21,
-        0xff
+        0xff,
       ]);
       expect(decoded, {
         CborString('Fun'): CborBool(true),

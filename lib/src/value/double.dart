@@ -99,7 +99,9 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
           } else {
             // Invalid conversion
             throw ArgumentError(
-                precision, 'Cannot encode value as a half precision float');
+              precision,
+              'Cannot encode value as a half precision float',
+            );
           }
           break;
         case CborFloatPrecision.float:
@@ -108,8 +110,10 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
             sink.add(parts.toFloat32Bytes());
           } else {
             // Invalid conversion
-            throw ArgumentError(precision,
-                'Cannot encode value as a normal(32 bit) precision float');
+            throw ArgumentError(
+              precision,
+              'Cannot encode value as a normal(32 bit) precision float',
+            );
           }
           break;
         case CborFloatPrecision.double:
@@ -119,7 +123,9 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
           } else {
             // Invalid conversion
             throw ArgumentError(
-                precision, 'Cannot encode value as a double precision float');
+              precision,
+              'Cannot encode value as a double precision float',
+            );
           }
           break;
         case CborFloatPrecision.automatic:
@@ -157,8 +163,10 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
 
 /// A CBOR date time encoded as seconds since epoch in a float.
 abstract class CborDateTimeFloat extends CborFloat implements CborDateTime {
-  factory CborDateTimeFloat.fromSecondsSinceEpoch(double amount,
-      {List<int> tags}) = _CborDateTimeFloatImpl.fromSecondsSinceEpoch;
+  factory CborDateTimeFloat.fromSecondsSinceEpoch(
+    double amount, {
+    List<int> tags,
+  }) = _CborDateTimeFloatImpl.fromSecondsSinceEpoch;
 
   factory CborDateTimeFloat(DateTime value, {List<int> tags}) =
       _CborDateTimeFloatImpl;

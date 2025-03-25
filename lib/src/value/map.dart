@@ -51,16 +51,23 @@ abstract class CborMap implements Map<CborValue, CborValue>, CborValue {
 class _CborMapImpl extends DelegatingMap<CborValue, CborValue>
     with CborValueMixin
     implements CborMap {
-  const _CborMapImpl(super.items,
-      {this.tags = const [], this.type = CborLengthType.auto});
+  const _CborMapImpl(
+    super.items, {
+    this.tags = const [],
+    this.type = CborLengthType.auto,
+  });
 
-  _CborMapImpl.of(Map<CborValue, CborValue> items,
-      {this.tags = const [], this.type = CborLengthType.auto})
-      : super(Map.of(items));
+  _CborMapImpl.of(
+    Map<CborValue, CborValue> items, {
+    this.tags = const [],
+    this.type = CborLengthType.auto,
+  }) : super(Map.of(items));
 
-  _CborMapImpl.fromEntries(Iterable<MapEntry<CborValue, CborValue>> entries,
-      {this.tags = const [], this.type = CborLengthType.auto})
-      : super(Map.fromEntries(entries));
+  _CborMapImpl.fromEntries(
+    Iterable<MapEntry<CborValue, CborValue>> entries, {
+    this.tags = const [],
+    this.type = CborLengthType.auto,
+  }) : super(Map.fromEntries(entries));
 
   _CborMapImpl.fromIterables(
     Iterable<CborValue> keys,
@@ -75,10 +82,14 @@ class _CborMapImpl extends DelegatingMap<CborValue, CborValue>
       throw CborCyclicError(this);
     }
 
-    final result = Map.fromEntries(entries.map((a) => MapEntry(
+    final result = Map.fromEntries(
+      entries.map(
+        (a) => MapEntry(
           a.key.toObjectInternal(cyclicCheck, o),
           a.value.toObjectInternal(cyclicCheck, o),
-        )));
+        ),
+      ),
+    );
 
     cyclicCheck.remove(this);
 
@@ -91,16 +102,18 @@ class _CborMapImpl extends DelegatingMap<CborValue, CborValue>
       throw CborCyclicError(this);
     }
 
-    final result = Map.fromEntries(entries.map((a) {
-      var k = a.key.toJsonInternal(cyclicCheck, o);
-      if (k is! String) {
-        k = json.encode(k);
-      }
+    final result = Map.fromEntries(
+      entries.map((a) {
+        var k = a.key.toJsonInternal(cyclicCheck, o);
+        if (k is! String) {
+          k = json.encode(k);
+        }
 
-      final v = a.value.toJsonInternal(cyclicCheck, o);
+        final v = a.value.toJsonInternal(cyclicCheck, o);
 
-      return MapEntry(k, v);
-    }));
+        return MapEntry(k, v);
+      }),
+    );
 
     cyclicCheck.remove(this);
 

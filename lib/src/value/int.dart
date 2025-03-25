@@ -155,10 +155,7 @@ class _CborDateTimeIntImpl extends _CborSmallIntImpl
   _CborDateTimeIntImpl(
     DateTime value, {
     List<int> tags = const [CborTag.epochDateTime],
-  }) : super(
-          (value.millisecondsSinceEpoch / 1000).round(),
-          tags: tags,
-        );
+  }) : super((value.millisecondsSinceEpoch / 1000).round(), tags: tags);
 
   const _CborDateTimeIntImpl.fromSecondsSinceEpoch(
     super.value, {

@@ -105,7 +105,7 @@ abstract class CborBool extends CborSimpleValue {
 
 class _CborBoolImpl extends _CborSimpleValueImpl implements CborBool {
   const _CborBoolImpl(this.value, {List<int> tags = const []})
-      : super(!value ? 20 : 21, tags: tags);
+    : super(!value ? 20 : 21, tags: tags);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {

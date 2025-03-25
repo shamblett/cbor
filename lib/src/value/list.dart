@@ -15,20 +15,29 @@ import 'internal.dart';
 /// A CBOR array.
 abstract class CborList extends CborValue implements List<CborValue> {
   /// Create a new [CborList] from a view of the given list.
-  factory CborList(List<CborValue> items,
-      {List<int> tags, CborLengthType type}) = _CborListImpl;
+  factory CborList(
+    List<CborValue> items, {
+    List<int> tags,
+    CborLengthType type,
+  }) = _CborListImpl;
 
   /// Create a new [CborList] from values.
   ///
   /// The resulting list is growable.
-  factory CborList.of(Iterable<CborValue> elements,
-      {List<int> tags, CborLengthType type}) = _CborListImpl.of;
+  factory CborList.of(
+    Iterable<CborValue> elements, {
+    List<int> tags,
+    CborLengthType type,
+  }) = _CborListImpl.of;
 
   /// Create a new [CborList] from generator.
   ///
   /// The resulting list is growable.
-  factory CborList.generate(int len, CborValue Function(int index) f,
-      {List<int> tags}) = _CborListImpl.generate;
+  factory CborList.generate(
+    int len,
+    CborValue Function(int index) f, {
+    List<int> tags,
+  }) = _CborListImpl.generate;
 
   CborLengthType get type;
 }
@@ -36,12 +45,17 @@ abstract class CborList extends CborValue implements List<CborValue> {
 class _CborListImpl extends DelegatingList<CborValue>
     with CborValueMixin
     implements CborList {
-  const _CborListImpl(super.items,
-      {this.tags = const [], this.type = CborLengthType.auto});
+  const _CborListImpl(
+    super.items, {
+    this.tags = const [],
+    this.type = CborLengthType.auto,
+  });
 
-  _CborListImpl.of(Iterable<CborValue> elements,
-      {this.tags = const [], this.type = CborLengthType.auto})
-      : super(List.of(elements));
+  _CborListImpl.of(
+    Iterable<CborValue> elements, {
+    this.tags = const [],
+    this.type = CborLengthType.auto,
+  }) : super(List.of(elements));
 
   _CborListImpl.generate(
     int len,
@@ -69,11 +83,13 @@ class _CborListImpl extends DelegatingList<CborValue>
       throw CborCyclicError(this);
     }
 
-    final res = map((i) => i.toJsonInternal(
-        cyclicCheck,
-        o.copyWith(
-          encoding: expectedConversion,
-        ))).toList();
+    final res =
+        map(
+          (i) => i.toJsonInternal(
+            cyclicCheck,
+            o.copyWith(encoding: expectedConversion),
+          ),
+        ).toList();
 
     cyclicCheck.remove(this);
 
@@ -237,13 +253,10 @@ class _CborDecimalFractionImpl extends DelegatingList<CborValue>
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
-    sink.addHeaderInfo(
-      4,
-      switch (type) {
-        CborLengthType.definite || CborLengthType.auto => const Arg.int(2),
-        CborLengthType.indefinite => Arg.indefiniteLength,
-      },
-    );
+    sink.addHeaderInfo(4, switch (type) {
+      CborLengthType.definite || CborLengthType.auto => const Arg.int(2),
+      CborLengthType.indefinite => Arg.indefiniteLength,
+    });
     exponent.encode(sink);
     mantissa.encode(sink);
 
@@ -276,8 +289,8 @@ class _CborRationalNumberImpl extends DelegatingList<CborValue>
     required this.denominator,
     this.tags = const [CborTag.rationalNumber],
     this.type = CborLengthType.auto,
-  })  : assert(denominator.toInt() != 0),
-        super(List.of([numerator, denominator], growable: false));
+  }) : assert(denominator.toInt() != 0),
+       super(List.of([numerator, denominator], growable: false));
 
   @override
   final CborInt numerator;
@@ -306,13 +319,10 @@ class _CborRationalNumberImpl extends DelegatingList<CborValue>
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
-    sink.addHeaderInfo(
-      4,
-      switch (type) {
-        CborLengthType.definite || CborLengthType.auto => const Arg.int(2),
-        CborLengthType.indefinite => Arg.indefiniteLength,
-      },
-    );
+    sink.addHeaderInfo(4, switch (type) {
+      CborLengthType.definite || CborLengthType.auto => const Arg.int(2),
+      CborLengthType.indefinite => Arg.indefiniteLength,
+    });
     numerator.encode(sink);
     denominator.encode(sink);
 
@@ -364,13 +374,10 @@ class _CborBigFloatImpl extends DelegatingList<CborValue>
   @override
   void encode(EncodeSink sink) {
     sink.addTags(tags);
-    sink.addHeaderInfo(
-      4,
-      switch (type) {
-        CborLengthType.definite || CborLengthType.auto => const Arg.int(2),
-        CborLengthType.indefinite => Arg.indefiniteLength,
-      },
-    );
+    sink.addHeaderInfo(4, switch (type) {
+      CborLengthType.definite || CborLengthType.auto => const Arg.int(2),
+      CborLengthType.indefinite => Arg.indefiniteLength,
+    });
     exponent.encode(sink);
     mantissa.encode(sink);
 

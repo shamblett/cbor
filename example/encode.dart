@@ -15,18 +15,11 @@ int main() {
     67.89,
     10,
     // You can encode maps with any value encodable as CBOR as key.
-    {
-      1: 'one',
-      2: 'two',
-    },
+    {1: 'one', 2: 'two'},
     'hello',
 
     // Indefinite length string
-    CborEncodeIndefiniteLengthString([
-      'hello',
-      ' ',
-      'world',
-    ]),
+    CborEncodeIndefiniteLengthString(['hello', ' ', 'world']),
   ]);
 
   final bytes = cbor.encode(value);
