@@ -21,6 +21,24 @@ export 'map.dart';
 export 'simple_value.dart';
 export 'string.dart';
 
+/// Jump table for initial byte values can be found <a href="https://www.rfc-editor.org/rfc/rfc8949.html#jumptable">here</a>.
+/// Maybe useful for code maintainers.
+
+/// Major types
+@sealed
+class CborMajorType {
+  static const int uint = 0; // unsigned integer N
+  static const int nint = 1; // negative integer -1-N
+  static const int byteString = 2; // byte string
+  static const int textString = 3; // text string
+  static const int array = 4; // array
+  static const int map = 5; // map
+  static const int tag = 6; // tag of number N
+  static const int simpleFloat = 7; // simple/float
+
+  CborMajorType._();
+}
+
 /// Hint for the content of something.
 @sealed
 class CborTag {

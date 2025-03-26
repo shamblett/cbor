@@ -23,12 +23,12 @@ class CborSink implements Sink<RawValueTagged> {
   void add(RawValueTagged data) {
     final _Builder builder;
     switch (data.header.majorType) {
-      case 0: // uint
-      case 1: // negative
+      case CborMajorType.uint:
+      case CborMajorType.nint:
         builder = _ValueBuilder(_createInt(data));
         break;
 
-      case 2: // bytes
+      case CborMajorType.byteString:
         if (data.header.arg.isIndefiniteLength) {
           builder = _IndefiniteLengthByteBuilder(data);
         } else {
@@ -38,7 +38,7 @@ class CborSink implements Sink<RawValueTagged> {
         }
         break;
 
-      case 3: // string
+      case CborMajorType.textString:
         if (data.header.arg.isIndefiniteLength) {
           builder = _IndefiniteLengthStringBuilder(data);
         } else {
@@ -48,7 +48,7 @@ class CborSink implements Sink<RawValueTagged> {
         }
         break;
 
-      case 4: // array
+      case CborMajorType.array:
         if (data.header.arg.isIndefiniteLength) {
           builder = _IndefiniteLengthListBuilder(data);
         } else {
@@ -56,7 +56,7 @@ class CborSink implements Sink<RawValueTagged> {
         }
         break;
 
-      case 5: // map
+      case CborMajorType.map:
         if (data.header.arg.isIndefiniteLength) {
           builder = _IndefiniteLengthMapBuilder(data);
         } else {
@@ -64,7 +64,10 @@ class CborSink implements Sink<RawValueTagged> {
         }
         break;
 
-      case 7:
+      case CborMajorType.tag:
+        throw Error();
+
+      case CborMajorType.simpleFloat:
         switch (data.header.additionalInfo) {
           case 20:
           case 21:
@@ -104,7 +107,7 @@ class CborSink implements Sink<RawValueTagged> {
 
         break;
 
-      default: // tags
+      default:
         throw Error();
     }
 
