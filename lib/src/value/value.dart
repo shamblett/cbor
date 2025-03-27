@@ -39,6 +39,16 @@ class CborMajorType {
   CborMajorType._();
 }
 
+/// Additional Info
+@sealed
+class CborAdditionalInfo {
+  static const simpleValueLow = 23; // Simple value (value 0..23)
+  static const simpleValueHigh =
+      24; // Simple value (value 32..255 in following byte)
+  static const halfPrecisionFloat =
+      25; // IEEE 754 Half-Precision Float (16 bits follow)
+}
+
 /// Hint for the content of something.
 @sealed
 class CborTag {

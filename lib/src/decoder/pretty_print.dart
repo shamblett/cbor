@@ -10,6 +10,8 @@ import 'dart:convert';
 import 'package:ieee754/ieee754.dart';
 
 import 'stage1.dart';
+import '../constants.dart';
+import '../value/value.dart';
 
 /// Pretty print a CBOR input.
 ///
@@ -22,7 +24,10 @@ import 'stage1.dart';
 ///   2 (int 2)
 ///   63 74 77 6f (string "two")
 /// ```
-String cborPrettyPrint(List<int> input, {int indent = 2}) {
+String cborPrettyPrint(
+  List<int> input, {
+  int indent = CborConstants.prettyPrintIndent,
+}) {
   final prettyPrint = _PrettyPrint(input, indent: indent);
   RawSink(prettyPrint)
     ..add(input)
@@ -32,15 +37,17 @@ String cborPrettyPrint(List<int> input, {int indent = 2}) {
 }
 
 class _PrettyPrint implements Sink<RawValue> {
-  _PrettyPrint(this.data, {required this.indent});
-
   final StringBuffer writer = StringBuffer();
   final List<int> data;
   final List<_Nesting> nested = [];
   final int indent;
 
+  _PrettyPrint(this.data, {required this.indent});
+
   @override
-  void close() {}
+  void close() {
+    return;
+  }
 
   @override
   void add(RawValue x) {
@@ -48,7 +55,9 @@ class _PrettyPrint implements Sink<RawValue> {
 
     writer.write(indentation);
     writer.writeAll(
-      data.getRange(x.start, x.end).map((by) => '${by.toRadixString(16)} '),
+      data
+          .getRange(x.start, x.end)
+          .map((by) => '${by.toRadixString(CborConstants.hexRadix)} '),
     );
 
     if (nested.isNotEmpty) {
@@ -64,13 +73,13 @@ class _PrettyPrint implements Sink<RawValue> {
     }
 
     switch (x.header.majorType) {
-      case 0:
+      case CborMajorType.uint:
         writer.write('(int ${x.header.arg.toBigInt()})');
         break;
-      case 1:
+      case CborMajorType.nint:
         writer.write('(int ${~x.header.arg.toBigInt()})');
         break;
-      case 2:
+      case CborMajorType.byteString:
         final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length bytes)');
@@ -79,7 +88,7 @@ class _PrettyPrint implements Sink<RawValue> {
           writer.write('(bytes)');
         }
         break;
-      case 3:
+      case CborMajorType.textString:
         final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length string)');
@@ -90,7 +99,7 @@ class _PrettyPrint implements Sink<RawValue> {
           );
         }
         break;
-      case 4:
+      case CborMajorType.array:
         final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length array)');
@@ -100,7 +109,7 @@ class _PrettyPrint implements Sink<RawValue> {
           nested.add(_Nesting(length.toInt()));
         }
         break;
-      case 5:
+      case CborMajorType.map:
         final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length map)');
@@ -110,10 +119,10 @@ class _PrettyPrint implements Sink<RawValue> {
           nested.add(_Nesting(length.toInt() * 2));
         }
         break;
-      case 6:
+      case CborMajorType.tag:
         writer.write('(tag ${x.header.arg.toInt()})');
         break;
-      case 7:
+      case CborMajorType.simpleFloat:
         switch (x.header.additionalInfo) {
           case 20:
             writer.write('(false)');
