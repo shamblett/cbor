@@ -10,6 +10,8 @@ import 'dart:typed_data';
 
 import 'package:typed_data/typed_buffers.dart' as typed;
 
+import '../constants.dart';
+
 class Reader {
   final typed.Uint8Buffer _bytes = typed.Uint8Buffer();
   int _read = 0;
@@ -30,7 +32,7 @@ class Reader {
   }
 
   int? readUint8() {
-    return readExactBytes(1)?[0];
+    return readExactBytes(1)?.first;
   }
 
   Uint8List? readExactBytes(int c) {
@@ -39,7 +41,7 @@ class Reader {
       _read += c;
       _offset += c;
 
-      if (length < _bytes.length ~/ 4) {
+      if (length < _bytes.length ~/ CborConstants.bytesPerWord) {
         _bytes.removeRange(0, _read);
         _read = 0;
       }
