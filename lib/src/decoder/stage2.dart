@@ -10,28 +10,28 @@ import 'package:cbor/cbor.dart';
 import 'stage1.dart';
 
 class RawValueTagged {
+  final Header header;
+  final List<int> data;
+  final int offset;
+  final List<int> tags;
+
   RawValueTagged(
     this.header, {
     this.data = const [],
     required this.offset,
     this.tags = const [],
   });
-
-  final Header header;
-  final List<int> data;
-  final int offset;
-  final List<int> tags;
 }
 
 class RawSinkTagged implements Sink<RawValue> {
-  RawSinkTagged(this.sink);
-
   final Sink<RawValueTagged> sink;
   List<int> _tags = [];
 
+  RawSinkTagged(this.sink);
+
   @override
   void add(RawValue data) {
-    if (data.header.majorType == 6) {
+    if (data.header.majorType == CborMajorType.tag) {
       if (data.header.arg.isIndefiniteLength) {
         throw CborMalformedException('Tag can not have additional info 31');
       }
