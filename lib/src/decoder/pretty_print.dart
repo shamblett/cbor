@@ -116,7 +116,9 @@ class _PrettyPrint implements Sink<RawValue> {
           nested.add(_Nesting(null));
         } else {
           writer.write('(map length ${length.toInt()})');
-          nested.add(_Nesting(length.toInt() * 2));
+          nested.add(
+            _Nesting(length.toInt() * CborConstants.prettyPrintIndent),
+          );
         }
         break;
       case CborMajorType.tag:
@@ -124,34 +126,34 @@ class _PrettyPrint implements Sink<RawValue> {
         break;
       case CborMajorType.simpleFloat:
         switch (x.header.additionalInfo) {
-          case 20:
+          case CborAdditionalInfo.simpleFalse:
             writer.write('(false)');
             break;
-          case 21:
+          case CborAdditionalInfo.simpleTrue:
             writer.write('(true)');
             break;
-          case 22:
+          case CborAdditionalInfo.simpleNull:
             writer.write('(null)');
             break;
-          case 23:
+          case CborAdditionalInfo.simpleUndefined:
             writer.write('(undefined)');
             break;
-          case 25:
+          case CborAdditionalInfo.halfPrecisionFloat:
             writer.write(
               '(${FloatParts.fromFloat16Bytes(x.header.dataBytes).toDouble()})',
             );
             break;
-          case 26:
+          case CborAdditionalInfo.singlePrecisionFloat:
             writer.write(
               '(${FloatParts.fromFloat32Bytes(x.header.dataBytes).toDouble()})',
             );
             break;
-          case 27:
+          case CborAdditionalInfo.doublePrecisionFloat:
             writer.write(
               '(${FloatParts.fromFloat64Bytes(x.header.dataBytes).toDouble()})',
             );
             break;
-          case 31:
+          case CborAdditionalInfo.breakStop:
             writer.write('(break)');
             nested.removeLast();
             break;
@@ -167,7 +169,7 @@ class _PrettyPrint implements Sink<RawValue> {
 }
 
 class _Nesting {
-  _Nesting(this.remainingItems);
-
   int? remainingItems;
+
+  _Nesting(this.remainingItems);
 }

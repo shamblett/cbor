@@ -25,8 +25,7 @@ export 'string.dart';
 /// Maybe useful for code maintainers.
 
 /// Major types
-@sealed
-class CborMajorType {
+sealed class CborMajorType {
   static const int uint = 0; // unsigned integer N
   static const int nint = 1; // negative integer -1-N
   static const int byteString = 2; // byte string
@@ -40,18 +39,25 @@ class CborMajorType {
 }
 
 /// Additional Info
-@sealed
-class CborAdditionalInfo {
+sealed class CborAdditionalInfo {
   static const simpleValueLow = 23; // Simple value (value 0..23)
   static const simpleValueHigh =
       24; // Simple value (value 32..255 in following byte)
   static const halfPrecisionFloat =
       25; // IEEE 754 Half-Precision Float (16 bits follow)
+  static const singlePrecisionFloat =
+      26; // IEEE 754 Single-Precision Float (32 bits follow)
+  static const doublePrecisionFloat =
+      27; // IEEE 754 Double-Precision Float (64 bits follow)
+  static const breakStop = 31; // Break" stop code for indefinite-length items
+  static const simpleFalse = 20;
+  static const simpleTrue = 21;
+  static const simpleNull = 22;
+  static const simpleUndefined = 23;
 }
 
 /// Hint for the content of something.
-@sealed
-class CborTag {
+sealed class CborTag {
   CborTag._();
 
   static const int dateTimeString = 0;
@@ -78,7 +84,6 @@ const kCborDefiniteLengthThreshold = 256;
 enum CborLengthType { definite, indefinite, auto }
 
 /// A CBOR value.
-@sealed
 abstract class CborValue {
   factory CborValue._fromObject(
     Object? object, {
