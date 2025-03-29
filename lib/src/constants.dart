@@ -19,6 +19,8 @@ class CborConstants {
   static const bigIntSlice = 33;
   static const maxYear = 9999;
   static const seconds = 60;
+  static const milliseconds = 1000;
+  static const jsonBitLength = 53;
 
   // Bitfields, padding, indents and ranges
   static const one = 1;

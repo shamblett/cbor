@@ -14,45 +14,41 @@ import '../encoder/sink.dart';
 import '../utils/arg.dart';
 
 class ToObjectOptions {
+  final bool parseDateTime;
+  final bool parseUri;
+  final bool decodeBase64;
+  final bool allowMalformedUtf8;
+
   ToObjectOptions({
     required this.parseDateTime,
     required this.parseUri,
     required this.decodeBase64,
     required this.allowMalformedUtf8,
   });
-
-  final bool parseDateTime;
-  final bool parseUri;
-  final bool decodeBase64;
-  final bool allowMalformedUtf8;
 }
 
 class ToJsonOptions {
-  ToJsonOptions({
-    required this.encoding,
-    this.substituteValue,
-    required this.allowMalformedUtf8,
-  });
+  final JsonBytesEncoding encoding;
+  final bool allowMalformedUtf8;
+  final Object? substituteValue;
+
+  ToJsonOptions({required this.encoding, this.substituteValue, required this.allowMalformedUtf8});
 
   ToJsonOptions copyWith({JsonBytesEncoding? encoding}) => ToJsonOptions(
     encoding: encoding ?? this.encoding,
     substituteValue: substituteValue,
     allowMalformedUtf8: allowMalformedUtf8,
   );
-
-  final JsonBytesEncoding encoding;
-  final bool allowMalformedUtf8;
-  final Object? substituteValue;
 }
 
 enum JsonBytesEncoding { base64Url, base64, base16 }
 
 @internal
 class Break with CborValueMixin implements CborValue {
-  const Break();
-
   @override
   final List<int> tags = const [];
+
+  const Break();
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -66,7 +62,7 @@ class Break with CborValueMixin implements CborValue {
 
   @override
   void encode(EncodeSink sink) {
-    sink.addHeaderInfo(7, Arg.indefiniteLength);
+    sink.addHeaderInfo(CborMajorType.simpleFloat, Arg.indefiniteLength);
   }
 }
 
@@ -89,15 +85,14 @@ mixin CborValueMixin implements CborValue {
   );
 
   @override
-  Object? toJson({Object? substituteValue, bool allowMalformedUtf8 = false}) =>
-      toJsonInternal(
-        {},
-        ToJsonOptions(
-          encoding: JsonBytesEncoding.base16,
-          allowMalformedUtf8: allowMalformedUtf8,
-          substituteValue: substituteValue,
-        ),
-      );
+  Object? toJson({Object? substituteValue, bool allowMalformedUtf8 = false}) => toJsonInternal(
+    {},
+    ToJsonOptions(
+      encoding: JsonBytesEncoding.base16,
+      allowMalformedUtf8: allowMalformedUtf8,
+      substituteValue: substituteValue,
+    ),
+  );
 
   JsonBytesEncoding? get expectedConversion {
     var retVal = JsonBytesEncoding.base16;
