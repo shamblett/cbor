@@ -12,6 +12,9 @@ linter:
   rules:
     prefer_final_fields: false
 
+formatter:
+  page_width: 123
+
 dart_code_metrics:
   exclude:
     metrics:

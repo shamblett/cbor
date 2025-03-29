@@ -14,6 +14,8 @@ class CborConstants {
   static const additionalInfoByteRange = 5;
   static const additionalInfoBitMask = 0x1f;
   static const byteLength = 8;
+
+  // Bitfields and ranges
   static const one = 1;
   static const two = 2;
   static const three = 3;

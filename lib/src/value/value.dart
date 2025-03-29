@@ -41,14 +41,10 @@ sealed class CborMajorType {
 /// Additional Info
 sealed class CborAdditionalInfo {
   static const simpleValueLow = 23; // Simple value (value 0..23)
-  static const simpleValueHigh =
-      24; // Simple value (value 32..255 in following byte)
-  static const halfPrecisionFloat =
-      25; // IEEE 754 Half-Precision Float (16 bits follow)
-  static const singlePrecisionFloat =
-      26; // IEEE 754 Single-Precision Float (32 bits follow)
-  static const doublePrecisionFloat =
-      27; // IEEE 754 Double-Precision Float (64 bits follow)
+  static const simpleValueHigh = 24; // Simple value (value 32..255 in following byte)
+  static const halfPrecisionFloat = 25; // IEEE 754 Half-Precision Float (16 bits follow)
+  static const singlePrecisionFloat = 26; // IEEE 754 Single-Precision Float (32 bits follow)
+  static const doublePrecisionFloat = 27; // IEEE 754 Double-Precision Float (64 bits follow)
   static const breakStop = 31; // Break" stop code for indefinite-length items
   static const simpleFalse = 20;
   static const simpleTrue = 21;
@@ -58,7 +54,6 @@ sealed class CborAdditionalInfo {
 
 /// Hint for the content of something.
 sealed class CborTag {
-  CborTag._();
 
   static const int dateTimeString = 0;
   static const int epochDateTime = 1;
@@ -77,6 +72,8 @@ sealed class CborTag {
   static const int regex = 35;
   static const int mime = 36;
   static const int selfDescribeCbor = 55799;
+
+  CborTag._();
 }
 
 const kCborDefiniteLengthThreshold = 256;
@@ -111,13 +108,9 @@ abstract class CborValue {
       if (!dateTimeEpoch) {
         return CborDateTimeString(object);
       } else if (object.millisecondsSinceEpoch % 1000 == 0) {
-        return CborDateTimeInt.fromSecondsSinceEpoch(
-          object.millisecondsSinceEpoch ~/ 1000,
-        );
+        return CborDateTimeInt.fromSecondsSinceEpoch(object.millisecondsSinceEpoch ~/ 1000);
       } else {
-        return CborDateTimeFloat.fromSecondsSinceEpoch(
-          object.millisecondsSinceEpoch / 1000,
-        );
+        return CborDateTimeFloat.fromSecondsSinceEpoch(object.millisecondsSinceEpoch / 1000);
       }
     } else if (object is Uri) {
       return CborUri(object);
@@ -130,12 +123,7 @@ abstract class CborValue {
 
       final value = CborList.of(
         object.map(
-          (v) => CborValue._fromObject(
-            v,
-            dateTimeEpoch: dateTimeEpoch,
-            toEncodable: toEncodable,
-            cycleCheck: cycleCheck,
-          ),
+          (v) => CborValue._fromObject(v, dateTimeEpoch: dateTimeEpoch, toEncodable: toEncodable, cycleCheck: cycleCheck),
         ),
       );
 
@@ -217,15 +205,8 @@ abstract class CborValue {
   ///
   /// If [toEncodable] is omitted, it defaults to a function that returns the
   /// result of calling `.toCbor()` on the unencodable object.
-  factory CborValue(
-    Object? object, {
-    bool dateTimeEpoch = false,
-    Object? Function(dynamic object)? toEncodable,
-  }) => CborValue._fromObject(
-    object,
-    dateTimeEpoch: dateTimeEpoch,
-    toEncodable: toEncodable ?? (object) => object.toCbor(),
-  );
+  factory CborValue(Object? object, {bool dateTimeEpoch = false, Object? Function(dynamic object)? toEncodable}) =>
+      CborValue._fromObject(object, dateTimeEpoch: dateTimeEpoch, toEncodable: toEncodable ?? (object) => object.toCbor());
 
   /// Additional tags provided to the value.
   List<int> get tags;
