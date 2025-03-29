@@ -23,9 +23,10 @@ class CborMalformedException extends FormatException {
 
 /// Raised when object could not be codified due to cyclic references.
 class CborCyclicError extends Error {
-  CborCyclicError(this.cause);
 
   final Object cause;
+
+  CborCyclicError(this.cause);
 
   @override
   String toString() {

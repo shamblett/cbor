@@ -9,13 +9,15 @@ import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
 import 'package:typed_data/typed_buffers.dart';
+import 'package:characters/characters.dart';
 
+import '../constants.dart';
 import '../utils/arg.dart';
 
 abstract class EncodeSink implements Sink<List<int>> {
-  EncodeSink();
-
   final Set<Object> _references = {};
+
+  EncodeSink();
 
   factory EncodeSink.withBuffer(Uint8Buffer b) => _BufferEncodeSink(b);
 
@@ -32,61 +34,65 @@ abstract class EncodeSink implements Sink<List<int>> {
   }
 
   @override
-  void close() {}
+  void close() {
+    return;
+  }
 
   void addTags(List<int> tags) {
     for (final value in tags) {
-      addHeaderInfo(6, Arg.int(value));
+      addHeaderInfo(CborMajorType.tag, Arg.int(value));
     }
   }
 
   void addHeader(int majorType, int additionalInfo) {
-    add([(majorType << 5) | additionalInfo]);
+    add([(majorType << CborMajorType.map) | additionalInfo]);
   }
 
   void addHeaderInfo(int majorType, Arg info) {
     if (info.isIndefiniteLength) {
-      addHeader(majorType, 0x1f);
+      addHeader(majorType, CborConstants.additionalInfoBitMask);
     } else if (info.isValidInt) {
       final int = info.toInt();
 
-      if (int <= 23) {
+      if (int <= CborAdditionalInfo.simpleValueLow) {
         addHeader(majorType, info.toInt());
         return;
-      } else if (int.bitLength <= 8) {
-        addHeader(majorType, 24);
+      } else if (int.bitLength <= CborConstants.byteLength) {
+        addHeader(majorType, CborAdditionalInfo.simpleValueHigh);
         add([int]);
-      } else if (int.bitLength <= 16) {
-        addHeader(majorType, 25);
-        final x = Uint8List(2);
+      } else if (int.bitLength <= CborConstants.sixteen) {
+        addHeader(majorType, CborAdditionalInfo.halfPrecisionFloat);
+        final x = Uint8List(CborConstants.two);
         ByteData.view(x.buffer).setUint16(0, info.toInt());
         add(x);
-      } else if (int.bitLength <= 32) {
-        addHeader(majorType, 26);
-        final x = Uint8List(4);
+      } else if (int.bitLength <= CborConstants.bitsPerWord) {
+        addHeader(majorType, CborAdditionalInfo.singlePrecisionFloat);
+        final x = Uint8List(CborConstants.bytesPerWord);
         ByteData.view(x.buffer).setUint32(0, info.toInt());
         add(x);
       } else {
-        addHeader(majorType, 27);
+        addHeader(majorType, CborAdditionalInfo.doublePrecisionFloat);
         add(u64BytesHelper(info.toInt()));
       }
     } else {
-      addHeader(majorType, 27);
-      final x = Uint8List(8);
+      addHeader(majorType, CborAdditionalInfo.doublePrecisionFloat);
+      final x = Uint8List(CborConstants.byteLength);
       final infoBigInt = info.toBigInt();
       ByteData.view(
         x.buffer,
-      ).setUint32(0, (infoBigInt >> 32).toUnsigned(32).toInt());
-      ByteData.view(x.buffer).setUint32(4, infoBigInt.toUnsigned(32).toInt());
+      ).setUint32(0, (infoBigInt >> CborConstants.bitsPerWord).toUnsigned(CborConstants.bitsPerWord).toInt());
+      ByteData.view(
+        x.buffer,
+      ).setUint32(CborConstants.bytesPerWord, infoBigInt.toUnsigned(CborConstants.bitsPerWord).toInt());
       add(x);
     }
   }
 }
 
 class _BufferEncodeSink extends EncodeSink {
-  _BufferEncodeSink(this.buffer);
-
   final Uint8Buffer buffer;
+
+  _BufferEncodeSink(this.buffer);
 
   @override
   void add(List<int> data) {
@@ -95,9 +101,9 @@ class _BufferEncodeSink extends EncodeSink {
 }
 
 class _EncodeSink extends EncodeSink {
-  _EncodeSink(this._sink);
-
   final Sink<List<int>> _sink;
+
+  _EncodeSink(this._sink);
 
   @override
   void close() {
@@ -111,13 +117,18 @@ class _EncodeSink extends EncodeSink {
 }
 
 Uint8List u64BytesHelper(int x) {
-  String rstr = x.toRadixString(2);
-  while (rstr.length < 64) {
+  String rstr = x.toRadixString(CborConstants.binRadix);
+  while (rstr.length < CborConstants.bitsPerDoubleWord) {
     rstr = '0$rstr';
   }
   List<int> bytes = [];
-  for (int i = 0; i < 8; i++) {
-    bytes.add(int.parse(rstr.substring(i * 8, i * 8 + 8), radix: 2));
+  for (int i = 0; i < CborConstants.byteLength; i++) {
+    bytes.add(
+      int.parse(
+        '${rstr.characters.getRange(i * CborConstants.byteLength, i * CborConstants.byteLength + CborConstants.byteLength)}',
+        radix: CborConstants.binRadix,
+      ),
+    );
   }
   return Uint8List.fromList(bytes);
 }

@@ -9,8 +9,10 @@
 class CborConstants {
   static const prettyPrintIndent = 2;
   static const hexRadix = 16;
+  static const binRadix = 2;
   static const bytesPerWord = 4;
   static const bitsPerWord = 32;
+  static const bitsPerDoubleWord = 64;
   static const additionalInfoByteRange = 5;
   static const additionalInfoBitMask = 0x1f;
   static const byteLength = 8;
@@ -25,4 +27,5 @@ class CborConstants {
   static const seven = 7;
   static const eight = 8;
   static const nine = 9;
+  static const sixteen = 16;
 }
