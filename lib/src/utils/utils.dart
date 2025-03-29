@@ -7,6 +7,8 @@
 
 import 'package:cbor/cbor.dart';
 
+import '../constants.dart';
+
 extension IterableExt<T> on Iterable<T> {
   Iterable<List<T>> chunks(int length) sync* {
     final iterator = this.iterator;
@@ -31,10 +33,10 @@ extension SinkExt<T> on Sink<T> {
 }
 
 class _MapSink<T, U> implements Sink<U> {
-  _MapSink(this.map, this.sink);
-
   final T Function(U) map;
   final Sink<T> sink;
+
+  _MapSink(this.map, this.sink);
 
   @override
   void add(U data) {
@@ -61,27 +63,26 @@ extension DateTimeExtension on DateTime {
     }
 
     final String y;
-    if (x.year.abs() < 9999) {
+    if (x.year.abs() < CborConstants.maxYear) {
       final ySign = x.year < 0 ? '-' : '';
-      y = ySign + x.year.abs().toString().padLeft(4, '0');
+      y = ySign + x.year.abs().toString().padLeft(CborConstants.four, '0');
     } else {
       final ySign = x.year < 0 ? '-' : '+';
-      y = ySign + x.year.abs().toString().padLeft(6, '0');
+      y = ySign + x.year.abs().toString().padLeft(CborConstants.six, '0');
     }
 
-    final m = x.month.toString().padLeft(2, '0');
-    final d = x.day.toString().padLeft(2, '0');
-    final h = x.hour.toString().padLeft(2, '0');
-    final min = x.minute.toString().padLeft(2, '0');
-    final sec = x.second.toString().padLeft(2, '0');
+    final m = x.month.toString().padLeft(CborConstants.two, '0');
+    final d = x.day.toString().padLeft(CborConstants.two, '0');
+    final h = x.hour.toString().padLeft(CborConstants.two, '0');
+    final min = x.minute.toString().padLeft(CborConstants.two, '0');
+    final sec = x.second.toString().padLeft(CborConstants.two, '0');
 
     final String secFraction;
     if (x.millisecond == 0) {
       secFraction = '';
     } else {
-      final ms = x.millisecond.toString().padLeft(3, '0');
-      final us =
-          x.microsecond != 0 ? x.microsecond.toString().padLeft(3, '0') : '';
+      final ms = x.millisecond.toString().padLeft(CborConstants.three, '0');
+      final us = x.microsecond != 0 ? x.microsecond.toString().padLeft(CborConstants.three, '0') : '';
       secFraction = '.$ms$us'.replaceAll(RegExp('0*\$'), '');
     }
 
@@ -91,8 +92,8 @@ extension DateTimeExtension on DateTime {
     } else {
       final timeZoneTotalMin = timeZoneOffset.inMinutes.abs();
       final timeZoneSign = !timeZoneOffset.isNegative ? '+' : '-';
-      final timeZoneHour = (timeZoneTotalMin ~/ 60).toString().padLeft(2, '0');
-      final timeZoneMin = (timeZoneTotalMin % 60).toString().padLeft(2, '0');
+      final timeZoneHour = (timeZoneTotalMin ~/ CborConstants.seconds).toString().padLeft(CborConstants.two, '0');
+      final timeZoneMin = (timeZoneTotalMin % CborConstants.seconds).toString().padLeft(CborConstants.two, '0');
 
       timeZone = '$timeZoneSign$timeZoneHour:$timeZoneMin';
     }
