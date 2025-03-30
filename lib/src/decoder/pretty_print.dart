@@ -10,6 +10,8 @@ import 'dart:convert';
 import 'package:ieee754/ieee754.dart';
 
 import 'stage1.dart';
+import '../constants.dart';
+import '../value/value.dart';
 
 /// Pretty print a CBOR input.
 ///
@@ -22,10 +24,7 @@ import 'stage1.dart';
 ///   2 (int 2)
 ///   63 74 77 6f (string "two")
 /// ```
-String cborPrettyPrint(
-  List<int> input, {
-  int indent = 2,
-}) {
+String cborPrettyPrint(List<int> input, {int indent = CborConstants.prettyPrintIndent}) {
   final prettyPrint = _PrettyPrint(input, indent: indent);
   RawSink(prettyPrint)
     ..add(input)
@@ -35,26 +34,24 @@ String cborPrettyPrint(
 }
 
 class _PrettyPrint implements Sink<RawValue> {
-  _PrettyPrint(
-    this.data, {
-    required this.indent,
-  });
-
   final StringBuffer writer = StringBuffer();
   final List<int> data;
   final List<_Nesting> nested = [];
   final int indent;
 
+  _PrettyPrint(this.data, {required this.indent});
+
   @override
-  void close() {}
+  void close() {
+    return;
+  }
 
   @override
   void add(RawValue x) {
     final indentation = ' ' * indent * nested.length;
 
     writer.write(indentation);
-    writer.writeAll(
-        data.getRange(x.start, x.end).map((by) => '${by.toRadixString(16)} '));
+    writer.writeAll(data.getRange(x.start, x.end).map((by) => '${by.toRadixString(CborConstants.hexRadix)} '));
 
     if (nested.isNotEmpty) {
       var remainingItems = nested.last.remainingItems;
@@ -69,13 +66,13 @@ class _PrettyPrint implements Sink<RawValue> {
     }
 
     switch (x.header.majorType) {
-      case 0:
+      case CborMajorType.uint:
         writer.write('(int ${x.header.arg.toBigInt()})');
         break;
-      case 1:
+      case CborMajorType.nint:
         writer.write('(int ${~x.header.arg.toBigInt()})');
         break;
-      case 2:
+      case CborMajorType.byteString:
         final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length bytes)');
@@ -84,17 +81,16 @@ class _PrettyPrint implements Sink<RawValue> {
           writer.write('(bytes)');
         }
         break;
-      case 3:
+      case CborMajorType.textString:
         final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length string)');
           nested.add(_Nesting(null));
         } else {
-          writer.write(
-              '(string "${(const Utf8Codec(allowMalformed: true)).decode(x.data)}")');
+          writer.write('(string "${(const Utf8Codec(allowMalformed: true)).decode(x.data)}")');
         }
         break;
-      case 4:
+      case CborMajorType.array:
         final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length array)');
@@ -104,46 +100,43 @@ class _PrettyPrint implements Sink<RawValue> {
           nested.add(_Nesting(length.toInt()));
         }
         break;
-      case 5:
+      case CborMajorType.map:
         final length = x.header.arg;
         if (length.isIndefiniteLength) {
           writer.write('(indefinite length map)');
           nested.add(_Nesting(null));
         } else {
           writer.write('(map length ${length.toInt()})');
-          nested.add(_Nesting(length.toInt() * 2));
+          nested.add(_Nesting(length.toInt() * CborConstants.prettyPrintIndent));
         }
         break;
-      case 6:
+      case CborMajorType.tag:
         writer.write('(tag ${x.header.arg.toInt()})');
         break;
-      case 7:
+      case CborMajorType.simpleFloat:
         switch (x.header.additionalInfo) {
-          case 20:
+          case CborAdditionalInfo.simpleFalse:
             writer.write('(false)');
             break;
-          case 21:
+          case CborAdditionalInfo.simpleTrue:
             writer.write('(true)');
             break;
-          case 22:
+          case CborAdditionalInfo.simpleNull:
             writer.write('(null)');
             break;
-          case 23:
+          case CborAdditionalInfo.simpleUndefined:
             writer.write('(undefined)');
             break;
-          case 25:
-            writer.write(
-                '(${FloatParts.fromFloat16Bytes(x.header.dataBytes).toDouble()})');
+          case CborAdditionalInfo.halfPrecisionFloat:
+            writer.write('(${FloatParts.fromFloat16Bytes(x.header.dataBytes).toDouble()})');
             break;
-          case 26:
-            writer.write(
-                '(${FloatParts.fromFloat32Bytes(x.header.dataBytes).toDouble()})');
+          case CborAdditionalInfo.singlePrecisionFloat:
+            writer.write('(${FloatParts.fromFloat32Bytes(x.header.dataBytes).toDouble()})');
             break;
-          case 27:
-            writer.write(
-                '(${FloatParts.fromFloat64Bytes(x.header.dataBytes).toDouble()})');
+          case CborAdditionalInfo.doublePrecisionFloat:
+            writer.write('(${FloatParts.fromFloat64Bytes(x.header.dataBytes).toDouble()})');
             break;
-          case 31:
+          case CborAdditionalInfo.breakStop:
             writer.write('(break)');
             nested.removeLast();
             break;
@@ -159,7 +152,7 @@ class _PrettyPrint implements Sink<RawValue> {
 }
 
 class _Nesting {
-  _Nesting(this.remainingItems);
-
   int? remainingItems;
+
+  _Nesting(this.remainingItems);
 }

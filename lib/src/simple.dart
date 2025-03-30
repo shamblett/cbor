@@ -22,31 +22,23 @@ import 'utils/utils.dart';
 /// This encoder supports [startChunkedConversion] and can therefore be
 /// used as a stream transformer.
 class CborSimpleEncoder extends Converter<Object?, List<int>> {
-  const CborSimpleEncoder({
-    bool dateTimeEpoch = false,
-    Object? Function(dynamic object)? toEncodable,
-  })  : _toEncodable = toEncodable,
-        _dateTimeEpoch = dateTimeEpoch;
-
   final Object? Function(dynamic object)? _toEncodable;
   final bool _dateTimeEpoch;
 
+  const CborSimpleEncoder({bool dateTimeEpoch = false, Object? Function(dynamic object)? toEncodable})
+    : _toEncodable = toEncodable,
+      _dateTimeEpoch = dateTimeEpoch;
+
   @override
   List<int> convert(Object? input) {
-    return cbor.encode(CborValue(
-      input,
-      dateTimeEpoch: _dateTimeEpoch,
-      toEncodable: _toEncodable,
-    ));
+    return cbor.encode(CborValue(input, dateTimeEpoch: _dateTimeEpoch, toEncodable: _toEncodable));
   }
 
   @override
   Sink<Object?> startChunkedConversion(Sink<List<int>> sink) {
-    return cbor.encoder.startChunkedConversion(sink).map((object) => CborValue(
-          object,
-          dateTimeEpoch: _dateTimeEpoch,
-          toEncodable: _toEncodable,
-        ));
+    return cbor.encoder
+        .startChunkedConversion(sink)
+        .map((object) => CborValue(object, dateTimeEpoch: _dateTimeEpoch, toEncodable: _toEncodable));
   }
 }
 
@@ -54,6 +46,10 @@ class CborSimpleEncoder extends Converter<Object?, List<int>> {
 ///
 /// May throw [FormatException] if the input is invalid.
 class CborSimpleDecoder extends Converter<List<int>, Object?> {
+  final bool _parseDateTime;
+  final bool _decodeBase64;
+  final bool _parseUri;
+
   /// Create a CBOR decoder.
   ///
   /// See the docs of [CborValue.toObject] to see how CBOR values translate
@@ -62,35 +58,25 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
   /// This decoder supports [startChunkedConversion] and can therefore be
   /// used as a stream transformer. The decoder operates over a CBOR sequence
   /// in this mode.
-  const CborSimpleDecoder({
-    bool parseDateTime = true,
-    bool decodeBase64 = true,
-    bool parseUri = true,
-  })  : _parseDateTime = parseDateTime,
-        _decodeBase64 = decodeBase64,
-        _parseUri = parseUri;
-
-  final bool _parseDateTime;
-  final bool _decodeBase64;
-  final bool _parseUri;
+  const CborSimpleDecoder({bool parseDateTime = true, bool decodeBase64 = true, bool parseUri = true})
+    : _parseDateTime = parseDateTime,
+      _decodeBase64 = decodeBase64,
+      _parseUri = parseUri;
 
   @override
   Object? convert(List<int> input) {
-    return const CborDecoder().convert(input).toObject(
-          parseUri: _parseUri,
-          parseDateTime: _parseDateTime,
-          decodeBase64: _decodeBase64,
-        );
+    return const CborDecoder()
+        .convert(input)
+        .toObject(parseUri: _parseUri, parseDateTime: _parseDateTime, decodeBase64: _decodeBase64);
   }
 
   @override
   Sink<List<int>> startChunkedConversion(Sink<Object?> sink) {
-    return const CborDecoder()
-        .startChunkedConversion(sink.map((object) => object.toObject(
-              parseUri: _parseUri,
-              parseDateTime: _parseDateTime,
-              decodeBase64: _decodeBase64,
-            )));
+    return const CborDecoder().startChunkedConversion(
+      sink.map(
+        (object) => object.toObject(parseUri: _parseUri, parseDateTime: _parseDateTime, decodeBase64: _decodeBase64),
+      ),
+    );
   }
 }
 
@@ -99,6 +85,22 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
 /// To see how CBOR values are transformed from and into objects, verify the
 /// documentation of both [CborValue.CborValue] and [CborValue.toObject].
 class CborSimpleCodec extends Codec<Object?, List<int>> {
+  final bool _encodeDateTimeEpoch;
+  final bool _decodeBase64;
+  final bool _parseUri;
+  final bool _parseDateTime;
+  final Object? Function(dynamic object)? _toEncodable;
+
+  @override
+  CborSimpleEncoder get encoder {
+    return CborSimpleEncoder(dateTimeEpoch: _encodeDateTimeEpoch, toEncodable: _toEncodable);
+  }
+
+  @override
+  CborSimpleDecoder get decoder {
+    return CborSimpleDecoder(decodeBase64: _decodeBase64, parseUri: _parseUri, parseDateTime: _parseDateTime);
+  }
+
   /// Create a CBOR simple codec.
   ///
   /// The [toEncodable] function is used during encoding. It is invoked for
@@ -118,42 +120,14 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
     bool decodeBase64 = true,
     bool parseUri = true,
     Object? Function(dynamic object)? toEncodable,
-  })  : _decodeBase64 = decodeBase64,
-        _encodeDateTimeEpoch = encodeDateTimeEpoch,
-        _parseUri = parseUri,
-        _parseDateTime = parseDateTime,
-        _toEncodable = toEncodable;
-
-  final bool _encodeDateTimeEpoch;
-  final bool _decodeBase64;
-  final bool _parseUri;
-  final bool _parseDateTime;
-  final Object? Function(dynamic object)? _toEncodable;
+  }) : _decodeBase64 = decodeBase64,
+       _encodeDateTimeEpoch = encodeDateTimeEpoch,
+       _parseUri = parseUri,
+       _parseDateTime = parseDateTime,
+       _toEncodable = toEncodable;
 
   @override
-  CborSimpleEncoder get encoder {
-    return CborSimpleEncoder(
-      dateTimeEpoch: _encodeDateTimeEpoch,
-      toEncodable: _toEncodable,
-    );
-  }
-
-  @override
-  CborSimpleDecoder get decoder {
-    return CborSimpleDecoder(
-      decodeBase64: _decodeBase64,
-      parseUri: _parseUri,
-      parseDateTime: _parseDateTime,
-    );
-  }
-
-  @override
-  Object? decode(
-    List<int> encoded, {
-    bool? parseDateTime,
-    bool? decodeBase64,
-    bool? parseUri,
-  }) {
+  Object? decode(List<int> encoded, {bool? parseDateTime, bool? decodeBase64, bool? parseUri}) {
     parseDateTime ??= _parseDateTime;
     decodeBase64 ??= _decodeBase64;
     parseUri ??= _parseUri;
@@ -166,17 +140,10 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
   }
 
   @override
-  List<int> encode(
-    Object? input, {
-    bool? dateTimeEpoch,
-    Object? Function(dynamic object)? toEncodable,
-  }) {
+  List<int> encode(Object? input, {bool? dateTimeEpoch, Object? Function(dynamic object)? toEncodable}) {
     toEncodable ??= _toEncodable;
     dateTimeEpoch ??= _encodeDateTimeEpoch;
 
-    return CborSimpleEncoder(
-      dateTimeEpoch: dateTimeEpoch,
-      toEncodable: toEncodable,
-    ).convert(input);
+    return CborSimpleEncoder(dateTimeEpoch: dateTimeEpoch, toEncodable: toEncodable).convert(input);
   }
 }

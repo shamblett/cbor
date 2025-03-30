@@ -12,11 +12,13 @@ import 'package:test/test.dart';
 
 void main() {
   test('Uint8List in array', () {
-    final encoded = cbor.encode(CborMap({
-      CborString('data'): CborList([
-        CborBytes([196, 79, 51]),
-      ]),
-    }));
+    final encoded = cbor.encode(
+      CborMap({
+        CborString('data'): CborList([
+          CborBytes([196, 79, 51]),
+        ]),
+      }),
+    );
     expect(encoded, [161, 100, 100, 97, 116, 97, 129, 67, 196, 79, 51]);
   });
 }

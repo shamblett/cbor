@@ -12,34 +12,33 @@ import 'package:cbor/cbor.dart';
 import 'package:typed_data/typed_buffers.dart';
 
 import '../utils/arg.dart';
+import '../constants.dart';
+
 import 'stage0.dart';
 
 class Header {
-  Header(this.majorType, this.additionalInfo, this.dataBytes);
-
   final int majorType;
   final int additionalInfo;
 
   final Uint8List dataBytes;
 
   Arg get arg {
-    if (additionalInfo < 24) {
+    if (additionalInfo < CborAdditionalInfo.simpleValueHigh) {
       return Arg.int(additionalInfo);
     } else {
       switch (additionalInfo) {
-        case 24:
-          return Arg.int(dataBytes[0]);
-        case 25:
+        case CborAdditionalInfo.simpleValueHigh:
+          return Arg.int(dataBytes.first);
+        case CborAdditionalInfo.halfPrecisionFloat:
           return Arg.int(ByteData.view(dataBytes.buffer).getUint16(0));
-        case 26:
+        case CborAdditionalInfo.singlePrecisionFloat:
           return Arg.int(ByteData.view(dataBytes.buffer).getUint32(0));
-        case 27:
-          var i =
-              BigInt.from(ByteData.view(dataBytes.buffer).getUint32(0)) << 32;
-          i |= BigInt.from(ByteData.view(dataBytes.buffer).getUint32(4));
+        case CborAdditionalInfo.doublePrecisionFloat:
+          var i = BigInt.from(ByteData.view(dataBytes.buffer).getUint32(0)) << CborConstants.bitsPerWord;
+          i |= BigInt.from(ByteData.view(dataBytes.buffer).getUint32(CborConstants.bytesPerWord));
           return Arg.bigInt(i);
 
-        case 31:
+        case CborAdditionalInfo.breakStop:
           return Arg.indefiniteLength;
 
         default:
@@ -47,6 +46,8 @@ class Header {
       }
     }
   }
+
+  Header(this.majorType, this.additionalInfo, this.dataBytes);
 }
 
 Header? _readHeader(Reader reader) {
@@ -55,77 +56,71 @@ Header? _readHeader(Reader reader) {
     return null;
   }
 
-  final majorType = x >> 5;
+  final majorType = x >> CborConstants.additionalInfoByteRange;
 
-  final additionalInfo = x & 0x1f;
+  final additionalInfo = x & CborConstants.additionalInfoBitMask;
 
   final Uint8List dataBytes;
-  if (additionalInfo < 24 || additionalInfo == 31) {
+  if (additionalInfo < CborAdditionalInfo.simpleValueHigh || additionalInfo == CborAdditionalInfo.breakStop) {
     reader.readUint8();
     dataBytes = Uint8List(0);
   } else {
     switch (additionalInfo) {
-      case 24:
-        if (reader.length < 2) {
+      case CborAdditionalInfo.simpleValueHigh:
+        if (reader.length < CborConstants.two) {
           return null;
         }
 
         reader.readUint8();
-        dataBytes = reader.readExactBytes(1)!;
+        dataBytes = reader.readExactBytes(CborConstants.one)!;
         break;
-      case 25:
-        if (reader.length < 3) {
+      case CborAdditionalInfo.halfPrecisionFloat:
+        if (reader.length < CborConstants.three) {
           return null;
         }
 
         reader.readUint8();
-        dataBytes = reader.readExactBytes(2)!;
+        dataBytes = reader.readExactBytes(CborConstants.two)!;
         break;
-      case 26:
-        if (reader.length < 5) {
+      case CborAdditionalInfo.singlePrecisionFloat:
+        if (reader.length < CborConstants.five) {
           return null;
         }
 
         reader.readUint8();
-        dataBytes = reader.readExactBytes(4)!;
+        dataBytes = reader.readExactBytes(CborConstants.four)!;
         break;
-      case 27:
-        if (reader.length < 9) {
+      case CborAdditionalInfo.doublePrecisionFloat:
+        if (reader.length < CborConstants.nine) {
           return null;
         }
 
         reader.readUint8();
-        dataBytes = reader.readExactBytes(8)!;
+        dataBytes = reader.readExactBytes(CborConstants.byteLength)!;
         break;
       default:
-        throw CborMalformedException(
-            'Invalid CBOR additional info', reader.offset);
+        throw CborMalformedException('Invalid CBOR additional info', reader.offset);
     }
   }
   return Header(majorType, additionalInfo, dataBytes);
 }
 
 class RawValue {
-  RawValue(
-    this.header, {
-    this.data = const [],
-    required this.start,
-    required this.end,
-  });
-
   final Header header;
   final List<int> data;
   final int start;
   final int end;
+
+  RawValue(this.header, {this.data = const [], required this.start, required this.end});
 }
 
 class _Builder {
-  _Builder(this.header, this.offset, this.reader);
-
   final Header header;
   final Reader reader;
   final int offset;
   Uint8Buffer bytes = Uint8Buffer();
+
+  _Builder(this.header, this.offset, this.reader);
 
   RawValue? poll() {
     if (bytes.length < header.arg.toInt()) {
@@ -142,12 +137,12 @@ class _Builder {
 }
 
 class RawSink extends ByteConversionSinkBase {
-  RawSink(this._sink);
-
   final Reader _reader = Reader();
   final Sink<RawValue> _sink;
 
   _Builder? _next;
+
+  RawSink(this._sink);
 
   @override
   void addSlice(List<int> chunk, int start, int end, bool isLast) {
@@ -172,8 +167,8 @@ class RawSink extends ByteConversionSinkBase {
         break;
       }
 
-      if (header.additionalInfo != 31) {
-        if (header.majorType == 2 || header.majorType == 3) {
+      if (header.additionalInfo != CborAdditionalInfo.breakStop) {
+        if (header.majorType == CborMajorType.byteString || header.majorType == CborMajorType.textString) {
           _next = _Builder(header, offset, _reader);
           continue;
         }

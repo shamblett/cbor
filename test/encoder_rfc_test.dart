@@ -61,29 +61,55 @@ void main() {
     });
 
     test('18446744073709551615', () {
-      final encoded =
-          cbor.encode(CborInt(BigInt.parse('18446744073709551615')));
+      final encoded = cbor.encode(
+        CborInt(BigInt.parse('18446744073709551615')),
+      );
       expect(encoded, [0x1b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
     });
 
     test('18446744073709551616', () {
-      final encoded =
-          cbor.encode(CborBigInt(BigInt.parse('18446744073709551616')));
-      expect(encoded,
-          [0xc2, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      final encoded = cbor.encode(
+        CborBigInt(BigInt.parse('18446744073709551616')),
+      );
+      expect(encoded, [
+        0xc2,
+        0x49,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+      ]);
     });
 
     test('-18446744073709551616', () {
-      final encoded =
-          cbor.encode(CborInt(BigInt.parse('-18446744073709551616')));
+      final encoded = cbor.encode(
+        CborInt(BigInt.parse('-18446744073709551616')),
+      );
       expect(encoded, [0x3b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
     });
 
     test('-18446744073709551617', () {
-      final encoded =
-          cbor.encode(CborInt(BigInt.parse('-18446744073709551617')));
-      expect(encoded,
-          [0xc3, 0x49, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+      final encoded = cbor.encode(
+        CborInt(BigInt.parse('-18446744073709551617')),
+      );
+      expect(encoded, [
+        0xc3,
+        0x49,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+      ]);
     });
 
     test('-1', () {
@@ -217,8 +243,9 @@ void main() {
     });
 
     test('Tag (0) Date Time', () {
-      final encoded =
-          cbor.encode(CborDateTimeString.fromString('2013-03-21T20:04:00Z'));
+      final encoded = cbor.encode(
+        CborDateTimeString.fromString('2013-03-21T20:04:00Z'),
+      );
       expect(encoded, [
         0xc0,
         0x74,
@@ -241,13 +268,14 @@ void main() {
         0x3a,
         0x30,
         0x30,
-        0x5a
+        0x5a,
       ]);
     });
 
     test('Tag (0) Date Time, parsed', () {
-      final encoded =
-          cbor.encode(CborDateTimeString(DateTime.utc(2013, 3, 21, 20, 4, 0)));
+      final encoded = cbor.encode(
+        CborDateTimeString(DateTime.utc(2013, 3, 21, 20, 4, 0)),
+      );
       expect(encoded, [
         0xc0,
         0x74,
@@ -270,33 +298,47 @@ void main() {
         0x3a,
         0x30,
         0x30,
-        0x5a
+        0x5a,
       ]);
     });
 
     test('Tag (1) Int', () {
-      final encoded =
-          cbor.encode(CborDateTimeInt.fromSecondsSinceEpoch(1363896240));
+      final encoded = cbor.encode(
+        CborDateTimeInt.fromSecondsSinceEpoch(1363896240),
+      );
       expect(encoded, [0xc1, 0x1a, 0x51, 0x4b, 0x67, 0xb0]);
     });
 
     test('Tag (1) Float', () {
-      final encoded =
-          cbor.encode(CborDateTimeFloat.fromSecondsSinceEpoch(1363896240.5));
+      final encoded = cbor.encode(
+        CborDateTimeFloat.fromSecondsSinceEpoch(1363896240.5),
+      );
 
-      expect(encoded,
-          [0xc1, 0xfb, 0x41, 0xd4, 0x52, 0xd9, 0xec, 0x20, 0x00, 0x00]);
+      expect(encoded, [
+        0xc1,
+        0xfb,
+        0x41,
+        0xd4,
+        0x52,
+        0xd9,
+        0xec,
+        0x20,
+        0x00,
+        0x00,
+      ]);
     });
 
     test('Tag (23) bytes', () {
       final encoded = cbor.encode(
-          CborBytes([1, 2, 3, 4], tags: [CborTag.expectedConversionToBase16]));
+        CborBytes([1, 2, 3, 4], tags: [CborTag.expectedConversionToBase16]),
+      );
       expect(encoded, [0xd7, 0x44, 0x01, 0x02, 0x03, 0x04]);
     });
 
     test('Tag (24) bytes', () {
       final encoded = cbor.encode(
-          CborBytes([100, 73, 69, 84, 70], tags: [CborTag.encodedCborData]));
+        CborBytes([100, 73, 69, 84, 70], tags: [CborTag.encodedCborData]),
+      );
       expect(encoded, [0xd8, 0x18, 0x45, 0x64, 0x49, 0x45, 0x54, 0x46]);
     });
 
@@ -327,7 +369,7 @@ void main() {
         0x2e,
         0x63,
         0x6f,
-        0x6d
+        0x6d,
       ]);
     });
 
@@ -349,7 +391,8 @@ void main() {
     });
 
     test('Mime Message', () {
-      const message = 'MIME-Version: 1.0'
+      const message =
+          'MIME-Version: 1.0'
           'X-Mailer: MailBee.NET 8.0.4.428'
           'Subject: This is the subject of a sample message'
           'To: user@example.com'
@@ -412,32 +455,27 @@ void main() {
     });
 
     test('Array 1,2,3', () {
-      final encoded = cbor.encode(CborList([
-        CborSmallInt(1),
-        CborSmallInt(2),
-        CborSmallInt(3),
-      ]));
+      final encoded = cbor.encode(
+        CborList([CborSmallInt(1), CborSmallInt(2), CborSmallInt(3)]),
+      );
       expect(encoded, [0x83, 0x01, 0x02, 0x03]);
     });
 
     test('Array 1,[2,3],[4,5]', () {
-      final encoded = cbor.encode(CborList([
-        CborSmallInt(1),
+      final encoded = cbor.encode(
         CborList([
-          CborSmallInt(2),
-          CborSmallInt(3),
+          CborSmallInt(1),
+          CborList([CborSmallInt(2), CborSmallInt(3)]),
+          CborList([CborSmallInt(4), CborSmallInt(5)]),
         ]),
-        CborList([
-          CborSmallInt(4),
-          CborSmallInt(5),
-        ]),
-      ]));
+      );
       expect(encoded, [0x83, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05]);
     });
 
     test('Array 1..25', () {
       final encoded = cbor.encode(
-          CborList(List.generate(25, (index) => CborSmallInt(index + 1))));
+        CborList(List.generate(25, (index) => CborSmallInt(index + 1))),
+      );
       expect(encoded, [
         0x98,
         0x19,
@@ -467,7 +505,7 @@ void main() {
         0x18,
         0x18,
         0x18,
-        0x19
+        0x19,
       ]);
     });
 
@@ -477,39 +515,45 @@ void main() {
     });
 
     test('{1:2,3:4}', () {
-      final encoded = cbor.encode(CborMap({
-        CborSmallInt(1): CborSmallInt(2),
-        CborSmallInt(3): CborSmallInt(4),
-      }));
+      final encoded = cbor.encode(
+        CborMap({
+          CborSmallInt(1): CborSmallInt(2),
+          CborSmallInt(3): CborSmallInt(4),
+        }),
+      );
       expect(encoded, [0xa2, 0x01, 0x02, 0x03, 0x04]);
     });
 
     test('{a:1,b:[2,3]}', () {
-      final encoded = cbor.encode(CborMap({
-        CborString('a'): CborSmallInt(1),
-        CborString('b'): CborList([CborSmallInt(2), CborSmallInt(3)]),
-      }));
+      final encoded = cbor.encode(
+        CborMap({
+          CborString('a'): CborSmallInt(1),
+          CborString('b'): CborList([CborSmallInt(2), CborSmallInt(3)]),
+        }),
+      );
       expect(encoded, [0xa2, 0x61, 0x61, 0x01, 0x061, 0x62, 0x82, 0x02, 0x03]);
     });
 
     test('[a, {b:c}]', () {
-      final encoded = cbor.encode(CborList([
-        CborString('a'),
-        CborMap({
-          CborString('b'): CborString('c'),
-        }),
-      ]));
+      final encoded = cbor.encode(
+        CborList([
+          CborString('a'),
+          CborMap({CborString('b'): CborString('c')}),
+        ]),
+      );
       expect(encoded, [0x82, 0x61, 0x61, 0xa1, 0x61, 0x62, 0x61, 0x63]);
     });
 
     test('{"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"}', () {
-      final encoded = cbor.encode(CborMap({
-        CborString('a'): CborString('A'),
-        CborString('b'): CborString('B'),
-        CborString('c'): CborString('C'),
-        CborString('d'): CborString('D'),
-        CborString('e'): CborString('E')
-      }));
+      final encoded = cbor.encode(
+        CborMap({
+          CborString('a'): CborString('A'),
+          CborString('b'): CborString('B'),
+          CborString('c'): CborString('C'),
+          CborString('d'): CborString('D'),
+          CborString('e'): CborString('E'),
+        }),
+      );
       expect(encoded, [
         0xa5,
         0x61,
@@ -531,21 +575,24 @@ void main() {
         0x61,
         0x65,
         0x61,
-        0x45
+        0x45,
       ]);
     });
 
     test("(_ h'0102', h'030405')", () {
-      final encoded = cbor.encode(CborEncodeIndefiniteLengthBytes([
-        [0x1, 0x2],
-        [0x3, 0x4, 0x5],
-      ]));
+      final encoded = cbor.encode(
+        CborEncodeIndefiniteLengthBytes([
+          [0x1, 0x2],
+          [0x3, 0x4, 0x5],
+        ]),
+      );
       expect(encoded, [0x5f, 0x42, 0x01, 0x02, 0x43, 0x03, 0x04, 0x05, 0xff]);
     });
 
     test('(_ "strea", "ming")', () {
-      final encoded =
-          cbor.encode(CborEncodeIndefiniteLengthString(['strea', 'ming']));
+      final encoded = cbor.encode(
+        CborEncodeIndefiniteLengthString(['strea', 'ming']),
+      );
       expect(encoded, [
         0x7f,
         0x65,
@@ -569,55 +616,63 @@ void main() {
     });
 
     test('[_ 1, [2, 3], [_4, 5]', () {
-      final encoded = cbor.encode(CborEncodeIndefiniteLengthList(CborList([
-        CborSmallInt(1),
-        CborList([
-          CborSmallInt(2),
-          CborSmallInt(3),
-        ]),
-        CborEncodeIndefiniteLengthList(CborList([
-          CborSmallInt(4),
-          CborSmallInt(5),
-        ])),
-      ])));
-      expect(encoded,
-          [0x9f, 0x01, 0x82, 0x02, 0x03, 0x9f, 0x04, 0x05, 0xff, 0xff]);
+      final encoded = cbor.encode(
+        CborEncodeIndefiniteLengthList(
+          CborList([
+            CborSmallInt(1),
+            CborList([CborSmallInt(2), CborSmallInt(3)]),
+            CborEncodeIndefiniteLengthList(
+              CborList([CborSmallInt(4), CborSmallInt(5)]),
+            ),
+          ]),
+        ),
+      );
+      expect(encoded, [
+        0x9f,
+        0x01,
+        0x82,
+        0x02,
+        0x03,
+        0x9f,
+        0x04,
+        0x05,
+        0xff,
+        0xff,
+      ]);
     });
 
     test('[_ 1, [2, 3], [4, 5]]', () {
-      final encoded = cbor.encode(CborEncodeIndefiniteLengthList(CborList([
-        CborSmallInt(1),
-        CborList([
-          CborSmallInt(2),
-          CborSmallInt(3),
-        ]),
-        CborList([
-          CborSmallInt(4),
-          CborSmallInt(5),
-        ]),
-      ])));
+      final encoded = cbor.encode(
+        CborEncodeIndefiniteLengthList(
+          CborList([
+            CborSmallInt(1),
+            CborList([CborSmallInt(2), CborSmallInt(3)]),
+            CborList([CborSmallInt(4), CborSmallInt(5)]),
+          ]),
+        ),
+      );
       expect(encoded, [0x9f, 0x01, 0x82, 0x02, 0x03, 0x82, 0x04, 0x05, 0xff]);
     });
 
     test('[1, [_ 2, 3], [4, 5]', () {
-      final encoded = cbor.encode(CborList([
-        CborSmallInt(1),
-        CborEncodeIndefiniteLengthList(CborList([
-          CborSmallInt(2),
-          CborSmallInt(3),
-        ])),
+      final encoded = cbor.encode(
         CborList([
-          CborSmallInt(4),
-          CborSmallInt(5),
+          CborSmallInt(1),
+          CborEncodeIndefiniteLengthList(
+            CborList([CborSmallInt(2), CborSmallInt(3)]),
+          ),
+          CborList([CborSmallInt(4), CborSmallInt(5)]),
         ]),
-      ]));
+      );
       expect(encoded, [0x83, 0x01, 0x9f, 0x02, 0x03, 0xff, 0x82, 0x04, 0x05]);
     });
 
     test('Indefinite Array [_1..25]', () {
-      final encoded = cbor.encode(CborEncodeIndefiniteLengthList(CborList(
-        List.generate(25, (index) => CborSmallInt(index + 1)),
-      )));
+      final encoded = cbor.encode(
+        CborEncodeIndefiniteLengthList(
+          CborList(List.generate(25, (index) => CborSmallInt(index + 1))),
+        ),
+      );
       expect(encoded, [
         0x9f,
         0x01,
@@ -652,29 +707,52 @@ void main() {
     });
 
     test('{_ "a":1, "b":[_ 2, 3]}', () {
-      final encoded = cbor.encode(CborEncodeIndefiniteLengthMap(CborMap({
-        CborString('a'): CborSmallInt(1),
-        CborString('b'): CborEncodeIndefiniteLengthList(
-            CborList([CborSmallInt(2), CborSmallInt(3)])),
-      })));
-      expect(encoded,
-          [0xbf, 0x61, 0x61, 0x01, 0x61, 0x62, 0x9f, 0x02, 0x03, 0xff, 0xff]);
+      final encoded = cbor.encode(
+        CborEncodeIndefiniteLengthMap(
+          CborMap({
+            CborString('a'): CborSmallInt(1),
+            CborString('b'): CborEncodeIndefiniteLengthList(
+              CborList([CborSmallInt(2), CborSmallInt(3)]),
+            ),
+          }),
+        ),
+      );
+      expect(encoded, [
+        0xbf,
+        0x61,
+        0x61,
+        0x01,
+        0x61,
+        0x62,
+        0x9f,
+        0x02,
+        0x03,
+        0xff,
+        0xff,
+      ]);
     });
 
     test('["a", {_ "b":"c"}', () {
-      final encoded = cbor.encode(CborList([
-        CborString('a'),
-        CborEncodeIndefiniteLengthMap(
-            CborMap({CborString('b'): CborString('c')})),
-      ]));
+      final encoded = cbor.encode(
+        CborList([
+          CborString('a'),
+          CborEncodeIndefiniteLengthMap(
+            CborMap({CborString('b'): CborString('c')}),
+          ),
+        ]),
+      );
       expect(encoded, [0x82, 0x61, 0x61, 0xbf, 0x61, 0x62, 0x61, 0x63, 0xff]);
     });
 
     test('{_ "Fun": true, "Amt": -2}', () {
-      final encoded = cbor.encode(CborEncodeIndefiniteLengthMap(CborMap({
-        CborString('Fun'): CborBool(true),
-        CborString('Amt'): CborSmallInt(-2)
-      })));
+      final encoded = cbor.encode(
+        CborEncodeIndefiniteLengthMap(
+          CborMap({
+            CborString('Fun'): CborBool(true),
+            CborString('Amt'): CborSmallInt(-2),
+          }),
+        ),
+      );
       expect(encoded, [
         0xbf,
         0x63,
@@ -687,7 +765,7 @@ void main() {
         0x6d,
         0x74,
         0x21,
-        0xff
+        0xff,
       ]);
     });
   });
