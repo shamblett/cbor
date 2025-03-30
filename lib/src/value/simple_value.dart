@@ -16,17 +16,23 @@ import 'internal.dart';
 /// additional content.
 
 abstract class CborSimpleValue extends CborValue {
+  int get simpleValue;
+
   const factory CborSimpleValue(int simpleValue, {List<int> tags}) =
       _CborSimpleValueImpl;
-
-  int get simpleValue;
 }
 
 class _CborSimpleValueImpl with CborValueMixin implements CborSimpleValue {
-  const _CborSimpleValueImpl(this.simpleValue, {this.tags = const []});
-
   @override
   final int simpleValue;
+
+  @override
+  final List<int> tags;
+
+  @override
+  int get hashCode => Object.hash(simpleValue, Object.hashAll(tags));
+
+  const _CborSimpleValueImpl(this.simpleValue, {this.tags = const []});
 
   @override
   String toString() => simpleValue.toString();
@@ -35,10 +41,6 @@ class _CborSimpleValueImpl with CborValueMixin implements CborSimpleValue {
       other is CborSimpleValue &&
       tags.equals(other.tags) &&
       other.simpleValue == simpleValue;
-  @override
-  int get hashCode => Object.hash(simpleValue, Object.hashAll(tags));
-  @override
-  final List<int> tags;
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -49,7 +51,7 @@ class _CborSimpleValueImpl with CborValueMixin implements CborSimpleValue {
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(7, Arg.int(simpleValue));
+    sink.addHeaderInfo(CborMajorType.simpleFloat, Arg.int(simpleValue));
   }
 
   @override
@@ -64,7 +66,8 @@ abstract class CborNull extends CborSimpleValue {
 }
 
 class _CborNullImpl extends _CborSimpleValueImpl implements CborNull {
-  const _CborNullImpl({List<int> tags = const []}) : super(22, tags: tags);
+  const _CborNullImpl({List<int> tags = const []})
+    : super(CborAdditionalInfo.simpleNull, tags: tags);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -83,7 +86,8 @@ abstract class CborUndefined extends CborSimpleValue {
 }
 
 class _CborUndefinedImpl extends _CborSimpleValueImpl implements CborUndefined {
-  const _CborUndefinedImpl({List<int> tags = const []}) : super(23, tags: tags);
+  const _CborUndefinedImpl({List<int> tags = const []})
+    : super(CborAdditionalInfo.simpleUndefined, tags: tags);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -98,14 +102,20 @@ class _CborUndefinedImpl extends _CborSimpleValueImpl implements CborUndefined {
 
 /// A CBOR boolean value.
 abstract class CborBool extends CborSimpleValue {
-  const factory CborBool(bool value, {List<int> tags}) = _CborBoolImpl;
-
   bool get value;
+
+  const factory CborBool(bool value, {List<int> tags}) = _CborBoolImpl;
 }
 
 class _CborBoolImpl extends _CborSimpleValueImpl implements CborBool {
+  @override
+  final bool value;
+
   const _CborBoolImpl(this.value, {List<int> tags = const []})
-      : super(!value ? 20 : 21, tags: tags);
+    : super(
+        !value ? CborAdditionalInfo.simpleFalse : CborAdditionalInfo.simpleTrue,
+        tags: tags,
+      );
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -116,7 +126,4 @@ class _CborBoolImpl extends _CborSimpleValueImpl implements CborBool {
   Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
     return value;
   }
-
-  @override
-  final bool value;
 }

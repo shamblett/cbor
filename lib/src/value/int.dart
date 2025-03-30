@@ -9,6 +9,7 @@ import 'package:cbor/cbor.dart';
 
 import '../encoder/sink.dart';
 import 'package:collection/collection.dart';
+import '../constants.dart';
 import '../utils/arg.dart';
 import 'internal.dart';
 
@@ -26,11 +27,7 @@ abstract class CborInt extends CborValue {
 
     final bitLength = value.isNegative ? (~value).bitLength : value.bitLength;
 
-    if (bitLength <= 64) {
-      return _LargeInt(value, tags ?? const []);
-    } else {
-      return CborBigInt(value, tags);
-    }
+    return bitLength <= CborConstants.bitsPerDoubleWord ? _LargeInt(value, tags ?? const []) : CborBigInt(value, tags);
   }
 
   /// Return the value as a [BigInt].
@@ -44,32 +41,32 @@ abstract class CborInt extends CborValue {
 
 /// A CBOR integer which can be represented losslessly as [int].
 abstract class CborSmallInt extends CborInt {
-  const factory CborSmallInt(int value, {List<int> tags}) = _CborSmallIntImpl;
-
   int get value;
+
+  const factory CborSmallInt(int value, {List<int> tags}) = _CborSmallIntImpl;
 }
 
 class _CborSmallIntImpl with CborValueMixin implements CborSmallInt {
-  const _CborSmallIntImpl(this.value, {this.tags = const []});
-
   @override
   final int value;
 
   @override
-  String toString() => value.toString();
-  @override
-  bool operator ==(Object other) =>
-      other is CborSmallInt &&
-      tags.equals(other.tags) &&
-      value == other.toInt();
+  final List<int> tags;
+
   @override
   int get hashCode => Object.hash(value, Object.hashAll(tags));
+
+  const _CborSmallIntImpl(this.value, {this.tags = const []});
+
+  @override
+  String toString() => value.toString();
+  @override
+  bool operator ==(Object other) => other is CborSmallInt && tags.equals(other.tags) && value == other.toInt();
+
   @override
   BigInt toBigInt() => BigInt.from(value);
   @override
   int toInt() => value;
-  @override
-  final List<int> tags;
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -78,11 +75,9 @@ class _CborSmallIntImpl with CborValueMixin implements CborSmallInt {
 
   @override
   Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
-    if (value.bitLength < 53) {
-      return value;
-    } else {
-      return CborBigInt(BigInt.from(value)).toJsonInternal(cyclicCheck, o);
-    }
+    return value.bitLength < CborConstants.jsonBitLength
+        ? value
+        : CborBigInt(BigInt.from(value)).toJsonInternal(cyclicCheck, o);
   }
 
   @override
@@ -98,25 +93,25 @@ class _CborSmallIntImpl with CborValueMixin implements CborSmallInt {
 }
 
 class _LargeInt with CborValueMixin implements CborInt {
-  _LargeInt(this.value, this.tags);
-
   final BigInt value;
+
+  @override
+  final List<int> tags;
+
+  @override
+  int get hashCode => Object.hash(value, Object.hashAll(tags));
+
+  _LargeInt(this.value, this.tags);
 
   @override
   String toString() => value.toString();
   @override
-  bool operator ==(Object other) =>
-      other is CborInt &&
-      tags.equals(other.tags) &&
-      toBigInt() == other.toBigInt();
-  @override
-  int get hashCode => Object.hash(value, Object.hashAll(tags));
+  bool operator ==(Object other) => other is CborInt && tags.equals(other.tags) && toBigInt() == other.toBigInt();
+
   @override
   BigInt toBigInt() => value;
   @override
   int toInt() => value.toInt();
-  @override
-  final List<int> tags;
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -142,39 +137,23 @@ class _LargeInt with CborValueMixin implements CborInt {
 
 /// A CBOR datetieme encoded as seconds since epoch.
 abstract class CborDateTimeInt extends CborSmallInt implements CborDateTime {
-  factory CborDateTimeInt(DateTime value, {List<int> tags}) =
-      _CborDateTimeIntImpl;
+  factory CborDateTimeInt(DateTime value, {List<int> tags}) = _CborDateTimeIntImpl;
 
-  factory CborDateTimeInt.fromSecondsSinceEpoch(int value, {List<int> tags}) =
-      _CborDateTimeIntImpl.fromSecondsSinceEpoch;
+  factory CborDateTimeInt.fromSecondsSinceEpoch(int value, {List<int> tags}) = _CborDateTimeIntImpl.fromSecondsSinceEpoch;
 }
 
 /// A CBOR datetieme encoded as seconds since epoch.
-class _CborDateTimeIntImpl extends _CborSmallIntImpl
-    implements CborDateTimeInt {
-  _CborDateTimeIntImpl(
-    DateTime value, {
-    List<int> tags = const [CborTag.epochDateTime],
-  }) : super(
-          (value.millisecondsSinceEpoch / 1000).round(),
-          tags: tags,
-        );
+class _CborDateTimeIntImpl extends _CborSmallIntImpl implements CborDateTimeInt {
+  _CborDateTimeIntImpl(DateTime value, {List<int> tags = const [CborTag.epochDateTime]})
+    : super((value.millisecondsSinceEpoch / CborConstants.milliseconds).round(), tags: tags);
 
-  const _CborDateTimeIntImpl.fromSecondsSinceEpoch(
-    super.value, {
-    super.tags = const [CborTag.epochDateTime],
-  });
+  const _CborDateTimeIntImpl.fromSecondsSinceEpoch(super.value, {super.tags = const [CborTag.epochDateTime]});
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    if (o.parseDateTime) {
-      return toDateTime();
-    } else {
-      return value;
-    }
+    return o.parseDateTime ? toDateTime() : value;
   }
 
   @override
-  DateTime toDateTime() =>
-      DateTime.fromMillisecondsSinceEpoch(1000 * value, isUtc: true);
+  DateTime toDateTime() => DateTime.fromMillisecondsSinceEpoch(value * CborConstants.milliseconds, isUtc: true);
 }

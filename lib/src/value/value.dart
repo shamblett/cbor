@@ -5,11 +5,14 @@
  * Copyright :  S.Hamblett
  */
 
+// dart format width=123
+
 import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
 import 'package:meta/meta.dart';
 
+import '../constants.dart';
 import '../encoder/sink.dart';
 import 'internal.dart';
 
@@ -21,11 +24,39 @@ export 'map.dart';
 export 'simple_value.dart';
 export 'string.dart';
 
-/// Hint for the content of something.
-@sealed
-class CborTag {
-  CborTag._();
+/// Jump table for initial byte values can be found <a href="https://www.rfc-editor.org/rfc/rfc8949.html#jumptable">here</a>.
+/// Maybe useful for code maintainers.
 
+/// Major types
+sealed class CborMajorType {
+  static const int uint = 0; // unsigned integer N
+  static const int nint = 1; // negative integer -1-N
+  static const int byteString = 2; // byte string
+  static const int textString = 3; // text string
+  static const int array = 4; // array
+  static const int map = 5; // map
+  static const int tag = 6; // tag of number N
+  static const int simpleFloat = 7; // simple/float
+
+  CborMajorType._();
+}
+
+/// Additional Info
+sealed class CborAdditionalInfo {
+  static const simpleValueLow = 23; // Simple value (value 0..23)
+  static const simpleValueHigh = 24; // Simple value (value 32..255 in following byte)
+  static const halfPrecisionFloat = 25; // IEEE 754 Half-Precision Float (16 bits follow)
+  static const singlePrecisionFloat = 26; // IEEE 754 Single-Precision Float (32 bits follow)
+  static const doublePrecisionFloat = 27; // IEEE 754 Double-Precision Float (64 bits follow)
+  static const breakStop = 31; // Break" stop code for indefinite-length items
+  static const simpleFalse = 20;
+  static const simpleTrue = 21;
+  static const simpleNull = 22;
+  static const simpleUndefined = 23;
+}
+
+/// Hint for the content of something.
+sealed class CborTag {
   static const int dateTimeString = 0;
   static const int epochDateTime = 1;
   static const int positiveBignum = 2;
@@ -43,6 +74,8 @@ class CborTag {
   static const int regex = 35;
   static const int mime = 36;
   static const int selfDescribeCbor = 55799;
+
+  CborTag._();
 }
 
 const kCborDefiniteLengthThreshold = 256;
@@ -50,8 +83,10 @@ const kCborDefiniteLengthThreshold = 256;
 enum CborLengthType { definite, indefinite, auto }
 
 /// A CBOR value.
-@sealed
 abstract class CborValue {
+  /// Additional tags provided to the value.
+  List<int> get tags;
+
   factory CborValue._fromObject(
     Object? object, {
     required bool dateTimeEpoch,
@@ -77,12 +112,10 @@ abstract class CborValue {
     } else if (object is DateTime) {
       if (!dateTimeEpoch) {
         return CborDateTimeString(object);
-      } else if (object.millisecondsSinceEpoch % 1000 == 0) {
-        return CborDateTimeInt.fromSecondsSinceEpoch(
-            object.millisecondsSinceEpoch ~/ 1000);
+      } else if (object.millisecondsSinceEpoch % CborConstants.milliseconds == 0) {
+        return CborDateTimeInt.fromSecondsSinceEpoch(object.millisecondsSinceEpoch ~/ CborConstants.milliseconds);
       } else {
-        return CborDateTimeFloat.fromSecondsSinceEpoch(
-            object.millisecondsSinceEpoch / 1000);
+        return CborDateTimeFloat.fromSecondsSinceEpoch(object.millisecondsSinceEpoch / CborConstants.milliseconds);
       }
     } else if (object is Uri) {
       return CborUri(object);
@@ -93,12 +126,11 @@ abstract class CborValue {
         throw CborCyclicError(object);
       }
 
-      final value = CborList.of(object.map((v) => CborValue._fromObject(
-            v,
-            dateTimeEpoch: dateTimeEpoch,
-            toEncodable: toEncodable,
-            cycleCheck: cycleCheck,
-          )));
+      final value = CborList.of(
+        object.map(
+          (v) => CborValue._fromObject(v, dateTimeEpoch: dateTimeEpoch, toEncodable: toEncodable, cycleCheck: cycleCheck),
+        ),
+      );
 
       cycleCheck.remove(object);
 
@@ -110,22 +142,24 @@ abstract class CborValue {
         throw CborCyclicError(object);
       }
 
-      final value = CborMap.fromEntries(object.entries.map(
-        (entry) => MapEntry(
-          CborValue._fromObject(
-            entry.key,
-            dateTimeEpoch: dateTimeEpoch,
-            toEncodable: toEncodable,
-            cycleCheck: cycleCheck,
-          ),
-          CborValue._fromObject(
-            entry.value,
-            dateTimeEpoch: dateTimeEpoch,
-            toEncodable: toEncodable,
-            cycleCheck: cycleCheck,
+      final value = CborMap.fromEntries(
+        object.entries.map(
+          (entry) => MapEntry(
+            CborValue._fromObject(
+              entry.key,
+              dateTimeEpoch: dateTimeEpoch,
+              toEncodable: toEncodable,
+              cycleCheck: cycleCheck,
+            ),
+            CborValue._fromObject(
+              entry.value,
+              dateTimeEpoch: dateTimeEpoch,
+              toEncodable: toEncodable,
+              cycleCheck: cycleCheck,
+            ),
           ),
         ),
-      ));
+      );
 
       cycleCheck.remove(object);
 
@@ -176,19 +210,8 @@ abstract class CborValue {
   ///
   /// If [toEncodable] is omitted, it defaults to a function that returns the
   /// result of calling `.toCbor()` on the unencodable object.
-  factory CborValue(
-    Object? object, {
-    bool dateTimeEpoch = false,
-    Object? Function(dynamic object)? toEncodable,
-  }) =>
-      CborValue._fromObject(
-        object,
-        dateTimeEpoch: dateTimeEpoch,
-        toEncodable: toEncodable ?? (object) => object.toCbor(),
-      );
-
-  /// Additional tags provided to the value.
-  List<int> get tags;
+  factory CborValue(Object? object, {bool dateTimeEpoch = false, Object? Function(dynamic object)? toEncodable}) =>
+      CborValue._fromObject(object, dateTimeEpoch: dateTimeEpoch, toEncodable: toEncodable ?? (object) => object.toCbor());
 
   /// Transforms the CborValue into a Dart object.
   ///
@@ -235,10 +258,7 @@ abstract class CborValue {
   ///
   /// If the keys for a map are not strings, they are encoded recursively
   /// as JSON, and the string is used.
-  Object? toJson({
-    Object? substituteValue,
-    bool allowMalformedUtf8 = false,
-  });
+  Object? toJson({Object? substituteValue, bool allowMalformedUtf8 = false});
 
   @internal
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o);

@@ -32,16 +32,10 @@ void main() {
       decoded,
       CborList([
         CborMap({
-          CborSmallInt(1): CborMap({
-            CborSmallInt(1): CborSmallInt(1),
-          }),
-          CborSmallInt(3): CborMap({
-            CborSmallInt(1): CborSmallInt(1),
-          }),
-          CborSmallInt(12): CborMap({
-            CborSmallInt(1): CborSmallInt(1),
-          }),
-        })
+          CborSmallInt(1): CborMap({CborSmallInt(1): CborSmallInt(1)}),
+          CborSmallInt(3): CborMap({CborSmallInt(1): CborSmallInt(1)}),
+          CborSmallInt(12): CborMap({CborSmallInt(1): CborSmallInt(1)}),
+        }),
       ]),
     );
   });
@@ -70,16 +64,12 @@ void main() {
       decoded,
       CborList([
         CborMap({
-          CborSmallInt(1): CborMap({
-            CborSmallInt(1): CborSmallInt(2),
-          }),
+          CborSmallInt(1): CborMap({CborSmallInt(1): CborSmallInt(2)}),
           CborSmallInt(3): CborMap({
             CborSmallInt(1): CborList([CborSmallInt(1)]),
           }),
-          CborSmallInt(12): CborMap({
-            CborSmallInt(1): CborSmallInt(2),
-          }),
-        })
+          CborSmallInt(12): CborMap({CborSmallInt(1): CborSmallInt(2)}),
+        }),
       ]),
     );
   });

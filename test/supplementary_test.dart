@@ -13,29 +13,36 @@ import 'package:test/test.dart';
 void main() {
   group('Known patterns', () {
     test('Pattern 1  -> ', () {
-      final encoded = cbor.encode(CborMap({
-        CborString('p16'): CborSmallInt(16),
-        CborString('uni'): CborString('\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)'),
-        CborString('n1'): CborSmallInt(-1),
-        CborString('ascii'): CborString('hello'),
-        CborString('nil'): CborNull(),
-        CborString('empty_arr'): CborList([]),
-        CborString('p65535'): CborSmallInt(65535),
-        CborString('bin'): CborBytes([0x31, 0x32, 0x55]),
-        CborString('n2G'): CborSmallInt(-2147483648),
-        CborString('p1'): CborSmallInt(1),
-        CborString('n65535'): CborSmallInt(-65535),
-        CborString('n16'): CborSmallInt(-16),
-        CborString('zero'): CborSmallInt(0),
-        CborString('arr'):
-            CborList([CborSmallInt(1), CborSmallInt(2), CborSmallInt(3)]),
-        CborString('obj'): CborMap({CborString('foo'): CborString('bar')}),
-        CborString('bfalse'): CborBool(false),
-        CborString('p255'): CborSmallInt(255),
-        CborString('p2G'): CborSmallInt(2147483648),
-        CborString('n255'): CborSmallInt(-255),
-        CborString('btrue'): CborBool(true),
-      }));
+      final encoded = cbor.encode(
+        CborMap({
+          CborString('p16'): CborSmallInt(16),
+          CborString('uni'): CborString(
+            '\u901A\u8A0A\u9023\u63A5\u57E0 (COM1)',
+          ),
+          CborString('n1'): CborSmallInt(-1),
+          CborString('ascii'): CborString('hello'),
+          CborString('nil'): CborNull(),
+          CborString('empty_arr'): CborList([]),
+          CborString('p65535'): CborSmallInt(65535),
+          CborString('bin'): CborBytes([0x31, 0x32, 0x55]),
+          CborString('n2G'): CborSmallInt(-2147483648),
+          CborString('p1'): CborSmallInt(1),
+          CborString('n65535'): CborSmallInt(-65535),
+          CborString('n16'): CborSmallInt(-16),
+          CborString('zero'): CborSmallInt(0),
+          CborString('arr'): CborList([
+            CborSmallInt(1),
+            CborSmallInt(2),
+            CborSmallInt(3),
+          ]),
+          CborString('obj'): CborMap({CborString('foo'): CborString('bar')}),
+          CborString('bfalse'): CborBool(false),
+          CborString('p255'): CborSmallInt(255),
+          CborString('p2G'): CborSmallInt(2147483648),
+          CborString('n255'): CborSmallInt(-255),
+          CborString('btrue'): CborBool(true),
+        }),
+      );
 
       expect(encoded, [
         0xB4,
@@ -213,7 +220,7 @@ void main() {
         0x72,
         0x75,
         0x65,
-        0xF5
+        0xF5,
       ]);
     });
   });
@@ -228,10 +235,7 @@ void main() {
     });
 
     test('Premature termination', () {
-      expect(
-        () => cbor.decode([0x44, 0x01, 0x02, 0x03]),
-        throwsException,
-      );
+      expect(() => cbor.decode([0x44, 0x01, 0x02, 0x03]), throwsException);
     });
 
     test('Cyclic reference', () {
@@ -257,20 +261,15 @@ void main() {
   group('constructor', () {
     test('Test 1', () {
       expect(
-        CborValue(
-          [
-            {'a': 'b'},
-            null,
-            [1, 2, 3],
-            Uint8List.fromList([1, 2, 3]),
-            DateTime.fromMillisecondsSinceEpoch(2000),
-          ],
-          dateTimeEpoch: true,
-        ),
+        CborValue([
+          {'a': 'b'},
+          null,
+          [1, 2, 3],
+          Uint8List.fromList([1, 2, 3]),
+          DateTime.fromMillisecondsSinceEpoch(2000),
+        ], dateTimeEpoch: true),
         CborList([
-          CborMap({
-            CborString('a'): CborString('b'),
-          }),
+          CborMap({CborString('a'): CborString('b')}),
           CborNull(),
           CborList([CborSmallInt(1), CborSmallInt(2), CborSmallInt(3)]),
           CborBytes([1, 2, 3]),
@@ -283,23 +282,21 @@ void main() {
   group('toObject', () {
     test('Test 1', () {
       expect(
-          CborValue(
-            [
-              {'a': 'b'},
-              null,
-              [1, 2, 3],
-              Uint8List.fromList([1, 2, 3]),
-              DateTime.fromMillisecondsSinceEpoch(2000),
-            ],
-            dateTimeEpoch: true,
-          ).toObject(),
-          [
-            {'a': 'b'},
-            null,
-            [1, 2, 3],
-            [1, 2, 3],
-            DateTime.fromMillisecondsSinceEpoch(2000).toUtc(),
-          ]);
+        CborValue([
+          {'a': 'b'},
+          null,
+          [1, 2, 3],
+          Uint8List.fromList([1, 2, 3]),
+          DateTime.fromMillisecondsSinceEpoch(2000),
+        ], dateTimeEpoch: true).toObject(),
+        [
+          {'a': 'b'},
+          null,
+          [1, 2, 3],
+          [1, 2, 3],
+          DateTime.fromMillisecondsSinceEpoch(2000).toUtc(),
+        ],
+      );
     });
   });
 

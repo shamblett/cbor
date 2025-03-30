@@ -11,90 +11,77 @@ import 'package:collection/collection.dart';
 import 'package:ieee754/ieee754.dart';
 
 import '../utils/utils.dart';
+import '../constants.dart';
 import 'stage2.dart';
 
 class CborSink implements Sink<RawValueTagged> {
-  CborSink(this._sink);
-
   final Sink<CborValue> _sink;
   _Builder? _next;
+
+  CborSink(this._sink);
 
   @override
   void add(RawValueTagged data) {
     final _Builder builder;
     switch (data.header.majorType) {
-      case 0: // uint
-      case 1: // negative
+      case CborMajorType.uint:
+      case CborMajorType.nint:
         builder = _ValueBuilder(_createInt(data));
         break;
 
-      case 2: // bytes
-        if (data.header.arg.isIndefiniteLength) {
-          builder = _IndefiniteLengthByteBuilder(data);
-        } else {
-          builder =
-              _ValueBuilder(_createBytes(data.data, data.offset, data.tags));
-        }
+      case CborMajorType.byteString:
+        builder =
+            data.header.arg.isIndefiniteLength
+                ? _IndefiniteLengthByteBuilder(data)
+                : _ValueBuilder(_createBytes(data.data, data.offset, data.tags));
         break;
 
-      case 3: // string
-        if (data.header.arg.isIndefiniteLength) {
-          builder = _IndefiniteLengthStringBuilder(data);
-        } else {
-          builder = _ValueBuilder(_createString(
-            data.data,
-            data.offset,
-            data.tags,
-          ));
-        }
+      case CborMajorType.textString:
+        builder =
+            data.header.arg.isIndefiniteLength
+                ? _IndefiniteLengthStringBuilder(data)
+                : _ValueBuilder(_createString(data.data, data.offset, data.tags));
         break;
 
-      case 4: // array
-        if (data.header.arg.isIndefiniteLength) {
-          builder = _IndefiniteLengthListBuilder(data);
-        } else {
-          builder = _ListBuilder(data);
-        }
+      case CborMajorType.array:
+        builder = data.header.arg.isIndefiniteLength ? _IndefiniteLengthListBuilder(data) : _ListBuilder(data);
         break;
 
-      case 5: // map
-        if (data.header.arg.isIndefiniteLength) {
-          builder = _IndefiniteLengthMapBuilder(data);
-        } else {
-          builder = _MapBuilder(data);
-        }
+      case CborMajorType.map:
+        builder = data.header.arg.isIndefiniteLength ? _IndefiniteLengthMapBuilder(data) : _MapBuilder(data);
         break;
 
-      case 7:
+      case CborMajorType.tag:
+        throw Error();
+
+      case CborMajorType.simpleFloat:
         switch (data.header.additionalInfo) {
-          case 20:
-          case 21:
+          case CborAdditionalInfo.simpleFalse:
+          case CborAdditionalInfo.simpleTrue:
             builder = _ValueBuilder(_createBool(data));
             break;
-          case 22:
+          case CborAdditionalInfo.simpleNull:
             builder = _ValueBuilder(_createNull(data));
             break;
-          case 23:
+          case CborAdditionalInfo.simpleUndefined:
             builder = _ValueBuilder(_createUndefined(data));
             break;
 
-          case 25:
-          case 26:
-          case 27:
+          case CborAdditionalInfo.halfPrecisionFloat:
+          case CborAdditionalInfo.singlePrecisionFloat:
+          case CborAdditionalInfo.doublePrecisionFloat:
             builder = _ValueBuilder(_createFloat(data));
             break;
 
-          case 31:
+          case CborAdditionalInfo.breakStop:
             builder = _ValueBuilder(const Break());
             break;
 
           default:
-            if (data.header.additionalInfo <= 24) {
-              builder = _ValueBuilder(
-                  CborSimpleValue(data.header.arg.toInt(), tags: data.tags));
+            if (data.header.additionalInfo <= CborAdditionalInfo.simpleValueHigh) {
+              builder = _ValueBuilder(CborSimpleValue(data.header.arg.toInt(), tags: data.tags));
             } else {
-              throw CborMalformedException(
-                  'Reserved simple value', data.offset);
+              throw CborMalformedException('Reserved simple value', data.offset);
             }
 
             break;
@@ -102,7 +89,7 @@ class CborSink implements Sink<RawValueTagged> {
 
         break;
 
-      default: // tags
+      default:
         throw Error();
     }
 
@@ -140,8 +127,7 @@ class _CborUnexpectedBreakException extends CborMalformedException {
 }
 
 class _CborUnexpectedUndefinedLengthException extends CborMalformedException {
-  _CborUnexpectedUndefinedLengthException(int offset)
-      : super('Major type can not be undefined length', offset);
+  _CborUnexpectedUndefinedLengthException(int offset) : super('Major type can not be undefined length', offset);
 }
 
 CborString _createString(List<int> str, int offset, List<int> tags) {
@@ -207,13 +193,13 @@ CborInt _createInt(RawValueTagged raw) {
 CborFloat _createFloat(RawValueTagged raw) {
   final double value;
   switch (raw.header.additionalInfo) {
-    case 25:
+    case CborAdditionalInfo.halfPrecisionFloat:
       value = FloatParts.fromFloat16Bytes(raw.header.dataBytes).toDouble();
       break;
-    case 26:
+    case CborAdditionalInfo.singlePrecisionFloat:
       value = FloatParts.fromFloat32Bytes(raw.header.dataBytes).toDouble();
       break;
-    case 27:
+    case CborAdditionalInfo.doublePrecisionFloat:
       value = FloatParts.fromFloat64Bytes(raw.header.dataBytes).toDouble();
       break;
 
@@ -221,100 +207,72 @@ CborFloat _createFloat(RawValueTagged raw) {
       throw Error();
   }
 
-  if (raw.tags.lastWhereOrNull(isHintSubtype) == CborTag.epochDateTime) {
-    return CborDateTimeFloat.fromSecondsSinceEpoch(value, tags: raw.tags);
-  } else {
-    return CborFloat(value, tags: raw.tags);
-  }
+  return raw.tags.lastWhereOrNull(isHintSubtype) == CborTag.epochDateTime
+      ? CborDateTimeFloat.fromSecondsSinceEpoch(value, tags: raw.tags)
+      : CborFloat(value, tags: raw.tags);
 }
 
-CborList _createList(
-  RawValueTagged raw,
-  List<CborValue> items,
-  CborLengthType type,
-) {
+CborList _createList(RawValueTagged raw, List<CborValue> items, CborLengthType type) {
   switch (raw.tags.lastWhereOrNull(isHintSubtype)) {
     case CborTag.rationalNumber:
-      if (items.length != 2) {
+      if (items.length != CborConstants.two) {
         break;
       }
 
-      final numerator = items[0];
+      final numerator = items.first;
       final denominator = items[1];
 
-      if (numerator is! CborInt ||
-          denominator is! CborInt ||
-          denominator.toInt() == 0) {
+      if (numerator is! CborInt || denominator is! CborInt || denominator.toInt() == 0) {
         break;
       }
 
-      return CborRationalNumber(
-        numerator: numerator,
-        denominator: denominator,
-        tags: raw.tags,
-        type: type,
-      );
+      return CborRationalNumber(numerator: numerator, denominator: denominator, tags: raw.tags, type: type);
     case CborTag.decimalFraction:
-      if (items.length != 2) {
+      if (items.length != CborConstants.two) {
         break;
       }
 
-      final exponent = items[0];
+      final exponent = items.first;
       final mantissa = items[1];
 
-      if (exponent is! CborInt ||
-          mantissa is! CborInt ||
-          exponent is CborBigInt) {
+      if (exponent is! CborInt || mantissa is! CborInt || exponent is CborBigInt) {
         break;
       }
 
-      return CborDecimalFraction(
-        exponent: exponent,
-        mantissa: mantissa,
-        tags: raw.tags,
-        type: type,
-      );
+      return CborDecimalFraction(exponent: exponent, mantissa: mantissa, tags: raw.tags, type: type);
 
     case CborTag.bigFloat:
-      if (items.length != 2) {
+      if (items.length != CborConstants.two) {
         break;
       }
 
-      final exponent = items[0];
+      final exponent = items.first;
       final mantissa = items[1];
 
-      if (exponent is! CborInt ||
-          mantissa is! CborInt ||
-          exponent is CborBigInt) {
+      if (exponent is! CborInt || mantissa is! CborInt || exponent is CborBigInt) {
         break;
       }
 
-      return CborBigFloat(
-        exponent: exponent,
-        mantissa: mantissa,
-        tags: raw.tags,
-        type: type,
-      );
+      return CborBigFloat(exponent: exponent, mantissa: mantissa, tags: raw.tags, type: type);
   }
 
   return CborList(items, tags: raw.tags, type: type);
 }
 
-CborMap _createMap(
-  RawValueTagged raw,
-  List<CborValue> items,
-  CborLengthType type,
-) {
-  if (items.length % 2 != 0) {
+CborMap _createMap(RawValueTagged raw, List<CborValue> items, CborLengthType type) {
+  if (items.length % CborConstants.two != 0) {
     throw CborMalformedException('Map has more keys than values', raw.offset);
   }
 
-  return CborMap.fromEntries(items.chunks(2).map((x) => MapEntry(x[0], x[1])),
-      tags: raw.tags, type: type);
+  return CborMap.fromEntries(
+    items.chunks(CborConstants.two).map((x) => MapEntry(x.first, x[1])),
+    tags: raw.tags,
+    type: type,
+  );
 }
 
 CborBool _createBool(RawValueTagged raw) {
-  final value = raw.header.additionalInfo != 20;
+  final value = raw.header.additionalInfo != CborAdditionalInfo.simpleFalse;
   return CborBool(value, tags: raw.tags);
 }
 
@@ -335,12 +293,12 @@ abstract class _Builder {
 }
 
 class _ValueBuilder extends _Builder {
-  _ValueBuilder(this.data);
-
   final CborValue data;
 
   @override
   final bool isDone = true;
+
+  _ValueBuilder(this.data);
 
   @override
   void add(_Builder builder) {
@@ -354,14 +312,14 @@ class _ValueBuilder extends _Builder {
 }
 
 class _ListBuilder extends _Builder {
-  _ListBuilder(this.raw);
-
   final RawValueTagged raw;
   final List<CborValue> items = [];
   _Builder? _next;
 
   @override
   bool get isDone => items.length == raw.header.arg.toInt();
+
+  _ListBuilder(this.raw);
 
   @override
   void add(_Builder builder) {
@@ -391,14 +349,14 @@ class _ListBuilder extends _Builder {
 }
 
 class _MapBuilder extends _Builder {
-  _MapBuilder(this.raw);
-
   final RawValueTagged raw;
   final List<CborValue> items = [];
   _Builder? _next;
 
   @override
-  bool get isDone => items.length == 2 * raw.header.arg.toInt();
+  bool get isDone => items.length == CborConstants.two * raw.header.arg.toInt();
+
+  _MapBuilder(this.raw);
 
   @override
   void add(_Builder builder) {
@@ -428,13 +386,13 @@ class _MapBuilder extends _Builder {
 }
 
 class _IndefiniteLengthByteBuilder extends _Builder {
-  _IndefiniteLengthByteBuilder(this.raw);
-
   final RawValueTagged raw;
   final List<List<int>> bytes = [];
 
   @override
   bool isDone = false;
+
+  _IndefiniteLengthByteBuilder(this.raw);
 
   @override
   void add(_Builder builder) {
@@ -449,9 +407,7 @@ class _IndefiniteLengthByteBuilder extends _Builder {
       }
     }
 
-    throw CborMalformedException(
-        'An indefinite byte string must only contain byte strings.',
-        raw.offset);
+    throw CborMalformedException('An indefinite byte string must only contain byte strings.', raw.offset);
   }
 
   @override
@@ -461,13 +417,13 @@ class _IndefiniteLengthByteBuilder extends _Builder {
 }
 
 class _IndefiniteLengthStringBuilder extends _Builder {
-  _IndefiniteLengthStringBuilder(this.raw);
-
   final RawValueTagged raw;
   final List<List<int>> bytes = [];
 
   @override
   bool isDone = false;
+
+  _IndefiniteLengthStringBuilder(this.raw);
 
   @override
   void add(_Builder builder) {
@@ -482,8 +438,7 @@ class _IndefiniteLengthStringBuilder extends _Builder {
       }
     }
 
-    throw CborMalformedException(
-        'An indefinite string must only contain strings.', raw.offset);
+    throw CborMalformedException('An indefinite string must only contain strings.', raw.offset);
   }
 
   @override
@@ -493,14 +448,15 @@ class _IndefiniteLengthStringBuilder extends _Builder {
 }
 
 class _IndefiniteLengthListBuilder extends _Builder {
-  _IndefiniteLengthListBuilder(this.raw);
-
   final RawValueTagged raw;
   final List<CborValue> items = [];
-  _Builder? _next;
 
   @override
   bool isDone = false;
+
+  _Builder? _next;
+
+  _IndefiniteLengthListBuilder(this.raw);
 
   @override
   void add(_Builder builder) {
@@ -531,14 +487,15 @@ class _IndefiniteLengthListBuilder extends _Builder {
 }
 
 class _IndefiniteLengthMapBuilder extends _Builder {
-  _IndefiniteLengthMapBuilder(this.raw);
-
   final RawValueTagged raw;
   final List<CborValue> items = [];
-  _Builder? _next;
 
   @override
   bool isDone = false;
+
+  _Builder? _next;
+
+  _IndefiniteLengthMapBuilder(this.raw);
 
   @override
   void add(_Builder builder) {

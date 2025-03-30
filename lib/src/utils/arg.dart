@@ -5,34 +5,38 @@
  * Copyright :  S.Hamblett
  */
 
+import '../constants.dart';
+
 /// The information encoded by additional Arg and the following bytes.
 abstract class Arg {
+  static const Arg indefiniteLength = _ArgIndefiniteLength();
+
+  bool get isIndefiniteLength;
+
+  bool get isValidInt;
+
   const factory Arg.int(int arg) = _ArgInt;
 
   factory Arg.bigInt(BigInt arg) = _ArgBigInt;
 
   Arg operator ~();
 
-  bool get isIndefiniteLength;
-
   int toInt();
   BigInt toBigInt();
-  bool get isValidInt;
-
-  static const Arg indefiniteLength = _ArgIndefiniteLength();
 }
 
 class _ArgIndefiniteLength implements Arg {
-  const _ArgIndefiniteLength();
-
-  @override
-  _ArgIndefiniteLength operator ~() => this;
-
   @override
   final bool isIndefiniteLength = true;
 
   @override
   final bool isValidInt = false;
+
+  const _ArgIndefiniteLength();
+
+  @override
+  _ArgIndefiniteLength operator ~() => this;
+
   @override
   int toInt() => 0;
   @override
@@ -40,18 +44,19 @@ class _ArgIndefiniteLength implements Arg {
 }
 
 class _ArgInt implements Arg {
-  const _ArgInt(this.value);
-
   final int value;
-
-  @override
-  _ArgInt operator ~() => _ArgInt((~BigInt.from(value)).toSigned(33).toInt());
 
   @override
   final bool isIndefiniteLength = false;
 
   @override
   final bool isValidInt = true;
+
+  const _ArgInt(this.value);
+
+  @override
+  _ArgInt operator ~() => _ArgInt((~BigInt.from(value)).toSigned(CborConstants.bigIntSlice).toInt());
+
   @override
   int toInt() => value;
   @override
@@ -59,18 +64,19 @@ class _ArgInt implements Arg {
 }
 
 class _ArgBigInt implements Arg {
-  _ArgBigInt(this.value);
-
   final BigInt value;
-
-  @override
-  _ArgBigInt operator ~() => _ArgBigInt(~value);
 
   @override
   final bool isIndefiniteLength = false;
 
   @override
   final bool isValidInt = false;
+
+  _ArgBigInt(this.value);
+
+  @override
+  _ArgBigInt operator ~() => _ArgBigInt(~value);
+
   @override
   int toInt() => value.toInt();
   @override
