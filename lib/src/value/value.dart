@@ -5,6 +5,8 @@
  * Copyright :  S.Hamblett
  */
 
+// dart format width=123
+
 import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
@@ -54,7 +56,6 @@ sealed class CborAdditionalInfo {
 
 /// Hint for the content of something.
 sealed class CborTag {
-
   static const int dateTimeString = 0;
   static const int epochDateTime = 1;
   static const int positiveBignum = 2;

@@ -16,7 +16,6 @@ const CborCodec cbor = CborCodec();
 ///
 /// For exceptions [decode] may throw, see [CborDecoder].
 class CborCodec extends Codec<CborValue, List<int>> {
-
   @override
   final CborDecoder decoder = const CborDecoder();
   @override
@@ -24,7 +23,6 @@ class CborCodec extends Codec<CborValue, List<int>> {
 
   /// Create a CBOR codec.
   const CborCodec();
-
 }
 
 /// Alias for `cbor.encode`.

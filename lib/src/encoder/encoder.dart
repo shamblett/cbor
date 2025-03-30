@@ -38,7 +38,6 @@ class CborEncoder extends Converter<CborValue, List<int>> {
 }
 
 class _ChunkedConversion implements Sink<CborValue> {
-
   final EncodeSink sink;
 
   _ChunkedConversion(this.sink);

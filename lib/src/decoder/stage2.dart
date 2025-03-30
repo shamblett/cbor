@@ -15,12 +15,7 @@ class RawValueTagged {
   final int offset;
   final List<int> tags;
 
-  RawValueTagged(
-    this.header, {
-    this.data = const [],
-    required this.offset,
-    this.tags = const [],
-  });
+  RawValueTagged(this.header, {this.data = const [], required this.offset, this.tags = const []});
 }
 
 class RawSinkTagged implements Sink<RawValue> {
@@ -38,14 +33,7 @@ class RawSinkTagged implements Sink<RawValue> {
 
       _tags.add(data.header.arg.toInt());
     } else {
-      sink.add(
-        RawValueTagged(
-          data.header,
-          offset: data.start,
-          data: data.data,
-          tags: _clearTags(),
-        ),
-      );
+      sink.add(RawValueTagged(data.header, offset: data.start, data: data.data, tags: _clearTags()));
     }
   }
 

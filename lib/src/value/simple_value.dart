@@ -16,8 +16,7 @@ import 'internal.dart';
 /// additional content.
 
 abstract class CborSimpleValue extends CborValue {
-  const factory CborSimpleValue(int simpleValue, {List<int> tags}) =
-      _CborSimpleValueImpl;
+  const factory CborSimpleValue(int simpleValue, {List<int> tags}) = _CborSimpleValueImpl;
 
   int get simpleValue;
 }
@@ -32,9 +31,7 @@ class _CborSimpleValueImpl with CborValueMixin implements CborSimpleValue {
   String toString() => simpleValue.toString();
   @override
   bool operator ==(Object other) =>
-      other is CborSimpleValue &&
-      tags.equals(other.tags) &&
-      other.simpleValue == simpleValue;
+      other is CborSimpleValue && tags.equals(other.tags) && other.simpleValue == simpleValue;
   @override
   int get hashCode => Object.hash(simpleValue, Object.hashAll(tags));
   @override
@@ -104,8 +101,7 @@ abstract class CborBool extends CborSimpleValue {
 }
 
 class _CborBoolImpl extends _CborSimpleValueImpl implements CborBool {
-  const _CborBoolImpl(this.value, {List<int> tags = const []})
-    : super(!value ? 20 : 21, tags: tags);
+  const _CborBoolImpl(this.value, {List<int> tags = const []}) : super(!value ? 20 : 21, tags: tags);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {

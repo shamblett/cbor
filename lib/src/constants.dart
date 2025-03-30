@@ -5,6 +5,8 @@
  * Copyright :  S.Hamblett
  */
 
+// dart format width=123
+
 /// Constants
 class CborConstants {
   static const prettyPrintIndent = 2;
