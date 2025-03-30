@@ -32,7 +32,11 @@ class ToJsonOptions {
   final bool allowMalformedUtf8;
   final Object? substituteValue;
 
-  ToJsonOptions({required this.encoding, this.substituteValue, required this.allowMalformedUtf8});
+  ToJsonOptions({
+    required this.encoding,
+    this.substituteValue,
+    required this.allowMalformedUtf8,
+  });
 
   ToJsonOptions copyWith({JsonBytesEncoding? encoding}) => ToJsonOptions(
     encoding: encoding ?? this.encoding,
@@ -85,14 +89,15 @@ mixin CborValueMixin implements CborValue {
   );
 
   @override
-  Object? toJson({Object? substituteValue, bool allowMalformedUtf8 = false}) => toJsonInternal(
-    {},
-    ToJsonOptions(
-      encoding: JsonBytesEncoding.base16,
-      allowMalformedUtf8: allowMalformedUtf8,
-      substituteValue: substituteValue,
-    ),
-  );
+  Object? toJson({Object? substituteValue, bool allowMalformedUtf8 = false}) =>
+      toJsonInternal(
+        {},
+        ToJsonOptions(
+          encoding: JsonBytesEncoding.base16,
+          allowMalformedUtf8: allowMalformedUtf8,
+          substituteValue: substituteValue,
+        ),
+      );
 
   JsonBytesEncoding? get expectedConversion {
     var retVal = JsonBytesEncoding.base16;

@@ -59,7 +59,8 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
   String toString() => value.toString();
 
   @override
-  bool operator ==(Object other) => other is CborFloat && tags.equals(other.tags) && value == other.value;
+  bool operator ==(Object other) =>
+      other is CborFloat && tags.equals(other.tags) && value == other.value;
 
   @override
   void encode(EncodeSink sink) {
@@ -83,15 +84,24 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
     // Automatic(default) conversion picks the best encoding.
     if (precision == CborFloatPrecision.automatic) {
       if (parts.isFloat16Lossless) {
-        sink.addHeader(CborMajorType.simpleFloat, CborAdditionalInfo.halfPrecisionFloat);
+        sink.addHeader(
+          CborMajorType.simpleFloat,
+          CborAdditionalInfo.halfPrecisionFloat,
+        );
 
         sink.add(parts.toFloat16Bytes());
       } else if (parts.isFloat32Lossless) {
-        sink.addHeader(CborMajorType.simpleFloat, CborAdditionalInfo.singlePrecisionFloat);
+        sink.addHeader(
+          CborMajorType.simpleFloat,
+          CborAdditionalInfo.singlePrecisionFloat,
+        );
 
         sink.add(parts.toFloat32Bytes());
       } else {
-        sink.addHeader(CborMajorType.simpleFloat, CborAdditionalInfo.doublePrecisionFloat);
+        sink.addHeader(
+          CborMajorType.simpleFloat,
+          CborAdditionalInfo.doublePrecisionFloat,
+        );
 
         sink.add(parts.toFloat64Bytes());
       }
@@ -99,29 +109,47 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
       switch (precision) {
         case CborFloatPrecision.half:
           if (parts.isFloat16Lossless) {
-            sink.addHeader(CborMajorType.simpleFloat, CborAdditionalInfo.halfPrecisionFloat);
+            sink.addHeader(
+              CborMajorType.simpleFloat,
+              CborAdditionalInfo.halfPrecisionFloat,
+            );
             sink.add(parts.toFloat16Bytes());
           } else {
             // Invalid conversion
-            throw ArgumentError(precision, 'Cannot encode value as a half precision float');
+            throw ArgumentError(
+              precision,
+              'Cannot encode value as a half precision float',
+            );
           }
           break;
         case CborFloatPrecision.float:
           if (parts.isFloat32Lossless) {
-            sink.addHeader(CborMajorType.simpleFloat, CborAdditionalInfo.singlePrecisionFloat);
+            sink.addHeader(
+              CborMajorType.simpleFloat,
+              CborAdditionalInfo.singlePrecisionFloat,
+            );
             sink.add(parts.toFloat32Bytes());
           } else {
             // Invalid conversion
-            throw ArgumentError(precision, 'Cannot encode value as a normal(32 bit) precision float');
+            throw ArgumentError(
+              precision,
+              'Cannot encode value as a normal(32 bit) precision float',
+            );
           }
           break;
         case CborFloatPrecision.double:
           if (parts.isFloat64Lossless) {
-            sink.addHeader(CborMajorType.simpleFloat, CborAdditionalInfo.doublePrecisionFloat);
+            sink.addHeader(
+              CborMajorType.simpleFloat,
+              CborAdditionalInfo.doublePrecisionFloat,
+            );
             sink.add(parts.toFloat64Bytes());
           } else {
             // Invalid conversion
-            throw ArgumentError(precision, 'Cannot encode value as a double precision float');
+            throw ArgumentError(
+              precision,
+              'Cannot encode value as a double precision float',
+            );
           }
           break;
         case CborFloatPrecision.automatic:
@@ -155,17 +183,29 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
 
 /// A CBOR date time encoded as seconds since epoch in a float.
 abstract class CborDateTimeFloat extends CborFloat implements CborDateTime {
-  factory CborDateTimeFloat.fromSecondsSinceEpoch(double amount, {List<int> tags}) =
-      _CborDateTimeFloatImpl.fromSecondsSinceEpoch;
+  factory CborDateTimeFloat.fromSecondsSinceEpoch(
+    double amount, {
+    List<int> tags,
+  }) = _CborDateTimeFloatImpl.fromSecondsSinceEpoch;
 
-  factory CborDateTimeFloat(DateTime value, {List<int> tags}) = _CborDateTimeFloatImpl;
+  factory CborDateTimeFloat(DateTime value, {List<int> tags}) =
+      _CborDateTimeFloatImpl;
 }
 
-class _CborDateTimeFloatImpl extends _CborFloatImpl implements CborDateTimeFloat {
-  _CborDateTimeFloatImpl.fromSecondsSinceEpoch(super.amount, {super.tags = const [CborTag.epochDateTime]});
+class _CborDateTimeFloatImpl extends _CborFloatImpl
+    implements CborDateTimeFloat {
+  _CborDateTimeFloatImpl.fromSecondsSinceEpoch(
+    super.amount, {
+    super.tags = const [CborTag.epochDateTime],
+  });
 
-  _CborDateTimeFloatImpl(DateTime value, {List<int> tags = const [CborTag.epochDateTime]})
-    : super(value.millisecondsSinceEpoch / CborConstants.milliseconds, tags: tags);
+  _CborDateTimeFloatImpl(
+    DateTime value, {
+    List<int> tags = const [CborTag.epochDateTime],
+  }) : super(
+         value.millisecondsSinceEpoch / CborConstants.milliseconds,
+         tags: tags,
+       );
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -174,6 +214,9 @@ class _CborDateTimeFloatImpl extends _CborFloatImpl implements CborDateTimeFloat
 
   @override
   DateTime toDateTime() {
-    return DateTime.fromMillisecondsSinceEpoch((value * 1000).round(), isUtc: true);
+    return DateTime.fromMillisecondsSinceEpoch(
+      (value * 1000).round(),
+      isUtc: true,
+    );
   }
 }

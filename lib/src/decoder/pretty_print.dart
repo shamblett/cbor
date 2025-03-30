@@ -24,7 +24,10 @@ import '../value/value.dart';
 ///   2 (int 2)
 ///   63 74 77 6f (string "two")
 /// ```
-String cborPrettyPrint(List<int> input, {int indent = CborConstants.prettyPrintIndent}) {
+String cborPrettyPrint(
+  List<int> input, {
+  int indent = CborConstants.prettyPrintIndent,
+}) {
   final prettyPrint = _PrettyPrint(input, indent: indent);
   RawSink(prettyPrint)
     ..add(input)
@@ -51,7 +54,11 @@ class _PrettyPrint implements Sink<RawValue> {
     final indentation = ' ' * indent * nested.length;
 
     writer.write(indentation);
-    writer.writeAll(data.getRange(x.start, x.end).map((by) => '${by.toRadixString(CborConstants.hexRadix)} '));
+    writer.writeAll(
+      data
+          .getRange(x.start, x.end)
+          .map((by) => '${by.toRadixString(CborConstants.hexRadix)} '),
+    );
 
     if (nested.isNotEmpty) {
       var remainingItems = nested.last.remainingItems;
@@ -87,7 +94,9 @@ class _PrettyPrint implements Sink<RawValue> {
           writer.write('(indefinite length string)');
           nested.add(_Nesting(null));
         } else {
-          writer.write('(string "${(const Utf8Codec(allowMalformed: true)).decode(x.data)}")');
+          writer.write(
+            '(string "${(const Utf8Codec(allowMalformed: true)).decode(x.data)}")',
+          );
         }
         break;
       case CborMajorType.array:
@@ -107,7 +116,9 @@ class _PrettyPrint implements Sink<RawValue> {
           nested.add(_Nesting(null));
         } else {
           writer.write('(map length ${length.toInt()})');
-          nested.add(_Nesting(length.toInt() * CborConstants.prettyPrintIndent));
+          nested.add(
+            _Nesting(length.toInt() * CborConstants.prettyPrintIndent),
+          );
         }
         break;
       case CborMajorType.tag:
@@ -128,13 +139,19 @@ class _PrettyPrint implements Sink<RawValue> {
             writer.write('(undefined)');
             break;
           case CborAdditionalInfo.halfPrecisionFloat:
-            writer.write('(${FloatParts.fromFloat16Bytes(x.header.dataBytes).toDouble()})');
+            writer.write(
+              '(${FloatParts.fromFloat16Bytes(x.header.dataBytes).toDouble()})',
+            );
             break;
           case CborAdditionalInfo.singlePrecisionFloat:
-            writer.write('(${FloatParts.fromFloat32Bytes(x.header.dataBytes).toDouble()})');
+            writer.write(
+              '(${FloatParts.fromFloat32Bytes(x.header.dataBytes).toDouble()})',
+            );
             break;
           case CborAdditionalInfo.doublePrecisionFloat:
-            writer.write('(${FloatParts.fromFloat64Bytes(x.header.dataBytes).toDouble()})');
+            writer.write(
+              '(${FloatParts.fromFloat64Bytes(x.header.dataBytes).toDouble()})',
+            );
             break;
           case CborAdditionalInfo.breakStop:
             writer.write('(break)');

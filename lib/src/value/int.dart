@@ -27,7 +27,9 @@ abstract class CborInt extends CborValue {
 
     final bitLength = value.isNegative ? (~value).bitLength : value.bitLength;
 
-    return bitLength <= CborConstants.bitsPerDoubleWord ? _LargeInt(value, tags ?? const []) : CborBigInt(value, tags);
+    return bitLength <= CborConstants.bitsPerDoubleWord
+        ? _LargeInt(value, tags ?? const [])
+        : CborBigInt(value, tags);
   }
 
   /// Return the value as a [BigInt].
@@ -61,7 +63,10 @@ class _CborSmallIntImpl with CborValueMixin implements CborSmallInt {
   @override
   String toString() => value.toString();
   @override
-  bool operator ==(Object other) => other is CborSmallInt && tags.equals(other.tags) && value == other.toInt();
+  bool operator ==(Object other) =>
+      other is CborSmallInt &&
+      tags.equals(other.tags) &&
+      value == other.toInt();
 
   @override
   BigInt toBigInt() => BigInt.from(value);
@@ -106,7 +111,10 @@ class _LargeInt with CborValueMixin implements CborInt {
   @override
   String toString() => value.toString();
   @override
-  bool operator ==(Object other) => other is CborInt && tags.equals(other.tags) && toBigInt() == other.toBigInt();
+  bool operator ==(Object other) =>
+      other is CborInt &&
+      tags.equals(other.tags) &&
+      toBigInt() == other.toBigInt();
 
   @override
   BigInt toBigInt() => value;
@@ -137,17 +145,28 @@ class _LargeInt with CborValueMixin implements CborInt {
 
 /// A CBOR datetieme encoded as seconds since epoch.
 abstract class CborDateTimeInt extends CborSmallInt implements CborDateTime {
-  factory CborDateTimeInt(DateTime value, {List<int> tags}) = _CborDateTimeIntImpl;
+  factory CborDateTimeInt(DateTime value, {List<int> tags}) =
+      _CborDateTimeIntImpl;
 
-  factory CborDateTimeInt.fromSecondsSinceEpoch(int value, {List<int> tags}) = _CborDateTimeIntImpl.fromSecondsSinceEpoch;
+  factory CborDateTimeInt.fromSecondsSinceEpoch(int value, {List<int> tags}) =
+      _CborDateTimeIntImpl.fromSecondsSinceEpoch;
 }
 
 /// A CBOR datetieme encoded as seconds since epoch.
-class _CborDateTimeIntImpl extends _CborSmallIntImpl implements CborDateTimeInt {
-  _CborDateTimeIntImpl(DateTime value, {List<int> tags = const [CborTag.epochDateTime]})
-    : super((value.millisecondsSinceEpoch / CborConstants.milliseconds).round(), tags: tags);
+class _CborDateTimeIntImpl extends _CborSmallIntImpl
+    implements CborDateTimeInt {
+  _CborDateTimeIntImpl(
+    DateTime value, {
+    List<int> tags = const [CborTag.epochDateTime],
+  }) : super(
+         (value.millisecondsSinceEpoch / CborConstants.milliseconds).round(),
+         tags: tags,
+       );
 
-  const _CborDateTimeIntImpl.fromSecondsSinceEpoch(super.value, {super.tags = const [CborTag.epochDateTime]});
+  const _CborDateTimeIntImpl.fromSecondsSinceEpoch(
+    super.value, {
+    super.tags = const [CborTag.epochDateTime],
+  });
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -155,5 +174,8 @@ class _CborDateTimeIntImpl extends _CborSmallIntImpl implements CborDateTimeInt 
   }
 
   @override
-  DateTime toDateTime() => DateTime.fromMillisecondsSinceEpoch(value * CborConstants.milliseconds, isUtc: true);
+  DateTime toDateTime() => DateTime.fromMillisecondsSinceEpoch(
+    value * CborConstants.milliseconds,
+    isUtc: true,
+  );
 }

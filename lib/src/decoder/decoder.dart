@@ -67,5 +67,6 @@ class CborDecoder extends Converter<List<int>, CborValue> {
   }
 
   @override
-  ByteConversionSink startChunkedConversion(Sink<CborValue> sink) => RawSink(RawSinkTagged(CborSink(sink)));
+  ByteConversionSink startChunkedConversion(Sink<CborValue> sink) =>
+      RawSink(RawSinkTagged(CborSink(sink)));
 }

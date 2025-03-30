@@ -31,19 +31,31 @@ class CborJsonEncoder extends Converter<CborValue, String> {
   /// If [allowMalformedUtf8] is `false`, the decoder will
   /// throw [FormatException] when invalid UTF-8 is found. Otherwise,
   /// it will use replacement characters.
-  const CborJsonEncoder({Object? substituteValue, bool allowMalformedUtf8 = false})
-    : _allowMalformedUtf8 = allowMalformedUtf8,
-      _substituteValue = substituteValue;
+  const CborJsonEncoder({
+    Object? substituteValue,
+    bool allowMalformedUtf8 = false,
+  }) : _allowMalformedUtf8 = allowMalformedUtf8,
+       _substituteValue = substituteValue;
 
   @override
   String convert(CborValue input) {
-    return json.encode(input.toJson(substituteValue: _substituteValue, allowMalformedUtf8: _allowMalformedUtf8));
+    return json.encode(
+      input.toJson(
+        substituteValue: _substituteValue,
+        allowMalformedUtf8: _allowMalformedUtf8,
+      ),
+    );
   }
 
   @override
   Sink<CborValue> startChunkedConversion(Sink<String> sink) {
     return const JsonEncoder()
         .startChunkedConversion(sink)
-        .map((x) => x.toJson(substituteValue: _substituteValue, allowMalformedUtf8: _allowMalformedUtf8));
+        .map(
+          (x) => x.toJson(
+            substituteValue: _substituteValue,
+            allowMalformedUtf8: _allowMalformedUtf8,
+          ),
+        );
   }
 }

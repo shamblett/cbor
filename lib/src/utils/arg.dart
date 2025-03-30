@@ -55,7 +55,9 @@ class _ArgInt implements Arg {
   const _ArgInt(this.value);
 
   @override
-  _ArgInt operator ~() => _ArgInt((~BigInt.from(value)).toSigned(CborConstants.bigIntSlice).toInt());
+  _ArgInt operator ~() => _ArgInt(
+    (~BigInt.from(value)).toSigned(CborConstants.bigIntSlice).toInt(),
+  );
 
   @override
   int toInt() => value;

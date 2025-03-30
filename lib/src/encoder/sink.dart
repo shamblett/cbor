@@ -78,12 +78,16 @@ abstract class EncodeSink implements Sink<List<int>> {
       addHeader(majorType, CborAdditionalInfo.doublePrecisionFloat);
       final x = Uint8List(CborConstants.byteLength);
       final infoBigInt = info.toBigInt();
-      ByteData.view(
-        x.buffer,
-      ).setUint32(0, (infoBigInt >> CborConstants.bitsPerWord).toUnsigned(CborConstants.bitsPerWord).toInt());
-      ByteData.view(
-        x.buffer,
-      ).setUint32(CborConstants.bytesPerWord, infoBigInt.toUnsigned(CborConstants.bitsPerWord).toInt());
+      ByteData.view(x.buffer).setUint32(
+        0,
+        (infoBigInt >> CborConstants.bitsPerWord)
+            .toUnsigned(CborConstants.bitsPerWord)
+            .toInt(),
+      );
+      ByteData.view(x.buffer).setUint32(
+        CborConstants.bytesPerWord,
+        infoBigInt.toUnsigned(CborConstants.bitsPerWord).toInt(),
+      );
       add(x);
     }
   }

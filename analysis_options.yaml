@@ -8,10 +8,6 @@ analyzer:
   exclude:
     - test/issues/**
 
-linter:
-  rules:
-    prefer_final_fields: false
-
 dart_code_metrics:
   exclude:
     metrics:

@@ -34,8 +34,14 @@ class Header {
         case CborAdditionalInfo.singlePrecisionFloat:
           return Arg.int(ByteData.view(dataBytes.buffer).getUint32(0));
         case CborAdditionalInfo.doublePrecisionFloat:
-          var i = BigInt.from(ByteData.view(dataBytes.buffer).getUint32(0)) << CborConstants.bitsPerWord;
-          i |= BigInt.from(ByteData.view(dataBytes.buffer).getUint32(CborConstants.bytesPerWord));
+          var i =
+              BigInt.from(ByteData.view(dataBytes.buffer).getUint32(0)) <<
+              CborConstants.bitsPerWord;
+          i |= BigInt.from(
+            ByteData.view(
+              dataBytes.buffer,
+            ).getUint32(CborConstants.bytesPerWord),
+          );
           return Arg.bigInt(i);
 
         case CborAdditionalInfo.breakStop:
@@ -61,7 +67,8 @@ Header? _readHeader(Reader reader) {
   final additionalInfo = x & CborConstants.additionalInfoBitMask;
 
   final Uint8List dataBytes;
-  if (additionalInfo < CborAdditionalInfo.simpleValueHigh || additionalInfo == CborAdditionalInfo.breakStop) {
+  if (additionalInfo < CborAdditionalInfo.simpleValueHigh ||
+      additionalInfo == CborAdditionalInfo.breakStop) {
     reader.readUint8();
     dataBytes = Uint8List(0);
   } else {
@@ -99,7 +106,10 @@ Header? _readHeader(Reader reader) {
         dataBytes = reader.readExactBytes(CborConstants.byteLength)!;
         break;
       default:
-        throw CborMalformedException('Invalid CBOR additional info', reader.offset);
+        throw CborMalformedException(
+          'Invalid CBOR additional info',
+          reader.offset,
+        );
     }
   }
   return Header(majorType, additionalInfo, dataBytes);
@@ -111,7 +121,12 @@ class RawValue {
   final int start;
   final int end;
 
-  RawValue(this.header, {this.data = const [], required this.start, required this.end});
+  RawValue(
+    this.header, {
+    this.data = const [],
+    required this.start,
+    required this.end,
+  });
 }
 
 class _Builder {
@@ -168,7 +183,8 @@ class RawSink extends ByteConversionSinkBase {
       }
 
       if (header.additionalInfo != CborAdditionalInfo.breakStop) {
-        if (header.majorType == CborMajorType.byteString || header.majorType == CborMajorType.textString) {
+        if (header.majorType == CborMajorType.byteString ||
+            header.majorType == CborMajorType.textString) {
           _next = _Builder(header, offset, _reader);
           continue;
         }

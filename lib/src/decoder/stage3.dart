@@ -33,22 +33,32 @@ class CborSink implements Sink<RawValueTagged> {
         builder =
             data.header.arg.isIndefiniteLength
                 ? _IndefiniteLengthByteBuilder(data)
-                : _ValueBuilder(_createBytes(data.data, data.offset, data.tags));
+                : _ValueBuilder(
+                  _createBytes(data.data, data.offset, data.tags),
+                );
         break;
 
       case CborMajorType.textString:
         builder =
             data.header.arg.isIndefiniteLength
                 ? _IndefiniteLengthStringBuilder(data)
-                : _ValueBuilder(_createString(data.data, data.offset, data.tags));
+                : _ValueBuilder(
+                  _createString(data.data, data.offset, data.tags),
+                );
         break;
 
       case CborMajorType.array:
-        builder = data.header.arg.isIndefiniteLength ? _IndefiniteLengthListBuilder(data) : _ListBuilder(data);
+        builder =
+            data.header.arg.isIndefiniteLength
+                ? _IndefiniteLengthListBuilder(data)
+                : _ListBuilder(data);
         break;
 
       case CborMajorType.map:
-        builder = data.header.arg.isIndefiniteLength ? _IndefiniteLengthMapBuilder(data) : _MapBuilder(data);
+        builder =
+            data.header.arg.isIndefiniteLength
+                ? _IndefiniteLengthMapBuilder(data)
+                : _MapBuilder(data);
         break;
 
       case CborMajorType.tag:
@@ -78,10 +88,16 @@ class CborSink implements Sink<RawValueTagged> {
             break;
 
           default:
-            if (data.header.additionalInfo <= CborAdditionalInfo.simpleValueHigh) {
-              builder = _ValueBuilder(CborSimpleValue(data.header.arg.toInt(), tags: data.tags));
+            if (data.header.additionalInfo <=
+                CborAdditionalInfo.simpleValueHigh) {
+              builder = _ValueBuilder(
+                CborSimpleValue(data.header.arg.toInt(), tags: data.tags),
+              );
             } else {
-              throw CborMalformedException('Reserved simple value', data.offset);
+              throw CborMalformedException(
+                'Reserved simple value',
+                data.offset,
+              );
             }
 
             break;
@@ -127,7 +143,8 @@ class _CborUnexpectedBreakException extends CborMalformedException {
 }
 
 class _CborUnexpectedUndefinedLengthException extends CborMalformedException {
-  _CborUnexpectedUndefinedLengthException(int offset) : super('Major type can not be undefined length', offset);
+  _CborUnexpectedUndefinedLengthException(int offset)
+    : super('Major type can not be undefined length', offset);
 }
 
 CborString _createString(List<int> str, int offset, List<int> tags) {
@@ -212,7 +229,11 @@ CborFloat _createFloat(RawValueTagged raw) {
       : CborFloat(value, tags: raw.tags);
 }
 
-CborList _createList(RawValueTagged raw, List<CborValue> items, CborLengthType type) {
+CborList _createList(
+  RawValueTagged raw,
+  List<CborValue> items,
+  CborLengthType type,
+) {
   switch (raw.tags.lastWhereOrNull(isHintSubtype)) {
     case CborTag.rationalNumber:
       if (items.length != CborConstants.two) {
@@ -222,11 +243,18 @@ CborList _createList(RawValueTagged raw, List<CborValue> items, CborLengthType t
       final numerator = items.first;
       final denominator = items[1];
 
-      if (numerator is! CborInt || denominator is! CborInt || denominator.toInt() == 0) {
+      if (numerator is! CborInt ||
+          denominator is! CborInt ||
+          denominator.toInt() == 0) {
         break;
       }
 
-      return CborRationalNumber(numerator: numerator, denominator: denominator, tags: raw.tags, type: type);
+      return CborRationalNumber(
+        numerator: numerator,
+        denominator: denominator,
+        tags: raw.tags,
+        type: type,
+      );
     case CborTag.decimalFraction:
       if (items.length != CborConstants.two) {
         break;
@@ -235,11 +263,18 @@ CborList _createList(RawValueTagged raw, List<CborValue> items, CborLengthType t
       final exponent = items.first;
       final mantissa = items[1];
 
-      if (exponent is! CborInt || mantissa is! CborInt || exponent is CborBigInt) {
+      if (exponent is! CborInt ||
+          mantissa is! CborInt ||
+          exponent is CborBigInt) {
         break;
       }
 
-      return CborDecimalFraction(exponent: exponent, mantissa: mantissa, tags: raw.tags, type: type);
+      return CborDecimalFraction(
+        exponent: exponent,
+        mantissa: mantissa,
+        tags: raw.tags,
+        type: type,
+      );
 
     case CborTag.bigFloat:
       if (items.length != CborConstants.two) {
@@ -249,17 +284,28 @@ CborList _createList(RawValueTagged raw, List<CborValue> items, CborLengthType t
       final exponent = items.first;
       final mantissa = items[1];
 
-      if (exponent is! CborInt || mantissa is! CborInt || exponent is CborBigInt) {
+      if (exponent is! CborInt ||
+          mantissa is! CborInt ||
+          exponent is CborBigInt) {
         break;
       }
 
-      return CborBigFloat(exponent: exponent, mantissa: mantissa, tags: raw.tags, type: type);
+      return CborBigFloat(
+        exponent: exponent,
+        mantissa: mantissa,
+        tags: raw.tags,
+        type: type,
+      );
   }
 
   return CborList(items, tags: raw.tags, type: type);
 }
 
-CborMap _createMap(RawValueTagged raw, List<CborValue> items, CborLengthType type) {
+CborMap _createMap(
+  RawValueTagged raw,
+  List<CborValue> items,
+  CborLengthType type,
+) {
   if (items.length % CborConstants.two != 0) {
     throw CborMalformedException('Map has more keys than values', raw.offset);
   }
@@ -407,7 +453,10 @@ class _IndefiniteLengthByteBuilder extends _Builder {
       }
     }
 
-    throw CborMalformedException('An indefinite byte string must only contain byte strings.', raw.offset);
+    throw CborMalformedException(
+      'An indefinite byte string must only contain byte strings.',
+      raw.offset,
+    );
   }
 
   @override
@@ -438,7 +487,10 @@ class _IndefiniteLengthStringBuilder extends _Builder {
       }
     }
 
-    throw CborMalformedException('An indefinite string must only contain strings.', raw.offset);
+    throw CborMalformedException(
+      'An indefinite string must only contain strings.',
+      raw.offset,
+    );
   }
 
   @override

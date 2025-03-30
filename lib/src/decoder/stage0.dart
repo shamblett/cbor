@@ -20,7 +20,8 @@ class Reader {
   int get offset => _offset;
   int get length => _bytes.length - _read;
 
-  void add(List<int> input, [int start = 0, int? end]) => _bytes.addAll(input, start, end);
+  void add(List<int> input, [int start = 0, int? end]) =>
+      _bytes.addAll(input, start, end);
 
   int? peekUint8() {
     if (_read == _bytes.length) {
