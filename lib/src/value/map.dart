@@ -38,6 +38,13 @@ abstract class CborMap implements Map<CborValue, CborValue>, CborValue {
 }
 
 class _CborMapImpl extends DelegatingMap<CborValue, CborValue> with CborValueMixin implements CborMap {
+
+  @override
+  final List<int> tags;
+
+  @override
+  final CborLengthType type;
+
   const _CborMapImpl(super.items, {this.tags = const [], this.type = CborLengthType.auto});
 
   _CborMapImpl.of(Map<CborValue, CborValue> items, {this.tags = const [], this.type = CborLengthType.auto})
@@ -96,12 +103,6 @@ class _CborMapImpl extends DelegatingMap<CborValue, CborValue> with CborValueMix
   }
 
   @override
-  final List<int> tags;
-
-  @override
-  final CborLengthType type;
-
-  @override
   void encode(EncodeSink sink) {
     if (type == CborLengthType.definite || (type == CborLengthType.auto && length < kCborDefiniteLengthThreshold)) {
       CborEncodeDefiniteLengthMap(this).encode(sink);
@@ -119,9 +120,13 @@ abstract class CborEncodeIndefiniteLengthMap extends CborValue {
 }
 
 class _CborEncodeIndefiniteLengthMapImpl with CborValueMixin implements CborEncodeIndefiniteLengthMap {
-  const _CborEncodeIndefiniteLengthMapImpl(this.inner);
 
   final CborMap inner;
+
+  @override
+  List<int> get tags => inner.tags;
+
+  const _CborEncodeIndefiniteLengthMapImpl(this.inner);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -137,7 +142,7 @@ class _CborEncodeIndefiniteLengthMapImpl with CborValueMixin implements CborEnco
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(5, Arg.indefiniteLength);
+    sink.addHeaderInfo(CborMajorType.map, Arg.indefiniteLength);
 
     sink.addToCycleCheck(inner);
     for (final e in inner.entries) {
@@ -149,8 +154,6 @@ class _CborEncodeIndefiniteLengthMapImpl with CborValueMixin implements CborEnco
     (const Break()).encode(sink);
   }
 
-  @override
-  List<int> get tags => inner.tags;
 }
 
 /// Use this to force the [CborEncoder] to encode an definite length dictionary.
@@ -161,9 +164,13 @@ abstract class CborEncodeDefiniteLengthMap extends CborValue {
 }
 
 class _CborEncodeDefiniteLengthMapImpl with CborValueMixin implements CborEncodeDefiniteLengthMap {
-  const _CborEncodeDefiniteLengthMapImpl(this.inner);
 
   final CborMap inner;
+
+  @override
+  List<int> get tags => inner.tags;
+
+  const _CborEncodeDefiniteLengthMapImpl(this.inner);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -179,7 +186,7 @@ class _CborEncodeDefiniteLengthMapImpl with CborValueMixin implements CborEncode
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    sink.addHeaderInfo(5, Arg.int(inner.length));
+    sink.addHeaderInfo(CborMajorType.map, Arg.int(inner.length));
 
     sink.addToCycleCheck(inner);
     for (final e in inner.entries) {
@@ -188,7 +195,4 @@ class _CborEncodeDefiniteLengthMapImpl with CborValueMixin implements CborEncode
     }
     sink.removeFromCycleCheck(inner);
   }
-
-  @override
-  List<int> get tags => inner.tags;
 }

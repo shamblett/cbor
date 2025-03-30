@@ -12,6 +12,7 @@ import 'dart:typed_data';
 import 'package:cbor/cbor.dart';
 import 'package:meta/meta.dart';
 
+import '../constants.dart';
 import '../encoder/sink.dart';
 import 'internal.dart';
 
@@ -83,6 +84,9 @@ enum CborLengthType { definite, indefinite, auto }
 
 /// A CBOR value.
 abstract class CborValue {
+  /// Additional tags provided to the value.
+  List<int> get tags;
+
   factory CborValue._fromObject(
     Object? object, {
     required bool dateTimeEpoch,
@@ -108,10 +112,10 @@ abstract class CborValue {
     } else if (object is DateTime) {
       if (!dateTimeEpoch) {
         return CborDateTimeString(object);
-      } else if (object.millisecondsSinceEpoch % 1000 == 0) {
-        return CborDateTimeInt.fromSecondsSinceEpoch(object.millisecondsSinceEpoch ~/ 1000);
+      } else if (object.millisecondsSinceEpoch % CborConstants.milliseconds == 0) {
+        return CborDateTimeInt.fromSecondsSinceEpoch(object.millisecondsSinceEpoch ~/ CborConstants.milliseconds);
       } else {
-        return CborDateTimeFloat.fromSecondsSinceEpoch(object.millisecondsSinceEpoch / 1000);
+        return CborDateTimeFloat.fromSecondsSinceEpoch(object.millisecondsSinceEpoch / CborConstants.milliseconds);
       }
     } else if (object is Uri) {
       return CborUri(object);
@@ -208,9 +212,6 @@ abstract class CborValue {
   /// result of calling `.toCbor()` on the unencodable object.
   factory CborValue(Object? object, {bool dateTimeEpoch = false, Object? Function(dynamic object)? toEncodable}) =>
       CborValue._fromObject(object, dateTimeEpoch: dateTimeEpoch, toEncodable: toEncodable ?? (object) => object.toCbor());
-
-  /// Additional tags provided to the value.
-  List<int> get tags;
 
   /// Transforms the CborValue into a Dart object.
   ///
