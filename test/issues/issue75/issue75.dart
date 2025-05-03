@@ -17,9 +17,11 @@ void main() {
     final testFile = File('$currDir/test/issues/issue75/long-decode-file.txt');
     final contents = testFile.readAsStringSync();
     final toDecode = base64Decode(contents);
+
     final start = DateTime.now();
     final decoded = cbor.decode(toDecode);
     final end = DateTime.now();
+
     final timing = end.difference(start);
     print('Time taken : ${timing.inMilliseconds} ms');
     final jsonEncoder = CborJsonEncoder();
