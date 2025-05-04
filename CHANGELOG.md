@@ -1,3 +1,7 @@
+### 6.3.7
+- [Issue 75 - poc test only](https://github.com/shamblett/cbor/issues/75)
+- [PR 74](https://github.com/shamblett/cbor/pull/74)
+
 ### 6.3.6
 - [Issue 72](https://github.com/shamblett/cbor/issues/72)
 
