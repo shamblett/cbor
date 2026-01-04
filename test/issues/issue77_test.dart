@@ -12,10 +12,11 @@ void main() {
   test(
     'CBOR List missing tags when decoded',
     () {
-      const original = "82d8405820e8824c7a0c4e4d7d58009ba1675a72656f4899278906d9523cf0408f1a98f7fb00";
-
-      print(cborDecode(HEX.decode(original)));
-      print(cborPrettyPrint(HEX.decode(original)));
+      const original = "81D8405820E8824C7A0C4E4D7D58009BA1675A72656F4899278906D9523CF0408F1A98F7FB";
+      const originalList = '[$original]';
+      final result = cborDecode(HEX.decode(original));
+      print(result.toJson());
+      expect(result.toJson().toString(), originalList);
     },
   );
 }
