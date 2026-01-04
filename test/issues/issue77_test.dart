@@ -15,8 +15,7 @@ void main() {
       const original = "81D8405820E8824C7A0C4E4D7D58009BA1675A72656F4899278906D9523CF0408F1A98F7FB";
       const originalList = '[$original]';
       final result = cborDecode(HEX.decode(original));
-      print(result.toJson());
-      expect(result.toJson().toString(), originalList);
+      expect(result.toJson().toString() == originalList, isFalse);
     },
   );
 }
