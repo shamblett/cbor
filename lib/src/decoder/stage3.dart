@@ -147,7 +147,7 @@ class _CborUnexpectedUndefinedLengthException extends CborMalformedException {
     : super('Major type can not be undefined length', offset);
 }
 
-CborString _createString(List<int> str, int offset, List<int> tags) {
+CborString _createString(List<int> str, int _, List<int> tags) {
   final CborString cbor;
   switch (tags.lastWhereOrNull(isHintSubtype)) {
     case CborTag.dateTimeString:
@@ -176,7 +176,7 @@ CborString _createString(List<int> str, int offset, List<int> tags) {
   return cbor;
 }
 
-CborBytes _createBytes(List<int> data, int offset, List<int> tags) {
+CborBytes _createBytes(List<int> data, int _, List<int> tags) {
   switch (tags.lastWhereOrNull(isHintSubtype)) {
     case CborTag.positiveBignum:
       return CborBigInt.fromBytes(data, tags: tags);
