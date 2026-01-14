@@ -13,7 +13,13 @@ import 'package:test/test.dart';
 void main() {
   group('RFC 8746 Typed Arrays -> ', () {
     test('Tag 64 Uint8Array', () {
-      final encoded = [0xd8, 0x40, 0x42, 0x01, 0x02]; // Tag 64, Bytes(2), 01, 02
+      final encoded = [
+        0xd8,
+        0x40,
+        0x42,
+        0x01,
+        0x02,
+      ]; // Tag 64, Bytes(2), 01, 02
       final decoded = cbor.decode(encoded);
       expect(decoded, isA<CborUint8Array>());
       final array = decoded as CborUint8Array;
@@ -195,28 +201,28 @@ void main() {
 
     // Float16 tests depending on ieee754
     test('Tag 80 Float16ArrayBE', () {
-       // 1.0 in Float16 is 0x3c00
-       final encoded = [0xd8, 0x50, 0x42, 0x3c, 0x00];
-       final decoded = cbor.decode(encoded);
-       expect(decoded, isA<CborFloat16BigEndianArray>());
-       final array = decoded as CborFloat16BigEndianArray;
-       expect(array.toObject(), isA<List<double>>());
-       expect(array.toObject(), [1.0]);
+      // 1.0 in Float16 is 0x3c00
+      final encoded = [0xd8, 0x50, 0x42, 0x3c, 0x00];
+      final decoded = cbor.decode(encoded);
+      expect(decoded, isA<CborFloat16BigEndianArray>());
+      final array = decoded as CborFloat16BigEndianArray;
+      expect(array.toObject(), isA<List<double>>());
+      expect(array.toObject(), [1.0]);
     });
-    
+
     test('Tag 84 Float16ArrayLE', () {
-       // 1.0 in Float16 is 0x3c00 -> LE 0x003c
-       final encoded = [0xd8, 0x54, 0x42, 0x00, 0x3c];
-       final decoded = cbor.decode(encoded);
-       expect(decoded, isA<CborFloat16LittleEndianArray>());
-       final array = decoded as CborFloat16LittleEndianArray;
-       expect(array.toObject(), isA<List<double>>());
-       expect(array.toObject(), [1.0]);
+      // 1.0 in Float16 is 0x3c00 -> LE 0x003c
+      final encoded = [0xd8, 0x54, 0x42, 0x00, 0x3c];
+      final decoded = cbor.decode(encoded);
+      expect(decoded, isA<CborFloat16LittleEndianArray>());
+      final array = decoded as CborFloat16LittleEndianArray;
+      expect(array.toObject(), isA<List<double>>());
+      expect(array.toObject(), [1.0]);
     });
 
     // Roundtrip test (Encode -> Decode)
     test('Roundtrip Uint16ArrayBE', () {
-      // Create manually as we don't have encoder for TypedData -> CborTypedArray yet, 
+      // Create manually as we don't have encoder for TypedData -> CborTypedArray yet,
       // but we can create CborUint16BigEndianArray and encode it.
       // Wait, CborUint16BigEndianArray extends CborBytesImpl, which encodes as bytes with tags.
 
@@ -224,12 +230,12 @@ void main() {
       final bdata = ByteData.view(bytes.buffer);
       bdata.setUint16(0, 1, Endian.big);
       bdata.setUint16(2, 2, Endian.big);
-      
+
       final array = CborUint16BigEndianArray(bytes, tags: [65]);
-      
+
       final encoded = cbor.encode(array);
       expect(encoded, [0xd8, 0x41, 0x44, 0x00, 0x01, 0x00, 0x02]);
-      
+
       final decoded = cbor.decode(encoded);
       expect(decoded, isA<CborUint16BigEndianArray>());
       expect((decoded as CborUint16BigEndianArray).toObject(), [1, 2]);
