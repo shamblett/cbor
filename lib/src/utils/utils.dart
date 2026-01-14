@@ -129,6 +129,29 @@ bool isHintSubtype(int hint) {
     case CborTag.base64:
     case CborTag.regex:
     case CborTag.mime:
+    case CborTag.uint8Array:
+    case CborTag.uint16ArrayBE:
+    case CborTag.uint32ArrayBE:
+    case CborTag.uint64ArrayBE:
+    case CborTag.uint8ArrayClamped:
+    case CborTag.uint16ArrayLE:
+    case CborTag.uint32ArrayLE:
+    case CborTag.uint64ArrayLE:
+    case CborTag.sint8Array:
+    case CborTag.sint16ArrayBE:
+    case CborTag.sint32ArrayBE:
+    case CborTag.sint64ArrayBE:
+    case CborTag.sint16ArrayLE:
+    case CborTag.sint32ArrayLE:
+    case CborTag.sint64ArrayLE:
+    case CborTag.float16ArrayBE:
+    case CborTag.float32ArrayBE:
+    case CborTag.float64ArrayBE:
+    case CborTag.float128ArrayBE:
+    case CborTag.float16ArrayLE:
+    case CborTag.float32ArrayLE:
+    case CborTag.float64ArrayLE:
+    case CborTag.float128ArrayLE:
       return true;
   }
 

@@ -23,6 +23,7 @@ export 'list.dart';
 export 'map.dart';
 export 'simple_value.dart';
 export 'string.dart';
+export 'typed_data.dart';
 
 /// Jump table for initial byte values can be found <a href="https://www.rfc-editor.org/rfc/rfc8949.html#jumptable">here</a>.
 /// Maybe useful for code maintainers.
@@ -74,6 +75,31 @@ sealed class CborTag {
   static const int regex = 35;
   static const int mime = 36;
   static const int selfDescribeCbor = 55799;
+
+  // RFC 8746 Typed Arrays
+  static const int uint8Array = 64;
+  static const int uint16ArrayBE = 65;
+  static const int uint32ArrayBE = 66;
+  static const int uint64ArrayBE = 67;
+  static const int uint8ArrayClamped = 68;
+  static const int uint16ArrayLE = 69;
+  static const int uint32ArrayLE = 70;
+  static const int uint64ArrayLE = 71;
+  static const int sint8Array = 72;
+  static const int sint16ArrayBE = 73;
+  static const int sint32ArrayBE = 74;
+  static const int sint64ArrayBE = 75;
+  static const int sint16ArrayLE = 77;
+  static const int sint32ArrayLE = 78;
+  static const int sint64ArrayLE = 79;
+  static const int float16ArrayBE = 80;
+  static const int float32ArrayBE = 81;
+  static const int float64ArrayBE = 82;
+  static const int float128ArrayBE = 83;
+  static const int float16ArrayLE = 84;
+  static const int float32ArrayLE = 85;
+  static const int float64ArrayLE = 86;
+  static const int float128ArrayLE = 87;
 
   CborTag._();
 }
@@ -244,6 +270,7 @@ abstract class CborValue {
   /// | [CborDecimalFraction]     | `[int exponent, BigInt mantissa]` |
   /// | [CborBigFloat]            | `[int exponent, BigInt mantissa]` |
   /// | [CborMap]                 | [Map]                       |
+  /// | [CborTypedArray]          | [TypedData]                 |
   Object? toObject({
     bool parseDateTime = true,
     bool parseUri = true,

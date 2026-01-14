@@ -182,6 +182,52 @@ CborBytes _createBytes(List<int> data, int _, List<int> tags) {
       return CborBigInt.fromBytes(data, tags: tags);
     case CborTag.negativeBignum:
       return CborBigInt.fromNegativeBytes(data, tags: tags);
+    case CborTag.uint8Array:
+      return CborUint8Array(data, tags: tags);
+    case CborTag.uint16ArrayBE:
+      return CborUint16BigEndianArray(data, tags: tags);
+    case CborTag.uint32ArrayBE:
+      return CborUint32BigEndianArray(data, tags: tags);
+    case CborTag.uint64ArrayBE:
+      return CborUint64BigEndianArray(data, tags: tags);
+    case CborTag.uint8ArrayClamped:
+      return CborUint8ClampedArray(data, tags: tags);
+    case CborTag.uint16ArrayLE:
+      return CborUint16LittleEndianArray(data, tags: tags);
+    case CborTag.uint32ArrayLE:
+      return CborUint32LittleEndianArray(data, tags: tags);
+    case CborTag.uint64ArrayLE:
+      return CborUint64LittleEndianArray(data, tags: tags);
+    case CborTag.sint8Array:
+      return CborInt8Array(data, tags: tags);
+    case CborTag.sint16ArrayBE:
+      return CborInt16BigEndianArray(data, tags: tags);
+    case CborTag.sint32ArrayBE:
+      return CborInt32BigEndianArray(data, tags: tags);
+    case CborTag.sint64ArrayBE:
+      return CborInt64BigEndianArray(data, tags: tags);
+    case CborTag.sint16ArrayLE:
+      return CborInt16LittleEndianArray(data, tags: tags);
+    case CborTag.sint32ArrayLE:
+      return CborInt32LittleEndianArray(data, tags: tags);
+    case CborTag.sint64ArrayLE:
+      return CborInt64LittleEndianArray(data, tags: tags);
+    case CborTag.float16ArrayBE:
+      return CborFloat16BigEndianArray(data, tags: tags);
+    case CborTag.float32ArrayBE:
+      return CborFloat32BigEndianArray(data, tags: tags);
+    case CborTag.float64ArrayBE:
+      return CborFloat64BigEndianArray(data, tags: tags);
+    case CborTag.float128ArrayBE:
+      return CborFloat128BigEndianArray(data, tags: tags);
+    case CborTag.float16ArrayLE:
+      return CborFloat16LittleEndianArray(data, tags: tags);
+    case CborTag.float32ArrayLE:
+      return CborFloat32LittleEndianArray(data, tags: tags);
+    case CborTag.float64ArrayLE:
+      return CborFloat64LittleEndianArray(data, tags: tags);
+    case CborTag.float128ArrayLE:
+      return CborFloat128LittleEndianArray(data, tags: tags);
     default:
       return CborBytes(data, tags: tags);
   }
