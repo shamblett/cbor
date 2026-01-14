@@ -133,7 +133,9 @@ class CborInt8Array extends CborTypedArray {
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    return Int8List.fromList(bytes); // Reinterprets bytes? No, fromList copies values.
+    return Int8List.fromList(
+      bytes,
+    ); // Reinterprets bytes? No, fromList copies values.
     // Bytes are 0-255. Int8List expects -128 to 127.
     // We should use Int8List.view if possible or convert.
     // Uint8List can be viewed as Int8List.
@@ -244,7 +246,10 @@ class CborFloat16BigEndianArray extends CborTypedArray {
       // We must handle endianness.
       // If BE, we pass as is (assuming fromFloat16Bytes expects BE? Default network byte order is BE).
       // Let's assume standard behavior.
-      final chunk = Uint8List.fromList([data.getUint8(i), data.getUint8(i + 1)]);
+      final chunk = Uint8List.fromList([
+        data.getUint8(i),
+        data.getUint8(i + 1),
+      ]);
       // If we need to respect endianness and fromFloat16Bytes expects something...
       // Usually float16 parsing libraries expect bytes.
       // If it's BE array, bytes are BE.
@@ -275,7 +280,10 @@ class CborFloat16LittleEndianArray extends CborTypedArray {
     final data = ByteData.sublistView(Uint8List.fromList(bytes));
     for (var i = 0; i < bytes.length; i += 2) {
       // Reverse for Little Endian if library expects Big Endian
-      final chunk = Uint8List.fromList([data.getUint8(i+1), data.getUint8(i)]); 
+      final chunk = Uint8List.fromList([
+        data.getUint8(i + 1),
+        data.getUint8(i),
+      ]);
       list.add(FloatParts.fromFloat16Bytes(chunk).toDouble());
     }
     return list;
@@ -345,7 +353,7 @@ class CborFloat64LittleEndianArray extends CborTypedArray {
 /// float128 big endian
 class CborFloat128BigEndianArray extends CborTypedArray {
   const CborFloat128BigEndianArray(super.bytes, {super.tags});
-  
+
   // No native support, return bytes or implement if possible.
   // Returning bytes as fallback.
 }
@@ -353,6 +361,6 @@ class CborFloat128BigEndianArray extends CborTypedArray {
 /// float128 little endian
 class CborFloat128LittleEndianArray extends CborTypedArray {
   const CborFloat128LittleEndianArray(super.bytes, {super.tags});
-  
+
   // No native support
 }
