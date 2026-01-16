@@ -105,6 +105,21 @@ void main() {
       expect(array.toObject(), [1, 2]);
     });
 
+    test('Tag 67 Uint64ArrayBE', () {
+      final encoded = [
+        0xd8,
+        0x43,
+        0x50, // Tag 67, Bytes(16)
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,
+      ];
+      final decoded = cbor.decode(encoded);
+      expect(decoded, isA<CborUint64BigEndianArray>());
+      final array = decoded as CborUint64BigEndianArray;
+      expect(array.toObject(), isA<Uint64List>());
+      expect(array.toObject(), [1, 2]);
+    });
+
     test('Tag 72 Int8Array', () {
       // -1 (0xFF), 1 (0x01)
       final encoded = [0xd8, 0x48, 0x42, 0xFF, 0x01];
@@ -125,8 +140,29 @@ void main() {
       expect(array.toObject(), [-1, 1]);
     });
 
+    test('Tag 74 Int32ArrayBE', () {
+      // -1 (0xFFFFFFFF), 1 (0x00000001)
+      final encoded = [
+        0xd8,
+        0x4a,
+        0x48,
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+      ];
+      final decoded = cbor.decode(encoded);
+      expect(decoded, isA<CborInt32BigEndianArray>());
+      final array = decoded as CborInt32BigEndianArray;
+      expect(array.toObject(), isA<Int32List>());
+      expect(array.toObject(), [-1, 1]);
+    });
+
     test('Tag 77 Int16ArrayLE', () {
-      // -1 (0xFFFF), 1 (0x0100 in LE? No, 0x0100 is 256. 1 is 0x01 0x00)
       final encoded = [0xd8, 0x4d, 0x44, 0xFF, 0xFF, 0x01, 0x00];
       final decoded = cbor.decode(encoded);
       expect(decoded, isA<CborInt16LittleEndianArray>());
@@ -199,7 +235,7 @@ void main() {
       expect(array.toObject(), [1.0]);
     });
 
-    // Float16 tests depending on ieee754
+    // Float16 tests
     test('Tag 80 Float16ArrayBE', () {
       // 1.0 in Float16 is 0x3c00
       final encoded = [0xd8, 0x50, 0x42, 0x3c, 0x00];
@@ -220,25 +256,60 @@ void main() {
       expect(array.toObject(), [1.0]);
     });
 
-    // Roundtrip test (Encode -> Decode)
-    test('Roundtrip Uint16ArrayBE', () {
-      // Create manually as we don't have encoder for TypedData -> CborTypedArray yet,
-      // but we can create CborUint16BigEndianArray and encode it.
-      // Wait, CborUint16BigEndianArray extends CborBytesImpl, which encodes as bytes with tags.
+    // Float128 tests (Unimplemented)
+    test('Tag 83 Float128ArrayBE', () {
+      final encoded = [0xd8, 0x53, 0x50, for (var i = 0; i < 16; i++) 0];
+      final decoded = cbor.decode(encoded);
+      expect(decoded, isA<CborFloat128BigEndianArray>());
+      final array = decoded as CborFloat128BigEndianArray;
+      expect(() => array.toObject(), throwsUnimplementedError);
+    });
 
-      final bytes = Uint8List(4);
-      final bdata = ByteData.view(bytes.buffer);
-      bdata.setUint16(0, 1, Endian.big);
-      bdata.setUint16(2, 2, Endian.big);
-
-      final array = CborUint16BigEndianArray(bytes, tags: [65]);
-
-      final encoded = cbor.encode(array);
-      expect(encoded, [0xd8, 0x41, 0x44, 0x00, 0x01, 0x00, 0x02]);
-
+    // Misaligned length tests
+    test('Uint16ArrayBE Misaligned', () {
+      final encoded = [0xd8, 0x41, 0x43, 0x00, 0x01, 0x00]; // 3 bytes
       final decoded = cbor.decode(encoded);
       expect(decoded, isA<CborUint16BigEndianArray>());
-      expect((decoded as CborUint16BigEndianArray).toObject(), [1, 2]);
+      final array = decoded as CborUint16BigEndianArray;
+      expect(() => array.toObject(), throwsA(isA<CborMalformedException>()));
+    });
+
+    test('Float128ArrayBE Misaligned', () {
+      final encoded = [
+        0xd8,
+        0x53,
+        0x4F,
+        for (var i = 0; i < 15; i++) 0,
+      ]; // 15 bytes
+      final decoded = cbor.decode(encoded);
+      expect(decoded, isA<CborFloat128BigEndianArray>());
+      final array = decoded as CborFloat128BigEndianArray;
+      expect(() => array.toObject(), throwsA(isA<CborMalformedException>()));
+    });
+
+    // Factory tests
+    test('Factory Uint16ArrayBE.fromList', () {
+      final array = CborUint16BigEndianArray.fromList([1, 2]);
+      expect(array.bytes, [0x00, 0x01, 0x00, 0x02]);
+      expect(array.tags, [65]);
+    });
+
+    test('Factory Uint16ArrayLE.fromList', () {
+      final array = CborUint16LittleEndianArray.fromList([1, 2]);
+      expect(array.bytes, [0x01, 0x00, 0x02, 0x00]);
+      expect(array.tags, [69]);
+    });
+
+    test('Factory Float32ArrayBE.fromList', () {
+      final array = CborFloat32BigEndianArray.fromList([1.0]);
+      // 1.0 (0x3f800000)
+      expect(array.bytes, [0x3f, 0x80, 0x00, 0x00]);
+    });
+
+    test('Factory Float32ArrayLE.fromList', () {
+      final array = CborFloat32LittleEndianArray.fromList([1.0]);
+      // 1.0 (0x0000803f)
+      expect(array.bytes, [0x00, 0x00, 0x80, 0x3f]);
     });
   });
 }
