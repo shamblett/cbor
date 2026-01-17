@@ -104,3 +104,8 @@ test('{1:2,3:4}', () {
    expect(encoded, [0xa2, 0x01, 0x02, 0x03, 0x04]);
 });
 ```
+#### Additional RFC's implemented
+
+The following CBOR RFC's have also been implemented in the package :-
+
++ [RFC8746](https://datatracker.ietf.org/doc/html/rfc8746) - Concise Binary Object Representation (CBOR) Tags for Typed Arrays.
