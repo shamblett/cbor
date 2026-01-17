@@ -53,15 +53,15 @@ class CborMultiDimensionalArray with CborValueMixin implements CborValue {
     sink.addTags(tags);
     // Array of length 2
     sink.addHeaderInfo(CborMajorType.array, Arg.int(2));
-    
+
     // Dimensions array
     sink.addHeaderInfo(CborMajorType.array, Arg.int(dimensions.length));
     for (final dim in dimensions) {
-        if (dim < 0) {
-           sink.addHeaderInfo(CborMajorType.nint, Arg.int(-1 - dim));
-        } else {
-           sink.addHeaderInfo(CborMajorType.uint, Arg.int(dim));
-        }
+      if (dim < 0) {
+        sink.addHeaderInfo(CborMajorType.nint, Arg.int(-1 - dim));
+      } else {
+        sink.addHeaderInfo(CborMajorType.uint, Arg.int(dim));
+      }
     }
 
     // Data
@@ -70,11 +70,11 @@ class CborMultiDimensionalArray with CborValueMixin implements CborValue {
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-      return [dimensions, data.toObjectInternal(cyclicCheck, o)];
+    return [dimensions, data.toObjectInternal(cyclicCheck, o)];
   }
 
   @override
   Object? toJsonInternal(Set<Object> cyclicCheck, ToJsonOptions o) {
-      return [dimensions, data.toJsonInternal(cyclicCheck, o)];
+    return [dimensions, data.toJsonInternal(cyclicCheck, o)];
   }
 }

@@ -325,10 +325,10 @@ void main() {
       //       01 02 03 04
       final encoded = [
         0xd8, 0x28, // Tag 40
-        0x82,       // Array(2)
+        0x82, // Array(2)
         0x82, 0x02, 0x02, // Dimensions [2, 2]
         0xd8, 0x40, // Tag 64 (Uint8Array)
-        0x44, 0x01, 0x02, 0x03, 0x04 // Bytes
+        0x44, 0x01, 0x02, 0x03, 0x04, // Bytes
       ];
       final decoded = cbor.decode(encoded);
       expect(decoded, isA<CborMultiDimensionalArray>());
@@ -340,10 +340,10 @@ void main() {
     });
 
     test('Tag 40 Multi-dimensional Array Encoding', () {
-      final array = CborMultiDimensionalArray.fromTypedArray(
-        [2, 2],
-        CborUint8Array.fromList([1, 2, 3, 4]),
-      );
+      final array = CborMultiDimensionalArray.fromTypedArray([
+        2,
+        2,
+      ], CborUint8Array.fromList([1, 2, 3, 4]));
       final encoded = cbor.encode(array);
       // Check bytes
       final expected = [
