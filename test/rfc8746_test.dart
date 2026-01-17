@@ -311,5 +311,57 @@ void main() {
       // 1.0 (0x0000803f)
       expect(array.bytes, [0x00, 0x00, 0x80, 0x3f]);
     });
+
+    // Multi-dimensional Array tests
+    test('Tag 40 Multi-dimensional Array with Uint8Array', () {
+      // 2x2 array of [1, 2, 3, 4]
+      // Tag 40 (d8 28)
+      // Array(2) (82)
+      //   Dimensions Array(2) (82)
+      //     2 (02)
+      //     2 (02)
+      //   Data: Tag 64 (d8 40)
+      //     Bytes(4) (44)
+      //       01 02 03 04
+      final encoded = [
+        0xd8, 0x28, // Tag 40
+        0x82,       // Array(2)
+        0x82, 0x02, 0x02, // Dimensions [2, 2]
+        0xd8, 0x40, // Tag 64 (Uint8Array)
+        0x44, 0x01, 0x02, 0x03, 0x04 // Bytes
+      ];
+      final decoded = cbor.decode(encoded);
+      expect(decoded, isA<CborMultiDimensionalArray>());
+      final md = decoded as CborMultiDimensionalArray;
+      expect(md.dimensions, [2, 2]);
+      expect(md.data, isA<CborUint8Array>());
+      final data = md.data as CborUint8Array;
+      expect(data.toObject(), [1, 2, 3, 4]);
+    });
+
+    test('Tag 40 Multi-dimensional Array Encoding', () {
+      final array = CborMultiDimensionalArray.fromTypedArray(
+        [2, 2],
+        CborUint8Array.fromList([1, 2, 3, 4]),
+      );
+      final encoded = cbor.encode(array);
+      // Check bytes
+      final expected = [
+        0xd8,
+        0x28, // Tag 40
+        0x82, // Array(2)
+        0x82,
+        0x02,
+        0x02, // Dimensions [2, 2]
+        0xd8,
+        0x40, // Tag 64 (Uint8Array)
+        0x44,
+        0x01,
+        0x02,
+        0x03,
+        0x04, // Bytes
+      ];
+      expect(encoded, expected);
+    });
   });
 }

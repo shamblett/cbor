@@ -122,13 +122,16 @@ bool isHintSubtype(int hint) {
     case CborTag.epochDateTime:
     case CborTag.positiveBignum:
     case CborTag.negativeBignum:
+    case CborTag.decimalFraction:
     case CborTag.bigFloat:
     case CborTag.encodedCborData:
+    case CborTag.rationalNumber:
     case CborTag.uri:
     case CborTag.base64Url:
     case CborTag.base64:
     case CborTag.regex:
     case CborTag.mime:
+    case CborTag.multiDimensionalArray:
     case CborTag.uint8Array:
     case CborTag.uint16ArrayBE:
     case CborTag.uint32ArrayBE:

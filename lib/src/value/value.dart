@@ -21,6 +21,7 @@ export 'double.dart';
 export 'int.dart';
 export 'list.dart';
 export 'map.dart';
+export 'multi_dimensional_array.dart';
 export 'simple_value.dart';
 export 'string.dart';
 export 'typed_data.dart';
@@ -74,6 +75,7 @@ sealed class CborTag {
   static const int base64 = 34;
   static const int regex = 35;
   static const int mime = 36;
+  static const int multiDimensionalArray = 40;
   static const int selfDescribeCbor = 55799;
 
   // RFC 8746 Typed Arrays

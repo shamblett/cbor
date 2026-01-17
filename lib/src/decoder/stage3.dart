@@ -275,12 +275,44 @@ CborFloat _createFloat(RawValueTagged raw) {
       : CborFloat(value, tags: raw.tags);
 }
 
-CborList _createList(
+CborValue _createList(
   RawValueTagged raw,
   List<CborValue> items,
   CborLengthType type,
 ) {
   switch (raw.tags.lastWhereOrNull(isHintSubtype)) {
+    case CborTag.multiDimensionalArray:
+      if (items.length != CborConstants.two) {
+        break;
+      }
+
+      final dimensionsCbor = items.first;
+      final data = items[1];
+
+      if (dimensionsCbor is! CborList) {
+        break;
+      }
+
+      final dimensions = <int>[];
+      var validDims = true;
+      for (final dim in dimensionsCbor) {
+        if (dim is CborSmallInt) {
+          dimensions.add(dim.value);
+        } else if (dim is CborInt) {
+          dimensions.add(dim.toBigInt().toInt());
+        } else {
+          validDims = false;
+          break;
+        }
+      }
+
+      if (!validDims) break;
+
+      return CborMultiDimensionalArray(
+        dimensions: dimensions,
+        data: data,
+        tags: raw.tags,
+      );
     case CborTag.rationalNumber:
       if (items.length != CborConstants.two) {
         break;
