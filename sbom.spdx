@@ -5,19 +5,19 @@ DocumentName: cbor
 DocumentNamespace: https://pub.dev/packages/cbor
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2025-05-04T09:14:10Z
+Created: 2026-01-18T14:00:03Z
 CreatorComment: <text>Please refer to the AUTHORS file for contributor/creation details</text>
 
 
 PackageName: cbor
 SPDXID: SPDXRef-Package-cbor
-PackageVersion: 6.3.7
+PackageVersion: 6.4.0
 PackageFileName: cbor
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/cbor
 FilesAnalyzed: true
-PackageVerificationCode: 8406c61324d69ba1a901b9d012876389061b19b5
+PackageVerificationCode: 6e5b216bffa2ed64a25ca9405587664de6fdba13
 PackageHomePage: https://pub.dev/packages/cbor
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -74,7 +74,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/decoder/pretty_print.dart
 SPDXID: SPDXRef-pretty-print-5
 FileType: SOURCE
-FileChecksum: SHA1: 243573ed26f445cd07a3e84384cc4a329e0a17c5
+FileChecksum: SHA1: 7a404065574a4635e2c267baa67de67d747ab98e
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -110,7 +110,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/decoder/stage3.dart
 SPDXID: SPDXRef-stage3-9
 FileType: SOURCE
-FileChecksum: SHA1: 5e0192fd559aa43030d7fedc6e5affefa85dadbb
+FileChecksum: SHA1: 617a14916befcd45be398e60b125dc2863f28136
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -119,7 +119,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/encoder/encoder.dart
 SPDXID: SPDXRef-encoder-10
 FileType: SOURCE
-FileChecksum: SHA1: 82e9c82259d60d80ac65e1b6d79385e25c50e682
+FileChecksum: SHA1: 8d6df2e47d69a0d65d70dcda7abc3e69eb2928aa
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -128,7 +128,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/encoder/sink.dart
 SPDXID: SPDXRef-sink-11
 FileType: SOURCE
-FileChecksum: SHA1: 8d6df2e47d69a0d65d70dcda7abc3e69eb2928aa
+FileChecksum: SHA1: 54d5d10de3972e1c5af7ab6fbd2d7b057facfa2b
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -137,7 +137,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/error.dart
 SPDXID: SPDXRef-error-12
 FileType: SOURCE
-FileChecksum: SHA1: 54d5d10de3972e1c5af7ab6fbd2d7b057facfa2b
+FileChecksum: SHA1: 7617a2e355344b4a5e7a72e048a17fcc6eb8d25e
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -146,7 +146,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/json.dart
 SPDXID: SPDXRef-json-13
 FileType: SOURCE
-FileChecksum: SHA1: 7617a2e355344b4a5e7a72e048a17fcc6eb8d25e
+FileChecksum: SHA1: ca4610bc1740921f77c4bc1ce428b1447cba77fb
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -155,7 +155,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/simple.dart
 SPDXID: SPDXRef-simple-14
 FileType: SOURCE
-FileChecksum: SHA1: ca4610bc1740921f77c4bc1ce428b1447cba77fb
+FileChecksum: SHA1: c090d3ad1a296fefee25d7a0fb20d68aa0153ce5
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -164,7 +164,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/utils/arg.dart
 SPDXID: SPDXRef-arg-15
 FileType: SOURCE
-FileChecksum: SHA1: c090d3ad1a296fefee25d7a0fb20d68aa0153ce5
+FileChecksum: SHA1: bc1ddedd78422ad638b21ebf24386475eb93c3bc
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -173,7 +173,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/utils/utils.dart
 SPDXID: SPDXRef-utils-16
 FileType: SOURCE
-FileChecksum: SHA1: bc1ddedd78422ad638b21ebf24386475eb93c3bc
+FileChecksum: SHA1: 909cd8eb207dbd803478e0fad37e951fba2e10fd
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -182,7 +182,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/value/bytes.dart
 SPDXID: SPDXRef-bytes-17
 FileType: SOURCE
-FileChecksum: SHA1: 909cd8eb207dbd803478e0fad37e951fba2e10fd
+FileChecksum: SHA1: 50fe9a94cfec6c728b19e6ee9b7cbcfd3930dc0b
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -191,7 +191,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/value/double.dart
 SPDXID: SPDXRef-double-18
 FileType: SOURCE
-FileChecksum: SHA1: 36e443e6de74de7531fcbc6255aa21d3b89e90b5
+FileChecksum: SHA1: 660d47b66442b40e66abc41dc4aa83846396c0e4
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -200,7 +200,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/value/int.dart
 SPDXID: SPDXRef-int-19
 FileType: SOURCE
-FileChecksum: SHA1: 75965d7fcdb22ac47e6b6f14da059174edeba1dc
+FileChecksum: SHA1: 1b2f2a9f057c88db3b6e389ec3b33b6e12414227
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -209,7 +209,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/value/internal.dart
 SPDXID: SPDXRef-internal-20
 FileType: SOURCE
-FileChecksum: SHA1: e19d7a112c42222fa9a85786113b84c6089226da
+FileChecksum: SHA1: c02673baa59d0e3c0f5e14ab2c41b8c6cdccc753
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -218,7 +218,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/value/list.dart
 SPDXID: SPDXRef-list-21
 FileType: SOURCE
-FileChecksum: SHA1: 23a83ef827b0584f46b82d1147fa7f0eddf5a930
+FileChecksum: SHA1: 75965d7fcdb22ac47e6b6f14da059174edeba1dc
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -227,14 +227,32 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/value/map.dart
 SPDXID: SPDXRef-map-22
 FileType: SOURCE
-FileChecksum: SHA1: a93e08f07d2ed77f28ad0970204425387847a0e3
+FileChecksum: SHA1: e19d7a112c42222fa9a85786113b84c6089226da
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/value/multi_dimensional_array.dart
+SPDXID: SPDXRef-multi-dimensional-array-23
+FileType: SOURCE
+FileChecksum: SHA1: 23a83ef827b0584f46b82d1147fa7f0eddf5a930
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
 FileName: lib/src/value/simple_value.dart
-SPDXID: SPDXRef-simple-value-23
+SPDXID: SPDXRef-simple-value-24
+FileType: SOURCE
+FileChecksum: SHA1: a93e08f07d2ed77f28ad0970204425387847a0e3
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/value/string.dart
+SPDXID: SPDXRef-string-25
 FileType: SOURCE
 FileChecksum: SHA1: 0e50b1051660068a7c429b8947c3453dc757d204
 LicenseConcluded: NOASSERTION
@@ -242,8 +260,8 @@ LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/value/string.dart
-SPDXID: SPDXRef-string-24
+FileName: lib/src/value/typed_data.dart
+SPDXID: SPDXRef-typed-data-26
 FileType: SOURCE
 FileChecksum: SHA1: c8b770a04adefaa569c88be32ae0df184797494d
 LicenseConcluded: NOASSERTION
@@ -252,7 +270,7 @@ FileCopyrightText: NOASSERTION
 
 
 FileName: lib/src/value/value.dart
-SPDXID: SPDXRef-value-25
+SPDXID: SPDXRef-value-27
 FileType: SOURCE
 FileChecksum: SHA1: ef8e0453a79c3e6d031f90e80c4196efb8487360
 LicenseConcluded: NOASSERTION
@@ -261,14 +279,14 @@ FileCopyrightText: NOASSERTION
 
 
 FileName: pubspec.yaml
-SPDXID: SPDXRef-pubspec-26
+SPDXID: SPDXRef-pubspec-28
 FileType: TEXT
-FileChecksum: SHA1: 88860152ed01eb534004d6bc49c1ca0bcf92355f
+FileChecksum: SHA1: b68bdaffc4da1134d8e09238f7fdf45849587b93
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-Relationship: SPDXRef-pubspec-26 DEPENDENCY_MANIFEST_OF SPDXRef-Package-cbor
+Relationship: SPDXRef-pubspec-28 DEPENDENCY_MANIFEST_OF SPDXRef-Package-cbor
 
 
