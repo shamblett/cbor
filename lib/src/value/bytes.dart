@@ -25,13 +25,13 @@ abstract class CborBytes extends CborValue {
 
   CborLengthType get type;
 
-  factory CborBytes(List<int> bytes, {List<int> tags}) = _CborBytesImpl;
+  factory CborBytes(List<int> bytes, {List<int> tags}) = CborBytesImpl;
 
   factory CborBytes.indefinite(List<List<int>> bytes, {List<int> tags}) =
       _CborBytesIndefiniteLengthImpl;
 }
 
-class _CborBytesImpl with CborValueMixin implements CborBytes {
+class CborBytesImpl with CborValueMixin implements CborBytes {
   @override
   final List<int> bytes;
   @override
@@ -45,7 +45,7 @@ class _CborBytesImpl with CborValueMixin implements CborBytes {
   @override
   int get hashCode => Object.hashAll([bytes, tags].flattened);
 
-  const _CborBytesImpl(this.bytes, {this.tags = const []});
+  const CborBytesImpl(this.bytes, {this.tags = const []});
 
   @override
   String toString() => bytes.toString();
@@ -251,7 +251,7 @@ abstract class CborBigInt extends CborBytes implements CborInt {
       _CborBigIntImpl.fromNegativeBytes;
 }
 
-class _CborBigIntImpl extends _CborBytesImpl implements CborBigInt {
+class _CborBigIntImpl extends CborBytesImpl implements CborBigInt {
   @override
   final bool isNegative;
 
