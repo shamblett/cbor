@@ -22,3 +22,6 @@ dependencies:
 dev_dependencies:
   test: '^1.28.0'
   lints: '^6.0.0'
+  build_runner: '^2.10.5'
+  build_test: '^3.5.5'
+  build_web_compilers: '^4.4.7'

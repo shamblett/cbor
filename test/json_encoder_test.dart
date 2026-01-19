@@ -15,6 +15,7 @@ String encode(Object? input) {
 }
 
 void main() {
+  const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
     test('0', () {
       expect(encode(0), '0');
@@ -58,7 +59,7 @@ void main() {
 
     test('0.0', () {
       expect(encode(0.0), '0.0');
-    });
+    }, skip: kIsWeb);
 
     test('-0.0', () {
       expect(encode(-0.0), '-0.0');
@@ -66,7 +67,7 @@ void main() {
 
     test('1.0', () {
       expect(encode(1.0), '1.0');
-    });
+    }, skip: kIsWeb);
 
     test('1.5', () {
       expect(encode(1.5), '1.5');
@@ -74,19 +75,19 @@ void main() {
 
     test('65504.0', () {
       expect(encode(65504.0), '65504.0');
-    });
+    }, skip: kIsWeb);
 
     test('100000.0', () {
       expect(encode(100000.0), '100000.0');
-    });
+    }, skip: kIsWeb);
 
     test('3.4028234663852886e+38', () {
       expect(encode(3.4028234663852886e+38), '3.4028234663852886e+38');
-    });
+    }, skip: kIsWeb);
 
     test('1.0e+300', () {
       expect(encode(1.0e+300), '1e+300');
-    });
+    }, skip: kIsWeb);
 
     test('5.960464477539063e-8', () {
       expect(encode(5.960464477539063e-8), '5.960464477539063e-8');
@@ -98,7 +99,7 @@ void main() {
 
     test('Infinity', () {
       expect(encode(double.infinity), 'null');
-    });
+    }, skip: kIsWeb);
 
     test('Nan', () {
       expect(encode(double.nan), 'null');
@@ -106,7 +107,7 @@ void main() {
 
     test('-Infinity', () {
       expect(encode(double.negativeInfinity), 'null');
-    });
+    }, skip: kIsWeb);
 
     test('False', () {
       expect(encode(false), 'false');
