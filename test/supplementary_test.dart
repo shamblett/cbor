@@ -10,7 +10,10 @@ import 'dart:typed_data';
 import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
+import 'support/environment.dart';
+
 void main() {
+  setEnvironment();
   group('Known patterns', () {
     test('Pattern 1  -> ', () {
       final encoded = cbor.encode(

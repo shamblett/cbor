@@ -8,7 +8,10 @@
 import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
+import 'support/environment.dart';
+
 void main() {
+  setEnvironment();
   group("Int Numbers Test", () {
     final numbersToTest = [
       BigInt.parse("0"),

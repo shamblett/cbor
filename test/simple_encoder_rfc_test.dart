@@ -10,7 +10,10 @@ import 'dart:typed_data';
 import 'package:cbor/simple.dart';
 import 'package:test/test.dart';
 
+import 'support/environment.dart';
+
 void main() {
+  setEnvironment();
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
     test('0', () {
       final encoded = cbor.encode(0);

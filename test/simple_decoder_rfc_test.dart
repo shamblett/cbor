@@ -8,8 +8,10 @@
 import 'package:cbor/simple.dart';
 import 'package:test/test.dart';
 
+import 'support/environment.dart';
+
 void main() {
-  const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
+  setEnvironment();
   group('RFC Appendix A Diagnostics decoder tests -> ', () {
     test('0', () {
       final decoded = cbor.decode([0x00]);

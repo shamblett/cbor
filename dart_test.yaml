@@ -1,0 +1,15 @@
+presets:
+
+  # Run tests on JS platform: dart test -P js
+  js:
+    platforms: [chrome]
+
+  # Run tests on WASM platform: dart test -P wasm
+  wasm:
+    platforms: [chrome]
+    compilers: [dart2wasm]
+
+  # Run tests on all platforms: dart test -P all
+  all:
+    platforms: [vm, chrome]
+    compilers: [kernel, dart2js, dart2wasm]
