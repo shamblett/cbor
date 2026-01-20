@@ -10,10 +10,8 @@ import 'dart:typed_data';
 import 'package:cbor/simple.dart';
 import 'package:test/test.dart';
 
-import 'support/environment.dart';
-
 void main() {
-  setEnvironment();
+  const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
     test('0', () {
       final encoded = cbor.encode(0);

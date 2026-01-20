@@ -10,10 +10,8 @@ import 'dart:typed_data';
 import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
-import 'support/environment.dart';
-
 void main() {
-  setEnvironment();
+  const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
   group('RFC 8746 Typed Arrays -> ', () {
     test('Tag 64 Uint8Array', () {
       final encoded = [
