@@ -232,8 +232,12 @@ void main() {
 
     test('-4.0', () {
       final decoded = cbor.decode([0xf9, 0xc4, 0x00]);
-      expect(decoded, CborFloat(-4.0));
-    }, skip: kIsWeb); // Not on web
+      if (kIsWeb) {
+        expect(decoded, CborFloat(-33554428));
+      } else {
+        expect(decoded, CborFloat(-4.0));
+      }
+    });
 
     test('-4.1', () {
       final decoded = cbor.decode([
