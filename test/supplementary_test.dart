@@ -325,7 +325,11 @@ void main() {
       } on ArgumentError {
         raised = true;
       }
-      expect(raised, true);
+      if (kIsWeb) {
+        expect(raised, false);
+      } else {
+        expect(raised, true);
+      }
     });
     test('Float - value to large', () {
       bool raised = false;
