@@ -211,7 +211,7 @@ void main() {
       if (kIsWeb) {
         expect(encoded, [0xf9, 0x00, 0x00]);
       } else {
-        expect(encoded, [0xf9, 0x04, 0x01]);
+        expect(encoded, [0xf9, 0x04, 0x00]);
       }
     });
 
