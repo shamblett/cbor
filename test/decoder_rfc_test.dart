@@ -8,10 +8,8 @@
 import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
-import 'support/environment.dart';
-
 void main() {
-  setEnvironment();
+  const bool skipJSTest = bool.fromEnvironment('dart.library.js_interop');
   group('RFC Appendix A Diagnostics decoder tests -> ', () {
     test('0', () {
       final decoded = cbor.decode([0x00]);

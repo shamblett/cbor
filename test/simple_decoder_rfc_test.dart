@@ -118,7 +118,7 @@ void main() {
         0xff,
       ]);
       expect(decoded, BigInt.parse('-18446744073709551616'));
-    }, skip: kIsWeb);
+    });
 
     test('-18446744073709551617', () {
       final decoded = cbor.decode([
@@ -235,7 +235,7 @@ void main() {
     test('-4.0', () {
       final decoded = cbor.decode([0xf9, 0xc4, 0x00]);
       expect(decoded, -4.0);
-    }, skip: kIsWeb);
+    });
 
     test('-4.1', () {
       final decoded = cbor.decode([

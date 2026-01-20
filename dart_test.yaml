@@ -3,6 +3,7 @@ presets:
   # Run tests on JS platform: dart test -P js
   js:
     platforms: [chrome]
+    compilers: [dart2js]
 
   # Run tests on WASM platform: dart test -P wasm
   wasm:
