@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - uses: browser-actions/setup-chrome@v1
+      - run: chrome --version
+
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1
 
@@ -33,3 +37,6 @@ jobs:
           file: coverage/lcov.info
           name: Upload to codecov.io
           verbose: true
+
+      - name: Run web tests
+        run: dart run build_runner test --fail-on-severe -- -p chrome test
