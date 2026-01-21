@@ -8,8 +8,6 @@
 import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
-
-
 void main() {
   group('DateTime conversion tests', () {
     test('With 0 ms', () {

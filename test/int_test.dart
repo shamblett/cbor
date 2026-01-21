@@ -8,8 +8,6 @@
 import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
-
-
 void main() {
   group("Int Numbers Test", () {
     final numbersToTest = [

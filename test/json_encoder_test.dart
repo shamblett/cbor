@@ -10,8 +10,6 @@ import 'dart:typed_data';
 import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
-
-
 String encode(Object? input) {
   return const CborJsonEncoder().convert(CborValue(input));
 }
