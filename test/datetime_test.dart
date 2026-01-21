@@ -11,7 +11,6 @@ import 'package:test/test.dart';
 
 
 void main() {
-   const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
   group('DateTime conversion tests', () {
     test('With 0 ms', () {
       expect(

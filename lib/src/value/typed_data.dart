@@ -202,17 +202,27 @@ class CborUint64BigEndianArray extends CborTypedArray {
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
+    const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
     if (bytes.length % 8 != 0) {
       throw CborMalformedException(
         'Uint64ArrayBE byte length not multiple of 8',
       );
     }
-    final list = Uint64List(bytes.length ~/ 8);
-    final data = ByteData.sublistView(Uint8List.fromList(bytes));
-    for (var i = 0; i < list.length; i++) {
-      list[i] = data.getUint64(i * 8, Endian.big);
+    if (!kIsWeb) {
+      final list = Uint64List(bytes.length ~/ 8);
+      final data = ByteData.sublistView(Uint8List.fromList(bytes));
+      for (var i = 0; i < list.length; i++) {
+        list[i] = data.getUint64(i * 8, Endian.big);
+      }
+      return list;
+    } else {
+      final list = Float64List(bytes.length ~/ 8);
+      final data = ByteData.sublistView(Uint8List.fromList(bytes));
+      for (var i = 0; i < list.length; i++) {
+        list[i] = data.getFloat64(i * 8, Endian.big);
+      }
+      return list;
     }
-    return list;
   }
 }
 
