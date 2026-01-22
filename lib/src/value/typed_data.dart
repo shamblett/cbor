@@ -9,7 +9,8 @@ import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
 import 'package:cbor/src/value/internal.dart';
-import 'package:ieee754/ieee754.dart';
+
+import '../utils/float_utils.dart' as float_utils;
 
 /// Base class for all Typed Arrays
 sealed class CborTypedArray extends CborBytesImpl {
@@ -184,6 +185,14 @@ class CborUint32LittleEndianArray extends CborTypedArray {
   }
 }
 
+/// Platform detection constants
+/// Using `identical(0, 0.0)` which returns true only on JS where int/double are same.
+final bool _kIsJs = identical(0, 0.0);
+// For WASM detection, we can't use identical check. WASM doesn't have the setUint64 issue
+// but doesn't have int/double conflation either. Use dart.tool.dart2wasm for now.
+const bool _kIsWasm = bool.fromEnvironment('dart.tool.dart2wasm');
+final bool _kIsWeb = _kIsJs || _kIsWasm;
+
 /// uint64 big endian
 class CborUint64BigEndianArray extends CborTypedArray {
   const CborUint64BigEndianArray(super.bytes, {super.tags});
@@ -192,7 +201,16 @@ class CborUint64BigEndianArray extends CborTypedArray {
     final bytes = Uint8List(list.length * 8);
     final data = ByteData.view(bytes.buffer);
     for (var i = 0; i < list.length; i++) {
-      data.setUint64(i * 8, list[i], Endian.big);
+      if (_kIsWeb) {
+        // Web: write as two 32-bit values (avoid setUint64 which doesn't exist)
+        final value = list[i];
+        // High 32 bits: use integer division to avoid bit shift issues on JS
+        data.setUint32(i * 8, (value ~/ 0x100000000) & 0xFFFFFFFF, Endian.big);
+        // Low 32 bits
+        data.setUint32(i * 8 + 4, value & 0xFFFFFFFF, Endian.big);
+      } else {
+        data.setUint64(i * 8, list[i], Endian.big);
+      }
     }
     return CborUint64BigEndianArray(
       bytes,
@@ -202,13 +220,12 @@ class CborUint64BigEndianArray extends CborTypedArray {
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
-    const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
     if (bytes.length % 8 != 0) {
       throw CborMalformedException(
         'Uint64ArrayBE byte length not multiple of 8',
       );
     }
-    if (!kIsWeb) {
+    if (!_kIsWeb) {
       final list = Uint64List(bytes.length ~/ 8);
       final data = ByteData.sublistView(Uint8List.fromList(bytes));
       for (var i = 0; i < list.length; i++) {
@@ -216,10 +233,14 @@ class CborUint64BigEndianArray extends CborTypedArray {
       }
       return list;
     } else {
-      final list = Float64List(bytes.length ~/ 8);
+      // Web: read as two 32-bit values and combine into int
+      final list = <int>[];
       final data = ByteData.sublistView(Uint8List.fromList(bytes));
-      for (var i = 0; i < list.length; i++) {
-        list[i] = data.getFloat64(i * 8, Endian.big);
+      for (var i = 0; i < bytes.length ~/ 8; i++) {
+        final high = data.getUint32(i * 8, Endian.big);
+        final low = data.getUint32(i * 8 + 4, Endian.big);
+        // Combine: use multiplication to avoid << 32 issues on JS
+        list.add((high * 0x100000000) + low);
       }
       return list;
     }
@@ -237,7 +258,19 @@ class CborUint64LittleEndianArray extends CborTypedArray {
     final bytes = Uint8List(list.length * 8);
     final data = ByteData.view(bytes.buffer);
     for (var i = 0; i < list.length; i++) {
-      data.setUint64(i * 8, list[i], Endian.little);
+      if (_kIsWeb) {
+        // Web: write as two 32-bit values (avoid setUint64 which doesn't exist)
+        final value = list[i];
+        // Little endian: low bytes first
+        data.setUint32(i * 8, value & 0xFFFFFFFF, Endian.little);
+        data.setUint32(
+          i * 8 + 4,
+          (value ~/ 0x100000000) & 0xFFFFFFFF,
+          Endian.little,
+        );
+      } else {
+        data.setUint64(i * 8, list[i], Endian.little);
+      }
     }
     return CborUint64LittleEndianArray(
       bytes,
@@ -252,12 +285,26 @@ class CborUint64LittleEndianArray extends CborTypedArray {
         'Uint64ArrayLE byte length not multiple of 8',
       );
     }
-    final list = Uint64List(bytes.length ~/ 8);
-    final data = ByteData.sublistView(Uint8List.fromList(bytes));
-    for (var i = 0; i < list.length; i++) {
-      list[i] = data.getUint64(i * 8, Endian.little);
+    if (!_kIsWeb) {
+      final list = Uint64List(bytes.length ~/ 8);
+      final data = ByteData.sublistView(Uint8List.fromList(bytes));
+      for (var i = 0; i < list.length; i++) {
+        list[i] = data.getUint64(i * 8, Endian.little);
+      }
+      return list;
+    } else {
+      // Web: read as two 32-bit values and combine into int
+      final list = <int>[];
+      final data = ByteData.sublistView(Uint8List.fromList(bytes));
+      for (var i = 0; i < bytes.length ~/ 8; i++) {
+        // Little endian: low bytes first
+        final low = data.getUint32(i * 8, Endian.little);
+        final high = data.getUint32(i * 8 + 4, Endian.little);
+        // Combine: use multiplication to avoid << 32 issues on JS
+        list.add((high * 0x100000000) + low);
+      }
+      return list;
     }
-    return list;
   }
 }
 
@@ -423,7 +470,25 @@ class CborInt64BigEndianArray extends CborTypedArray {
     final bytes = Uint8List(list.length * 8);
     final data = ByteData.view(bytes.buffer);
     for (var i = 0; i < list.length; i++) {
-      data.setInt64(i * 8, list[i], Endian.big);
+      if (_kIsWeb) {
+        // Web: write as two 32-bit values (avoid setInt64 which doesn't exist)
+        var value = list[i];
+        int high, low;
+        if (value < 0) {
+          // For negative values, compute two's complement representation
+          // Negate, subtract 1, then invert each part
+          final magnitude = -value - 1;
+          high = (~(magnitude ~/ 0x100000000)) & 0xFFFFFFFF;
+          low = (~(magnitude & 0xFFFFFFFF)) & 0xFFFFFFFF;
+        } else {
+          high = (value ~/ 0x100000000) & 0xFFFFFFFF;
+          low = value & 0xFFFFFFFF;
+        }
+        data.setUint32(i * 8, high, Endian.big);
+        data.setUint32(i * 8 + 4, low, Endian.big);
+      } else {
+        data.setInt64(i * 8, list[i], Endian.big);
+      }
     }
     return CborInt64BigEndianArray(
       bytes,
@@ -438,12 +503,33 @@ class CborInt64BigEndianArray extends CborTypedArray {
         'Int64ArrayBE byte length not multiple of 8',
       );
     }
-    final list = Int64List(bytes.length ~/ 8);
-    final data = ByteData.sublistView(Uint8List.fromList(bytes));
-    for (var i = 0; i < list.length; i++) {
-      list[i] = data.getInt64(i * 8, Endian.big);
+    if (!_kIsWeb) {
+      final list = Int64List(bytes.length ~/ 8);
+      final data = ByteData.sublistView(Uint8List.fromList(bytes));
+      for (var i = 0; i < list.length; i++) {
+        list[i] = data.getInt64(i * 8, Endian.big);
+      }
+      return list;
+    } else {
+      // Web: read as two 32-bit values and combine into signed int
+      final list = <int>[];
+      final data = ByteData.sublistView(Uint8List.fromList(bytes));
+      for (var i = 0; i < bytes.length ~/ 8; i++) {
+        final high = data.getUint32(i * 8, Endian.big);
+        final low = data.getUint32(i * 8 + 4, Endian.big);
+        // Check if negative (high bit set)
+        if (high >= 0x80000000) {
+          // Two's complement: invert bits and add 1 to get magnitude
+          final invHigh = (~high) & 0xFFFFFFFF;
+          final invLow = (~low) & 0xFFFFFFFF;
+          final magnitude = (invHigh * 0x100000000) + invLow + 1;
+          list.add(-magnitude);
+        } else {
+          list.add((high * 0x100000000) + low);
+        }
+      }
+      return list;
     }
-    return list;
   }
 }
 
@@ -458,7 +544,26 @@ class CborInt64LittleEndianArray extends CborTypedArray {
     final bytes = Uint8List(list.length * 8);
     final data = ByteData.view(bytes.buffer);
     for (var i = 0; i < list.length; i++) {
-      data.setInt64(i * 8, list[i], Endian.little);
+      if (_kIsWeb) {
+        // Web: write as two 32-bit values (avoid setInt64 which doesn't exist)
+        var value = list[i];
+        int high, low;
+        if (value < 0) {
+          // For negative values, compute two's complement representation
+          // Negate, subtract 1, then invert each part
+          final magnitude = -value - 1;
+          high = (~(magnitude ~/ 0x100000000)) & 0xFFFFFFFF;
+          low = (~(magnitude & 0xFFFFFFFF)) & 0xFFFFFFFF;
+        } else {
+          high = (value ~/ 0x100000000) & 0xFFFFFFFF;
+          low = value & 0xFFFFFFFF;
+        }
+        // Little endian: low bytes first
+        data.setUint32(i * 8, low, Endian.little);
+        data.setUint32(i * 8 + 4, high, Endian.little);
+      } else {
+        data.setInt64(i * 8, list[i], Endian.little);
+      }
     }
     return CborInt64LittleEndianArray(
       bytes,
@@ -473,12 +578,34 @@ class CborInt64LittleEndianArray extends CborTypedArray {
         'Int64ArrayLE byte length not multiple of 8',
       );
     }
-    final list = Int64List(bytes.length ~/ 8);
-    final data = ByteData.sublistView(Uint8List.fromList(bytes));
-    for (var i = 0; i < list.length; i++) {
-      list[i] = data.getInt64(i * 8, Endian.little);
+    if (!_kIsWeb) {
+      final list = Int64List(bytes.length ~/ 8);
+      final data = ByteData.sublistView(Uint8List.fromList(bytes));
+      for (var i = 0; i < list.length; i++) {
+        list[i] = data.getInt64(i * 8, Endian.little);
+      }
+      return list;
+    } else {
+      // Web: read as two 32-bit values and combine into signed int
+      final list = <int>[];
+      final data = ByteData.sublistView(Uint8List.fromList(bytes));
+      for (var i = 0; i < bytes.length ~/ 8; i++) {
+        // Little endian: low bytes first
+        final low = data.getUint32(i * 8, Endian.little);
+        final high = data.getUint32(i * 8 + 4, Endian.little);
+        // Check if negative (high bit set)
+        if (high >= 0x80000000) {
+          // Two's complement: invert bits and add 1 to get magnitude
+          final invHigh = (~high) & 0xFFFFFFFF;
+          final invLow = (~low) & 0xFFFFFFFF;
+          final magnitude = (invHigh * 0x100000000) + invLow + 1;
+          list.add(-magnitude);
+        } else {
+          list.add((high * 0x100000000) + low);
+        }
+      }
+      return list;
     }
-    return list;
   }
 }
 
@@ -496,11 +623,8 @@ class CborFloat16BigEndianArray extends CborTypedArray {
     final list = <double>[];
     final data = ByteData.sublistView(Uint8List.fromList(bytes));
     for (var i = 0; i < bytes.length; i += 2) {
-      final chunk = Uint8List.fromList([
-        data.getUint8(i),
-        data.getUint8(i + 1),
-      ]);
-      list.add(FloatParts.fromFloat16Bytes(chunk).toDouble());
+      final chunk = [data.getUint8(i), data.getUint8(i + 1)];
+      list.add(float_utils.fromFloat16Bytes(chunk));
     }
     return list;
   }
@@ -520,12 +644,9 @@ class CborFloat16LittleEndianArray extends CborTypedArray {
     final list = <double>[];
     final data = ByteData.sublistView(Uint8List.fromList(bytes));
     for (var i = 0; i < bytes.length; i += 2) {
-      // Reverse for Little Endian as library expects Big Endian
-      final chunk = Uint8List.fromList([
-        data.getUint8(i + 1),
-        data.getUint8(i),
-      ]);
-      list.add(FloatParts.fromFloat16Bytes(chunk).toDouble());
+      // Reverse for Little Endian as our decoder expects Big Endian
+      final chunk = [data.getUint8(i + 1), data.getUint8(i)];
+      list.add(float_utils.fromFloat16Bytes(chunk));
     }
     return list;
   }

@@ -7,11 +7,17 @@
 
 import 'dart:typed_data';
 
+import 'package:cbor/cbor.dart' hide cbor;
 import 'package:cbor/simple.dart';
 import 'package:test/test.dart';
 
+// Platform detection: on JS (dart2js), integer-valued doubles (0.0, 1.0, etc.)
+// are indistinguishable from integers and get encoded as CBOR integers.
+// Note: This does NOT apply to WASM (dart2wasm), which handles this correctly.
+// Using `identical(0, 0.0)` which returns true only on JS where int/double are same.
+final bool kIsJs = identical(0, 0.0);
+
 void main() {
-  const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
     test('0', () {
       final encoded = cbor.encode(0);
@@ -70,32 +76,24 @@ void main() {
 
     test('18446744073709551616', () {
       final encoded = cbor.encode(BigInt.parse('18446744073709551616'));
-      if (kIsWeb) {
-        expect(encoded, [0x1b, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
-      } else {
-        expect(encoded, [
-          0xc2,
-          0x49,
-          0x01,
-          0x00,
-          0x00,
-          0x00,
-          0x00,
-          0x00,
-          0x00,
-          0x00,
-          0x00,
-        ]);
-      }
+      expect(encoded, [
+        0xc2,
+        0x49,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+      ]);
     });
 
     test('-18446744073709551616', () {
       final encoded = cbor.encode(BigInt.parse('-18446744073709551616'));
-      if (kIsWeb) {
-        expect(encoded, [0x3b, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0x3b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
-      }
+      expect(encoded, [0x3b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
     });
 
     test('-18446744073709551617', () {
@@ -137,101 +135,127 @@ void main() {
 
     test('0.0', () {
       final encoded = cbor.encode(0.0);
-      if (kIsWeb) {
+      if (kIsJs) {
+        // On JS, 0.0 is indistinguishable from 0 and encoded as integer
         expect(encoded, [0x00]);
       } else {
         expect(encoded, [0xf9, 0x00, 0x00]);
       }
+      // Using explicit CborFloat ensures float encoding on all platforms
+      expect(cborEncode(CborFloat(0.0)), [0xf9, 0x00, 0x00]);
     });
 
     test('-0.0', () {
       final encoded = cbor.encode(-0.0);
-      if (kIsWeb) {
-        expect(encoded, [0xff]);
+      if (kIsJs) {
+        // On JS, -0.0 is indistinguishable from 0 and encoded as integer
+        // (the sign is lost when converted to int)
+        expect(encoded, [0x00]);
       } else {
         expect(encoded, [0xf9, 0x80, 0x00]);
       }
+      // Using explicit CborFloat preserves negative zero
+      expect(cborEncode(CborFloat(-0.0)), [0xf9, 0x80, 0x00]);
     });
 
     test('1.0', () {
       final encoded = cbor.encode(1.0);
-      if (kIsWeb) {
+      if (kIsJs) {
+        // On JS, 1.0 is indistinguishable from 1 and encoded as integer
         expect(encoded, [0x01]);
       } else {
         expect(encoded, [0xf9, 0x3c, 0x00]);
       }
+      // Using explicit CborFloat ensures float encoding on all platforms
+      expect(cborEncode(CborFloat(1.0)), [0xf9, 0x3c, 0x00]);
     });
 
     test('1.5', () {
       final encoded = cbor.encode(1.5);
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xf9, 0x3e, 0x00]);
-      }
+      // 1.5 has a fractional part, so it's always encoded as float
+      expect(encoded, [0xf9, 0x3e, 0x00]);
     });
 
     test('65504.0', () {
       final encoded = cbor.encode(65504.0);
-      if (kIsWeb) {
+      if (kIsJs) {
+        // On JS, 65504.0 is indistinguishable from 65504 and encoded as integer
         expect(encoded, [0x19, 0xff, 0xe0]);
       } else {
         expect(encoded, [0xf9, 0x7b, 0xff]);
       }
+      // Using explicit CborFloat ensures float encoding on all platforms
+      expect(cborEncode(CborFloat(65504.0)), [0xf9, 0x7b, 0xff]);
     });
 
     test('100000.0', () {
       final encoded = cbor.encode(100000.0);
-      if (kIsWeb) {
+      if (kIsJs) {
+        // On JS, 100000.0 is indistinguishable from 100000 and encoded as integer
         expect(encoded, [0x1a, 0x00, 0x01, 0x86, 0xa0]);
       } else {
         expect(encoded, [0xfa, 0x47, 0xc3, 0x50, 0x00]);
       }
+      // Using explicit CborFloat ensures float encoding on all platforms
+      expect(cborEncode(CborFloat(100000.0)), [0xfa, 0x47, 0xc3, 0x50, 0x00]);
     });
 
     test('3.4028234663852886e+38', () {
+      // On JS, large doubles that exceed the safe integer range (2^53-1) are
+      // detected and encoded as floats instead of being misinterpreted as ints.
+      // On VM/WASM, these are always correctly identified as doubles.
       final encoded = cbor.encode(3.4028234663852886e+38);
-      if (kIsWeb) {
-        expect(encoded, [0x1b, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xfa, 0x7f, 0x7f, 0xff, 0xff]);
-      }
+      expect(encoded, [0xfa, 0x7f, 0x7f, 0xff, 0xff]);
+      expect(cborEncode(CborFloat(3.4028234663852886e+38)), [
+        0xfa,
+        0x7f,
+        0x7f,
+        0xff,
+        0xff,
+      ]);
     });
 
     test('1.0e+300', () {
+      // On JS, large doubles that exceed the safe integer range (2^53-1) are
+      // detected and encoded as floats instead of being misinterpreted as ints.
+      // On VM/WASM, these are always correctly identified as doubles.
       final encoded = cbor.encode(1.0e+300);
-      if (kIsWeb) {
-        expect(encoded, [0x1b, 0xbf, 0x21, 0xe4, 0x40, 0x03, 0xac, 0xe0, 0x00]);
-      } else {
-        expect(encoded, [0xfb, 0x7e, 0x37, 0xe4, 0x3c, 0x88, 0x00, 0x75, 0x9c]);
-      }
+      expect(encoded, [0xfb, 0x7e, 0x37, 0xe4, 0x3c, 0x88, 0x00, 0x75, 0x9c]);
+      expect(cborEncode(CborFloat(1.0e+300)), [
+        0xfb,
+        0x7e,
+        0x37,
+        0xe4,
+        0x3c,
+        0x88,
+        0x00,
+        0x75,
+        0x9c,
+      ]);
     });
 
     test('5.960464477539063e-8', () {
       final encoded = cbor.encode(5.960464477539063e-8);
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xf9, 0x00, 0x01]);
-      }
+      // This small fractional value is always encoded as float
+      expect(encoded, [0xf9, 0x00, 0x01]);
     });
 
     test('0.00006103515625', () {
       final encoded = cbor.encode(0.00006103515625);
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xf9, 0x04, 0x00]);
-      }
+      // This small fractional value is always encoded as float
+      expect(encoded, [0xf9, 0x04, 0x00]);
     });
 
     test('-4.0', () {
       final encoded = cbor.encode(-4.0);
-      if (kIsWeb) {
+      if (kIsJs) {
+        // On JS, -4.0 is indistinguishable from -4 and encoded as integer
         expect(encoded, [0x23]);
       } else {
         expect(encoded, [0xf9, 0xc4, 0x00]);
       }
+      // Using explicit CborFloat ensures float encoding on all platforms
+      expect(cborEncode(CborFloat(-4.0)), [0xf9, 0xc4, 0x00]);
     });
 
     test('-4.1', () {
@@ -242,7 +266,7 @@ void main() {
     test('Infinity', () {
       final encoded = cbor.encode(double.infinity);
       expect(encoded, [0xf9, 0x7c, 0x00]);
-    }, skip: kIsWeb);
+    });
 
     test('Nan', () {
       final encoded = cbor.encode(double.nan);
@@ -252,7 +276,7 @@ void main() {
     test('-Infinity', () {
       final encoded = cbor.encode(double.negativeInfinity);
       expect(encoded, [0xf9, 0xfc, 0x00]);
-    }, skip: kIsWeb);
+    });
 
     test('False', () {
       final encoded = cbor.encode(false);

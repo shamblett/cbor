@@ -26,6 +26,12 @@ export 'simple_value.dart';
 export 'string.dart';
 export 'typed_data.dart';
 
+/// Platform detection for JS (dart2js). On JS, all numbers are IEEE 754 doubles,
+/// so integer-valued doubles like 1.0 pass the `is int` type check.
+/// Note: This does NOT apply to WASM (dart2wasm), which correctly distinguishes types.
+/// Using `identical(0, 0.0)` which returns true only on JS where int/double are same.
+final bool _kIsJs = identical(0, 0.0);
+
 /// Jump table for initial byte values can be found <a href="https://www.rfc-editor.org/rfc/rfc8949.html#jumptable">here</a>.
 /// Maybe useful for code maintainers.
 
@@ -125,7 +131,21 @@ abstract class CborValue {
       return CborNull();
     } else if (object is CborValue) {
       return object;
-    } else if (object is int) {
+    }
+
+    // JS-only: Handle special doubles that would cause issues when treated as int.
+    // On JS, all numbers are doubles, so integer-valued doubles like 1.0 pass
+    // the 'is int' check. We need to intercept NaN/Infinity (which would throw
+    // in BigInt.from) and values exceeding the safe integer range (2^53-1).
+    if (_kIsJs && object is double) {
+      if (object.isNaN || object.isInfinite || object.abs() > 9007199254740991) {
+        return CborFloat(object);
+      }
+      // Fall through - integer-valued doubles within safe range will match
+      // 'is int' and be encoded as integers (this is unavoidable on JS).
+    }
+
+    if (object is int) {
       return CborSmallInt(object);
     } else if (object is BigInt) {
       return CborInt(object);

@@ -9,7 +9,6 @@ import 'package:cbor/simple.dart';
 import 'package:test/test.dart';
 
 void main() {
-  const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
   group('RFC Appendix A Diagnostics decoder tests -> ', () {
     test('0', () {
       final decoded = cbor.decode([0x00]);
@@ -115,11 +114,7 @@ void main() {
         0xff,
         0xff,
       ]);
-      if (kIsWeb) {
-        expect(decoded, int.parse('-18446744073709552000'));
-      } else {
-        expect(decoded, BigInt.parse('-18446744073709551616'));
-      }
+      expect(decoded, BigInt.parse('-18446744073709551616'));
     });
 
     test('-18446744073709551617', () {
@@ -236,11 +231,7 @@ void main() {
 
     test('-4.0', () {
       final decoded = cbor.decode([0xf9, 0xc4, 0x00]);
-      if (kIsWeb) {
-        expect(decoded, -33554428);
-      } else {
-        expect(decoded, -4.0);
-      }
+      expect(decoded, -4.0);
     });
 
     test('-4.1', () {
