@@ -49,7 +49,7 @@ List<int> toFloat16Bytes(double value) {
     // Check for negative zero
     final bytes = Uint8List(8);
     ByteData.view(bytes.buffer).setFloat64(0, value, Endian.big);
-    final isNegativeZero = bytes[0] == 0x80;
+    final isNegativeZero = bytes.first == 0x80;
     return isNegativeZero ? [0x80, 0x00] : [0x00, 0x00];
   }
 
@@ -59,9 +59,9 @@ List<int> toFloat16Bytes(double value) {
 
   // Extract sign, exponent, and mantissa from IEEE 754 double (64-bit)
   // Double format: 1 sign + 11 exponent + 52 mantissa
-  final sign = (doubleBytes[0] >> 7) & 1;
+  final sign = (doubleBytes.first >> 7) & 1;
   final exponent =
-      ((doubleBytes[0] & 0x7F) << 4) | ((doubleBytes[1] >> 4) & 0x0F);
+      ((doubleBytes.first & 0x7F) << 4) | ((doubleBytes[1] >> 4) & 0x0F);
   // We only need the top 10 bits of the mantissa for half-precision
   final mantissaHigh =
       ((doubleBytes[1] & 0x0F) << 6) | ((doubleBytes[2] >> 2) & 0x3F);
@@ -85,7 +85,7 @@ List<int> toFloat16Bytes(double value) {
       halfExponent = 0;
       final shift = 1 - adjustedExponent;
       // Add implicit leading bit and shift
-      halfMantissa = (0x400 | mantissaHigh) >> shift;
+      halfMantissa = (mantissaHigh | 0x400) >> shift;
     }
   } else if (adjustedExponent >= 31) {
     // Overflow to infinity
@@ -129,7 +129,7 @@ bool isFloat16Lossless(double value) {
 /// This is a cross-platform implementation that avoids `ByteData.getInt16()`
 /// which behaves incorrectly on JS for values with the high bit set.
 double fromFloat16Bytes(List<int> bytes) {
-  final halfValue = (bytes[0] << 8) | bytes[1];
+  final halfValue = (bytes.first << 8) | bytes[1];
 
   final sign = (halfValue >> 15) & 1;
   final exponent = (halfValue >> 10) & 0x1F;
@@ -138,21 +138,12 @@ double fromFloat16Bytes(List<int> bytes) {
   double result;
 
   if (exponent == 0) {
-    if (mantissa == 0) {
-      // Zero
-      result = 0.0;
-    } else {
-      // Subnormal
-      result = mantissa / 1024.0 * (1.0 / 16384.0); // 2^-14
-    }
+    result = mantissa == 0 ? 0.0 : mantissa / 1024.0 * (1.0 / 16384.0);
   } else if (exponent == 31) {
-    if (mantissa == 0) {
-      result = double.infinity;
-    } else {
-      result = double.nan;
-    }
+    result = mantissa == 0 ? double.infinity : double.nan;
   } else {
     // Normal number
+    // ignore: binary-expression-operand-order
     result = (1.0 + mantissa / 1024.0) * _pow2(exponent - 15);
   }
 
@@ -195,7 +186,7 @@ bool isFloat32Lossless(double value) {
 /// Check if a double can be represented losslessly as a double-precision (64-bit) float.
 ///
 /// This always returns true since Dart doubles are already 64-bit IEEE 754 floats.
-bool isFloat64Lossless(double value) {
+bool isFloat64Lossless(double _) {
   return true;
 }
 
