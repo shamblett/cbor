@@ -5,8 +5,6 @@
  * Copyright :  S.Hamblett
  */
 
-import '../constants.dart';
-
 /// The information encoded by additional Arg and the following bytes.
 abstract class Arg {
   static const Arg indefiniteLength = _ArgIndefiniteLength();
@@ -55,9 +53,15 @@ class _ArgInt implements Arg {
   const _ArgInt(this.value);
 
   @override
-  _ArgInt operator ~() => _ArgInt(
-    (~BigInt.from(value)).toSigned(CborConstants.bigIntSlice).toInt(),
-  );
+  Arg operator ~() {
+    final result = ~BigInt.from(value);
+    // Check if result fits in JS safe integer range (2^53-1)
+    // Use bitLength <= 53 as a conservative check
+    if (result.bitLength <= 53 && result.isValidInt) {
+      return _ArgInt(result.toInt());
+    }
+    return _ArgBigInt(result);
+  }
 
   @override
   int toInt() => value;

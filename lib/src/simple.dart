@@ -109,6 +109,32 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
 ///
 /// To see how CBOR values are transformed from and into objects, verify the
 /// documentation of both [CborValue.CborValue] and [CborValue.toObject].
+///
+/// ## JavaScript (dart2js) Limitations
+///
+/// On JavaScript (dart2js), there is no distinction between integer and
+/// floating-point numbers at the type level. All numbers are IEEE 754 doubles.
+/// This means:
+///
+/// - `0.0 is int` returns `true` on JS but `false` on native/WASM platforms
+/// - Integer-valued doubles like `1.0`, `-4.0`, `65504.0` are encoded as
+///   CBOR integers instead of CBOR floats
+/// - Very large doubles (e.g., `1.0e+300`) may lose precision when treated
+///   as integers
+///
+/// Note: This limitation does **not** apply to dart2wasm, which correctly
+/// distinguishes between integers and floats.
+///
+/// **Workaround:** To ensure consistent float encoding across all platforms,
+/// use the advanced API with explicit types:
+///
+/// ```dart
+/// // Instead of:
+/// cbor.encode(1.0);  // Encoded as int on JS, float on native/WASM
+///
+/// // Use:
+/// cborEncode(CborFloat(1.0));  // Always encoded as float
+/// ```
 class CborSimpleCodec extends Codec<Object?, List<int>> {
   final bool _encodeDateTimeEpoch;
   final bool _decodeBase64;

@@ -9,7 +9,6 @@ import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 
 void main() {
-  const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
   group('RFC Appendix A Diagnostics encoder tests -> ', () {
     test('0', () {
       final encoded = cbor.encode(CborSmallInt(0));
@@ -91,11 +90,7 @@ void main() {
       final encoded = cbor.encode(
         CborInt(BigInt.parse('-18446744073709551616')),
       );
-      if (kIsWeb) {
-        expect(encoded, [0x3b, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0x3b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
-      }
+      expect(encoded, [0x3b, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
     });
 
     test('-18446744073709551617', () {
@@ -149,47 +144,27 @@ void main() {
 
     test('1.0', () {
       final encoded = cbor.encode(CborFloat(1.0));
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xf9, 0x3c, 0x00]);
-      }
+      expect(encoded, [0xf9, 0x3c, 0x00]);
     });
 
     test('1.5', () {
       final encoded = cbor.encode(CborFloat(1.5));
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xf9, 0x3e, 0x00]);
-      }
+      expect(encoded, [0xf9, 0x3e, 0x00]);
     });
 
     test('65504.0', () {
       final encoded = cbor.encode(CborFloat(65504.0));
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xf9, 0x7b, 0xff]);
-      }
+      expect(encoded, [0xf9, 0x7b, 0xff]);
     });
 
     test('100000.0', () {
       final encoded = cbor.encode(CborFloat(100000.0));
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xfa, 0x47, 0xc3, 0x50, 0x00]);
-      }
+      expect(encoded, [0xfa, 0x47, 0xc3, 0x50, 0x00]);
     });
 
     test('3.4028234663852886e+38', () {
       final encoded = cbor.encode(CborFloat(3.4028234663852886e+38));
-      if (kIsWeb) {
-        expect(encoded, [0xfb, 0x47, 0xef, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xfa, 0x7f, 0x7f, 0xff, 0xff]);
-      }
+      expect(encoded, [0xfa, 0x7f, 0x7f, 0xff, 0xff]);
     });
 
     test('1.0e+300', () {
@@ -199,29 +174,17 @@ void main() {
 
     test('5.960464477539063e-8', () {
       final encoded = cbor.encode(CborFloat(5.960464477539063e-8));
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xf9, 0x00, 0x01]);
-      }
+      expect(encoded, [0xf9, 0x00, 0x01]);
     });
 
     test('0.00006103515625', () {
       final encoded = cbor.encode(CborFloat(0.00006103515625));
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x00, 0x00]);
-      } else {
-        expect(encoded, [0xf9, 0x04, 0x00]);
-      }
+      expect(encoded, [0xf9, 0x04, 0x00]);
     });
 
     test('-4.0', () {
       final encoded = cbor.encode(CborFloat(-4.0));
-      if (kIsWeb) {
-        expect(encoded, [0xf9, 0x80, 0x00]);
-      } else {
-        expect(encoded, [0xf9, 0xc4, 0x00]);
-      }
+      expect(encoded, [0xf9, 0xc4, 0x00]);
     });
 
     test('-4.1', () {

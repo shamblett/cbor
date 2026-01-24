@@ -21,7 +21,10 @@ import 'internal.dart';
 /// If the incoming value has less than 53 bits, it is [CborSmallInt].
 abstract class CborInt extends CborValue {
   factory CborInt(BigInt value, {List<int>? tags}) {
-    if (value.isValidInt) {
+    // Use explicit check: JS safe integer is 2^53-1
+    // bitLength <= 53 is a conservative check that works on all platforms
+    final isSafeInt = value.bitLength <= 53 && value.isValidInt;
+    if (isSafeInt) {
       return CborSmallInt(value.toInt(), tags: tags ?? const []);
     }
 
@@ -89,7 +92,9 @@ class _CborSmallIntImpl with CborValueMixin implements CborSmallInt {
   void encode(EncodeSink sink) {
     sink.addTags(tags);
 
-    if (!value.isNegative) {
+    // Note: On JS, negative zero (-0.0) may pass isNegative but should be
+    // encoded as positive zero. Check for zero explicitly.
+    if (value == 0 || !value.isNegative) {
       sink.addHeaderInfo(0, Arg.int(value));
     } else {
       sink.addHeaderInfo(1, Arg.int((~BigInt.from(value)).toInt()));

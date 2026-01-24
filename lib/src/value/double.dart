@@ -7,10 +7,10 @@
 
 import 'package:cbor/cbor.dart';
 import 'package:collection/collection.dart';
-import 'package:ieee754/ieee754.dart';
 
 import '../constants.dart';
 import '../encoder/sink.dart';
+import '../utils/float_utils.dart' as float_utils;
 import 'internal.dart';
 
 /// Enumeration to allow the user to select which level of precision to
@@ -79,41 +79,39 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
       return;
     }
 
-    final parts = FloatParts.fromDouble(value);
-
     // Automatic(default) conversion picks the best encoding.
     if (precision == CborFloatPrecision.automatic) {
-      if (parts.isFloat16Lossless) {
+      if (float_utils.isFloat16Lossless(value)) {
         sink.addHeader(
           CborMajorType.simpleFloat,
           CborAdditionalInfo.halfPrecisionFloat,
         );
 
-        sink.add(parts.toFloat16Bytes());
-      } else if (parts.isFloat32Lossless) {
+        sink.add(float_utils.toFloat16Bytes(value));
+      } else if (float_utils.isFloat32Lossless(value)) {
         sink.addHeader(
           CborMajorType.simpleFloat,
           CborAdditionalInfo.singlePrecisionFloat,
         );
 
-        sink.add(parts.toFloat32Bytes());
+        sink.add(float_utils.toFloat32Bytes(value));
       } else {
         sink.addHeader(
           CborMajorType.simpleFloat,
           CborAdditionalInfo.doublePrecisionFloat,
         );
 
-        sink.add(parts.toFloat64Bytes());
+        sink.add(float_utils.toFloat64Bytes(value));
       }
     } else {
       switch (precision) {
         case CborFloatPrecision.half:
-          if (parts.isFloat16Lossless) {
+          if (float_utils.isFloat16Lossless(value)) {
             sink.addHeader(
               CborMajorType.simpleFloat,
               CborAdditionalInfo.halfPrecisionFloat,
             );
-            sink.add(parts.toFloat16Bytes());
+            sink.add(float_utils.toFloat16Bytes(value));
           } else {
             // Invalid conversion
             throw ArgumentError(
@@ -123,12 +121,12 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
           }
           break;
         case CborFloatPrecision.float:
-          if (parts.isFloat32Lossless) {
+          if (float_utils.isFloat32Lossless(value)) {
             sink.addHeader(
               CborMajorType.simpleFloat,
               CborAdditionalInfo.singlePrecisionFloat,
             );
-            sink.add(parts.toFloat32Bytes());
+            sink.add(float_utils.toFloat32Bytes(value));
           } else {
             // Invalid conversion
             throw ArgumentError(
@@ -138,12 +136,12 @@ class _CborFloatImpl with CborValueMixin implements CborFloat {
           }
           break;
         case CborFloatPrecision.double:
-          if (parts.isFloat64Lossless) {
+          if (float_utils.isFloat64Lossless(value)) {
             sink.addHeader(
               CborMajorType.simpleFloat,
               CborAdditionalInfo.doublePrecisionFloat,
             );
-            sink.add(parts.toFloat64Bytes());
+            sink.add(float_utils.toFloat64Bytes(value));
           } else {
             // Invalid conversion
             throw ArgumentError(

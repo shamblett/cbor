@@ -8,8 +8,8 @@
 import 'package:cbor/cbor.dart';
 import 'package:cbor/src/value/internal.dart';
 import 'package:collection/collection.dart';
-import 'package:ieee754/ieee754.dart';
 
+import '../utils/float_utils.dart' as float_utils;
 import '../utils/utils.dart';
 import '../constants.dart';
 import 'stage2.dart';
@@ -257,13 +257,13 @@ CborFloat _createFloat(RawValueTagged raw) {
   final double value;
   switch (raw.header.additionalInfo) {
     case CborAdditionalInfo.halfPrecisionFloat:
-      value = FloatParts.fromFloat16Bytes(raw.header.dataBytes).toDouble();
+      value = float_utils.fromFloat16Bytes(raw.header.dataBytes);
       break;
     case CborAdditionalInfo.singlePrecisionFloat:
-      value = FloatParts.fromFloat32Bytes(raw.header.dataBytes).toDouble();
+      value = float_utils.fromFloat32Bytes(raw.header.dataBytes);
       break;
     case CborAdditionalInfo.doublePrecisionFloat:
-      value = FloatParts.fromFloat64Bytes(raw.header.dataBytes).toDouble();
+      value = float_utils.fromFloat64Bytes(raw.header.dataBytes);
       break;
 
     default:
