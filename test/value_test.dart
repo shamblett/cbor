@@ -1,3 +1,10 @@
+/*
+ * Package : Cbor
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 22/02/2026
+ * Copyright :  S.Hamblett
+ */
+
 import 'dart:convert';
 import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
