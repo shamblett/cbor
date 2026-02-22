@@ -5,19 +5,19 @@ DocumentName: cbor
 DocumentNamespace: https://pub.dev/packages/cbor
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2026-01-24T09:06:45Z
+Created: 2026-02-22T11:23:56Z
 CreatorComment: <text>Please refer to the AUTHORS file for contributor/creation details</text>
 
 
 PackageName: cbor
 SPDXID: SPDXRef-Package-cbor
-PackageVersion: 6.5.0
+PackageVersion: 6.5.1
 PackageFileName: cbor
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/cbor
 FilesAnalyzed: true
-PackageVerificationCode: a049668653eaef8c52de3f3910b8f35408bbc865
+PackageVerificationCode: 1dd69a69bdf24331f9f39849f1310dc437437b8a
 PackageHomePage: https://pub.dev/packages/cbor
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -65,7 +65,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/decoder/decoder.dart
 SPDXID: SPDXRef-decoder-4
 FileType: SOURCE
-FileChecksum: SHA1: 1e36703331d4d5fb0870655126b6f614eba455a3
+FileChecksum: SHA1: b1ed8e26c9839daf5002359b2f143de8f206c110
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -74,7 +74,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/decoder/pretty_print.dart
 SPDXID: SPDXRef-pretty-print-5
 FileType: SOURCE
-FileChecksum: SHA1: b1ed8e26c9839daf5002359b2f143de8f206c110
+FileChecksum: SHA1: 7c7488c35b62d3fb6cd6f2cc884206c513c834c5
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -290,7 +290,7 @@ FileCopyrightText: NOASSERTION
 FileName: pubspec.yaml
 SPDXID: SPDXRef-pubspec-29
 FileType: TEXT
-FileChecksum: SHA1: 6ba1a2e21b0869b544e5ee25861d743eec389047
+FileChecksum: SHA1: 85ae8ca95fb192bcfcab8e27f528ce56b0e9f395
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION

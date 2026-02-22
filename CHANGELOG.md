@@ -1,3 +1,6 @@
+### 6.5.1
+- [Issue 86](https://github.com/shamblett/cbor/issues/86)
+
 ### 6.5.0
 - [PR 84](https://github.com/shamblett/cbor/pull/84)
 
