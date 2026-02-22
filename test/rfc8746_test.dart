@@ -387,7 +387,7 @@ void main() {
       expect(arr.toObject(), equals([1, 2, 65535]));
 
       expect(
-            () => CborUint16BigEndianArray([0]).toObject(),
+        () => CborUint16BigEndianArray([0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -399,7 +399,7 @@ void main() {
       expect(arr.toObject(), equals([1, 2, 65535]));
 
       expect(
-            () => CborUint16LittleEndianArray([0]).toObject(),
+        () => CborUint16LittleEndianArray([0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -411,7 +411,7 @@ void main() {
       expect(arr.toObject(), equals([1, 2, 4294967295]));
 
       expect(
-            () => CborUint32BigEndianArray([0, 0, 0]).toObject(),
+        () => CborUint32BigEndianArray([0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -423,7 +423,7 @@ void main() {
       expect(arr.toObject(), equals([1, 2, 4294967295]));
 
       expect(
-            () => CborUint32LittleEndianArray([0, 0, 0]).toObject(),
+        () => CborUint32LittleEndianArray([0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -442,7 +442,7 @@ void main() {
       expect(arr.toObject(), equals([1, 2, 9223372036854775807]));
 
       expect(
-            () => CborUint64BigEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
+        () => CborUint64BigEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -458,7 +458,7 @@ void main() {
       expect(arr.toObject(), equals([1, 2, 9223372036854775807]));
 
       expect(
-            () => CborUint64LittleEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
+        () => CborUint64LittleEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -477,7 +477,7 @@ void main() {
       expect(arr.toObject(), equals([1, -2, 32767, -32768]));
 
       expect(
-            () => CborInt16BigEndianArray([0]).toObject(),
+        () => CborInt16BigEndianArray([0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -489,7 +489,7 @@ void main() {
       expect(arr.toObject(), equals([1, -2, 32767, -32768]));
 
       expect(
-            () => CborInt16LittleEndianArray([0]).toObject(),
+        () => CborInt16LittleEndianArray([0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -506,7 +506,7 @@ void main() {
       expect(arr.toObject(), equals([1, -2, 2147483647, -2147483648]));
 
       expect(
-            () => CborInt32BigEndianArray([0, 0, 0]).toObject(),
+        () => CborInt32BigEndianArray([0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -523,7 +523,7 @@ void main() {
       expect(arr.toObject(), equals([1, -2, 2147483647, -2147483648]));
 
       expect(
-            () => CborInt32LittleEndianArray([0, 0, 0]).toObject(),
+        () => CborInt32LittleEndianArray([0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -543,7 +543,7 @@ void main() {
       );
 
       expect(
-            () => CborInt64BigEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
+        () => CborInt64BigEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -563,7 +563,7 @@ void main() {
       );
 
       expect(
-            () => CborInt64LittleEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
+        () => CborInt64LittleEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -574,7 +574,7 @@ void main() {
       expect(arr.toObject(), equals([1.5]));
 
       expect(
-            () => CborFloat16BigEndianArray([0x3e]).toObject(),
+        () => CborFloat16BigEndianArray([0x3e]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -585,7 +585,7 @@ void main() {
       expect(arr.toObject(), equals([1.5]));
 
       expect(
-            () => CborFloat16LittleEndianArray([0x00]).toObject(),
+        () => CborFloat16LittleEndianArray([0x00]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -597,7 +597,7 @@ void main() {
       expect(arr.toObject(), equals([1.5, -2.5]));
 
       expect(
-            () => CborFloat32BigEndianArray([0, 0, 0]).toObject(),
+        () => CborFloat32BigEndianArray([0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -609,7 +609,7 @@ void main() {
       expect(arr.toObject(), equals([1.5, -2.5]));
 
       expect(
-            () => CborFloat32LittleEndianArray([0, 0, 0]).toObject(),
+        () => CborFloat32LittleEndianArray([0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -621,7 +621,7 @@ void main() {
       expect(arr.toObject(), equals([1.5, -2.5]));
 
       expect(
-            () => CborFloat64BigEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
+        () => CborFloat64BigEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
@@ -633,31 +633,31 @@ void main() {
       expect(arr.toObject(), equals([1.5, -2.5]));
 
       expect(
-            () => CborFloat64LittleEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
+        () => CborFloat64LittleEndianArray([0, 0, 0, 0, 0, 0, 0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
 
     test('CborFloat128BigEndianArray', () {
       expect(
-            () => CborFloat128BigEndianArray(List.filled(16, 0)).toObject(),
+        () => CborFloat128BigEndianArray(List.filled(16, 0)).toObject(),
         throwsA(isA<UnimplementedError>()),
       );
 
       expect(
-            () => CborFloat128BigEndianArray([0]).toObject(),
+        () => CborFloat128BigEndianArray([0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });
 
     test('CborFloat128LittleEndianArray', () {
       expect(
-            () => CborFloat128LittleEndianArray(List.filled(16, 0)).toObject(),
+        () => CborFloat128LittleEndianArray(List.filled(16, 0)).toObject(),
         throwsA(isA<UnimplementedError>()),
       );
 
       expect(
-            () => CborFloat128LittleEndianArray([0]).toObject(),
+        () => CborFloat128LittleEndianArray([0]).toObject(),
         throwsA(isA<CborMalformedException>()),
       );
     });

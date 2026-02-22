@@ -225,4 +225,20 @@ void main() {
       );
     });
   });
+  group('CborJsonEncoder startChunkedConversion', () {
+    test('works as stream transformer', () async {
+      final encoder = const CborJsonEncoder();
+
+      final cborList = CborList([
+        CborSmallInt(1),
+        CborString('hello'),
+        CborMap({CborString('a'): CborSmallInt(2)}),
+      ]);
+
+      final stream = Stream<CborValue>.fromIterable([cborList]);
+      final jsonStrings = await stream.transform(encoder).toList();
+
+      expect(jsonStrings.join(), equals('[1,"hello",{"a":2}]'));
+    });
+  });
 }
