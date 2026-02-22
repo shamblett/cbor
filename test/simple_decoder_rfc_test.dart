@@ -851,4 +851,26 @@ void main() {
       expect(decoded, {'Fun': true, 'Amt': -2});
     });
   });
+  group('CborSimpleDecoder startChunkedConversion', () {
+    test('works as stream transformer', () async {
+      final decoder = const CborSimpleDecoder();
+      final encoder = const CborSimpleEncoder();
+      final bytes1 = encoder.convert([1, 'hello']);
+      final bytes2 = encoder.convert({'a': 2});
+
+      final stream = Stream<List<int>>.fromIterable([
+        bytes1.sublist(0, 3),
+        bytes1.sublist(3),
+        bytes2,
+      ]);
+      final decodedObjects = await stream.transform(decoder).toList();
+      expect(
+        decodedObjects,
+        equals([
+          [1, 'hello'],
+          {'a': 2},
+        ]),
+      );
+    });
+  });
 }

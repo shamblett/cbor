@@ -50,6 +50,14 @@ class _PrettyPrint implements Sink<RawValue> {
 
   @override
   void add(RawValue x) {
+    if (nested.isNotEmpty) {
+      var remainingItems = nested.last.remainingItems;
+      if (remainingItems != null) {
+        remainingItems -= 1;
+        nested.last.remainingItems = remainingItems;
+      }
+    }
+
     final indentation = ' ' * indent * nested.length;
 
     writer.write(indentation);
@@ -58,18 +66,6 @@ class _PrettyPrint implements Sink<RawValue> {
           .getRange(x.start, x.end)
           .map((by) => '${by.toRadixString(CborConstants.hexRadix)} '),
     );
-
-    if (nested.isNotEmpty) {
-      var remainingItems = nested.last.remainingItems;
-      if (remainingItems != null) {
-        remainingItems -= 1;
-        nested.last.remainingItems = remainingItems;
-
-        if (remainingItems <= 0) {
-          nested.removeLast();
-        }
-      }
-    }
 
     switch (x.header.majorType) {
       case CborMajorType.uint:
@@ -115,9 +111,7 @@ class _PrettyPrint implements Sink<RawValue> {
           nested.add(_Nesting(null));
         } else {
           writer.write('(map length ${length.toInt()})');
-          nested.add(
-            _Nesting(length.toInt() * CborConstants.prettyPrintIndent),
-          );
+          nested.add(_Nesting(length.toInt() * 2));
         }
         break;
       case CborMajorType.tag:
@@ -154,7 +148,9 @@ class _PrettyPrint implements Sink<RawValue> {
             break;
           case CborAdditionalInfo.breakStop:
             writer.write('(break)');
-            nested.removeLast();
+            if (nested.isNotEmpty) {
+              nested.removeLast();
+            }
             break;
 
           default:
@@ -164,6 +160,10 @@ class _PrettyPrint implements Sink<RawValue> {
     }
 
     writer.write('\n');
+
+    while (nested.isNotEmpty && nested.last.remainingItems == 0) {
+      nested.removeLast();
+    }
   }
 }
 

@@ -538,4 +538,21 @@ void main() {
       ]);
     });
   });
+  group('CborSimpleEncoder startChunkedConversion', () {
+    test('works as stream transformer', () async {
+      final encoder = const CborSimpleEncoder();
+      final stream = Stream<Object?>.fromIterable([1, 'hello']);
+      final encodedBytes = await stream.transform(encoder).toList();
+
+      final decoder = const CborSimpleDecoder();
+
+      final flatBytes = encodedBytes.expand((x) => x).toList();
+
+      final decodedObjects =
+          await Stream<List<int>>.fromIterable([
+            flatBytes,
+          ]).transform(decoder).toList();
+      expect(decodedObjects, equals([1, 'hello']));
+    });
+  });
 }
