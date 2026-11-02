@@ -56,11 +56,8 @@ extension DateTimeExtension on DateTime {
   ///
   /// Will add time zone.
   String toInternetIso8601String(Duration? timeZoneOffset) {
-    var x = this;
-    if (timeZoneOffset == null) {
-      timeZoneOffset = x.timeZoneOffset;
-      x = x.toUtc();
-    }
+    final x = this;
+    timeZoneOffset ??= x.timeZoneOffset;
 
     final String y;
     if (x.year.abs() < CborConstants.maxYear) {
@@ -78,7 +75,7 @@ extension DateTimeExtension on DateTime {
     final sec = x.second.toString().padLeft(CborConstants.two, '0');
 
     final String secFraction;
-    if (x.millisecond == 0) {
+    if (x.millisecond == 0 && x.microsecond == 0) {
       secFraction = '';
     } else {
       final ms = x.millisecond.toString().padLeft(CborConstants.three, '0');
