@@ -199,11 +199,8 @@ class _CborDateTimeFloatImpl extends _CborFloatImpl
 
   _CborDateTimeFloatImpl(
     DateTime value, {
-    List<int> tags = const [CborTag.epochDateTime],
-  }) : super(
-         value.millisecondsSinceEpoch / CborConstants.milliseconds,
-         tags: tags,
-       );
+    super.tags = const [CborTag.epochDateTime],
+  }) : super(value.millisecondsSinceEpoch / CborConstants.milliseconds);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {

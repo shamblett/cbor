@@ -66,8 +66,7 @@ abstract class CborNull extends CborSimpleValue {
 }
 
 class _CborNullImpl extends _CborSimpleValueImpl implements CborNull {
-  const _CborNullImpl({List<int> tags = const []})
-    : super(CborAdditionalInfo.simpleNull, tags: tags);
+  const _CborNullImpl({super.tags}) : super(CborAdditionalInfo.simpleNull);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -86,8 +85,8 @@ abstract class CborUndefined extends CborSimpleValue {
 }
 
 class _CborUndefinedImpl extends _CborSimpleValueImpl implements CborUndefined {
-  const _CborUndefinedImpl({List<int> tags = const []})
-    : super(CborAdditionalInfo.simpleUndefined, tags: tags);
+  const _CborUndefinedImpl({super.tags})
+    : super(CborAdditionalInfo.simpleUndefined);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
@@ -111,10 +110,9 @@ class _CborBoolImpl extends _CborSimpleValueImpl implements CborBool {
   @override
   final bool value;
 
-  const _CborBoolImpl(this.value, {List<int> tags = const []})
+  const _CborBoolImpl(this.value, {super.tags})
     : super(
         !value ? CborAdditionalInfo.simpleFalse : CborAdditionalInfo.simpleTrue,
-        tags: tags,
       );
 
   @override
