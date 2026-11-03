@@ -6,6 +6,7 @@
  */
 
 import 'dart:convert';
+
 import 'package:cbor/cbor.dart';
 import 'package:test/test.dart';
 

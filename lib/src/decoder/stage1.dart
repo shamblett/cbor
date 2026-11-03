@@ -38,9 +38,8 @@ class Header {
               BigInt.from(ByteData.view(dataBytes.buffer).getUint32(0)) <<
               CborConstants.bitsPerWord;
           i |= BigInt.from(
-            ByteData.view(
-              dataBytes.buffer,
-            ).getUint32(CborConstants.bytesPerWord),
+            ByteData.view(dataBytes.buffer)
+                .getUint32(CborConstants.bytesPerWord),
           );
           return Arg.bigInt(i);
 

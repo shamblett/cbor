@@ -89,13 +89,12 @@ class _CborListImpl extends DelegatingList<CborValue>
       throw CborCyclicError(this);
     }
 
-    final res =
-        map(
-          (i) => i.toJsonInternal(
-            cyclicCheck,
-            o.copyWith(encoding: expectedConversion),
-          ),
-        ).toList();
+    final res = map(
+      (i) => i.toJsonInternal(
+        cyclicCheck,
+        o.copyWith(encoding: expectedConversion),
+      ),
+    ).toList();
 
     cyclicCheck.remove(this);
 

@@ -8,7 +8,9 @@
 import 'package:cbor/cbor.dart';
 
 import '../encoder/sink.dart';
+
 import 'package:collection/collection.dart';
+
 import '../constants.dart';
 import '../utils/arg.dart';
 import 'internal.dart';
@@ -162,10 +164,9 @@ class _CborDateTimeIntImpl extends _CborSmallIntImpl
     implements CborDateTimeInt {
   _CborDateTimeIntImpl(
     DateTime value, {
-    List<int> tags = const [CborTag.epochDateTime],
+    super.tags = const [CborTag.epochDateTime],
   }) : super(
          (value.millisecondsSinceEpoch / CborConstants.milliseconds).round(),
-         tags: tags,
        );
 
   const _CborDateTimeIntImpl.fromSecondsSinceEpoch(

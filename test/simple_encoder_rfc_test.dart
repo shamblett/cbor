@@ -548,10 +548,9 @@ void main() {
 
       final flatBytes = encodedBytes.expand((x) => x).toList();
 
-      final decodedObjects =
-          await Stream<List<int>>.fromIterable([
-            flatBytes,
-          ]).transform(decoder).toList();
+      final decodedObjects = await Stream<List<int>>.fromIterable([flatBytes])
+          .transform(decoder)
+          .toList();
       expect(decodedObjects, equals([1, 'hello']));
     });
   });

@@ -67,10 +67,9 @@ class _CborStringImpl with CborValueMixin implements CborString {
 
   @override
   String toString({bool allowMalformed = false}) {
-    _string ??=
-        allowMalformed
-            ? const Utf8Decoder(allowMalformed: true).convert(_utf8!)
-            : const Utf8Decoder(allowMalformed: false).convert(_utf8!);
+    _string ??= allowMalformed
+        ? const Utf8Decoder(allowMalformed: true).convert(_utf8!)
+        : const Utf8Decoder(allowMalformed: false).convert(_utf8!);
 
     return _string!;
   }
@@ -272,9 +271,9 @@ class _CborDateTimeStringImpl extends _CborStringImpl
   _CborDateTimeStringImpl(
     DateTime value, {
     Duration? timeZoneOffset,
-    List<int> tags = const [CborTag.dateTimeString],
+    super.tags = const [CborTag.dateTimeString],
   }) : _datetime = value,
-       super(value.toInternetIso8601String(timeZoneOffset), tags: tags);
+       super(value.toInternetIso8601String(timeZoneOffset));
 
   _CborDateTimeStringImpl.fromString(
     String super.str, {
@@ -320,9 +319,9 @@ class _CborUriImpl extends _CborStringImpl implements CborUri {
     super.tags = const [CborTag.uri],
   });
 
-  _CborUriImpl(Uri value, {List<int> tags = const [CborTag.uri]})
+  _CborUriImpl(Uri value, {super.tags = const [CborTag.uri]})
     : _value = value,
-      super(value.toString(), tags: tags);
+      super(value.toString());
 
   _CborUriImpl.fromUtf8(
     List<int> super.value, {
@@ -363,11 +362,9 @@ class _CborBase64Impl extends _CborStringImpl implements CborBase64 {
     super.tags = const [CborTag.base64],
   });
 
-  _CborBase64Impl.encode(
-    List<int> bytes, {
-    List<int> tags = const [CborTag.base64],
-  }) : _value = bytes,
-       super(base64.encode(bytes), tags: tags);
+  _CborBase64Impl.encode(List<int> bytes, {super.tags = const [CborTag.base64]})
+    : _value = bytes,
+      super(base64.encode(bytes));
 
   _CborBase64Impl.fromUtf8(
     List<int> super.str, {
@@ -411,9 +408,9 @@ class _CborBase64UrlImpl extends _CborStringImpl implements CborBase64Url {
 
   _CborBase64UrlImpl.encode(
     List<int> bytes, {
-    List<int> tags = const [CborTag.base64Url],
+    super.tags = const [CborTag.base64Url],
   }) : _value = bytes,
-       super(base64Url.encode(bytes), tags: tags);
+       super(base64Url.encode(bytes));
 
   _CborBase64UrlImpl.fromUtf8(
     List<int> super.str, {

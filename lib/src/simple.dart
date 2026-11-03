@@ -25,11 +25,7 @@ class CborSimpleEncoder extends Converter<Object?, List<int>> {
   final Object? Function(dynamic object)? _toEncodable;
   final bool _dateTimeEpoch;
 
-  const CborSimpleEncoder({
-    bool dateTimeEpoch = false,
-    Object? Function(dynamic object)? toEncodable,
-  }) : _toEncodable = toEncodable,
-       _dateTimeEpoch = dateTimeEpoch;
+  const CborSimpleEncoder({this._dateTimeEpoch = false, this._toEncodable});
 
   @override
   List<int> convert(Object? input) {
@@ -73,12 +69,10 @@ class CborSimpleDecoder extends Converter<List<int>, Object?> {
   /// used as a stream transformer. The decoder operates over a CBOR sequence
   /// in this mode.
   const CborSimpleDecoder({
-    bool parseDateTime = true,
-    bool decodeBase64 = true,
-    bool parseUri = true,
-  }) : _parseDateTime = parseDateTime,
-       _decodeBase64 = decodeBase64,
-       _parseUri = parseUri;
+    this._parseDateTime = true,
+    this._decodeBase64 = true,
+    this._parseUri = true,
+  });
 
   @override
   Object? convert(List<int> input) {
@@ -161,7 +155,7 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
 
   /// Create a CBOR simple codec.
   ///
-  /// The [toEncodable] function is used during encoding. It is invoked for
+  /// The [_toEncodable] function is used during encoding. It is invoked for
   /// values that are not directly encodable to a [CborValue]. The
   /// function must return an object that is directly encodable. The elements of
   /// a returned list and values of a returned map do not need to be directly
@@ -170,19 +164,15 @@ class CborSimpleCodec extends Codec<Object?, List<int>> {
   /// in this way, by effectively creating an infinite data structure through
   /// repeated call to `toEncodable`.
   ///
-  /// If [toEncodable] is omitted, it defaults to a function that returns the
+  /// If [_toEncodable] is omitted, it defaults to a function that returns the
   /// result of calling `.toCbor()` on the unencodable object.
   const CborSimpleCodec({
-    bool encodeDateTimeEpoch = false,
-    bool parseDateTime = true,
-    bool decodeBase64 = true,
-    bool parseUri = true,
-    Object? Function(dynamic object)? toEncodable,
-  }) : _decodeBase64 = decodeBase64,
-       _encodeDateTimeEpoch = encodeDateTimeEpoch,
-       _parseUri = parseUri,
-       _parseDateTime = parseDateTime,
-       _toEncodable = toEncodable;
+    this._encodeDateTimeEpoch = false,
+    this._parseDateTime = true,
+    this._decodeBase64 = true,
+    this._parseUri = true,
+    this._toEncodable,
+  });
 
   @override
   Object? decode(

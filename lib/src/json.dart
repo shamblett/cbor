@@ -24,18 +24,17 @@ class CborJsonEncoder extends Converter<CborValue, String> {
 
   /// Create a new CBOR JSON encoder.
   ///
-  /// [substituteValue] will be used for values that cannot be encoded, such
+  /// [_substituteValue] will be used for values that cannot be encoded, such
   /// as [double.infinity], [double.nan], [CborUndefined]. By default this
   /// is `null`.
   ///
-  /// If [allowMalformedUtf8] is `false`, the decoder will
+  /// If [_allowMalformedUtf8] is `false`, the decoder will
   /// throw [FormatException] when invalid UTF-8 is found. Otherwise,
   /// it will use replacement characters.
   const CborJsonEncoder({
-    Object? substituteValue,
-    bool allowMalformedUtf8 = false,
-  }) : _allowMalformedUtf8 = allowMalformedUtf8,
-       _substituteValue = substituteValue;
+    this._substituteValue,
+    this._allowMalformedUtf8 = false,
+  });
 
   @override
   String convert(CborValue input) {
