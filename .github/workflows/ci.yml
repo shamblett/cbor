@@ -39,4 +39,4 @@ jobs:
           verbose: true
 
       - name: Run web tests
-        run: dart run build_runner test --fail-on-severe -- -p chrome test
+        run: dart test -p chrome test
