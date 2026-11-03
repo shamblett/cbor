@@ -1,5 +1,5 @@
-### Unreleased
-- Preserve local clock fields and microseconds when encoding DateTime values.
+### 6.5.2
+- [PR 90](https://github.com/shamblett/cbor/pull/90)
 
 ### 6.5.1
 - [Issue 86](https://github.com/shamblett/cbor/issues/86)
