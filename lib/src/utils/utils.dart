@@ -79,10 +79,9 @@ extension DateTimeExtension on DateTime {
       secFraction = '';
     } else {
       final ms = x.millisecond.toString().padLeft(CborConstants.three, '0');
-      final us =
-          x.microsecond != 0
-              ? x.microsecond.toString().padLeft(CborConstants.three, '0')
-              : '';
+      final us = x.microsecond != 0
+          ? x.microsecond.toString().padLeft(CborConstants.three, '0')
+          : '';
       secFraction = '.$ms$us'.replaceAll(RegExp('0*\$'), '');
     }
 

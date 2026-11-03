@@ -67,10 +67,9 @@ class _CborStringImpl with CborValueMixin implements CborString {
 
   @override
   String toString({bool allowMalformed = false}) {
-    _string ??=
-        allowMalformed
-            ? const Utf8Decoder(allowMalformed: true).convert(_utf8!)
-            : const Utf8Decoder(allowMalformed: false).convert(_utf8!);
+    _string ??= allowMalformed
+        ? const Utf8Decoder(allowMalformed: true).convert(_utf8!)
+        : const Utf8Decoder(allowMalformed: false).convert(_utf8!);
 
     return _string!;
   }

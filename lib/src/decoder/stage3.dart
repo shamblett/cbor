@@ -30,35 +30,27 @@ class CborSink implements Sink<RawValueTagged> {
         break;
 
       case CborMajorType.byteString:
-        builder =
-            data.header.arg.isIndefiniteLength
-                ? _IndefiniteLengthByteBuilder(data)
-                : _ValueBuilder(
-                  _createBytes(data.data, data.offset, data.tags),
-                );
+        builder = data.header.arg.isIndefiniteLength
+            ? _IndefiniteLengthByteBuilder(data)
+            : _ValueBuilder(_createBytes(data.data, data.offset, data.tags));
         break;
 
       case CborMajorType.textString:
-        builder =
-            data.header.arg.isIndefiniteLength
-                ? _IndefiniteLengthStringBuilder(data)
-                : _ValueBuilder(
-                  _createString(data.data, data.offset, data.tags),
-                );
+        builder = data.header.arg.isIndefiniteLength
+            ? _IndefiniteLengthStringBuilder(data)
+            : _ValueBuilder(_createString(data.data, data.offset, data.tags));
         break;
 
       case CborMajorType.array:
-        builder =
-            data.header.arg.isIndefiniteLength
-                ? _IndefiniteLengthListBuilder(data)
-                : _ListBuilder(data);
+        builder = data.header.arg.isIndefiniteLength
+            ? _IndefiniteLengthListBuilder(data)
+            : _ListBuilder(data);
         break;
 
       case CborMajorType.map:
-        builder =
-            data.header.arg.isIndefiniteLength
-                ? _IndefiniteLengthMapBuilder(data)
-                : _MapBuilder(data);
+        builder = data.header.arg.isIndefiniteLength
+            ? _IndefiniteLengthMapBuilder(data)
+            : _MapBuilder(data);
         break;
 
       case CborMajorType.tag:

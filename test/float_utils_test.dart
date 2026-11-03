@@ -36,8 +36,9 @@ void _validateFloat16Encoding(double value, List<int> result) {
 /// Validates that fromFloat16Bytes matches ieee754 (non-JS only).
 void _validateFloat16Decoding(List<int> bytes, double result) {
   if (_kIsJs) return;
-  final ieee754Value =
-      ieee754.FloatParts.fromFloat16Bytes(Uint8List.fromList(bytes)).toDouble();
+  final ieee754Value = ieee754.FloatParts.fromFloat16Bytes(
+    Uint8List.fromList(bytes),
+  ).toDouble();
   if (ieee754Value.isNaN) {
     expect(result.isNaN, true);
   } else {
@@ -63,8 +64,9 @@ void _validateFloat32Encoding(double value, List<int> result) {
 /// Validates that fromFloat32Bytes matches ieee754 (non-JS only).
 void _validateFloat32Decoding(List<int> bytes, double result) {
   if (_kIsJs) return;
-  final ieee754Value =
-      ieee754.FloatParts.fromFloat32Bytes(Uint8List.fromList(bytes)).toDouble();
+  final ieee754Value = ieee754.FloatParts.fromFloat32Bytes(
+    Uint8List.fromList(bytes),
+  ).toDouble();
   if (ieee754Value.isNaN) {
     expect(result.isNaN, true);
   } else {
@@ -90,8 +92,9 @@ void _validateFloat64Encoding(double value, List<int> result) {
 /// Validates that fromFloat64Bytes matches ieee754 (non-JS only).
 void _validateFloat64Decoding(List<int> bytes, double result) {
   if (_kIsJs) return;
-  final ieee754Value =
-      ieee754.FloatParts.fromFloat64Bytes(Uint8List.fromList(bytes)).toDouble();
+  final ieee754Value = ieee754.FloatParts.fromFloat64Bytes(
+    Uint8List.fromList(bytes),
+  ).toDouble();
   if (ieee754Value.isNaN) {
     expect(result.isNaN, true);
   } else {

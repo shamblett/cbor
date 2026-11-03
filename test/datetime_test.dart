@@ -27,9 +27,8 @@ void main() {
 
     test('With 200.5 ms', () {
       expect(
-        CborDateTimeString(
-          DateTime.utc(2013, 3, 21, 20, 4, 0, 200, 500),
-        ).toString(),
+        CborDateTimeString(DateTime.utc(2013, 3, 21, 20, 4, 0, 200, 500))
+            .toString(),
         '2013-03-21T20:04:00.2005Z',
       );
     });

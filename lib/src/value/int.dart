@@ -8,7 +8,9 @@
 import 'package:cbor/cbor.dart';
 
 import '../encoder/sink.dart';
+
 import 'package:collection/collection.dart';
+
 import '../constants.dart';
 import '../utils/arg.dart';
 import 'internal.dart';
