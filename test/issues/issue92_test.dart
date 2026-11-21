@@ -25,4 +25,19 @@ void main() {
       });
     }
   });
+
+  group('Tags on indefinite length strings are kept when re-encoded', () {
+    for (final hex in [
+      'd904d25fff', // empty byte string
+      'd904d25f4101420203ff', // byte string, two chunks
+      'd904d27fff', // empty text string
+      'd904d27f6161626263ff', // text string, two chunks
+    ]) {
+      test(hex, () {
+        final decoded = cbor.decode(HEX.decode(hex));
+        expect(decoded.tags, [1234]);
+        expect(HEX.encode(cbor.encode(decoded)), hex);
+      });
+    }
+  });
 }

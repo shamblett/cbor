@@ -123,7 +123,7 @@ class _CborBytesIndefiniteLengthImpl with CborValueMixin implements CborBytes {
 
   @override
   void encode(EncodeSink sink) {
-    CborEncodeIndefiniteLengthBytes(bytesList).encode(sink);
+    CborEncodeIndefiniteLengthBytes(bytesList, tags: tags).encode(sink);
   }
 }
 
