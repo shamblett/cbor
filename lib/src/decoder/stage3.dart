@@ -239,9 +239,9 @@ CborInt _createInt(RawValueTagged raw) {
   if (raw.tags.lastWhereOrNull(isHintSubtype) == CborTag.epochDateTime) {
     return CborDateTimeInt.fromSecondsSinceEpoch(data.toInt(), tags: raw.tags);
   } else if (data.isValidInt) {
-    return CborSmallInt(data.toInt());
+    return CborSmallInt(data.toInt(), tags: raw.tags);
   } else {
-    return CborInt(data.toBigInt());
+    return CborInt(data.toBigInt(), tags: raw.tags);
   }
 }
 
