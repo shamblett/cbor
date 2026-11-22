@@ -67,8 +67,8 @@ class _CborListImpl extends DelegatingList<CborValue>
     int len,
     CborValue Function(int index) f, {
     this.tags = const [],
-    this.type = CborLengthType.auto,
-  }) : super(List.generate(len, f));
+  }) : type = CborLengthType.auto,
+       super(List.generate(len, f));
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {

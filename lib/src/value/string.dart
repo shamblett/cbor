@@ -146,7 +146,7 @@ class _CborIndefiniteLengthStringImpl
         .map(const Utf8Decoder(allowMalformed: true).convert)
         .toList(growable: false);
 
-    CborEncodeIndefiniteLengthString(_string!).encode(sink);
+    CborEncodeIndefiniteLengthString(_string!, tags: tags).encode(sink);
   }
 
   @override
