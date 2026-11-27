@@ -5,19 +5,19 @@ DocumentName: cbor
 DocumentNamespace: https://pub.dev/packages/cbor
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2026-11-22T09:39:40Z
+Created: 2026-11-27T09:44:14Z
 CreatorComment: <text>Please refer to the AUTHORS file for contributor/creation details</text>
 
 
 PackageName: cbor
 SPDXID: SPDXRef-Package-cbor
-PackageVersion: 6.5.3
+PackageVersion: 6.5.4
 PackageFileName: cbor
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/cbor
 FilesAnalyzed: true
-PackageVerificationCode: f1221b194d5baee23a3d6e9834780c5c620f6332
+PackageVerificationCode: a067653fa3adad773d0e027c820598e5ef791924
 PackageHomePage: https://pub.dev/packages/cbor
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -200,7 +200,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/value/double.dart
 SPDXID: SPDXRef-double-19
 FileType: SOURCE
-FileChecksum: SHA1: f7e98c5a88d3fdab47f4e2721fef34647f864fae
+FileChecksum: SHA1: 442e458ab8dd95806bf3a53c3a2ed7d3ceeba54a
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -209,7 +209,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/value/int.dart
 SPDXID: SPDXRef-int-20
 FileType: SOURCE
-FileChecksum: SHA1: 442e458ab8dd95806bf3a53c3a2ed7d3ceeba54a
+FileChecksum: SHA1: 048c8872a67240f45c2b27b3b18ff1725d73403d
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -218,7 +218,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/value/internal.dart
 SPDXID: SPDXRef-internal-21
 FileType: SOURCE
-FileChecksum: SHA1: 048c8872a67240f45c2b27b3b18ff1725d73403d
+FileChecksum: SHA1: 0836ac78fe25ed59c59b908e9fe3bea75da8fb93
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -290,7 +290,7 @@ FileCopyrightText: NOASSERTION
 FileName: pubspec.yaml
 SPDXID: SPDXRef-pubspec-29
 FileType: TEXT
-FileChecksum: SHA1: 00263e0475f7559340f58d4d26f29a2d307b89f5
+FileChecksum: SHA1: f9c1c0cc51ddf2c50b2ce1836a23259476bacccb
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION

@@ -1,3 +1,6 @@
+### 6.5.4
+- [PR 95](https://github.com/shamblett/cbor/pull/95)
+
 ### 6.5.3
 - [Issue 92](https://github.com/shamblett/cbor/issues/92)
 
