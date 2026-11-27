@@ -209,6 +209,35 @@ void main() {
       final encoded = cbor.encode(indefBytes);
       expect(encoded, isNotEmpty);
     });
+
+    test('CborBytes indefinite length hashCode and equality', () {
+      // (_ h'01', h'02')
+      final input = [0x5f, 0x41, 0x01, 0x41, 0x02, 0xff];
+      final a = cbor.decode(input);
+      final b = cbor.decode(input);
+      expect(a, b);
+      expect(a.hashCode, b.hashCode);
+
+      // Same bytes as a definite length byte string.
+      final definite = CborBytes([1, 2]);
+      expect(definite == a, isTrue);
+      expect(a == definite, isTrue);
+      expect(a.hashCode, definite.hashCode);
+
+      // {(_ h'01', h'02'): true}
+      final map = cbor.decode([
+        0xa1,
+        0x5f,
+        0x41,
+        0x01,
+        0x41,
+        0x02,
+        0xff,
+        0xf5,
+      ]) as CborMap;
+      expect(map[b], CborBool(true));
+      expect({a, b}, hasLength(1));
+    });
   });
 
   group('list', () {

@@ -91,7 +91,7 @@ class _CborBytesIndefiniteLengthImpl with CborValueMixin implements CborBytes {
   List<int> get bytes => bytesList.flattened.toList(growable: false);
 
   @override
-  int get hashCode => Object.hashAll([bytesList, tags].flattened);
+  int get hashCode => Object.hashAll([bytes, tags].flattened);
 
   const _CborBytesIndefiniteLengthImpl(this.bytesList, {this.tags = const []});
 
@@ -100,9 +100,9 @@ class _CborBytesIndefiniteLengthImpl with CborValueMixin implements CborBytes {
 
   @override
   bool operator ==(Object other) =>
-      other is _CborBytesIndefiniteLengthImpl &&
+      other is CborBytes &&
       tags.equals(other.tags) &&
-      DeepCollectionEquality().equals(bytesList, other.bytesList);
+      bytes.equals(other.bytes);
 
   @override
   Object? toObjectInternal(Set<Object> cyclicCheck, ToObjectOptions o) {
